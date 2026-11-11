@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS public.db_study_progress (
   question_id text NOT NULL,
   data jsonb NOT NULL,
   updated_at timestamptz NOT NULL DEFAULT now(),
+  revision bigint NOT NULL DEFAULT 1 CHECK (revision >= 1),
   PRIMARY KEY (user_id, question_id),
   CONSTRAINT db_study_question_id_valid CHECK (question_id ~ '^20[0-9]{2}:(am1|am2|pm1|pm2):([1-9]|[1-9][0-9]|100)$'),
   CONSTRAINT db_study_data_object CHECK (jsonb_typeof(data) = 'object'),
