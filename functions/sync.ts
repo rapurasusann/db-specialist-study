@@ -11,7 +11,7 @@ if (!jwksUrl || !authBaseUrl || !process.env.DATABASE_URL) throw Error('Neon Aut
 const jwks = createRemoteJWKSet(new URL(jwksUrl));
 const pool = new Pool({connectionString:process.env.DATABASE_URL,max:5});
 attachDatabasePool(pool);
-const app = new Hono();
+const app = new Hono<{ Variables: { userId: string } }>();
 app.use('*', cors({origin,allowHeaders:['Authorization','Content-Type'],allowMethods:['GET','PUT','OPTIONS'],credentials:false,maxAge:600}));
 app.use('*', async(c,next)=>{
  if(c.req.method==='OPTIONS') return next();
