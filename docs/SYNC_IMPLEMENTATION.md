@@ -54,3 +54,13 @@
 - PM・SCの過去問データや教材は **未追加**。DB設計が対応したことは、各資格の教材完成を意味しない。
 - 旧 `public.db_study_progress` は設計案だったが**実DBには未作成**。最初から新設 `public.study_progress` を使うため本番移行SQLは不要。
 - 既存受入条件の「DBスペシャリスト専用テーブル」「/v1/progress」という古い表現より、本節の複数資格仕様を優先する。
+
+## 2026-11-11 実Neon専用環境構築記録
+- 専用組織: `Certification-Study`, org id `org-rough-cake-20008284`, **Free**。
+- 専用プロジェクト: `certification-study`, project id `quiet-mouse-39990305`, Singapore `aws-ap-southeast-1`, PostgreSQL 18。
+- 既定ブランチ: `br-nameless-pond-a1ucyf2q` (`main`)、DB `certification_study`。
+- SQL適用済み: `public.study_exam_catalog`、`public.study_progress`。catalog = `db`,`pm`,`sc`。Neon readbackで2表と3資格を確認。
+- `public.study_progress`: RLS enabled、PUBLIC/anon/authenticatedのテーブル権限なし。 `public.study_exam_catalog`: 公開権限なし。
+- Neon Auth Managed Better Authを有効化。同期アプリ用Authが別DB内に作成され、Wordbookとは別。サインアップは無効化（allow_sign_up=false）、許可済みoriginは `https://rapurasusann.github.io`。
+- **未完了**: 初期ユーザー作成、Authでのサインイン/トークン検証、Neon Functionのデプロイ、APIの実リクエスト試験、旧localStorage履歴の同期処理接続、CSP・実機動作確認。証拠なしにCLOSEDとしない。
+- public GitHub Pagesのv12は継続利用可能、今回変更なし。既存Wordbook/ParkWaitリソースは変更なし。
