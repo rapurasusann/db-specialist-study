@@ -1,9 +1,8 @@
 {
   "name": "db-study-sync-backend",
   "private": true,
-  "type": "module",
   "scripts": {
-    "test:merge": "node tests/sync-merge.test.cjs"
+    "test:merge": "node tests/sync-merge.test.js"
   },
   "dependencies": {
     "@neon/config": "latest",
