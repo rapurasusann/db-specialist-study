@@ -4,8 +4,9 @@
   "scripts": {
     "test:merge": "node tests/sync-merge.test.js",
     "test:transport": "node tests/sync-transport.test.js",
-    "test": "npm run test:merge && npm run test:transport",
-    "build:auth": "vite build --config vite.auth.config.mjs"
+    "test": "npm run test:merge && npm run test:transport && npm run test:engine",
+    "build:auth": "vite build --config vite.auth.config.mjs",
+    "test:engine": "node tests/sync-engine.test.js"
   },
   "dependencies": {
     "@neon/config": "latest",
