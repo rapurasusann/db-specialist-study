@@ -32,9 +32,9 @@ function createTransport({baseUrl,getToken,fetchImpl,examCode='db'}){
      if(!Array.isArray(result.rows))throw Error('同期APIの履歴形式が不正です');
      return result.rows;
    },
-   put:async(id,row,expectedRevision)=>{
+   put:async(id,row,expectedRevision=0)=>{
      if(!VALID_ID.test(id)||!row||typeof row!=='object'||Array.isArray(row))throw Error('不正な学習履歴です');
-     if(expectedRevision!==null&&(!Number.isSafeInteger(expectedRevision)||expectedRevision<0))throw Error('不正なrevisionです');
+     if(!Number.isSafeInteger(expectedRevision)||expectedRevision<0)throw Error('不正なrevisionです');
      // Server must apply an atomic compare-and-swap using expectedRevision.
      // On stale revision, server MUST return HTTP 409, never overwrite.
      return call('/v1/exams/'+examCode+'/progress/'+encodeURIComponent(id),'PUT',{data:row,expectedRevision});
