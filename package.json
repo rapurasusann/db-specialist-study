@@ -2,17 +2,22 @@
   "name": "db-study-sync-backend",
   "private": true,
   "scripts": {
-    "test:merge": "node tests/sync-merge.test.js"
+    "test:merge": "node tests/sync-merge.test.js",
+    "test:transport": "node tests/sync-transport.test.js",
+    "test": "npm run test:merge && npm run test:transport",
+    "build:auth": "vite build --config vite.auth.config.mjs"
   },
   "dependencies": {
     "@neon/config": "latest",
     "@neon/functions": "latest",
     "hono": "latest",
     "jose": "latest",
-    "pg": "latest"
+    "pg": "latest",
+    "@neon/auth": "latest"
   },
   "devDependencies": {
     "@types/pg": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "vite": "latest"
   }
 }
