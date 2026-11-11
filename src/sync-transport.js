@@ -5,7 +5,8 @@
 (function(root){
 'use strict';
 const VALID_ID=/^20\d{2}:(am1|am2|pm1|pm2):([1-9]|[1-9]\d|100)$/;
-function createTransport({baseUrl,getToken,fetchImpl}){
+function createTransport({baseUrl,getToken,fetchImpl,examCode='db'}){
+ if(!/^[a-z][a-z0-9_]{1,31}$/.test(examCode))throw Error('不正な試験コードです');
  const base=new URL(baseUrl);
  if(base.protocol!=='https:'||base.username||base.password||base.search||base.hash||base.pathname!=='/'||!base.hostname)throw Error('同期APIのURLはHTTPSのオリジンのみ指定してください');
  if(typeof getToken!=='function')throw Error('認証トークン取得処理が必要です');
@@ -27,7 +28,7 @@ function createTransport({baseUrl,getToken,fetchImpl}){
  }
  return Object.freeze({
    list:async()=>{
-     const result=await call('/v1/progress');
+     const result=await call('/v1/exams/'+examCode+'/progress');
      if(!Array.isArray(result.rows))throw Error('同期APIの履歴形式が不正です');
      return result.rows;
    },
@@ -36,7 +37,7 @@ function createTransport({baseUrl,getToken,fetchImpl}){
      if(expectedRevision!==null&&(!Number.isSafeInteger(expectedRevision)||expectedRevision<0))throw Error('不正なrevisionです');
      // Server must apply an atomic compare-and-swap using expectedRevision.
      // On stale revision, server MUST return HTTP 409, never overwrite.
-     return call('/v1/progress/'+encodeURIComponent(id),'PUT',{data:row,expectedRevision});
+     return call('/v1/exams/'+examCode+'/progress/'+encodeURIComponent(id),'PUT',{data:row,expectedRevision});
    }
  });
 }
