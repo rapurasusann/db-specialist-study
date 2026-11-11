@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer"><title>資格学習・ログイン設定</title>
+<style>
+body{font:16px system-ui,sans-serif;background:#f4f7fb;color:#172437;margin:0;padding:24px}
+main{max-width:550px;margin:35px auto;background:white;padding:25px;border-radius:14px;border:1px solid #dae4ee}
+label{display:block;margin:14px 0}input{display:block;width:100%;box-sizing:border-box;padding:12px;margin:6px 0;border:1px solid #9bb0c7;border-radius:8px;font:inherit}
+button{margin:7px 7px 7px 0;padding:12px;border:0;border-radius:8px;background:#135c94;color:white;cursor:pointer;font:inherit}
+p{line-height:1.7}#result{white-space:pre-wrap} .muted{color:#5b6877;font-size:.9rem}
+</style></head><body><main>
+<h1>資格学習アプリ：ログイン</h1>
+<p>DB・PM・セキスペ共通の学習履歴を同期するための認証設定です。</p>
+<section id="request">
+<h2>初期パスワード設定・再設定</h2>
+<p>登録済みメールアドレスにパスワード設定用リンクを送ります。</p>
+<label>メールアドレス<input id="email" type="email" autocomplete="email" required></label>
+<button id="sendReset" type="button">設定メールを送信</button>
+<p class="muted">メールが届かない場合は迷惑メールも確認してください。リンクやパスワードは第三者に共有しないでください。</p>
+</section>
+<section id="reset" hidden>
+<h2>新しいパスワードを設定</h2>
+<label>新しいパスワード<input id="password" type="password" minlength="12" autocomplete="new-password"></label>
+<label>確認<input id="passwordAgain" type="password" minlength="12" autocomplete="new-password"></label>
+<button id="applyReset" type="button">パスワードを設定</button>
+</section>
+<section id="login">
+<h2>ログイン</h2>
+<label>メールアドレス<input id="loginEmail" type="email" autocomplete="username"></label>
+<label>パスワード<input id="loginPassword" type="password" autocomplete="current-password"></label>
+<button id="signIn" type="button">ログイン</button>
+<button id="signOut" type="button">ログアウト</button>
+</section>
+<p role="status" aria-live="polite" id="result"></p>
+<p><a href="../">学習アプリに戻る</a></p>
+</main><script type="module" src="./main.js"></script></body></html>
