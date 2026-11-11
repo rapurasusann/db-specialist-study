@@ -34,3 +34,12 @@
 ## 公式資料
 - https://neon.com/docs/auth/authentication-flow
 - https://neon.com/docs/introduction/plans
+
+## 2026-11-11: Free条件と実装状況
+- Neon公式(2026-10-02): Freeは100プロジェクト、各100 CU-hours/月・DB 1GB。AuthとFunctionsを利用できる。利用上限を超えたときの挙動は本番接続前に確認する。
+- 接続中の組織 `Wordbook` と `Wordbook-A076-Load` はいずれもLaunch。どちらにも新しいDBを作成しない。
+- 現在のNeon接続は「組織作成」操作を提供していない。ユーザーがNeon ConsoleでDB学習アプリ専用の**Free組織**を作成し、組織名・Free表示を確認する必要がある。既存2組織のプラン変更は禁止。
+- `neon.ts`, `functions/sync.ts`, `package.json` を追加。まだ未デプロイ・未結合・未試験。認証トークンのissuer/JWKS・CORS・データベーススキーマ・API整合は実接続時に確認する。
+- `sql/001_study_progress.sql` はサーバーAPI経由専用。ブラウザにはDBパスワードもData APIも公開しない。Function側はJWT署名検証後に`sub`からuser_idを決定する。RLSの公開ポリシーは作らない。
+- `src/sync-transport.js` は未接続。旧Supabase同期コードを本番で有効にしない。
+- 実装上の次の課題: APIのGET/PUT契約試験、revision競合/401/異ユーザー確認、Neon Authのログイン画面、frontend統合、オフライン再試行、CSP更新、PCとスマホの実機試験。
