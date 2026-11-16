@@ -23,11 +23,20 @@
       {page:21,box:[0.10,0.25,0.81,0.60],title:'表1　在庫履歴用のSQL文（未完成）'},
       {page:22,box:[0.12,0.26,0.77,0.23],title:'図3　在庫引当APの処理の流れとSQL文'},
       {page:23,box:[0.10,0.55,0.80,0.23],title:'図4　変更後の在庫反映APの処理の流れ'}
+    ],
+    '2025:pm2:1': [
+      {page:8,box:[0.14,0.36,0.69,0.16],title:'図1　現行システムのシステム構成'},
+      {page:8,box:[0.09,0.66,0.83,0.18],title:'図2　決済サービスのテーブル構造'},
+      {page:9,box:[0.09,0.08,0.83,0.24],title:'図3　ポイントサービスのテーブル構造'},
+      {page:9,box:[0.08,0.34,0.84,0.39],title:'表1　主な属性の意味・制約'},
+      {page:10,box:[0.08,0.09,0.84,0.82],title:'表2〜4　処理一覧・入金処理・決済残高消費処理'},
+      {page:11,box:[0.08,0.08,0.84,0.77],title:'表5〜6　ポイント反映処理・ポイント消費処理のSQL'},
+      {page:12,box:[0.10,0.53,0.80,0.40],title:'図4　決済処理の正常実行時のシーケンス図'}
     ]
   });
   const namespace='http://www.w3.org/2000/svg';
   const originalShowQuestion=showQuestion;
-  function createFigure(item) {
+  function createFigure(item,key) {
     const figure=document.createElement('figure');
     figure.className='pm-original-diagram';
     figure.style.cssText='margin:12px 0 20px;padding:10px;border:1px solid #d6dfe8;border-radius:8px;background:white;';
@@ -42,7 +51,7 @@
     svg.setAttribute('aria-label',item.title);
     svg.style.cssText='display:block;width:100%;height:auto;max-height:850px;';
     const image=document.createElementNS(namespace,'image');
-    image.setAttribute('href','pages/pm1_qs_'+String(item.page).padStart(2,'0')+'.webp');
+    image.setAttribute('href','pages/'+(key.startsWith('2025:pm2:')?'pm2':'pm1')+'_qs_'+String(item.page).padStart(2,'0')+'.webp');
     image.setAttribute('x','0');image.setAttribute('y','0');
     image.setAttribute('width','851');image.setAttribute('height','1204');
     svg.append(image);
@@ -61,6 +70,6 @@
     heading.textContent='問題中の図表（原本から抜粋）';
     heading.style.cssText='margin:20px 0 8px;';
     source.before(heading);
-    for(const item of items) source.before(createFigure(item));
+    for(const item of items) source.before(createFigure(item,key));
   };
 })();
