@@ -1,0 +1,22 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {createTransport}=require('../src/sync-transport.js');
+const calls=[];
+const fetchImpl=async(url,options)=>{calls.push({url:String(url),options});return {ok:true,status:200,json:async()=>({rows:[]})}};
+const make=(examCode='db')=>createTransport({baseUrl:'https://api.example.test/',examCode,getToken:async()=> 'test-token',fetchImpl});
+(async()=>{
+ const t=make();
+ await t.list();assert.equal(calls[0].url,'https://api.example.test/v1/exams/db/progress');assert.equal(calls[0].options.credentials,'omit');
+ await t.put('2025:am2:1',{selected:'ア'});assert.equal(JSON.parse(calls[1].options.body).expectedRevision,0);
+ await t.put('2025:am2:1',{selected:'イ'},5);assert.equal(JSON.parse(calls[2].options.body).expectedRevision,5);
+ await make('pm').list();assert.ok(calls[3].url.includes('/exams/pm/'));
+ await assert.rejects(()=>t.put('2025:am2:0',{},0),/不正な学習履歴/);
+ await assert.rejects(()=>t.put('2025:am2:1',{},-1),/不正なrevision/);
+ assert.throws(()=>make('../db'),/不正な試験コード/);
+ assert.throws(()=>createTransport({baseUrl:'http://api.example.test/',getToken:async()=>''}),/HTTPS/);
+ const denied=createTransport({baseUrl:'https://api.example.test/',getToken:async()=>'',fetchImpl});
+ await assert.rejects(()=>denied.list(),/認証が必要/);
+ const conflict=createTransport({baseUrl:'https://api.example.test/',getToken:async()=>'t',fetchImpl:async()=>({ok:false,status:409})});
+ await assert.rejects(()=>conflict.put('2025:am2:1',{},1),/409/);
+ console.log('sync-transport 10/10 PASS');
+})().catch(e=>{console.error(e);process.exitCode=1});
