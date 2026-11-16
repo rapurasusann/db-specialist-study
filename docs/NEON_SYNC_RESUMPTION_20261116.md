@@ -16,7 +16,7 @@
 |---|---|---|---|
 | CS-01 | 現行コード・接続先棚卸し | ローカル保存形式、Supabase依存、Neonプロジェクトを明記 | CLOSED |
 | CS-02 | 資格横断の問題ID・履歴仕様 | 資格IDの新旧変換を実装、旧DBキーを維持して既存画面の保存・集計に適用。Nodeとブラウザ試験待ち | IN REVIEW |
-| CS-03 | Neon Auth方式の決定 | 認証方式、利用可能なAPI、ブラウザに置ける公開情報を実際に確認 | OPEN |
+| CS-03 | Neon Auth方式の決定 | Neon Auth設定・許可元を確認済み。Data API未設定、クライアント接続・権限方式検証待ち | IN PROGRESS |
 | CS-04 | Neon DBテーブル・権限 | 本人以外の読み書き拒否、主キー、更新時刻、型検証を隔離環境で試験 | OPEN |
 | CS-05 | 同期APIの実装 | ブラウザへDBパスワードを出さず認証済みユーザーに限定した読み書き | OPEN |
 | CS-06 | 競合・復元・アカウント分離 | 2端末競合、ログアウト・ユーザー切替、旧バックアップを試験 | OPEN |
@@ -61,3 +61,19 @@
 - 実行環境からGitHubへの直接Git通信はDNSで失敗したため、開発PCのリポジトリでのテストが必要。
 - 開発PCでの確認コマンド（PowerShell一行）: `$p=Join-Path $env:USERPROFILE 'source\repos\db-specialist-study'; if(!(Test-Path $p)){throw 'REPOSITORY_NOT_FOUND'}; git -C $p status --short; git -C $p fetch origin docs/neon-sync-resumption-20261116; if($LASTEXITCODE -ne 0){throw 'FETCH_FAILED'}; git -C $p -c advice.detachedHead=false switch --detach FETCH_HEAD; if($LASTEXITCODE -ne 0){throw 'SWITCH_FAILED'}; Push-Location $p; try {node --test tests/*.test.js; Write-Host "TEST_EXIT_CODE=$LASTEXITCODE"} finally {Pop-Location}`。
 - 上記コマンドは既存の未コミット変更のある作業ツリーでは実行しないこと。個別検証用フォルダまたはクリーンなリポジトリに限定する。
+
+## 2026-11-16 開発PC Nodeテスト結果・CS-03 読み取り調査
+
+### CS-02
+
+- 開発PCの隔離試験フォルダ `%TEMP%\\db-study-cs02-verify-20261116` で `node --test tests/*.test.js` を実行。
+- 8件 PASS、0件 FAIL、`TEST_EXIT_CODE=0`（ユーザー提供のログ）。CSPテストのWindows CRLF対応後に合格。
+- GitHub上の読み戻し69チェックもPASS。**ブラウザの画面操作・古い実データでのバックアップ/復元受入試験は未実施**。このためCS-02状態はIN REVIEWを維持。
+
+### CS-03：Neon設定読み取り
+
+- プロジェクト: `certification-study`（project ID `quiet-mouse-39990305`）、ブランチ `main`（`br-nameless-pond-a1ucyf2q`）、DB `certification_study`。
+- Neon Auth: 設定あり（Better Auth）、許可元 `https://rapurasusann.github.io`、localhost許可、メール/パスワード認証あり。新規サインアップは無効。共有Google OAuthプロバイダも登録されている。
+- **Neon Data API: 対象DBで未設定（API取得 404）**。既存のSupabase REST URL/認証処理をそのまま転用できない。
+- 本番の認証やDB設定は読み取りのみ、変更なし。
+- 次の設計項目: Data APIの利用条件・JWT認証連携・ユーザー別行アクセス制御を確定し、テストブランチで検証する。秘密鍵やDBパスワードを公開HTMLへ追加しない。
