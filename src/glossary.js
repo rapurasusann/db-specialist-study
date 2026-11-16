@@ -83,7 +83,7 @@
         let best = null, at = text.length;
         for (const item of entries) {
           const ix = text.indexOf(item.phrase, pos);
-          if (ix < at || (ix === at && best && item.phrase.length > best.phrase.length)) {
+          if (ix >= 0 && (ix < at || (ix === at && best && item.phrase.length > best.phrase.length))) {
             at = ix; best = item;
           }
         }
