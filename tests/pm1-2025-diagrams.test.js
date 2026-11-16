@@ -9,8 +9,8 @@ const source=fs.readFileSync(path.join(root,'src/pm-2025-diagrams.js'),'utf8');
 new vm.Script(source);
 assert.ok(html.includes('<script src="src/pm-2025-introductions.js"></script><script src="src/pm-2025-diagrams.js"></script>'));
 const matches=[...source.matchAll(/\{page:(\d+),\s*box:\[([0-9.,]+)\],\s*title:'([^']+)'\}/g)];
-assert.equal(matches.length,19,'all 19 diagrams and SQL tables');
-assert.deepEqual(matches.map(x=>Number(x[1])),[8,9,10,14,14,15,16,19,20,21,22,23,8,8,9,9,10,11,12]);
+assert.equal(matches.length,26,'all 26 diagrams and SQL tables');
+assert.deepEqual(matches.map(x=>Number(x[1])),[8,9,10,14,14,15,16,19,20,21,22,23,8,8,9,9,10,11,12,13,14,15,16,17,18,19]);
 for(const m of matches){
  const box=m[2].split(',').map(Number);
  assert.equal(box.length,4);
@@ -21,4 +21,4 @@ assert.match(source,/key.startsWith\('2025:pm2:'\)/);
 assert.match(source,/originalShowQuestion\(\)/);
 assert.match(source,/source\.before\(createFigure\(item\)\)/);
 assert.ok(source.includes("const key=String(year)+':'+courseId+':'+String(number)"));
-console.log('PM1 12 + PM2 Q1 7 original diagram mappings: PASS');
+console.log('PM1 12 + PM2 Q1 14 original diagram mappings: PASS');
