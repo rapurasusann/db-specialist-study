@@ -19,6 +19,7 @@ const fs = require('node:fs');
     const text=await page.locator('#questionText').innerText();
     const figs=await page.locator('#questionText figure.pm-original-diagram').count();
     assert.ok(text.length>150,device+' '+title+' missing question text');
+    assert.ok(!/\\bundefined\\b/.test(text),device+' '+title+' contains undefined text');
     if(course!=='午前Ⅱ')assert.ok(figs>0,device+' '+title+' missing diagrams');
     const images=await page.locator('#questionText figure.pm-original-diagram image').evaluateAll(els=>els.map(e=>e.getAttribute('href')));
     for(const url of images)assert.ok(url&&url.startsWith('pages/'),device+' '+title+' bad image URL');
