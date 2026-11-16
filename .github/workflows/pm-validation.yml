@@ -1,0 +1,19 @@
+name: PM 2025 one-time validation
+on:
+  push:
+    branches:
+      - integration/pm-2025-on-main-20261116
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify afternoon diagrams and existing morning scripts
+        run: node tests/pm1-2025-diagrams.test.js
