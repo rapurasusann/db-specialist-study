@@ -18,7 +18,7 @@
   ].join('\n');
   document.head.append(styles);
 
-  // Only the current question display owns these marks. No localStorage, rec() or put().
+  // These marks belong only to the current question display; they are never persisted.
   const marks = new Set();
   let displayedFirstOption = null;
   function refresh() {
