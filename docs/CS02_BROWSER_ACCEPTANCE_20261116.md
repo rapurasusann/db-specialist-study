@@ -47,3 +47,10 @@
 - インストール済みのGoogle Chromeを使用（PlaywrightのChromiumダウンロードは不要）。
 - PASS条件: UI-01〜UI-09の各ステップが完了し、PlaywrightテストがPASS、`E2E_EXIT_CODE=0`。
 - FAILなら該当ステップ名・エラーを修正してから再試験する。ブラウザE2Eの未実施をPASSとは記録しない。
+
+## 2026-11-17 最終試験結果（現行判定）
+
+- Playwright headless Chrome: **1 passed (4.7s)、E2E_EXIT_CODE=0**。含まれるUI-01〜UI-09の9ステップがすべて終了（開発PCログ）。
+- Nodeテスト一式: **8 passed、0 failed、TEST_EXIT_CODE=0**。
+- CS-02状態: **CLOSED**。上記の「未検証」は実装時点の履歴であり、最終判定はこの節が優先。
+- 本番環境・Neon・GitHub Pagesへの変更なし。次はCS-03。
