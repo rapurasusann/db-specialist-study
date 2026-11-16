@@ -1,10 +1,10 @@
-/* Reusable multiple-choice elimination for text-based questions.
-   Uses the existing per-question study record so backup/restore includes the state.
+/* Reusable, session-only multiple-choice elimination for text-based questions.
+   Exclusions reset whenever the question is rendered again; no progress is persisted.
    Does not change the selected answer or grading behavior. */
 (function () {
   'use strict';
   const panel = document.getElementById('questionText');
-  if (!panel || typeof rec !== 'function' || typeof put !== 'function') return;
+  if (!panel) return;
   const choices = ['ア', 'イ', 'ウ', 'エ'];
 
   const styles = document.createElement('style');
@@ -18,17 +18,20 @@
   ].join('\n');
   document.head.append(styles);
 
-  function excluded() {
-    const current = rec().excludedChoices;
-    return Array.isArray(current) ? current.filter(x => choices.includes(x)) : [];
-  }
+  // Only the current question display owns these marks. No localStorage, rec() or put().
+  const marks = new Set();
+  let displayedFirstOption = null;
   function refresh() {
-    const marks = new Set(excluded());
     const optionRows = panel.querySelectorAll('.optionText');
+    const first = optionRows[0] || null;
+    if (first !== displayedFirstOption) {
+      displayedFirstOption = first;
+      marks.clear(); // Each new question render starts with all options available.
+    }
     optionRows.forEach((row, index) => {
       const choice = choices[index];
       if (!choice) return;
-      // No row replacement or innerHTML writes; glossary annotations stay intact.
+      // Change attributes only: glossary highlights and question content are preserved.
       row.dataset.choice = choice;
       row.setAttribute('role', 'button');
       row.tabIndex = 0;
@@ -40,11 +43,8 @@
   }
   function toggle(choice) {
     if (!choices.includes(choice)) return;
-    const marks = new Set(excluded());
     if (marks.has(choice)) marks.delete(choice);
     else marks.add(choice);
-    // put() performs existing localStorage save, backup-compatible record update and sync scheduling.
-    put({ excludedChoices: choices.filter(x => marks.has(x)) });
     refresh();
   }
   panel.addEventListener('click', event => {
