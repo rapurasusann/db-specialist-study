@@ -73,7 +73,25 @@
     image.setAttribute('x','0');image.setAttribute('y','0');
     image.setAttribute('width','851');image.setAttribute('height','1204');
     svg.append(image);
-    figure.append(label,svg);
+    const viewport=document.createElement('div');
+    viewport.className='pm-diagram-viewport';
+    viewport.style.cssText='width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;';
+    viewport.append(svg);
+    const control=document.createElement('button');
+    control.type='button';
+    control.className='pm-diagram-zoom';
+    control.textContent='図表を拡大して見る';
+    control.setAttribute('aria-expanded','false');
+    control.style.cssText='display:inline-block;margin:8px 0 0;padding:8px 12px;min-height:40px;border:1px solid #9bb5cc;border-radius:6px;background:#eef6fd;color:#173c59;cursor:pointer;';
+    control.onclick=()=>{
+      const expanded=control.getAttribute('aria-expanded')==='true';
+      control.setAttribute('aria-expanded',expanded?'false':'true');
+      control.textContent=expanded?'図表を拡大して見る':'通常サイズに戻す';
+      svg.style.width=expanded?'100%':'min(950px, 240vw)';
+      svg.style.maxHeight=expanded?'850px':'none';
+      viewport.scrollLeft=0;
+    };
+    figure.append(label,viewport,control);
     return figure;
   }
   showQuestion=function () {
