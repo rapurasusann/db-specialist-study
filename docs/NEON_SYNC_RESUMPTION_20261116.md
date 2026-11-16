@@ -86,3 +86,11 @@
 - **CS-02 = CLOSED（受入条件達成）**。これ以前の「ブラウザ検証未実施」「IN REVIEW」の記述は経過記録であり、現行判定はこの節を優先する。
 - 対象はローカル試験ブランチ。GitHub Pages公開・PRマージは未実施。クラウド同期（Neon Auth・Data API・権限制御）はCS-03以降に残る。
 - 次に行うべきこと：**CS-03** のNeon Auth/Data API連携方式・クライアントに渡せる情報・行単位認可の確認と実装計画へ進む。CS-02同一試験の再実行はコード変更や不具合発生時だけでよい。
+
+## 2026-11-17 CS-03 詳細調査・互換アダプタ（最新）
+
+- Neon本番DBの構造を読み取り。既存の `study_progress` と `study_exam_catalog` を確認したため、新規テーブルの重複作成は不要。
+- `study_progress`: RLSはON・許可ポリシー0件。Data APIも未設定。ここからユーザーごとのアクセス制御を安全に実装する必要がある。
+- `src/neon-sync-record.js` と `tests/neon-sync-record.test.js` を追加し、DB旧キーと資格別キーを既存Neonの列構造に変換。GitHubコード読み戻しとロジック5項目PASS。Nodeテストは追加分を未実施。
+- 詳細は `docs/CS03_NEON_AUTH_DATA_API_AUDIT_20261117.md` を参照。
+- 本番DBの変更なし。次に行うこと：追加Nodeテスト実行 → 隔離NeonブランチでData API・RLS・認証負試験を行う。現行CS-03はIN PROGRESS。
