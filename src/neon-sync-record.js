@@ -30,7 +30,7 @@ function toLocalKey(examCode, questionId) {
 }
 function validateProgress(row) {
   return !!row && typeof row === 'object' && !Array.isArray(row) &&
-    JSON.stringify(row).length <= 16384;
+    new TextEncoder().encode(JSON.stringify(row)).length <= 15000;
 }
 const adapter = Object.freeze({ fromLocalKey, toLocalKey, validateProgress, DB_MAX_QUESTION });
 if (typeof module !== 'undefined' && module.exports) module.exports = adapter;
