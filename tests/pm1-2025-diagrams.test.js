@@ -37,8 +37,8 @@ for(const required of ['src/am2-2025-explanations.js','src/am2-q4-schema-view.js
 const pages={pm1:new Set(),pm2:new Set()};
 let current='';
 for(const line of source.split('\n')){
- const key=line.match(/^    '2025:(pm[12]):\\d+': \\[/);
- if(key)current=key[1];
+ if(line.includes("'2025:pm1:"))current='pm1';
+ if(line.includes("'2025:pm2:"))current='pm2';
  const p=line.match(/\{page:(\d+),\s*box:/);
  if(p&&current)pages[current].add(Number(p[1]));
 }
