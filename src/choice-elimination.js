@@ -29,7 +29,7 @@
       marks.clear(); // Each new question render starts with all options available.
     }
     optionRows.forEach((row, index) => {
-      const choice = choices[index];
+      const choice = row.dataset.originalChoice || choices[index];
       if (!choice) return;
       // Change attributes only: glossary highlights and question content are preserved.
       row.dataset.choice = choice;
