@@ -29,3 +29,21 @@
 - PASS が揃うまでCS-02をCLOSEDにしない。実ブラウザでの確認をNodeのユニットテストで代替したとは記録しない。
 - 問題が起きたときは試験IDと画面の状況・Consoleエラーを記録して修正する。
 - この操作はテスト用のシークレットウィンドウで完結させる。クラウド接続のログインは行わない。
+
+## 2026-11-17 追記：PlaywrightでUI-01〜UI-09を自動実行
+
+- `playwright.config.cjs`: インストール済みGoogle Chromeをヘッドレス実行。ワーカー1、失敗時だけスクリーンショットとトレースを保存。
+- `tests/serve-static.cjs`: 試験フォルダをローカルホスト `127.0.0.1:8766` のみで配信。ポート8765とは独立。
+- `tests/browser.e2e.spec.cjs`: 午前Ⅱの原本画像、理解度、採点、移動、バックアップの旧キー、復元、再読込、午後Ⅰ記述解答、JavaScript/CSP例外を順番に自動検証する。
+- PlaywrightのBrowserContextはテストごとに隔離され、ブラウザの普段使いの学習履歴を使用しない。バックアップと復元は試験で作成したデータのみで実施。
+- クラウド同期のログイン、Neon DBへの書き込み、GitHub Actionsは実施しない。
+- 作成・GitHub保存とコード構文の検査は完了。**実ChromeでのE2E結果はまだ未検証**。
+
+### 実行（PowerShell 1行）
+
+`$p=Join-Path $env:TEMP 'db-study-cs02-verify-20261116'; if(!(Test-Path (Join-Path $p 'index.html'))){throw 'TEST_FOLDER_NOT_FOUND'}; if(git -C $p status --porcelain){throw 'WORKTREE_NOT_CLEAN'}; git -C $p pull --ff-only; if($LASTEXITCODE -ne 0){throw 'PULL_FAILED'}; Push-Location $p; try {npm install --no-save --no-package-lock @playwright/test; if($LASTEXITCODE -ne 0){throw 'PLAYWRIGHT_INSTALL_FAILED'}; & '.\\node_modules\\.bin\\playwright.cmd' test --config=playwright.config.cjs; Write-Host "E2E_EXIT_CODE=$LASTEXITCODE"} finally {Pop-Location}`
+
+- npmのインストール先は隔離されたTEMP試験リポジトリの `node_modules` のみ。
+- インストール済みのGoogle Chromeを使用（PlaywrightのChromiumダウンロードは不要）。
+- PASS条件: UI-01〜UI-09の各ステップが完了し、PlaywrightテストがPASS、`E2E_EXIT_CODE=0`。
+- FAILなら該当ステップ名・エラーを修正してから再試験する。ブラウザE2Eの未実施をPASSとは記録しない。
