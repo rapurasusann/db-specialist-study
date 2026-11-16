@@ -1,0 +1,13 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const src=fs.readFileSync(require('node:path').join(__dirname,'../src/choice-elimination.js'),'utf8');
+assert.match(src,/const marks = new Set\(\)/);
+assert.match(src,/if \(first !== displayedFirstOption\)/);
+assert.match(src,/marks\.clear\(\)/);
+assert.doesNotMatch(src,/\bput\s*\(/);
+assert.doesNotMatch(src,/\brec\s*\(/);
+assert.doesNotMatch(src,/\blocalStorage\s*\./);
+assert.match(src,/marks\.has\(choice\)/);
+assert.match(src,/new MutationObserver\(refresh\)/);
+console.log('choice elimination reset guards: 8/8 PASS');
