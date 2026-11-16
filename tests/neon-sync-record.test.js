@@ -1,0 +1,23 @@
+'use strict';
+const assert = require('node:assert/strict');
+const adapter = require('../src/neon-sync-record.js');
+
+assert.deepEqual(adapter.fromLocalKey('2025:am2:1'), {exam_code:'db',question_id:'2025:am2:1'});
+assert.deepEqual(adapter.fromLocalKey('db:2025:am2:1'), {exam_code:'db',question_id:'2025:am2:1'});
+assert.deepEqual(adapter.fromLocalKey('pm:2025:am2:1'), {exam_code:'pm',question_id:'2025:am2:1'});
+assert.deepEqual(adapter.fromLocalKey('sc:2025:am2:1'), {exam_code:'sc',question_id:'2025:am2:1'});
+assert.equal(adapter.toLocalKey('db','2025:am2:1'), '2025:am2:1');
+assert.equal(adapter.toLocalKey('pm','2025:am2:1'), 'pm:2025:am2:1');
+assert.equal(adapter.toLocalKey('sc','2025:am2:1'), 'sc:2025:am2:1');
+assert.equal(adapter.toLocalKey('other','2025:am2:1'), null);
+assert.equal(adapter.toLocalKey('db','2025:am2:101'), null);
+assert.equal(adapter.fromLocalKey('db:2025:am2:101'), null);
+assert.equal(adapter.fromLocalKey('db:2025:am2:100').question_id, '2025:am2:100');
+assert.equal(adapter.fromLocalKey('2025:am2:0'), null);
+assert.equal(adapter.toLocalKey('db','2025:am2:01'), null);
+assert.equal(adapter.toLocalKey('db','bad'), null);
+assert.equal(adapter.validateProgress({correct:true,attempts:1,level:'learning'}), true);
+assert.equal(adapter.validateProgress(null), false);
+assert.equal(adapter.validateProgress([]), false);
+assert.equal(adapter.validateProgress({written:'あ'.repeat(6000)}), false);
+console.log('Neon study_progress adapter: mapping, legacy DB compatibility, question limit and UTF-8 size guards PASS');
