@@ -22,6 +22,22 @@ const fs = require('node:fs');
     if(course!=='午前Ⅱ')assert.ok(figs>0,device+' '+title+' missing diagrams');
     const images=await page.locator('#questionText figure.pm-original-diagram image').evaluateAll(els=>els.map(e=>e.getAttribute('href')));
     for(const url of images)assert.ok(url&&url.startsWith('pages/'),device+' '+title+' bad image URL');
+    if(figs>0){
+     const fig=page.locator('#questionText figure.pm-original-diagram').first();
+     const zoom=fig.locator('button.pm-diagram-zoom');
+     assert.equal(await zoom.count(),1,device+' '+title+' zoom control missing');
+     assert.equal(await zoom.getAttribute('aria-expanded'),'false');
+     await zoom.click();
+     assert.equal(await zoom.getAttribute('aria-expanded'),'true');
+     const dimensions=await fig.evaluate(el=>{
+       const viewport=el.querySelector('.pm-diagram-viewport');
+       return {scrollWidth:viewport.scrollWidth,clientWidth:viewport.clientWidth};
+     });
+     assert.ok(dimensions.scrollWidth>dimensions.clientWidth,device+' '+title+' figure did not expand to scroll');
+     if(device==='mobile'&&n===1)await fig.screenshot({path:'artifacts/pm-browser/'+(course==='午後Ⅰ'?'pm1':'pm2')+'-mobile-zoom.png'});
+     await zoom.click();
+     assert.equal(await zoom.getAttribute('aria-expanded'),'false');
+    }
     if(n===1||n===count)await page.screenshot({path:'artifacts/pm-browser/'+device+'-'+(course==='午前Ⅱ'?'am2':course==='午後Ⅰ'?'pm1':'pm2')+'-'+n+'.png',fullPage:true});
     results.push({device,title,figures:figs});
    }
