@@ -11,6 +11,9 @@ const fs = require('node:fs');
   page.on('pageerror',e=>errors.push(device+': '+e.message));
   await page.goto('http://127.0.0.1:8765/',{waitUntil:'domcontentloaded'});
   await page.locator('#viewStudy').click();
+  // Regression: leaving a non-glossary region must never call contains() on null.
+  await page.locator('#questionText').dispatchEvent('pointerout',{pointerType:'mouse',relatedTarget:null,bubbles:true});
+  assert.deepEqual(errors,[],device+' glossary pointerout on non-term area caused JS error');
   for(const [course,count,figures] of [['午前Ⅱ',1,0],['午後Ⅰ',3,12],['午後Ⅱ',2,23]]){
    await page.locator('#courses button').filter({hasText:course+'（'}).click();
    for(let n=1;n<=count;n++){
