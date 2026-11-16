@@ -40,7 +40,8 @@ const scripts=[...html.matchAll(/<script(?:\s[^>]*)?>([\s\S]*?)<\/script>/g)]
 assert.equal(scripts.length,2);
 for(const script of scripts){
  new vm.Script(script);
- const hash=crypto.createHash('sha256').update(script,'utf8').digest('base64');
+ // Git on Windows may check out CRLF, while GitHub Pages serves LF source.
+ const hash=crypto.createHash('sha256').update(script.replace(/\r\n/g,'\n'),'utf8').digest('base64');
  assert.ok(html.includes("'sha256-"+hash+"'"),'CSP hash mismatch');
 }
 console.log('AM2 25/25 explanations, answer reset guards, inline CSP hashes: PASS');
