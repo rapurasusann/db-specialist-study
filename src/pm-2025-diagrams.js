@@ -29,7 +29,7 @@
     label.style.cssText='font-size:.92rem;font-weight:600;margin-bottom:8px;color:#24364a;';
     const svg=document.createElementNS(namespace,'svg');
     const [x,y,w,h]=item.box;
-    svg.setAttribute('viewBox',[x*852,y*1203,w*852,h*1203].join(' '));
+    svg.setAttribute('viewBox',[x*851,y*1204,w*851,h*1204].join(' '));
     svg.setAttribute('preserveAspectRatio','xMidYMid meet');
     svg.setAttribute('role','img');
     svg.setAttribute('aria-label',item.title);
@@ -37,7 +37,7 @@
     const image=document.createElementNS(namespace,'image');
     image.setAttribute('href','pages/pm1_qs_'+String(item.page).padStart(2,'0')+'.webp');
     image.setAttribute('x','0');image.setAttribute('y','0');
-    image.setAttribute('width','852');image.setAttribute('height','1203');
+    image.setAttribute('width','851');image.setAttribute('height','1204');
     svg.append(image);
     figure.append(label,svg);
     return figure;
