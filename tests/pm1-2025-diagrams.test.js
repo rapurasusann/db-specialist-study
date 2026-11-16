@@ -36,10 +36,10 @@ for(const required of ['src/am2-2025-explanations.js','src/am2-q4-schema-view.js
 }
 const pages={pm1:new Set(),pm2:new Set()};
 let current='';
-for(const line of source.split('\\n')){
+for(const line of source.split('\n')){
  const key=line.match(/^    '2025:(pm[12]):\\d+': \\[/);
  if(key)current=key[1];
- const p=line.match(/\\{page:(\\d+),\\s*box:/);
+ const p=line.match(/\{page:(\d+),\s*box:/);
  if(p&&current)pages[current].add(Number(p[1]));
 }
 for(const [course,set] of Object.entries(pages)){
