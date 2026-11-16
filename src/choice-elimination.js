@@ -35,7 +35,7 @@
       const isExcluded = marks.has(choice);
       row.classList.toggle('choice-eliminated', isExcluded);
       row.setAttribute('aria-pressed', String(isExcluded));
-      row.setAttribute('aria-label', choice + '：' + (isExcluded ? '除外中。押すと元に戻します' : '押すと候補から除外します'));
+      row.setAttribute('aria-label', row.textContent.trim() + '。' + (isExcluded ? '除外中。押すと元に戻します' : '押すと候補から除外します'));
     });
   }
   function toggle(choice) {
