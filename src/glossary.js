@@ -117,7 +117,7 @@
   root.addEventListener('pointerout', event => {
     if (event.pointerType === 'touch') return;
     const button = event.target.closest?.('.glossary-term');
-    if (active === button && !button.contains(event.relatedTarget)) close();
+    if (button && active === button && !button.contains(event.relatedTarget)) close();
   });
   root.addEventListener('focusin', event => {
     const button = event.target.closest?.('.glossary-term');
