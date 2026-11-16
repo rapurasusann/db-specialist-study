@@ -17,3 +17,18 @@ jobs:
           node-version: '22'
       - name: Verify afternoon diagrams and existing morning scripts
         run: node tests/pm1-2025-diagrams.test.js
+      - name: Install browser test runtime
+        run: |
+          npm install --no-save --no-package-lock playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Run isolated browser tests
+        run: |
+          python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/pm-http.log 2>&1 &
+          node tests/pm-2025-browser.test.cjs
+      - name: Upload browser screenshots and results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pm-2025-browser-screenshots
+          path: artifacts/pm-browser/
+          if-no-files-found: warn
