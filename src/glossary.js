@@ -14,7 +14,8 @@
     for (const phrase of [item.term, ...(Array.isArray(item.aliases) ? item.aliases : [])]) {
       if (typeof phrase !== 'string' || !phrase.trim() || seen.has(phrase)) continue;
       seen.add(phrase);
-      entries.push({ phrase, definition: item.definition.trim(), id: item.id });
+      entries.push({ phrase, definition: item.definition.trim(), id: item.id,
+        questionIds: Array.isArray(item.questionIds) ? item.questionIds : null });
     }
   }
   entries.sort((a, b) => b.phrase.length - a.phrase.length);
@@ -61,6 +62,11 @@
 
   function annotate() {
     if (active && !active.isConnected) close();
+    // The app defines these in its preceding classic script. Matching without a
+    // scope keeps the dictionary reusable for later years and other exams.
+    const currentId = (typeof year !== 'undefined' && typeof courseId !== 'undefined' && typeof number !== 'undefined')
+      ? String(year) + ':' + String(courseId) + ':' + String(number) : null;
+    const applicable = entries.filter(item => !item.questionIds || (currentId && item.questionIds.includes(currentId)));
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
         const parent = node.parentElement;
@@ -68,7 +74,7 @@
           parent.closest('.glossary-term,script,style,textarea,button,a')) {
           return NodeFilter.FILTER_REJECT;
         }
-        return entries.some(item => node.nodeValue.includes(item.phrase))
+        return applicable.some(item => node.nodeValue.includes(item.phrase))
           ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
       }
     });
@@ -81,7 +87,7 @@
       let pos = 0;
       while (pos < text.length) {
         let best = null, at = text.length;
-        for (const item of entries) {
+        for (const item of applicable) {
           const ix = text.indexOf(item.phrase, pos);
           if (ix >= 0 && (ix < at || (ix === at && best && item.phrase.length > best.phrase.length))) {
             at = ix; best = item;
