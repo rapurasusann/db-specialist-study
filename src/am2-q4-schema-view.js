@@ -1,80 +1,91 @@
-/* 2025 DB AM2 Q4: make primary-key underlining visible as in the IPA source.
- * The existing stem, choice texts, original answer letters and grading are unchanged.
- * Uses question-specific presentation data; no generic option content is replaced.
+/* DB Specialist 2025 AM2 Q4: display the original relational schemas
+ * as compact, plain text lines, with only primary-key attributes underlined.
+ * Choice labels remain attached for shuffling, elimination, and grading.
  */
 (function () {
   'use strict';
   const specs = Object.freeze({
-    'ア': {columns:['氏名','プログラム言語'],primary:['氏名']},
-    'イ': {columns:['従業員番号','プログラム言語'],primary:['プログラム言語']},
-    'ウ': {columns:['従業員番号','プログラム言語'],primary:['従業員番号']},
-    'エ': {columns:['従業員番号','プログラム言語'],primary:['従業員番号','プログラム言語']}
+    'ア': { columns:['氏名','プログラム言語'], primary:['氏名'] },
+    'イ': { columns:['従業員番号','プログラム言語'], primary:['プログラム言語'] },
+    'ウ': { columns:['従業員番号','プログラム言語'], primary:['従業員番号'] },
+    'エ': { columns:['従業員番号','プログラム言語'], primary:['従業員番号','プログラム言語'] }
   });
-  const css = document.createElement('style');
-  css.textContent = [
-    '#questionText .q4-employees{margin:12px 0 16px;padding:12px;background:#eff6fd;border:1px solid #b7d1e6;border-radius:10px}',
-    '#questionText .q4-employees strong{display:block;margin-bottom:8px}',
-    '#questionText .q4-schema{display:flex;align-items:center;flex-wrap:wrap;gap:5px;line-height:1.7}',
-    '#questionText .q4-table-name{font-weight:700;margin-right:5px}',
-    '#questionText .q4-field{display:inline-block;padding:3px 8px;background:white;border:1px solid #a3b9cc;border-radius:5px}',
-    '#questionText .q4-primary{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px;font-weight:700;border-color:#3a81b4;background:#e8f3ff}',
-    '#questionText .q4-legend{font-size:.85rem;color:#475c70;margin-top:7px}',
-    '#questionText .q4-option-label{font-weight:700;display:block;margin:0 0 7px}',
-    '#questionText .q4-option-schema{padding:3px 0}',
-    '#questionText .q4-option-schema .q4-field{font-size:.96rem}',
-    '#questionText .q4-primary-key{font-size:.85rem;margin-top:7px;color:#394e60}',
-    '#questionText .optionText.choice-eliminated .q4-primary-key{text-decoration:line-through}',
-    '@media(max-width:520px){#questionText .q4-field{padding:3px 5px;font-size:.87rem}#questionText .q4-employees{padding:9px}}'
+  const style = document.createElement('style');
+  style.textContent = [
+    '#questionText .q4-original{margin:14px 0 12px;line-height:1.9}',
+    '#questionText .q4-original-heading{margin-bottom:2px;font-weight:500}',
+    '#questionText .q4-schema-inline{display:inline;font:inherit;white-space:normal}',
+    '#questionText .q4-key{text-decoration:underline;text-decoration-thickness:1.5px;text-underline-offset:3px}',
+    '#questionText .optionText.q4-plain{display:block;line-height:1.85;min-height:0;padding:5px 8px;margin:3px 0;border:1px solid transparent;border-radius:4px;background:transparent;color:inherit;cursor:pointer}',
+    '#questionText .optionText.q4-plain:hover{background:#f0f5fa}',
+    '#questionText .optionText.q4-plain:focus-visible{outline:2px solid #1469a2;outline-offset:2px}',
+    '#questionText .optionText.q4-plain.choice-eliminated{color:#66717d;background:#f1f3f5;text-decoration:line-through}',
+    '#questionText .optionText.q4-plain::after{display:none}',
+    '#questionText .q4-original-note{margin-top:5px;color:#586b7b;font-size:.83rem}'
   ].join('\n');
-  document.head.append(css);
+  document.head.append(style);
 
-  function schema(columns, primary) {
-    const row = document.createElement('div');
-    row.className='q4-schema';
-    for (const name of columns) {
-      const cell = document.createElement('span');
-      cell.className = 'q4-field' + (primary.includes(name)?' q4-primary':'');
-      cell.textContent=name;
-      if(primary.includes(name))cell.title='主キーの属性';
-      row.append(cell);
-    }
-    return row;
+  function appendSchema(parent, columns, primary) {
+    const schema = document.createElement('span');
+    schema.className = 'q4-schema-inline';
+    schema.append(document.createTextNode('プログラム言語（'));
+    columns.forEach((column, index) => {
+      if (index) schema.append(document.createTextNode('，'));
+      const span = document.createElement('span');
+      span.textContent = column;
+      if (primary.includes(column)) {
+        span.className = 'q4-key';
+        span.title = '主キー';
+      }
+      schema.append(span);
+    });
+    schema.append(document.createTextNode('）'));
+    parent.append(schema);
   }
+
   const previousShow = showQuestion;
   showQuestion = function () {
     previousShow();
-    if (Number(year)!==2025 || courseId!=='am2' || number!==4) return;
-    const root=document.getElementById('questionText');
-    const title=root.querySelector('h3');
-    const choices=Array.from(root.querySelectorAll('.optionText'));
-    if(!title || choices.length!==4)return;
+    if (Number(year) !== 2025 || courseId !== 'am2' || number !== 4) return;
+    const root = document.getElementById('questionText');
+    const heading = root.querySelector('h3');
+    const choices = Array.from(root.querySelectorAll('.optionText'));
+    if (!heading || choices.length !== 4) return;
 
-    const info=document.createElement('div');
-    info.className='q4-employees';
-    const heading=document.createElement('strong');
-    heading.textContent='共通の「従業員」表';
-    info.append(heading,schema(['従業員番号','氏名'],['従業員番号']));
-    const legend=document.createElement('div');
-    legend.className='q4-legend';
-    legend.textContent='下線付きの列＝主キー（複数列に下線がある場合は複合主キー）。これは原本の下線を見やすく表現したものです。';
-    info.append(legend);
-    title.after(info);
+    // The embedded question text already contains a flattened rendering of
+    // the employee schema. Show that part once, with genuine key underlines.
+    const original = heading.textContent;
+    const boundary = original.indexOf('【従業員表】');
+    if (boundary !== -1) heading.textContent = original.slice(0, boundary).trimEnd();
 
-    for (let i=0;i<choices.length;i++) {
-      const letter=['ア','イ','ウ','エ'][i];
-      const item=specs[letter];
-      const option=choices[i];
-      // No answers, correct/incorrect labels or hints are shown here.
-      option.replaceChildren();
-      const name=document.createElement('span');
-      name.className='q4-option-label';
-      name.textContent=letter+'　プログラム言語表';
-      const row=schema(item.columns,item.primary);
-      row.classList.add('q4-option-schema');
-      const key=document.createElement('div');
-      key.className='q4-primary-key';
-      key.textContent='主キー：'+item.primary.join(' ＋ ');
-      option.append(name,row,key);
+    const employee = document.createElement('div');
+    employee.className = 'q4-original';
+    const employeeHeading = document.createElement('div');
+    employeeHeading.className = 'q4-original-heading';
+    employeeHeading.textContent = '【従業員表】';
+    employee.append(employeeHeading);
+    const employeeRow = document.createElement('div');
+    employeeRow.append(document.createTextNode('従業員（'));
+    const key = document.createElement('span');
+    key.className = 'q4-key';
+    key.textContent = '従業員番号';
+    key.title = '主キー';
+    employeeRow.append(key, document.createTextNode('，氏名）'));
+    employee.append(employeeRow);
+
+    const note = document.createElement('div');
+    note.className = 'q4-original-note';
+    note.textContent = '下線は主キーを表す。選択肢をクリックすると一時的に除外できます。';
+    employee.append(note);
+    heading.after(employee);
+
+    for (let index = 0; index < choices.length; index++) {
+      const letter = ['ア','イ','ウ','エ'][index];
+      const spec = specs[letter];
+      const row = choices[index];
+      row.replaceChildren(document.createTextNode(letter + '　'));
+      row.classList.add('q4-plain');
+      appendSchema(row, spec.columns, spec.primary);
     }
   };
 })();
