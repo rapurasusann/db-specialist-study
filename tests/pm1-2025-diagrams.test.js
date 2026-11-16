@@ -19,6 +19,6 @@ for(const m of matches){
 }
 assert.match(source,/key.startsWith\('2025:pm2:'\)/);
 assert.match(source,/originalShowQuestion\(\)/);
-assert.match(source,/source\.before\(createFigure\(item\)\)/);
+assert.match(source,/source\.before\(createFigure\(item,key\)\)/);
 assert.ok(source.includes("const key=String(year)+':'+courseId+':'+String(number)"));
 console.log('PM1 12 + PM2 Q1 14 original diagram mappings: PASS');
