@@ -27,6 +27,13 @@ vm.runInNewContext(transcribedSource,{transcribed:entries},{timeout:2000});
 assert.deepEqual(Object.keys(entries).sort(),['2025:pm1:1','2025:pm1:2','2025:pm1:3','2025:pm2:1','2025:pm2:2']);
 for(const [key,entry] of Object.entries(entries)){
  assert.ok(entry.stem&&entry.stem.length>100,key);
+ assert.ok(!/\\bundefined\\b/.test(entry.stem),'undefined text in question: '+key);
+ assert.ok(Array.isArray(entry.sections)&&entry.sections.length>0,'missing sections: '+key);
+ for(const section of entry.sections){
+  assert.ok(typeof section.title==='string'&&section.title.trim(),'invalid heading: '+key);
+  assert.ok(typeof section.body==='string'&&section.body.trim(),'invalid text: '+key);
+  assert.ok(entry.stem.includes('【'+section.title+'】'),'heading not rendered: '+key);
+ }
  assert.equal(entry.partial,true,'summaries must not be presented as complete transcripts: '+key);
 }
 assert.equal((html.match(/src\/pm-2025-diagrams\.js/g)||[]).length,1,'one PM diagram renderer');
