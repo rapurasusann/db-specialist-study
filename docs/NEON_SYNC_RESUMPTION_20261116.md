@@ -53,3 +53,11 @@
 ## 直近の次作業
 
 **CS-02受入**: 開発PCで `node --test tests/*.test.js` を実行し、GitHub Pagesを変更する前にPC/スマホ相当の動作検証を行う。既存履歴の表示・編集・JSONバックアップ／復元、問題切替、集計、CSPを確認。PASS後にCS-02をCLOSEDとする。続けて **CS-03** のNeon Auth/API接続可能性を確認する。
+
+## 2026-11-16 追加受入検証
+
+- GitHubの作業ブランチからコードを再取得し、JavaScript構文、資格別問題ID、旧キー互換、バックアップ維持、午前Ⅱ25問の解説、用語辞書を **69チェック PASS**。
+- この69件はGitHub取得コードに対する独立した構文・ロジック検査であり、`node --test` の全テスト実行や実ブラウザE2Eの代替ではない。
+- 実行環境からGitHubへの直接Git通信はDNSで失敗したため、開発PCのリポジトリでのテストが必要。
+- 開発PCでの確認コマンド（PowerShell一行）: `$p=Join-Path $env:USERPROFILE 'source\repos\db-specialist-study'; if(!(Test-Path $p)){throw 'REPOSITORY_NOT_FOUND'}; git -C $p status --short; git -C $p fetch origin docs/neon-sync-resumption-20261116; if($LASTEXITCODE -ne 0){throw 'FETCH_FAILED'}; git -C $p -c advice.detachedHead=false switch --detach FETCH_HEAD; if($LASTEXITCODE -ne 0){throw 'SWITCH_FAILED'}; Push-Location $p; try {node --test tests/*.test.js; Write-Host "TEST_EXIT_CODE=$LASTEXITCODE"} finally {Pop-Location}`。
+- 上記コマンドは既存の未コミット変更のある作業ツリーでは実行しないこと。個別検証用フォルダまたはクリーンなリポジトリに限定する。
