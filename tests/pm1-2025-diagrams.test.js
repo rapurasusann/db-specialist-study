@@ -48,5 +48,19 @@ for(const [course,set] of Object.entries(pages)){
   assert.ok(fs.existsSync(image),'missing original figure page: '+image);
  }
 }
-console.log('Afternoon five questions, 35 figure mappings, 27 original images, morning scripts: PASS');
+const scripts=[...html.matchAll(/<script src="([^"]+)"/g)].map(m=>m[1]);
+const chain=['src/pm-2025-introductions.js','src/pm-2025-diagrams.js','src/am2-q4-schema-view.js','src/am2-figure-clips.js','src/am2-option-shuffle.js'];
+for(let i=1;i<chain.length;i++){
+ assert.ok(scripts.indexOf(chain[i-1])>=0&&scripts.indexOf(chain[i-1])<scripts.indexOf(chain[i]),'question render chain order: '+chain[i]);
+}
+for(const [file,expected] of [
+ ['src/am2-q4-schema-view.js','previousShow();'],
+ ['src/am2-figure-clips.js','baseQuestion();'],
+ ['src/am2-option-shuffle.js','originalQuestion();']
+]){
+ const wrapper=fs.readFileSync(path.join(root,file),'utf8');
+ new vm.Script(wrapper);
+ assert.ok(wrapper.includes(expected),'wrapper must delegate: '+file);
+}
+console.log('Five afternoon summaries, 35 diagram mappings, original assets, morning render chain: PASS');
 
