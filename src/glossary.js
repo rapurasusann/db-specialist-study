@@ -22,7 +22,7 @@
 
   const style = document.createElement('style');
   style.textContent = [
-    '.glossary-term{display:inline;color:inherit;background:#e6f3ff;border:0;border-bottom:2px dotted #176b9e;padding:0 1px;border-radius:2px;cursor:help;font:inherit;line-height:inherit;text-align:inherit}',
+    '.glossary-term{display:inline;color:inherit;background:#e6f3ff;border:0;border-bottom:2px dotted #176b9e;padding:0 1px;min-height:0;min-width:0;vertical-align:baseline;display:inline;border-radius:2px;cursor:help;font:inherit;line-height:inherit;text-align:inherit}',
     '.glossary-term:hover,.glossary-term:focus-visible{background:#cde9ff;outline:2px solid #176b9e;outline-offset:2px}',
     '.glossary-tip{position:fixed;z-index:10000;max-width:min(340px,calc(100vw - 24px));box-sizing:border-box;padding:12px 14px;border-radius:9px;background:#172d42;color:#fff;font-size:14px;line-height:1.65;box-shadow:0 8px 26px #0004;pointer-events:none;white-space:normal}',
     '.glossary-tip[hidden]{display:none}'
@@ -123,8 +123,7 @@
   root.addEventListener('click', event => {
     const button = event.target.closest?.('.glossary-term');
     if (!button) return;
-    if (active === button && event.detail !== 0 && event.pointerType === 'touch') close();
-    else show(button);
+    show(button);
   });
   document.addEventListener('pointerdown', event => {
     if (active && !event.target.closest?.('.glossary-term')) close();
