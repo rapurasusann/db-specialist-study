@@ -193,3 +193,10 @@
 - スマホ画像では関係スキーマやSQL表が画面幅に縮小され細かい文字を読みにくいことも確認。原本画像の画素を変更せず、各図表に『図表を拡大して見る／通常サイズに戻す』操作と横スクロール表示を追加。ブラウザテストに拡大・復帰・横スクロールの検査を追加
 - 画面の旧案内『午前Ⅱの5問のみ』を『全25問』に修正
 - **最新修正後のGitHub Actionsと拡大図の実画像を再検証するまではNO-GO**。午後の本文は逐語的全文ではなく構造化要約であり、その点も公開受入の未完事項
+
+## 2026-11-16 Actions #20：用語ツールチップのnull参照を修正
+
+- Playwrightの画面テストで、PC・スマホとも `Cannot read properties of null (reading 'contains')` が繰り返し発生し FAIL
+- 原因：`src/glossary.js` の `pointerout` で、用語以外の要素上では `button=null` かつ初期 `active=null` のため `active === button` が真となり、`button.contains(...)` に到達していた
+- `button && active === button && !button.contains(...)` に修正し、用語以外の領域からマウスを離す操作をPlaywrightのPC・スマホの回帰検査へ追加
+- 修正後のテスト実行結果は未確認。Actions #20のFAILをPASSへ読み替えない
