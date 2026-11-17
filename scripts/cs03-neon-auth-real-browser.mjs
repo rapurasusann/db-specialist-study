@@ -69,7 +69,7 @@ try{
  await page.locator('[data-cs03="signup"]').click();
  await page.waitForFunction(()=>{
   const status=document.querySelector('[data-cs03="status"]').textContent;
-  return status.includes('登録要求')||status.includes('失敗')||status.includes('ログインしていません');
+  return status.includes('登録要求')||status.includes('失敗');
  },null,{timeout:15000}).catch(()=>{});
  const status=await page.locator('[data-cs03="status"]').textContent();
  const signupOk=status.includes('登録要求');
