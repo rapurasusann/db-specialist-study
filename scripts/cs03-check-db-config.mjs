@@ -18,10 +18,11 @@ if(url){
  ok=result('ENDPOINT_PREFIX',url.hostname.startsWith('ep-dawn-dew-a11prveg'))&&ok;
  ok=result('ENDPOINT_REGION',url.hostname.endsWith('.ap-southeast-1.aws.neon.tech'))&&ok;
  ok=result('PASSWORD_PRESENT',Boolean(url.password))&&ok;
+ ok=result('SSL_VERIFY_FULL',url.searchParams.get('sslmode')==='verify-full'&&!url.searchParams.has('uselibpqcompat')&&!url.searchParams.has('sslcert')&&!url.searchParams.has('sslkey')&&!url.searchParams.has('sslrootcert'))&&ok;
  if(ok){
   try{
    const runtime=createCs03Runtime(process.env,{pool:{connect:async()=>{throw Error('NO_DATABASE_ACCESS_IN_DIAGNOSTIC')},end:async()=>{}}});
-   result('RUNTIME_INIT',typeof runtime.handle==='function');
-  }catch(e){console.log('RUNTIME_INIT=FAIL');console.log('RUNTIME_FAILURE_CLASS='+(/^CS03_[A-Z_]+$/.test(e?.message??'')?e.message:'OTHER'));}
- } else console.log('RUNTIME_INIT=SKIPPED');
+   ok=result('RUNTIME_INIT',typeof runtime.handle==='function')&&ok;
+  }catch(e){process.exitCode=1;console.log('RUNTIME_INIT=FAIL');console.log('RUNTIME_FAILURE_CLASS='+(/^CS03_[A-Z_]+$/.test(e?.message??'')?e.message:'OTHER'));}
+ } else {process.exitCode=1;console.log('RUNTIME_INIT=SKIPPED');}
 }
