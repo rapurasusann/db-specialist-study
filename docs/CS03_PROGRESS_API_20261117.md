@@ -44,4 +44,16 @@
 
 `scripts/cs03-live-tls-check.mjs` の合否条件を修正。実際の `pg` 接続 `client.connection.stream` について `encrypted`、`authorized`、ピア証明書の存在、`tls.checkServerIdentity(host, peerCertificate)` を検証する。DB側の `pg_stat_ssl` は参考値として出力するのみ。接続情報/証明書全文は表示しない。
 
-新方式の開発PCでの結果は未取得。合格までSSL工程をCLOSEDにしない。
+新方式の開発PC試験は後続の「SSL実接続の最終判定」のとおり PASS。
+
+## SSL実接続の最終判定（2026-11-18）
+
+開発PCで `scripts/cs03-live-tls-check.mjs` を実行。
+
+- `URL_PARSE`、`BRANCH_MARKER`、`SCHEME`、`DB_NAME`、`ROLE_NAME`、`ENDPOINT_PREFIX`、`ENDPOINT_REGION`、`PASSWORD_PRESENT`、`SSL_VERIFY_FULL`、`RUNTIME_INIT`: すべて PASS。
+- `RUNTIME_CONFIG`、`DATABASE_IDENTITY`、`ROLE_IDENTITY`: PASS。
+- `CLIENT_TLS_ENCRYPTED`、`CLIENT_TLS_CERT_AUTHORIZED`、`CLIENT_TLS_PEER_CERT`、`CLIENT_TLS_HOSTNAME`: すべて PASS。
+- `PG_BACKEND_SSL=FALSE` は Neon -pooler のバックエンド側セッションの観測値であり、クライアントのTLS検証の代替としない。
+- `CS03_TLS_LIVE=PASS`、`TEST_EXIT_CODE=0`。
+
+**SSL工程は隔離DBへの開発PC接続という範囲で CLOSED。** 公開APIの本番TLSやブラウザ→API間のCORS/認証/通信は別途要検証。
