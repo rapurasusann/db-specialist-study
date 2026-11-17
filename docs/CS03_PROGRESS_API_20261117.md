@@ -143,3 +143,8 @@ Neon公式の Production hardening で、FunctionのネイティブURLはWAF/Clo
 `db-study-progress-v1` にサンプル学習履歴を事前保存し、全操作後に同一内容のままかを比較する。新規のブラウザ操作試験は**未実行**であり、動作合格は結果待ち。Neon Authの本物のユーザー登録/ログイン、公開APIへの保存、端末間同期はまだ対象外。
 
 既存の81件/91件のテストとローカル非表示スモークは合格済み。試験データを実環境へ書かない。本番反映、Neon Functionsデプロイ、GitHub Actionsは実施しない。
+
+## 開発PC実ブラウザ・アカウント操作試験結果（2026-11-18）
+コミット `5977f7f` の `scripts/cs03-account-browser-ui.mjs` をPlaywright Chromiumで実行し、以下すべてPASS：`ACCOUNT_DEFAULT_HIDDEN`、`ACCOUNT_PANEL_VISIBLE`、`SIGNUP_UI`、`PASSWORD_CLEARED_AFTER_SIGNUP`、`LOGIN_UI`、`LOGIN_DISABLES_FORM`、`SESSION_REFRESH_UI`、`LOGOUT_UI`、`LEGACY_RECORD_UNCHANGED`、`NO_EXTERNAL_REQUESTS`、`NO_PAGE_ERRORS`。
+総括 `CS03_ACCOUNT_BROWSER_UI=PASS` / `CS03_ACCOUNT_BROWSER_EXIT_CODE=0`。偽認証を使ったUI操作であり、本物のNeon Authログイン・公開API・マルチデバイス同期は未検証。
+次工程はNeon Auth実認証の隔離試験。課金・本番反映・GitHub Actions実行は引き続き禁止。
