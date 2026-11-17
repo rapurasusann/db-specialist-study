@@ -253,3 +253,8 @@ Neon隔離DB `cs03_auth_sandbox` の `neon_auth."user"` を読み取り専用で
 `src/cs03-history-view.mjs` にアカウント専用の履歴表示処理を新設。`index.html` の初期非表示CS-03プレビュー欄内に `data-cs03="history-list"` の別領域を置き、アカウントの `scoped.list()` から問題ID・理解度・更新番号を最大100行だけ `textContent` とDOM生成で表示する。選択中の問題画像・従来の解答欄・`db-study-progress-v1` は一切書き換えない。ログインユーザーの再バインド、ログアウトでは表示領域を全消去し、取得前に前回内容を消して別アカウントのデータを残さない。これは独立表示のみで、既存学習画面への統合・自動同期ではない。
 
 5件の `tests/cs03-history-view.test.mjs` をテストスイートに追加したため、既存123件に対して**128件が未実行**。`scripts/cs03-history-view-browser.mjs` はローカルの偽API・偽認証でDOMの表の表示、ログアウト時の削除、端末内履歴不変、外部通信なしを確認するが、こちらも**未実行**。バンドルの再ビルドが必要。プレビューは既定OFF、Neon Functions/公開サイト/GitHub Actionsには変更なし。
+
+## ローカル実Neon DBの一覧E2E拡張（2026-11-18、実行待ち）
+ブラウザ一覧UI試験は開発PCで `CS03_HISTORY_VIEW_BROWSER=PASS` / `CS03_ALL_CHECKS=PASS`、Node 128/128 PASS、バンドルビルドPASS。ログイン前後、3行の閲覧専用表、ログアウト時の全消去、端末内履歴の不変を確認済み。**実Neon DBの一覧取得試験はまだ実行していない。**
+
+既存 `scripts/cs03-real-api-db-e2e.mjs` に隔離DBでの `A_SECOND_SAVE_FOR_LIST`、`A_LIST_PAGE_ONE`、`A_LIST_PAGE_TWO`、`B_LIST_CANNOT_ACCESS_A`、`A_LIST_UNCHANGED_AFTER_B`、`ANONYMOUS_LIST_DENIED`、`FORGED_LIST_TOKEN_DENIED`、`BAD_LIST_CURSOR_DENIED` の8確認を追加。実Neon Authでランダムな使い捨てユーザー2件を登録し、隔離DBへ新たに3件のテスト履歴を書き込む方式。使い捨てユーザー・履歴は自動削除しないので、事後棚卸対象。既存の実JWT/DB単一問題GET/PUT 8件と合わせ、独立した試験項目を合計16件予定。実行前に `CS03_ISOLATED_BRANCH_ID=br-snowy-truth-a162pmdt` と、`cs03_progress_api` / `cs03_auth_sandbox` / `sslmode=verify-full` の隔離DB URLをマスク入力し、接続先ガードがPASSしない限り起動しない。実ユーザーのDBや本番サイト、Neon Functions、GitHub Actionsは変更しない。出力にパスワード/JWT/DB URLを印字しない。
