@@ -32,34 +32,50 @@ function apiReq(method,token,input,query='') {
 }
 const ctx=[];
 let runtime;
+let stage='RUNTIME_INIT';
 try{
  runtime=createCs03Runtime();
+ console.log('RUNTIME_CONFIG=PASS');
+ stage='AUTH_SIGNUP_A';
  const A=await signup('A');ctx.push(A.context);
  const verify=createNeonJwtVerifier({jwksUrl:AUTH+'/.well-known/jwks.json',issuer:'https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech',audience:'https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech'});
+ stage='VERIFY_JWT_A';
  const userA=(await verify(A.token)).userId;
+ console.log('JWT_A_VERIFY=PASS');
+ stage='AUTH_SIGNUP_B';
  const B=await signup('B');ctx.push(B.context);
+ stage='API_A_SAVE';
  const body={examCode:'db',questionId:QUESTION,data:{studyState:'cs03-e2e-a',nonce:id()},revision:1};
  let r=await runtime.handle(apiReq('PUT',A.token,body));
  expect(r.status===200,'A_SAVE');
+ stage='API_A_READ';
  r=await runtime.handle(apiReq('GET',A.token,null,'?examCode=db&questionId='+QUESTION));
  const data=(await r.json()).data;
  expect(r.status===200&&data?.data?.nonce===body.data.nonce,'A_READ_OWN');
+ stage='API_B_READ';
  r=await runtime.handle(apiReq('GET',B.token,null,'?examCode=db&questionId='+QUESTION));
  expect(r.status===200&&(await r.json()).data===null,'B_CANNOT_READ_A');
+ stage='API_B_SPOOF_READ';
  r=await runtime.handle(apiReq('GET',B.token,null,'?examCode=db&questionId='+QUESTION+'&userId='+encodeURIComponent(userA)));
  expect(r.status===200&&(await r.json()).data===null,'B_CANNOT_SPOOF_GET');
+ stage='API_B_SAVE';
  r=await runtime.handle(apiReq('PUT',B.token,{...body,userId:'a1111111-1111-4111-8111-111111111111',revision:1,data:{studyState:'cs03-e2e-b',nonce:id()}}));
  expect(r.status===200,'B_WRITES_OWN_DESPITE_SPOOFED_USERID');
  r=await runtime.handle(apiReq('GET',A.token,null,'?examCode=db&questionId='+QUESTION));
  expect(r.status===200&&(await r.json()).data?.data?.nonce===body.data.nonce,'A_UNCHANGED_AFTER_B');
+ stage='API_ANONYMOUS';
  r=await runtime.handle(apiReq('GET',null,null,'?examCode=db&questionId='+QUESTION));
  expect(r.status===401,'ANONYMOUS_DENIED');
+ stage='API_INVALID_TOKEN';
  r=await runtime.handle(apiReq('GET','invalid.invalid.invalid',null,'?examCode=db&questionId='+QUESTION));
  expect(r.status===401,'FORGED_TOKEN_DENIED');
  console.log('CS03_LIVE_E2E=PASS');
 }catch(e){
  // Deliberately do not log request, token, URL or DB credentials.
- console.error('CS03_LIVE_E2E=FAIL_'+(e instanceof Error&&/^FAIL_[A-Z_]+$/.test(e.message)?e.message:'CHECK_PRIVATE_LOGS'));
+ const safeMessage=e instanceof Error && /^(?:CS03_[A-Z_]+|FAIL_[A-Z_]+|SIGNUP_[AB]_HTTP_[0-9]{3}|TOKEN_[AB]_HTTP_[0-9]{3}|TOKEN_[AB]_INVALID)$/.test(e.message)?e.message:'UNCLASSIFIED';
+ console.error('CS03_FAILED_STAGE='+stage);
+ console.error('CS03_FAILURE_CODE='+safeMessage);
+ console.error('CS03_LIVE_E2E=FAIL');
  process.exitCode=1;
 }finally{
  await Promise.allSettled(ctx.map(c=>c.dispose()));
