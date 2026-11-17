@@ -56,6 +56,6 @@ test('AM2 Q9/11/12/23: obsolete table and SQL transcriptions absent in source', 
 
 test('updated content scripts use versioned URLs, preserving other scripts',()=>{
   assert.match(html,/<script src="src\/am2-2025-questions\.js\?v=20261117b"><\/script>/);
-  assert.match(html,/<script src="src\/am2-figure-clips\.js\?v=20261117d"><\/script>/);
+  assert.match(html,/<script src="src\/am2-figure-clips\.js\?v=20261117e"><\/script>/);
   assert.match(html,/<script src="src\/am2-2025-explanations\.js"><\/script>/);
 });

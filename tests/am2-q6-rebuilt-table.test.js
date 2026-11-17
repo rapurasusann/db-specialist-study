@@ -46,8 +46,12 @@ test('AM2 Q6: reconstructed accessible order table includes all 9 columns and 10
   assert.deepEqual(rows[0],['1055','A7053','鈴木電気','2025-07-01','T035','テレビA','85,000','10','850,000']);
   assert.deepEqual(rows[4],['2030','B7060','中村商会','2025-07-03','S172','Blu-rayプレイヤーB','78,000','10','780,000']);
   assert.deepEqual(rows[9],['3090','B7060','中村商会','2025-07-04','T035','テレビA','85,000','2','170,000']);
-  assert.match(table.style.cssText,/min-width/);
-  assert.match(figure.style.cssText,/overflow-x:auto/);
+  assert.match(table.style.cssText,/table-layout:fixed/);
+  assert.match(table.style.cssText,/width:100%/);
+  assert.match(table.style.cssText,/white-space:normal/);
+  assert.doesNotMatch(table.style.cssText,/min-width:770px|white-space:nowrap/);
+  assert.doesNotMatch(figure.style.cssText,/overflow-x:auto|overflow-x:scroll/);
+  assert.match(figure.style.cssText,/max-width:100%/);
   context.number=8;
   context.showQuestion();
   assert.equal(viewerTouched,false,'the original viewer remains untouched on navigation');
@@ -57,5 +61,5 @@ test('AM2 Q6: reconstructed accessible order table includes all 9 columns and 10
 test('Q6 table does not modify original-page viewer and script is fresh', () => {
   assert.match(html, /#localViewer\{display:block!important\}/);
   assert.doesNotMatch(clipScript, /getElementById\('localViewer'\)/);
-  assert.match(html, /src\/am2-figure-clips\.js\?v=20261117d/);
+  assert.match(html, /src\/am2-figure-clips\.js\?v=20261117e/);
 });
