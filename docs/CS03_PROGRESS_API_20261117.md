@@ -3,7 +3,7 @@
 - `src/progress-api.js`: 認証済みユーザーの履歴のGET/PUT処理。未認証ではDB接続しない。
 - `src/neon-jwt-verifier.mjs`: EdDSA、署名、発行元・利用対象、期限等の検証。
 - `server/cs03-runtime.mjs`: 試験用ブランチ・DB・最小権限ロール以外では起動拒否。**本番では使用しない固定値**。
-- `tests/progress-api.test.js`: JWTを模擬したトランザクション・なりすまし・競合検証。**実DBとの一気通貫検証は未実施**。
+- `tests/progress-api.test.js`: JWTを模擬したトランザクション・なりすまし・競合検証。**実DBとの一気通貫検証は2026-11-18に実施し PASS**。
 
 最小権限ロール `cs03_progress_api` は、DB自身を信用できる本人確認手段とはしない。検証済みJWTから取得した本人UUIDを、単一DBコネクション内の `BEGIN`→`set_config(..., true)`→パラメーター化SQL→`COMMIT` でRLSに渡す。コネクションは必ず解放する。
 
@@ -11,3 +11,23 @@
 
 ## 実行時注意
 `CS03_TEST_DATABASE_URL` は `cs03_auth_sandbox` の `cs03_progress_api`、`ep-dawn-dew-a11prveg` にしか接続させない。誤って資格アプリ本番DBへ接続しないための安全策。クラウド接続情報の表示・ログ出力は禁止。 `npm install --ignore-scripts` で依存を導入し、`node --test tests/progress-api.test.js tests/progress-access.test.js tests/neon-jwt-verifier.test.mjs` を実行する。
+
+## 実JWT→API→隔離DB E2E 結果（2026-11-18）
+
+ユーザーの開発PCで `scripts/cs03-real-api-db-e2e.mjs` を実行。接続前の診断で `URL_PARSE`、`BRANCH_MARKER`、`SCHEME`、`DB_NAME`、`ROLE_NAME`、`ENDPOINT_PREFIX`、`ENDPOINT_REGION`、`PASSWORD_PRESENT`、`RUNTIME_INIT` がすべてPASS。実JWT検証 `JWT_A_VERIFY=PASS`。
+
+実DBを使った8項目:
+- `A_SAVE=PASS`
+- `A_READ_OWN=PASS`
+- `B_CANNOT_READ_A=PASS`
+- `B_CANNOT_SPOOF_GET=PASS`
+- `B_WRITES_OWN_DESPITE_SPOOFED_USERID=PASS`
+- `A_UNCHANGED_AFTER_B=PASS`
+- `ANONYMOUS_DENIED=PASS`
+- `FORGED_TOKEN_DENIED=PASS`
+
+結果 `CS03_LIVE_E2E=PASS` / `TEST_EXIT_CODE=0`。開発PCでNode.jsから直接隔離DBへ接続するAPIハンドラのE2Eであり、公開サーバー経由の実運用E2Eではない。試験用Neon Authアカウント2件と履歴2件を追加。検証用データの削除は別工程。
+
+注意: `pg-connection-string` が `sslmode=require` の互換動作について将来のセキュリティ挙動変更を警告した。現行バージョンでのE2E PASSに影響はないが、今後は `sslmode=verify-full` を明示して再検証すること。
+
+次: パスワード非表示での接続設定・証跡管理、SSLモード厳密指定、公開APIの認証/CORS/濫用対策、ブラウザでの登録・ログイン・ログアウト・永続化、マルチデバイス同期の試験。正式公開とPR統合は未承認のまま。
