@@ -11,6 +11,7 @@ function mockDb({noRows=false,throwOnSelect=false}={}) {
       calls.push({sql,values});
       if(throwOnSelect&&/^SELECT data/.test(sql))throw new Error('secret database failure');
       if(/^SELECT data/.test(sql))return {rows:noRows?[]:[{revision:1,data:{ok:true}}]};
+      if(/^SELECT question_id, data, revision/.test(sql))return {rows:noRows?[]:[{question_id:'2025:am2:1',data:{level:'learning'},revision:1},{question_id:'2025:am2:2',data:{level:'review'},revision:2}]};
       if(/^INSERT INTO|^UPDATE public.study_progress/.test(sql))return {rows:noRows?[]:[{revision:1,data:{ok:true}}]};
       return {rows:[]};
     },
@@ -106,4 +107,38 @@ test('bad oversized JSON is rejected before DB access',async()=>{
  const {handle,calls}=setup();
  const response=await handle(req('PUT','valid-a',{examCode:'db',questionId:'2025:am2:6',data:{text:'x'.repeat(21000)},revision:1}));
  assert.equal(response.status,400);assert.equal(calls.length,0);
+});
+
+test('list page validates JWT and scopes SQL to authenticated user A',async()=>{
+ const {handle,calls}=setup();
+ const res=await handle(req('GET','valid-a',undefined,'?examCode=db&limit=1&userId='+B));
+ assert.equal(res.status,200);
+ const value=(await res.json()).data;
+ assert.equal(value.records.length,1);
+ assert.equal(value.nextCursor,'2025:am2:1');
+ const query=calls.find(c=>/^SELECT question_id, data, revision/.test(c.sql));
+ assert.ok(query);
+ assert.deepEqual(query.values,[A,'db','',2]);
+ assert.match(query.sql,/user_id=\$1/);
+ assert.match(query.sql,/ORDER BY question_id LIMIT \$4/);
+});
+test('list cursor and exact page end return no next cursor',async()=>{
+ const {handle,calls}=setup({noRows:true});
+ const res=await handle(req('GET','valid-b',undefined,'?examCode=db&limit=100&cursor=2025%3Aam2%3A3'));
+ assert.equal(res.status,200);
+ assert.deepEqual((await res.json()).data,{records:[],nextCursor:null});
+ assert.deepEqual(calls.find(c=>/^SELECT question_id/.test(c.sql)).values,[B,'db','2025:am2:3',101]);
+});
+test('list rejected for anonymous users without database access',async()=>{
+ const {handle,calls}=setup();
+ const res=await handle(req('GET',null,undefined,'?examCode=db&limit=20'));
+ assert.equal(res.status,401);
+ assert.equal(calls.length,0);
+});
+test('untrusted list input is rejected without database access',async()=>{
+ for(const query of ['?examCode=db&limit=101','?examCode=db&limit=0','?examCode=db&limit=1.5','?examCode=../bad&limit=1','?examCode=db&cursor=2025%3Aam2%3A101']){
+  const {handle,calls}=setup();
+  assert.equal((await handle(req('GET','valid-a',undefined,query))).status,400,query);
+  assert.equal(calls.length,0,query);
+ }
 });
