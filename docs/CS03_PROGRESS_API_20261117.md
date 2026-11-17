@@ -70,3 +70,10 @@
 結果 `54 tests / 54 pass / 0 fail / TEST_EXIT_CODE=0`。
 内訳: ブラウザFunctions入口 13/13、SSLランタイム10/10、JWT10/10、ユーザー別アクセス制御9/9、学習履歴API12/12。
 Neon Functionsデプロイは行っていないため、実行時の環境変数、CORS経由の公開アクセス、JWTの実運用レート制御は未検証。ネイティブURLへの匿名リクエストにも関数起動コストが生じ得る。無料枠の利用量を確認し、厳密なDBロール設定/公開対策/料金リスクを検証するまで公開しない。
+
+## Neon Functions デプロイ前ゲート (2026-11-18)
+Neon Connectで対象プロジェクトが `free_v3`、`aws-ap-southeast-1` であることを確認。隔離ブランチのFunction一覧は空で、未デプロイ。Neon公式（2026-11-10）でFree Functionsは月100万invocations、10 active / 400 waiting Capacity-hoursを含む。ただし実料金/上限消費と匿名連続アクセスによる起動数増加は運用上のリスク。
+
+`scripts/cs03-predeploy-guard.mjs` はネットワーク接続せず、プロジェクトID、試験ブランチID、明示承認マーカー、最小権限のDBロール/試験DB名/エンドポイント、TLS verify-full、パスワード存在を照合し、誤接続なら拒否する。CLIには `npm run check:cs03-deploy` を用いる。必要な環境変数 `NEON_PROJECT_ID=quiet-mouse-39990305`, `NEON_BRANCH_ID=br-snowy-truth-a162pmdt`, `CS03_ISOLATED_BRANCH_ID=br-snowy-truth-a162pmdt`, `CS03_DEPLOY_OPT_IN=ISOLATED_ONLY`、`CS03_TEST_DATABASE_URL`。秘密は絶対にGitHubやチャットへ送信しない。これらはデプロイ実行コマンドではなく検査条件の設計であり、実際のNeon Functionsデプロイ操作は**まだ実装/実施していない**。
+
+`tests/cs03-predeploy-guard.test.mjs` の12ケースを既存 `npm run test:cs03` に追加。**まだ開発PCで実行していない。** 現在のFunctionには共有的な厳密レート制限/WAFがないため、公開前の濫用防止と利用量監視が別途必要。Origin/CORSは本人確認にはならない。
