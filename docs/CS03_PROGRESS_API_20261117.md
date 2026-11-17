@@ -171,3 +171,10 @@ Neon APIで隔離ブランチ `br-snowy-truth-a162pmdt` のAuth設定を読み�
 原因未確定のため同じ登録E2Eを無条件に再実行しない。Neon Auth設定は隔離ブランチのメール/パスワード・新規登録有効、`allow_localhost=true`、trusted_origins=[]。試験サーバーが `http://127.0.0.1:<port>` を使っており、このoriginと `http://localhost:<port>` の区別で失敗する可能性があるが未実証。
 
 `scripts/cs03-neon-auth-readonly-browser-diag.mjs` を追加。両ホスト名でブラウザを起動し、APIの `GET /get-session` と公開 `GET /.well-known/jwks.json` の応答/CORS可否、CSP違反、画面エラーを確認する。**ユーザー登録・ログイン・メール送信・DB更新操作なし**。診断結果を見てから最小修正し、実登録の再試験は無駄なユーザー増加を避けて計画する。本番API/Functions/Actionsの操作なし。
+
+## Neon Auth readonlyブラウザ診断結果・登録失敗の切り分け（2026-11-18）
+開発PCで `scripts/cs03-neon-auth-readonly-browser-diag.mjs` を実行：`127.0.0.1` と `localhost` の双方で `GET /get-session`、`GET /.well-known/jwks.json` がHTTP 200、試験パネル表示PASS、CSP違反・JSエラー・外部ブロックは記録なし。`CS03_AUTH_READONLY_DIAG=COMPLETE`。これはGET疎通であって、POST登録の受理を証明しない。
+
+Neon隔離DB `cs03_auth_sandbox` の `neon_auth."user"` を読み取り専用で集計し、`cs03-%@example.com` 形式の試験アカウントが6件存在することを確認（最新作成日時 `2026-11-17T15:08:57.901Z`）。個別試行とユーザーの対応関係は確定できず、失敗したUI試験で作成されたか否かは未断定。既存の試験ユーザーを削除・変更していない。
+
+`scripts/cs03-neon-auth-real-browser.mjs` を修正し、登録APIのHTTPステータス、UIメッセージ分類、Auth通信エラー件数、ページエラー件数を秘密情報なしで出力するようにした。**修正後の実ユーザー登録試験は未実行**。同試験は1実行につき新規ランダムなテストユーザーの作成を試行するため、無条件の再実行は避ける。ログにパスワード、JWT、メールアドレスを出力しない。コードはGitHubに保存したがNeon Functions/公開環境は未変更。
