@@ -1,4 +1,6 @@
 // CS-03 deploy safety gate. No network calls; never prints secrets.
+import {pathToFileURL} from 'node:url';
+import {resolve} from 'node:path';
 // Run BEFORE any Neon deploy. It does not deploy anything.
 export function assessCs03Deploy(env) {
  const failures=[];
@@ -23,7 +25,7 @@ export function assessCs03Deploy(env) {
  }
  return {approved:failures.length===0,failures};
 }
-if(process.argv[1] && import.meta.url===new URL('file://'+process.argv[1].replace(/\\/g,'/')).href){
+if(process.argv[1] && import.meta.url===pathToFileURL(resolve(process.argv[1])).href){
  const result=assessCs03Deploy(process.env);
  // Only rejection codes; never emit URL, JWT, database password or auth details.
  console.log('CS03_DEPLOY_GATE='+(result.approved?'PASS':'BLOCKED'));
