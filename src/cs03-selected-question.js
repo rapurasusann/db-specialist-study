@@ -9,5 +9,10 @@
   if(!pattern.test(id))throw Error('INVALID_SELECTED_QUESTION');
   return id;
  };
- Object.defineProperty(window,'CS03_SELECTED_QUESTION',{value:Object.freeze({read}),writable:false,configurable:false});
+ const readLegacy=id=>{
+  if(id!==read())throw Error('SELECTED_QUESTION_CHANGED');
+  const record=progress[id];
+  return record&&typeof record==='object'&&!Array.isArray(record)?structuredClone(record):null;
+ };
+ Object.defineProperty(window,'CS03_SELECTED_QUESTION',{value:Object.freeze({read,readLegacy}),writable:false,configurable:false});
 })();
