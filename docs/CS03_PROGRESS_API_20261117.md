@@ -85,3 +85,12 @@ Neon Connectで対象プロジェクトが `free_v3`、`aws-ap-southeast-1` で�
 - これはローカルでの模擬試験。公開エンドポイント・料金/呼び出し枠・実デプロイの動作は未確認。
 
 次のゲート：Neon Functionsにデプロイするコードの配布物と環境変数の仕様確認、最小権限のDB接続文字列のサーバー内設定、実HTTP通信試験、料金発生防止の運用策。事前に実証できていないコスト抑止策を「完了」と扱わない。デプロイ操作とGitHub Actions実行は未実施。
+
+## 公開API入口の追加防御（2026-11-18、未実行）
+Neon公式の Production hardening で、FunctionのネイティブURLはWAF/Cloudflare経由のドメイン追加後も外部から直接到達でき、Function内の401応答でも呼び出し消費が発生することを確認。CORS/Origin検査は認証またはコスト防止策ではない。
+
+`functions/cs03-progress.mjs` にサーバー専用 `CS03_ORIGIN_SECRET` と `X-Secret` の定数時間比較を追加。秘密鍵が未設定・32バイト未満・ヘッダー不一致の場合、DBやJWT検証より前に401。GET/PUTのみ適用し、ブラウザのOPTIONS preflightは従来どおり（それ自体もFunctionへの呼び出しに数えられる）。秘密鍵はブラウザのJS・GitHub・クエリ文字列には公開しない。
+
+`scripts/cs03-predeploy-guard.mjs` も秘密鍵32バイト以上を要求。テスト `tests/cs03-browser-function.test.mjs` に4件、`tests/cs03-predeploy-guard.test.mjs` に2件を追加（従前66件＋6件＝**72件、未実行**）。
+
+**ブロッカー継続**: Workerなどの信頼できる中継入口、エッジ側のレート制御・濫用防止、利用量を確認する運用が未実装。これらが揃うまでFunctionはデプロイしない。Neonの「公開ネイティブURLの呼び出し自体に確実な無課金上限をかける手段」は未実証。Function内の秘密鍵チェックだけで追加料金ゼロを保証しない。
