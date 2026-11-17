@@ -8,7 +8,7 @@ test('study page exposes only a read-only selected-question bridge',()=>{
  const window={};const sandbox={window,year:2025,courseId:'am2',number:4};
  runInNewContext(js,sandbox);
  assert.equal(window.CS03_SELECTED_QUESTION.read(),'2025:am2:4');
- assert.throws(()=>window.CS03_SELECTED_QUESTION.read=()=>{},TypeError);
+ assert.equal(Object.isFrozen(window.CS03_SELECTED_QUESTION),true);
 });
 test('selected-question bridge rejects invalid question identifiers',()=>{
  const window={};const sandbox={window,year:2025,courseId:'am2',number:101};
