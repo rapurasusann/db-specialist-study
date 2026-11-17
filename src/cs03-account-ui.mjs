@@ -1,6 +1,6 @@
 // CS-03 account panel: intentionally independent from the legacy local progress.
 // No automatic migration or account mixing. Fails closed until Auth + API are wired.
-export function mountCs03AccountPanel(root,account) {
+export function mountCs03AccountPanel(root,account,options={}) {
  if(!root||!account||typeof account.signUp!=='function'||typeof account.signIn!=='function'||
     typeof account.signOut!=='function'||typeof account.session!=='function')throw Error('ACCOUNT_UI_CONFIG_REQUIRED');
  const get=id=>{
@@ -10,6 +10,8 @@ export function mountCs03AccountPanel(root,account) {
  };
  const signup=get('signup'),login=get('login'),logout=get('logout');
  const email=get('email'),password=get('password'),name=get('name'),status=get('status'),identity=get('identity');
+ const load=root.querySelector('[data-cs03="load-progress"]');
+ const recordStatus=root.querySelector('[data-cs03="record-status"]');
  let busy=false,signedIn=false;
  function updateButtons(){
   signup.disabled=busy||signedIn;
@@ -18,6 +20,7 @@ export function mountCs03AccountPanel(root,account) {
   email.disabled=busy||signedIn;
   name.disabled=busy||signedIn;
   password.disabled=busy||signedIn;
+  if(load)load.disabled=busy||!signedIn;
  }
  function message(text){status.textContent=text;}
  function showUser(user){
@@ -42,16 +45,29 @@ export function mountCs03AccountPanel(root,account) {
  }));
  login.addEventListener('click',()=>run(async()=>{
   const user=await account.signIn({email:email.value.trim(),password:password.value});
-  showUser(user);message('ログインしました。既存の端末内履歴は自動で統合しません。');
+  showUser(user);
+  if(options.onSignedIn)await options.onSignedIn(user);
+  message('ログインしました。既存の端末内履歴は自動で統合しません。');
  }));
  logout.addEventListener('click',()=>run(async()=>{
-  await account.signOut();showUser(null);message('ログアウトしました。');
+  await account.signOut();
+  if(options.onSignedOut)await options.onSignedOut();
+  showUser(null);if(recordStatus)recordStatus.textContent='ログアウトしました。';
+  message('ログアウトしました。');
+ }));
+ if(load && typeof options.onLoadProgress==='function')load.addEventListener('click',()=>run(async()=>{
+  if(recordStatus)recordStatus.textContent='アカウントの履歴を取得中…';
+  const result=await options.onLoadProgress();
+  if(recordStatus)recordStatus.textContent=result;
  }));
  showUser(null);message('アカウント機能の試験用画面です。自動同期は準備中です。');
  return {
   refresh:()=>run(async()=>{
-   try{const user=await account.session();showUser(user);message('ログイン状態を確認しました。');}
-   catch{showUser(null);message('ログインしていません。');}
+   try{const user=await account.session();showUser(user);
+    if(options.onSignedIn)await options.onSignedIn(user);
+    message('ログイン状態を確認しました。');}
+   catch{if(options.onSignedOut)await options.onSignedOut();
+    showUser(null);message('ログインしていません。');}
   })
  };
 }
