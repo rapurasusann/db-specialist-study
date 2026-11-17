@@ -230,3 +230,6 @@ Neon隔離DB `cs03_auth_sandbox` の `neon_auth."user"` を読み取り専用で
 
 ## 明示的保存のローカル実ブラウザ試験追加（2026-11-18、未実行）
 `scripts/cs03-manual-transfer-browser.mjs` を追加。Playwrightで元の学習ページとCS-03プレビューUI・`cs03-scoped-progress`・`cs03-manual-transfer` を用い、ログイン前は保存無効、偽認証ログイン後に有効、確認キャンセル時の書込ゼロ、明示承認後の1問だけの保存、端末内履歴の不変、再操作時の既存サーバー履歴上書き拒否、ログアウト後の保存無効、外部通信0・JSエラー0を検証する。**試験は未実行**。試験はローカル偽認証・偽APIのみで実ユーザーや実Neonへの更新を行わず、公開サイトも変更しない。最新111/111のNodeテストとバンドルビルドは開発PCでPASS済み。
+
+## 手動1問保存の実ブラウザ試験結果（2026-11-18）
+開発PCでコミット `4b3b3dd` の `scripts/cs03-manual-transfer-browser.mjs` を実行。`MANUAL_TRANSFER_DEFAULT_HIDDEN`、`MANUAL_TRANSFER_DISABLED_BEFORE_LOGIN`、`MANUAL_TRANSFER_ENABLED_AFTER_LOGIN`、`CANCELLATION_NO_REMOTE_WRITE`、`ONE_QUESTION_SAVED`、`LEGACY_PROGRESS_STAYS_UNCHANGED`、`DUPLICATE_REMOTE_OVERWRITE_REFUSED`、`ONLY_ONE_REMOTE_SAVE`、`MANUAL_TRANSFER_DISABLED_AFTER_LOGOUT`、`NO_EXTERNAL_REQUESTS`、`NO_BROWSER_ERRORS` 全11件PASS。`CS03_MANUAL_TRANSFER_BROWSER=PASS`、`CS03_MANUAL_BROWSER_EXIT_CODE=0`。前段111/111ユニット試験PASS。Neon Auth/DBではなくローカルの偽認証・偽保存先を用いたブラウザ試験であり、実APIの公開・端末間同期は未完成。
