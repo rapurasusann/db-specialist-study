@@ -11,6 +11,7 @@ export function mountCs03AccountPanel(root,account,options={}) {
  const signup=get('signup'),login=get('login'),logout=get('logout');
  const email=get('email'),password=get('password'),name=get('name'),status=get('status'),identity=get('identity');
  const load=root.querySelector('[data-cs03="load-progress"]');
+ const listAll=root.querySelector('[data-cs03="list-progress"]');
  const transfer=root.querySelector('[data-cs03="transfer-progress"]');
  const recordStatus=root.querySelector('[data-cs03="record-status"]');
  let busy=false,signedIn=false;
@@ -22,6 +23,7 @@ export function mountCs03AccountPanel(root,account,options={}) {
   name.disabled=busy||signedIn;
   password.disabled=busy||signedIn;
   if(load)load.disabled=busy||!signedIn;
+  if(listAll)listAll.disabled=busy||!signedIn;
   if(transfer)transfer.disabled=busy||!signedIn;
  }
  function message(text){status.textContent=text;}
@@ -73,6 +75,11 @@ export function mountCs03AccountPanel(root,account,options={}) {
     '保存できませんでした。端末内履歴は変更していません。';
    throw error;
   }
+ }));
+ if(listAll && typeof options.onListProgress==='function')listAll.addEventListener('click',()=>run(async()=>{
+  if(recordStatus)recordStatus.textContent='アカウントの全履歴を取得中…';
+  const summary=await options.onListProgress();
+  if(recordStatus)recordStatus.textContent=summary;
  }));
  if(load && typeof options.onLoadProgress==='function')load.addEventListener('click',()=>run(async()=>{
   if(recordStatus)recordStatus.textContent='アカウントの履歴を取得中…';
