@@ -3,11 +3,16 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "test:cs03": "node --test tests/progress-access.test.js tests/neon-jwt-verifier.test.mjs tests/progress-api.test.js tests/cs03-runtime-ssl.test.mjs tests/cs03-browser-function.test.mjs tests/cs03-predeploy-guard.test.mjs tests/cs03-account-client.test.mjs",
-    "check:cs03-deploy": "node scripts/cs03-predeploy-guard.mjs"
+    "test:cs03": "node --test tests/progress-access.test.js tests/neon-jwt-verifier.test.mjs tests/progress-api.test.js tests/cs03-runtime-ssl.test.mjs tests/cs03-browser-function.test.mjs tests/cs03-predeploy-guard.test.mjs tests/cs03-account-client.test.mjs tests/cs03-account-ui.test.mjs tests/cs03-page-integration.test.mjs",
+    "check:cs03-deploy": "node scripts/cs03-predeploy-guard.mjs",
+    "build:cs03-account": "esbuild src/cs03-account-entry.mjs --bundle --platform=browser --format=esm --target=es2022 --outfile=src/cs03-account.bundle.js"
   },
   "dependencies": {
     "jose": "^6.0.0",
-    "pg": "^8.16.3"
+    "pg": "^8.16.3",
+    "@neon/auth": "^0.8.2"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2"
   }
 }
