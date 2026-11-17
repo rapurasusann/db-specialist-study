@@ -134,3 +134,9 @@
 - 隔離ブランチのNeon Authは未有効、Data APIも未有効。Neon Auth provisionを試みたが、`no read-write endpoint found for branch` で停止。**認証設定変更・ユーザー作成・本番書き込みは行っていない**。同じ操作を再試行しない。
 - 続きは隔離ブランチに読み書きcomputeが必要。利用コスト・無料枠を確認してからendpointを作成し、隔離Auth/登録・メール確認・再設定→Data API→本人/他人/匿名RLS試験を行う。Data APIの`add_default_grants`は安全性検証前にtrueにしない。
 - CS-03 IN PROGRESS、CS-04以降OPEN、PR #14はDraft維持、main未変更。GitHub Actions不使用。
+
+## 2026-11-17 追加料金禁止（ユーザー明示指示）
+
+- **追加料金を発生させないことを必須条件とする。** Neonの有料プランへの変更、有料リソースの作成、従量課金につながり得る操作は、無料枠内と確認できない限り実行しない。
+- 既存の隔離ブランチ `br-snowy-truth-a162pmdt` は `no_compute=true` で作成済み。**新規computeは未作成**。今後、実行環境を作る前に料金・無料枠・既存使用量を確認する。料金が確実にゼロと判断できない場合は停止する。
+- 代替としてGitHubのソース・設計・テスト作成・読み取り検証を優先する。GitHub Actionsは従来どおり無断使用しない。本番設定・履歴は無断変更しない。
