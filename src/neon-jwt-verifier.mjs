@@ -27,7 +27,7 @@ export function createNeonJwtVerifier({ jwksUrl, issuer, audience, jwks } = {}) 
       const { payload } = await jwtVerify(token, keySet, {
         issuer,
         audience,
-        algorithms: ['RS256', 'ES256'],
+        algorithms: ['EdDSA', 'RS256', 'ES256'],
         clockTolerance: '5 seconds',
         requiredClaims: ['sub', 'iat', 'exp', 'iss', 'aud'],
       });
