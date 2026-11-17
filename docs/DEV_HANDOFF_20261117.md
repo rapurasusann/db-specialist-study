@@ -90,3 +90,11 @@
 - 独立PR #20 `https://github.com/rapurasusann/db-specialist-study/pull/20` をmainへsquashマージ（コミット `f8a7b3cf7a3a42bd78debc60768e9fe9f7c6cc54`）。mainソース再取得で表・ビューア不干渉・CSS復帰を確認PASS。
 - **Node一式と実ブラウザ外観の最終受入は未実施**。GitHub Actionsは使用していない。GitHub Pages配信反映は未確認。
 - **この節が問6の最新仕様**。これ以前の「問6で下部原本ビューアを隠す」という説明は誤り・撤回。
+
+## 2026-11-17 問6表の横スクロール廃止（最新）
+
+- ユーザー指示：問6の上部に再構成したHTML表は横スクロールなしで表示。画面下部の原本PDF表示は一切変更しない。
+- `src/am2-figure-clips.js` の問6表について `min-width:770px` と `overflow-x:auto` を廃止。表幅100%・固定列レイアウト・セル折り返し・小さめの余白と文字を設定。9列×10行のデータは変更なし。
+- `index.html` の表用JSキャッシュバスターを `?v=20261117e` に変更。関連自動テストの期待値を更新。
+- 単独PR #21 `https://github.com/rapurasusann/db-specialist-study/pull/21` をsquashマージ（`9dfe2347a6edfd71568b84ce2277594f25752447`）。main読み戻しで表幅100%、横スクロール廃止、10行、下部ビューア非干渉を確認。
+- 実ブラウザ/端末ごとの視覚受入とローカルNode一式は未実施。特に狭幅での文字の可読性は別途確認が必要。GitHub Actions不使用。
