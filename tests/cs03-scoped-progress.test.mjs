@@ -95,3 +95,14 @@ test('no save is permitted without an explicit remote read',async()=>{
  await assert.rejects(scoped.save(Q,{level:'mastered'}),/REMOTE_READ_REQUIRED/);
  assert.deepEqual(f.log,[]);
 });
+
+test('failed write requires a fresh explicit read before retry',async()=>{
+ const f=setup(),scoped=createCs03ScopedProgress({account:f.account});
+ await scoped.bind();await scoped.pull(Q);f.fail(true);
+ await assert.rejects(scoped.save(Q,{level:'mastered'}),/REVISION_CONFLICT_REFRESHED/);
+ f.fail(false);
+ await assert.rejects(scoped.save(Q,{level:'mastered'}),/REMOTE_READ_REQUIRED/);
+ await scoped.pull(Q);
+ await scoped.save(Q,{level:'mastered'});
+ assert.equal(f.db.get(A+':'+Q).data.level,'mastered');
+});
