@@ -107,3 +107,7 @@ Neon公式の Production hardening で、FunctionのネイティブURLはWAF/Clo
 `tests/cs03-account-client.test.mjs` に登録・ログイン・復元・アカウント分離・保存・取得・競合・誤設定の9件を追加し `npm run test:cs03` に組み込み。従前72件＋9件＝**81件（未実行）**。
 
 **重要な未完了**: 現行 `index.html` は従来のSupabase向け無効な同期欄と端末共通 `db-study-progress-v1` を持つ。今回の新モジュールはまだ画面に組み込んでいないため、ユーザー向けログイン画面と端末間同期は未完成。既存localStorageを新アカウントに自動統合しない（誤アカウントへの混入防止）。Neon Auth SDKの実ブラウザ接続、CSP、信頼済みドメイン、メール認証/SMTP、公開API経由の動作は別途確認する。Neon Functionは未デプロイ。
+
+## 81件試験の初回実行・テスト記述修正（2026-11-18）
+開発PCでコミット `ac130a8` に対し `npm run test:cs03` を実行：`tests=81`、`pass=80`、`fail=1`。失敗は `tests/cs03-account-client.test.mjs` の `assert.doesNotMatch(...,'jwt-a')` に文字列を指定したためで、Node.jsのassert APIが要求するRegExpではなく `ERR_INVALID_ARG_TYPE` となった。新しいアカウント・履歴の動作不良を示すものではない。
+修正コミット `e4b9ff6` で `/jwt-a/` に修正。**修正後の81件再実行は未実施**。ローカル試験合格の判定は再実行結果待ち。デプロイと既存画面の改修は未実施。
