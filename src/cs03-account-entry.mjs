@@ -9,6 +9,7 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    const {createCs03AccountClient}=await import('./cs03-account-client.mjs');
    const {mountCs03AccountPanel}=await import('./cs03-account-ui.mjs');
    const {createCs03ScopedProgress}=await import('./cs03-scoped-progress.mjs');
+   const {createCs03ManualTransfer}=await import('./cs03-manual-transfer.mjs');
    // Only allow the exact isolated Managed Auth instance.
    if(cfg.authUrl!=='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech/cs03_auth_sandbox/auth')
     throw Error('AUTH_TARGET_MISMATCH');
@@ -18,9 +19,19 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    });
    root.hidden=false;
    const scoped=createCs03ScopedProgress({account:client});
+   const manual=createCs03ManualTransfer({scoped,
+    readLegacy:id=>window.CS03_SELECTED_QUESTION.readLegacy(id),
+    confirmTransfer:id=>window.confirm(id+' の端末内履歴1件をログイン中のアカウントにコピーしますか？\n既存の端末内履歴は残ります。')
+   });
    const ui=mountCs03AccountPanel(root,client,{
     onSignedIn:async()=>{await scoped.bind();},
     onSignedOut:()=>{scoped.unbind();},
+    onTransferProgress:async()=>{
+     const id=window.CS03_SELECTED_QUESTION?.read();
+     if(!id)throw Error('SELECTED_QUESTION_UNAVAILABLE');
+     const result=await manual.transfer(id);
+     return result.copied?id+'：アカウントへの保存が完了しました。':'保存をキャンセルしました。';
+    },
     onLoadProgress:async()=>{
      const id=window.CS03_SELECTED_QUESTION?.read();
      if(!id)throw Error('SELECTED_QUESTION_UNAVAILABLE');
