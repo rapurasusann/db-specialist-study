@@ -38,7 +38,7 @@ test('A GET opens transaction and binds verified A before parameterized SELECT',
  const {handle,calls}=setup();
  const res=await handle(req('GET','valid-a'));
  assert.equal(res.status,200);
- assert.deepEqual(calls.map(c=>c.sql==='RELEASE'?'RELEASE':c.sql),'BEGIN,SELECT set_config(\'app.verified_user_id\', $1, true),SELECT data, revision, updated_at FROM public.study_progress WHERE user_id=$1 AND exam_code=$2 AND question_id=$3,COMMIT,RELEASE'.split(/,(?=BEGIN|SELECT|COMMIT|RELEASE)/));
+ assert.deepEqual(calls.map(c=>c.sql),['BEGIN',"SELECT set_config('app.verified_user_id', $1, true)",'SELECT data, revision, updated_at FROM public.study_progress WHERE user_id=$1 AND exam_code=$2 AND question_id=$3','COMMIT','RELEASE']);
  assert.deepEqual(calls[1].values,[A]);
  assert.deepEqual(calls[2].values,[A,'db','2025:am2:6']);
 });
