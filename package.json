@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "test:cs03": "node --test tests/progress-access.test.js tests/neon-jwt-verifier.test.mjs tests/progress-api.test.js tests/cs03-runtime-ssl.test.mjs tests/cs03-browser-function.test.mjs tests/cs03-predeploy-guard.test.mjs",
+    "test:cs03": "node --test tests/progress-access.test.js tests/neon-jwt-verifier.test.mjs tests/progress-api.test.js tests/cs03-runtime-ssl.test.mjs tests/cs03-browser-function.test.mjs tests/cs03-predeploy-guard.test.mjs tests/cs03-account-client.test.mjs",
     "check:cs03-deploy": "node scripts/cs03-predeploy-guard.mjs"
   },
   "dependencies": {
