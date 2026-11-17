@@ -193,3 +193,10 @@ Neon隔離DB `cs03_auth_sandbox` の `neon_auth."user"` を読み取り専用で
 `127.0.0.1` の以前の登録HTTP403は、localhostへの切替後200になった。接続元Originの違いが有力原因だが、403応答本文の正確なエラーコードは以前記録していないため厳密な原因特定には至っていない。隔離Authにランダムな試験ユーザー1件が実際に登録された（`TEST_USER_CREATED=YES`）。ユーザー削除はしていない。Neon Functionsや本番アプリには変更なし。
 
 次は、ブラウザの現行学習記録 `db-study-progress-v1` と認証済みユーザー別 `db-study-cs03-progress-<user UUID>` の取り扱いを決めて、既存履歴が誤アカウントへ混入しない安全な保存/取得の接続を実装する。現時点の `src/cs03-account-client.mjs` のGET/PUTキー（`examCode=db`、`questionId=年:科目:番号`、`revision`）は `src/progress-api.js` と形式互換だが、学習ページ側からの呼出しはまだ未接続。公開URLからの学習履歴同期も未実装・未検証。
+
+## アカウント別学習履歴の画面連携に向けた安全な保存レイヤー（2026-11-18）
+隔離開発ブランチに `src/cs03-scoped-progress.mjs` を追加。既存 `db-study-progress-v1` を読み込まず、`account.session()` のユーザーUUIDへ明示的に紐付けて保存・取得する。ログイン変更時には別アカウントへの書込みを止め、`unbind()` で紐付けを解除する。GETで当該問題を明示的に読み込む前のPUTを禁止し、先にサーバーからデータを取り直して旧画面の値を暗黙上書きする設計を避けた。競合/保存失敗後は再読込するまで書込み不可。問題IDは既存APIに合わせ `20xx:(am1|am2|pm1|pm2):1..100` のみ。
+
+`tests/cs03-scoped-progress.test.mjs`（10件）を既存 `npm run test:cs03` に追加。対象は旧履歴非混入、A/B分離、読み取り前書込禁止、競合拒否、アカウント切替中の書込禁止、保存失敗後の再読み取りなど。従来91件と合わせて**101件の予定だが、この新テストは未実行**。
+
+**重要：** このモジュールはまだ既存 `index.html` の `progress` 変数や保存イベントに接続していない。別端末の全問同期・安全な本番API配信・UI表示切替は未完成。Neon Functionsデプロイ、公開アプリ変更、GitHub Actionsはいずれも未実施。
