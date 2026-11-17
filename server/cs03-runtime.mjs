@@ -21,6 +21,11 @@ export function createCs03Runtime(env=process.env, options={}) {
      !parsed.hostname.endsWith('.ap-southeast-1.aws.neon.tech') ||
      parsed.hostname.indexOf('ep-dawn-dew-a11prveg')!==0)
     throw new Error('CS03_DATABASE_TARGET_MISMATCH');
+  // Explicitly require certificate and hostname verification with pg/pg-connection-string.
+  if(parsed.searchParams.get('sslmode')!=='verify-full' ||
+     parsed.searchParams.has('uselibpqcompat') || parsed.searchParams.has('sslcert') ||
+     parsed.searchParams.has('sslkey') || parsed.searchParams.has('sslrootcert'))
+    throw new Error('CS03_SSL_VERIFY_FULL_REQUIRED');
   const verifyToken=createNeonJwtVerifier({
     jwksUrl:JWKS,issuer:ISSUER,audience:ISSUER
   });
