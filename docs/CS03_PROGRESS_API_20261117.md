@@ -203,3 +203,10 @@ Neon隔離DB `cs03_auth_sandbox` の `neon_auth."user"` を読み取り専用で
 
 ## 開発PCで101/101テスト合格（2026-11-18）
 隔離ブランチのコミット `ec063ae` で `npm run test:cs03` を実行。101 tests, 101 passed, 0 failed, `CS03_TEST_EXIT_CODE=0`。直前の `github.com` DNS解決失敗は再試行時に解消。安全なアカウント別保存のロジック試験は合格。ただし学習画面との実連携と端末間同期はまだ未実装・未検証。
+
+## 選択中の問題とアカウント履歴の読取専用画面接続（2026-11-18）
+`index.html` の初期OFFのCS-03アカウント欄に「選択中の問題のアカウント履歴を取得」ボタンと結果欄を追加。`src/cs03-selected-question.js`（CSPを変更せず従来の学習画面変数から選択中の問題IDだけを取り出す読取専用スクリプト）、`src/cs03-account-entry.mjs`、`src/cs03-account-ui.mjs` を接続。ログイン/セッション復元で `createCs03ScopedProgress().bind()`、ログアウトで `unbind()`、ボタンを押したときだけ該当問題のGETを実行し、記録の習熟度を独立した欄へ表示する。既存の `progress`、`db-study-progress-v1`、問題本文・画像・学習画面の保存イベントは書き換えない。アカウントデータの画面への自動取り込み/自動保存は**まだ行わない**。
+
+`tests/cs03-selected-question.test.mjs` を3件追加し、試験予定数を101→**104件**に更新。**新しいコードと104件試験は未実行**。ブラウザ用バンドルはソース修正後に再ビルドが必要。
+
+注：実APIのHTTPS接続先は引き続き未公開で、現行の `cs03-config.js` は `previewEnabled:false`。読取ボタンも通常画面には表示されない。今回の接続は開発ブランチ内のプレビュー用であり、実Neon DBとのブラウザ通信成功や端末間同期の完成を意味しない。追加料金が発生するサービスの有効化やNeon Functionsのデプロイは行っていない。
