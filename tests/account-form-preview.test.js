@@ -24,3 +24,12 @@ test('no change to existing sync controls required', () => {
   assert.match(html,/id="syncControls" hidden/);
   assert.match(html,/id="syncStatus"/);
 });
+
+test('login uses current-password and disables hidden confirmation field', () => {
+  assert.match(preview, /password\.autocomplete = registering \? 'new-password' : 'current-password'/);
+  assert.match(preview, /passwordConfirm\.disabled = !registering/);
+});
+test('invalid input is marked for assistive technology', () => {
+  assert.match(preview, /setAttribute\('aria-invalid', 'true'\)/);
+  assert.match(preview, /removeAttribute\('aria-invalid'\)/);
+});
