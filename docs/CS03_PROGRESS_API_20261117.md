@@ -233,3 +233,10 @@ Neon隔離DB `cs03_auth_sandbox` の `neon_auth."user"` を読み取り専用で
 
 ## 手動1問保存の実ブラウザ試験結果（2026-11-18）
 開発PCでコミット `4b3b3dd` の `scripts/cs03-manual-transfer-browser.mjs` を実行。`MANUAL_TRANSFER_DEFAULT_HIDDEN`、`MANUAL_TRANSFER_DISABLED_BEFORE_LOGIN`、`MANUAL_TRANSFER_ENABLED_AFTER_LOGIN`、`CANCELLATION_NO_REMOTE_WRITE`、`ONE_QUESTION_SAVED`、`LEGACY_PROGRESS_STAYS_UNCHANGED`、`DUPLICATE_REMOTE_OVERWRITE_REFUSED`、`ONLY_ONE_REMOTE_SAVE`、`MANUAL_TRANSFER_DISABLED_AFTER_LOGOUT`、`NO_EXTERNAL_REQUESTS`、`NO_BROWSER_ERRORS` 全11件PASS。`CS03_MANUAL_TRANSFER_BROWSER=PASS`、`CS03_MANUAL_BROWSER_EXIT_CODE=0`。前段111/111ユニット試験PASS。Neon Auth/DBではなくローカルの偽認証・偽保存先を用いたブラウザ試験であり、実APIの公開・端末間同期は未完成。
+
+## アカウント全履歴のページ単位読取（2026-11-18、未試験）
+**まず全問一括取得の安全な基盤だけを追加。** `src/progress-access.js` で既存のJWT本人確認を再利用し、`GET /progress?examCode=db&limit=100&cursor=<前ページ末尾の問題ID>` を実装（`questionId` 省略時）。`src/progress-api.js` はサーバー側で `user_id` をJWTから取得し、PostgreSQLの `user_id=$1` / `exam_code=$2` / `question_id>$3` / `ORDER BY question_id LIMIT $4` で必ず最大100件を返す。先読み1行で `nextCursor` を判定し、ページ送りを可能にした。RLSおよびトランザクション内の認証済みユーザーID固定は既存処理を維持。`userId` クエリパラメーターは認証境界を越えない。
+
+`src/cs03-account-client.mjs` に `listProgress()` を追加。ページ送り、悪意あるレコード/重複カーソル/不正なページ応答の拒否、80ページ上限、処理後のアカウント再確認を行う。`src/cs03-scoped-progress.mjs` から本人にバインドして取得するが、旧端末内履歴（`db-study-progress-v1`）にも、アカウント別端末キャッシュにも勝手に反映しない。プレビュー専用アカウント欄に「アカウント全履歴の件数を確認」を追加。ユーザーがボタンを押したときだけ件数を読み込み、結果件数・学習済み件数を表示する。
+
+一覧取得の新規テストは `progress-api.test.js` 4件、`progress-access.test.js` 3件、`cs03-account-client.test.mjs` 3件、`cs03-scoped-progress.test.mjs` 2件、計12件追加。前回111件と合わせ **123件が実行対象（未実行）**。今回のブラウザ用バンドル再ビルドも未実施。本番サイト/Neon Functions/GitHub Actionsへの変更なし。**別端末の履歴を既存の学習画面へ切り替える表示処理や自動同期は未実装。** 公開APIゲートウェイ・無料枠・負荷対策の確認が終わるまで公開は禁止。
