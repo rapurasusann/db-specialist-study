@@ -6,6 +6,10 @@ const { request }=require(process.env.PLAYWRIGHT_MODULE_PATH);
 (async()=>{
 const base='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech/cs03_auth_sandbox/auth';
 const jwksUrl=base+'/.well-known/jwks.json';
+// Fixed, branch-specific expected claims determined from a previously verified real token.
+// Never trust the token itself as the source of expected issuer/audience.
+const expectedIssuer='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech';
+const expectedAudience='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech';
 const {createRemoteJWKSet,jwtVerify,decodeProtectedHeader}=await import('jose');
 const {createNeonJwtVerifier}=await import('../src/neon-jwt-verifier.mjs');
 const email='cs03-'+randomBytes(8).toString('hex')+'@example.com';
@@ -48,9 +52,10 @@ try {
  console.log('SUBJECT_UUID='+(/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(verified.sub||'')?'YES':'NO'));
  console.log('ISSUER='+JSON.stringify(verified.iss??null));
  console.log('AUDIENCE='+JSON.stringify(verified.aud??null));
- console.log('ISSUER_EQUALS_BRANCH_BASE='+(verified.iss===base?'YES':'NO'));
- if(typeof verified.aud!=='string'||!verified.aud){console.log('STRICT_AUDIENCE=NOT_AVAILABLE');console.log('AUTH_E2E=JWT_CONTRACT_REVIEW_REQUIRED');return;}
- try{const v=createNeonJwtVerifier({jwksUrl,issuer:base,audience:verified.aud});
+ console.log('EXPECTED_ISSUER_MATCH='+(verified.iss===expectedIssuer?'YES':'NO'));
+ console.log('EXPECTED_AUDIENCE_MATCH='+(verified.aud===expectedAudience?'YES':'NO'));
+ if(verified.iss!==expectedIssuer||verified.aud!==expectedAudience){console.log('AUTH_E2E=JWT_CLAIM_MISMATCH');process.exitCode=1;return;}
+ try{const v=createNeonJwtVerifier({jwksUrl,issuer:expectedIssuer,audience:expectedAudience});
   const identity=await v(token);
   console.log('EXISTING_VERIFIER='+(identity.userId===verified.sub?.toLowerCase()?'PASS':'FAIL'));
  }catch{console.log('EXISTING_VERIFIER=FAIL');process.exitCode=1;return;}
