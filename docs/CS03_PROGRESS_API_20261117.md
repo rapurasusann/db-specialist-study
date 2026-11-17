@@ -178,3 +178,10 @@ Neon APIで隔離ブランチ `br-snowy-truth-a162pmdt` のAuth設定を読み�
 Neon隔離DB `cs03_auth_sandbox` の `neon_auth."user"` を読み取り専用で集計し、`cs03-%@example.com` 形式の試験アカウントが6件存在することを確認（最新作成日時 `2026-11-17T15:08:57.901Z`）。個別試行とユーザーの対応関係は確定できず、失敗したUI試験で作成されたか否かは未断定。既存の試験ユーザーを削除・変更していない。
 
 `scripts/cs03-neon-auth-real-browser.mjs` を修正し、登録APIのHTTPステータス、UIメッセージ分類、Auth通信エラー件数、ページエラー件数を秘密情報なしで出力するようにした。**修正後の実ユーザー登録試験は未実行**。同試験は1実行につき新規ランダムなテストユーザーの作成を試行するため、無条件の再実行は避ける。ログにパスワード、JWT、メールアドレスを出力しない。コードはGitHubに保存したがNeon Functions/公開環境は未変更。
+
+## 登録API 403：実測と安全な修正（2026-11-18）
+開発PCの最新実登録試験で `SIGNUP_HTTP_STATUS=403`、`SIGNUP_UI_RESULT=ERROR_MESSAGE`、通信失敗0、ページエラー0、登録テストFAIL。Neon Auth設定は隔離ブランチの `allow_localhost=true`、`trusted_origins=[]`、メール/パスワード新規登録有効。GET疎通が200でも、Better AuthのCSRF/Origin検査があるPOSTが許可されることは意味しない。公式Neon Docsでは未許可Originからのサインイン・サインアップは `INVALID_ORIGIN` で拒否される。
+
+原因の有力候補：E2EテストのURLは `http://127.0.0.1:<動的ポート>` であり、Neonが開発用に許可する `localhost` と同一ではない場合がある。ただし前回403の応答本文エラーコードを記録していないため**原因確定ではない**。
+
+`scripts/cs03-neon-auth-real-browser.mjs` を `http://localhost:<動的ポート>` に固定（サーバー待受はループバック限定のまま）、登録HTTP拒否時は認められた少数のエラーコードだけを表示するよう改善。秘密情報や自由記述エラーメッセージは表示しない。**修正後のテストは未実行**。Neonの設定変更、実DBデータの削除、公開デプロイやGitHub Actionsは未実施。登録試験の再実行は新規試験ユーザー作成を伴う可能性がある。
