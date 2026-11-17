@@ -57,3 +57,10 @@
 - `CS03_TLS_LIVE=PASS`、`TEST_EXIT_CODE=0`。
 
 **SSL工程は隔離DBへの開発PC接続という範囲で CLOSED。** 公開APIの本番TLSやブラウザ→API間のCORS/認証/通信は別途要検証。
+
+## ブラウザ向けFunctions入口（2026-11-18、未デプロイ）
+`functions/cs03-progress.mjs` を追加。GitHub Pagesの固定オリジン `https://rapurasusann.github.io` のみCORS許可。ブラウザpreflight `OPTIONS` 応答、`GET/PUT` のみ、`Authorization: Bearer` 必須、JSONと上限チェック、`Cache-Control: no-store`。実際のJWT/DB権限判定は `src/progress-access.js` と `src/neon-jwt-verifier.mjs`、RLSに委任する。`Origin` は偽装可能であるためセキュリティ上の本人確認とは見なさない。
+
+`tests/cs03-browser-function.test.mjs` を追加、`npm run test:cs03` に編入。**未実行**。
+
+**デプロイ禁止の現時点のブロッカー**: Neon Functionsで自動注入される `DATABASE_URL` のロール/DBは必ずしも `cs03_progress_api/cs03_auth_sandbox` ではない。本入口はデフォルト接続URLを使わず、別途安全なサーバー環境変数 `CS03_TEST_DATABASE_URL` が必要。ブランチID環境変数 `CS03_ISOLATED_BRANCH_ID` も必要。これらなしでは初期化拒否。FunctionのネイティブURLは公開されるため、JWT認証に加え、正式公開前にエッジ側で適切な濫用防止・レート制御、応答制限、費用/無料枠監視が必要。ユーザー登録・ログイン・セッション維持・同期は未実装。Neon Functionsの無料プラン利用可能性は確認済み、ただし実際の利用量は未計測。
