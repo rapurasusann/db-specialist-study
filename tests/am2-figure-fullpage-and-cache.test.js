@@ -23,7 +23,7 @@ test('AM2 Q8/9/12: original full-page images, no distorted SVG crop', () => {
   const document = {
     createElement: createNode,
     createElementNS: (_ns,name) => createNode(name),
-    getElementById: id => id==='questionText'?createNode('section'):null
+    getElementById: id => id==='questionText'?createNode('section'):{classList:{toggle(){}}}
   };
   const context = {document, showQuestion(){}, year:2025,courseId:'am2',number:6};
   vm.createContext(context);
@@ -56,6 +56,6 @@ test('AM2 Q9/11/12/23: obsolete table and SQL transcriptions absent in source', 
 
 test('updated content scripts use versioned URLs, preserving other scripts',()=>{
   assert.match(html,/<script src="src\/am2-2025-questions\.js\?v=20261117b"><\/script>/);
-  assert.match(html,/<script src="src\/am2-figure-clips\.js\?v=20261117b"><\/script>/);
+  assert.match(html,/<script src="src\/am2-figure-clips\.js\?v=20261117c"><\/script>/);
   assert.match(html,/<script src="src\/am2-2025-explanations\.js"><\/script>/);
 });
