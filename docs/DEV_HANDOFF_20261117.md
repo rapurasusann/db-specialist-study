@@ -80,3 +80,13 @@
 - 単独PR #18 `https://github.com/rapurasusann/db-specialist-study/pull/18` をmainへsquashマージ完了。コミット `44606022dd3515e62a0d26050e008eccbb15bfff`。マージ後mainを再読込して変更反映PASS。
 - 現時点で実ブラウザの視覚確認と、ローカルNode全試験は未実施。GitHub Pagesの配信反映も未検証。ユーザーはコマンド実行不可、Actionsは禁止。学習履歴を保護し、画面の再読込を案内する。
 - **CS-03の未完成Neon同期コードはmainにはマージしていない。**
+
+## 2026-11-17 修正訂正：問6は上部の補助画像だけをHTML表に置換（現行仕様）
+
+- ユーザーから明確化：**画面下部の公式問題文PDF画像表示部は触らない**。問題文・選択肢欄に差し込まれた切り抜き図表だけを、再構成した受注データのHTML表に置換する。
+- PR #19で導入した `document.getElementById('localViewer').classList.toggle('hide',isOrderTable)` は要求範囲を逸脱していたため撤去。下部ビューア用CSS `#localViewer{display:block!important}` も以前の状態に復元。
+- 問6上部は9列×10行の `buildOrderTable()` を維持。下部の原本ページ画像は全問で従来どおり表示。問8等の画像もこの訂正で変更しない。
+- `index.html` の図表スクリプトに `?v=20261117d` を付け、旧コードを参照しないようにする。回帰テストで表10行・下部ビューア非干渉を確認するよう修正。
+- 独立PR #20 `https://github.com/rapurasusann/db-specialist-study/pull/20` をmainへsquashマージ（コミット `f8a7b3cf7a3a42bd78debc60768e9fe9f7c6cc54`）。mainソース再取得で表・ビューア不干渉・CSS復帰を確認PASS。
+- **Node一式と実ブラウザ外観の最終受入は未実施**。GitHub Actionsは使用していない。GitHub Pages配信反映は未確認。
+- **この節が問6の最新仕様**。これ以前の「問6で下部原本ビューアを隠す」という説明は誤り・撤回。
