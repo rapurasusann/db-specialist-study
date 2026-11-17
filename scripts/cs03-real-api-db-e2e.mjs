@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import {randomBytes} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {createCs03Runtime} from '../server/cs03-runtime.mjs';
+import {createNeonJwtVerifier} from '../src/neon-jwt-verifier.mjs';
 const require=createRequire(import.meta.url);
 const {request}=require(process.env.PLAYWRIGHT_MODULE_PATH);
 const AUTH='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech/cs03_auth_sandbox/auth';
@@ -34,6 +35,8 @@ let runtime;
 try{
  runtime=createCs03Runtime();
  const A=await signup('A');ctx.push(A.context);
+ const verify=createNeonJwtVerifier({jwksUrl:AUTH+'/.well-known/jwks.json',issuer:'https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech',audience:'https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech'});
+ const userA=(await verify(A.token)).userId;
  const B=await signup('B');ctx.push(B.context);
  const body={examCode:'db',questionId:QUESTION,data:{studyState:'cs03-e2e-a',nonce:id()},revision:1};
  let r=await runtime.handle(apiReq('PUT',A.token,body));
@@ -43,7 +46,7 @@ try{
  expect(r.status===200&&data?.data?.nonce===body.data.nonce,'A_READ_OWN');
  r=await runtime.handle(apiReq('GET',B.token,null,'?examCode=db&questionId='+QUESTION));
  expect(r.status===200&&(await r.json()).data===null,'B_CANNOT_READ_A');
- r=await runtime.handle(apiReq('GET',B.token,null,'?examCode=db&questionId='+QUESTION+'&userId='+encodeURIComponent(data.user_id||'')));
+ r=await runtime.handle(apiReq('GET',B.token,null,'?examCode=db&questionId='+QUESTION+'&userId='+encodeURIComponent(userA)));
  expect(r.status===200&&(await r.json()).data===null,'B_CANNOT_SPOOF_GET');
  r=await runtime.handle(apiReq('PUT',B.token,{...body,userId:'a1111111-1111-4111-8111-111111111111',revision:1,data:{studyState:'cs03-e2e-b',nonce:id()}}));
  expect(r.status===200,'B_WRITES_OWN_DESPITE_SPOOFED_USERID');
