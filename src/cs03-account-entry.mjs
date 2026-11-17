@@ -26,6 +26,12 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    const ui=mountCs03AccountPanel(root,client,{
     onSignedIn:async()=>{await scoped.bind();},
     onSignedOut:()=>{scoped.unbind();},
+    onListProgress:async()=>{
+     const listing=await scoped.list();
+     const records=Object.values(listing.records);
+     const learned=records.filter(r=>r.data?.level&&r.data.level!=='unseen').length;
+     return 'アカウント履歴 '+records.length+'件（学習済み '+learned+'件）。閲覧のみ。端末内履歴は変更しません。';
+    },
     onTransferProgress:async()=>{
      const id=window.CS03_SELECTED_QUESTION?.read();
      if(!id)throw Error('SELECTED_QUESTION_UNAVAILABLE');
