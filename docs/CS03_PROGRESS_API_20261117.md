@@ -77,3 +77,11 @@ Neon Connectで対象プロジェクトが `free_v3`、`aws-ap-southeast-1` で�
 `scripts/cs03-predeploy-guard.mjs` はネットワーク接続せず、プロジェクトID、試験ブランチID、明示承認マーカー、最小権限のDBロール/試験DB名/エンドポイント、TLS verify-full、パスワード存在を照合し、誤接続なら拒否する。CLIには `npm run check:cs03-deploy` を用いる。必要な環境変数 `NEON_PROJECT_ID=quiet-mouse-39990305`, `NEON_BRANCH_ID=br-snowy-truth-a162pmdt`, `CS03_ISOLATED_BRANCH_ID=br-snowy-truth-a162pmdt`, `CS03_DEPLOY_OPT_IN=ISOLATED_ONLY`、`CS03_TEST_DATABASE_URL`。秘密は絶対にGitHubやチャットへ送信しない。これらはデプロイ実行コマンドではなく検査条件の設計であり、実際のNeon Functionsデプロイ操作は**まだ実装/実施していない**。
 
 `tests/cs03-predeploy-guard.test.mjs` の12ケースを既存 `npm run test:cs03` に追加。**まだ開発PCで実行していない。** 現在のFunctionには共有的な厳密レート制限/WAFがないため、公開前の濫用防止と利用量監視が別途必要。Origin/CORSは本人確認にはならない。
+
+## デプロイ前安全テストの実行結果（2026-11-18）
+開発PCで、開発ブランチのコミット `2d22616` に対して `npm run test:cs03` を実行。
+- `tests=66`、`pass=66`、`fail=0`、`TEST_EXIT_CODE=0`
+- ブラウザAPI 13/13、デプロイ前ガード 12/12、SSLランタイム 10/10、JWT 10/10、アクセス制御 9/9、学習履歴API 12/12。
+- これはローカルでの模擬試験。公開エンドポイント・料金/呼び出し枠・実デプロイの動作は未確認。
+
+次のゲート：Neon Functionsにデプロイするコードの配布物と環境変数の仕様確認、最小権限のDB接続文字列のサーバー内設定、実HTTP通信試験、料金発生防止の運用策。事前に実証できていないコスト抑止策を「完了」と扱わない。デプロイ操作とGitHub Actions実行は未実施。
