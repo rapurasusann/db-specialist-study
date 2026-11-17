@@ -56,6 +56,21 @@ export function createCs03ScopedProgress({account}) {
   await verifyBound();
   return structuredClone(result.data);
  }
+ async function list(){
+  const user=await verifyBound();
+  if(typeof account.listProgress!=='function')throw Error('ACCOUNT_LIST_UNAVAILABLE');
+  const snapshot=await account.listProgress();
+  await verifyBound();
+  // No implicit legacy merge; show only a validated snapshot for this user.
+  if(!snapshot||typeof snapshot!=='object'||Array.isArray(snapshot))throw Error('INVALID_PROGRESS_LIST');
+  const out={};
+  for(const [id,record] of Object.entries(snapshot)){
+    if(!KEY.test(id)||!record?.data||typeof record.data!=='object'||Array.isArray(record.data))
+      throw Error('INVALID_PROGRESS_LIST');
+    out[id]=structuredClone(record);
+  }
+  return Object.freeze({userId:user,records:out});
+ }
  function unbind(){boundUser=null;loaded.clear();}
- return Object.freeze({bind,unbind,snapshot,pull,save});
+ return Object.freeze({bind,unbind,snapshot,pull,save,list});
 }
