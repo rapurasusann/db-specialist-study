@@ -148,3 +148,11 @@ Neon公式の Production hardening で、FunctionのネイティブURLはWAF/Clo
 コミット `5977f7f` の `scripts/cs03-account-browser-ui.mjs` をPlaywright Chromiumで実行し、以下すべてPASS：`ACCOUNT_DEFAULT_HIDDEN`、`ACCOUNT_PANEL_VISIBLE`、`SIGNUP_UI`、`PASSWORD_CLEARED_AFTER_SIGNUP`、`LOGIN_UI`、`LOGIN_DISABLES_FORM`、`SESSION_REFRESH_UI`、`LOGOUT_UI`、`LEGACY_RECORD_UNCHANGED`、`NO_EXTERNAL_REQUESTS`、`NO_PAGE_ERRORS`。
 総括 `CS03_ACCOUNT_BROWSER_UI=PASS` / `CS03_ACCOUNT_BROWSER_EXIT_CODE=0`。偽認証を使ったUI操作であり、本物のNeon Authログイン・公開API・マルチデバイス同期は未検証。
 次工程はNeon Auth実認証の隔離試験。課金・本番反映・GitHub Actions実行は引き続き禁止。
+
+## Neon Authの隔離ブランチ設定の読取確認・実通信ゲート（2026-11-18）
+
+Neon APIで隔離ブランチ `br-snowy-truth-a162pmdt` のAuth設定を読み取り確認。対象DB `cs03_auth_sandbox`、Managed Better Authが有効、メール/パスワード認証 `enabled=true`、新規登録 `allow_sign_up=true`、メール確認 `require_email_verification=false`、`allow_localhost=true`、登録済み信頼済み外部originは空、メール送信元はNeon共有SMTP。**設定の変更は一切実施していない**。
+
+`scripts/cs03-neon-auth-live-preflight.mjs` を追加：特定の隔離Authの公開JWKSに限りHTTPS GET（リダイレクト禁止）し、HTTP 200、公開鍵配列、秘密鍵パラメータの不在を検査する。**試験未実行**。本試験はユーザー登録・メール送信・ログイン・DB変更をしない。まず接続先の真正性・疎通を確認してから、本物のユーザーを作成する必要がある隔離認証試験へ段階的に進む。
+
+既存のCS03画面CSP `connect-src 'self'` と `cs03-config.js` の `previewEnabled:false` は維持。実Neon Authへのブラウザからの接続はまだ有効化していない。公開デプロイ、GitHub Actions、Neon Functionsデプロイは未実施。
