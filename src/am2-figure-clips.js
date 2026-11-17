@@ -28,16 +28,16 @@
   function buildOrderTable() {
     const figure = document.createElement('figure');
     figure.setAttribute('data-study-table','am2-q6');
-    figure.style.cssText = 'margin:14px 0;width:100%;max-width:100%;min-width:0;overflow:visible;border:1px solid #d5e2ed;border-radius:10px;background:#fff;padding:4px;';
+    figure.style.cssText = 'margin:14px 0;width:100%;max-width:100%;min-width:0;overflow:hidden;border:1px solid #d5e2ed;border-radius:10px;background:#fff;padding:4px;';
     const table = document.createElement('table');
     table.setAttribute('aria-label','問6 受注データの表');
-    table.style.cssText = 'border-collapse:collapse;table-layout:fixed;width:100%;max-width:100%;font-size:clamp(9px,1vw,12px);line-height:1.3;white-space:normal;';
+    table.style.cssText = 'border-collapse:collapse;table-layout:auto;width:max-content;max-width:none;font-size:12px;line-height:1.3;white-space:nowrap;transform-origin:top left;';
     const thead = document.createElement('thead');
     const headings = document.createElement('tr');
     for (const label of orderColumns) {
       const th = document.createElement('th');
       th.scope = 'col'; th.textContent = label;
-      th.style.cssText = 'padding:4px 2px;border:1px solid #c6d4e0;background:#eaf2fa;text-align:center;overflow-wrap:anywhere;word-break:break-word;';
+      th.style.cssText = 'padding:4px 2px;border:1px solid #c6d4e0;background:#eaf2fa;text-align:center;white-space:nowrap;';
       headings.append(th);
     }
     thead.append(headings);
@@ -47,13 +47,31 @@
       for (const value of row) {
         const td = document.createElement('td');
         td.textContent = value;
-        td.style.cssText = 'padding:4px 2px;border:1px solid #d2dee8;text-align:center;overflow-wrap:anywhere;word-break:break-word;';
+        td.style.cssText = 'padding:4px 2px;border:1px solid #d2dee8;text-align:center;white-space:nowrap;';
         tr.append(td);
       }
       tbody.append(tr);
     }
     table.append(thead,tbody);
-    figure.append(table);
+    const viewport = document.createElement('div');
+    viewport.style.cssText = 'width:100%;max-width:100%;overflow:hidden;position:relative;';
+    viewport.append(table);
+    figure.append(viewport);
+    // Fit the entire unwrapped table in the question panel without scrolling.
+    // On narrow screens the entire table shrinks, including its text.
+    function fitTable() {
+      const available = viewport.clientWidth;
+      const natural = table.offsetWidth;
+      if (!(available > 0 && natural > 0)) return;
+      const scale = Math.min(1, available / natural);
+      table.style.transform = 'scale('+scale+')';
+      viewport.style.height = (table.offsetHeight * scale)+'px';
+    }
+    if (typeof ResizeObserver !== 'undefined') {
+      const observer = new ResizeObserver(fitTable);
+      observer.observe(viewport);
+    }
+    requestAnimationFrame(fitTable);
     return figure;
   }
   const baseQuestion = showQuestion;
