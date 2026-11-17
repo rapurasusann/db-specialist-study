@@ -33,6 +33,15 @@ function createPgProgressStore(pool) {
         return rows[0]??null;
       });
     },
+    list({userId,examCode,limit,cursor}) {
+      return transaction(userId,async client=>{
+        const {rows}=await client.query(
+          'SELECT question_id, data, revision, updated_at FROM public.study_progress WHERE user_id=$1 AND exam_code=$2 AND question_id>$3 ORDER BY question_id LIMIT $4',
+          [userId,examCode,cursor??'',limit+1]);
+        const records=rows.slice(0,limit);
+        return {records,nextCursor:rows.length>limit?records.at(-1).question_id:null};
+      });
+    },
     write({userId,examCode,questionId,data,revision}) {
       return transaction(userId,async client=>{
         // Revision 1 starts a new record. Updates require exact next revision.
@@ -64,11 +73,20 @@ function createProgressHandler({verifyToken,pool}) {
     try {
       let result;
       if(request.method==='GET') {
-        result=await access.read(request.headers,{
-          examCode:url.searchParams.get('examCode'),
-          questionId:url.searchParams.get('questionId'),
-          userId:url.searchParams.get('userId') // deliberately ignored
-        });
+        if(url.searchParams.get('questionId')===null){
+          const rawLimit=url.searchParams.get('limit');
+          result=await access.list(request.headers,{
+            examCode:url.searchParams.get('examCode'),
+            limit:rawLimit===null?undefined:rawLimit,
+            cursor:url.searchParams.get('cursor')
+          });
+        }else{
+          result=await access.read(request.headers,{
+            examCode:url.searchParams.get('examCode'),
+            questionId:url.searchParams.get('questionId'),
+            userId:url.searchParams.get('userId') // deliberately ignored
+          });
+        }
       } else {
         // Hard limit before JSON parsing, but do not use body.id as trusted identity.
         const body=await request.text();
