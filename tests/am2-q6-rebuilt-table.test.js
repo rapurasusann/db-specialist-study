@@ -5,6 +5,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const clipScript = fs.readFileSync(path.join(__dirname,'..','src','am2-figure-clips.js'),'utf8');
+const html = fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 
 test('AM2 Q6: reconstructed accessible order table includes all 9 columns and 10 exact rows', () => {
   const inserted=[];
@@ -51,4 +52,10 @@ test('AM2 Q6: reconstructed accessible order table includes all 9 columns and 10
   context.showQuestion();
   assert.equal(hidden,false,'other questions must show the original viewer again');
   assert.equal(inserted[1].children[0].name,'img');
+});
+
+test('Q6 original page is actually hideable and table script is fresh', () => {
+  assert.match(html, /\.hide\{display:none!important\}/);
+  assert.doesNotMatch(html, /#localViewer\{display:block!important\}/);
+  assert.match(html, /src\/am2-figure-clips\.js\?v=20261117c/);
 });
