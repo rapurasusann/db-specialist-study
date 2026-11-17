@@ -46,6 +46,13 @@ test('AM2 Q6: reconstructed accessible order table includes all 9 columns and 10
   const rows=body.children.map(tr=>tr.children.map(cell=>cell.textContent));
   assert.equal(rows.length,10);
   for(const row of rows) assert.equal(row.length,9);
+  // Order number / price / quantity / amount are numeric. Codes and dates are text.
+  for (const [columnIndex,th] of head.children[0].children.entries()) {
+    assert.match(th.style.cssText,new RegExp('text-align:' + ([0,6,7,8].includes(columnIndex)?'right':'left')));
+  }
+  for (const tr of body.children) for (const [columnIndex,td] of tr.children.entries()) {
+    assert.match(td.style.cssText,new RegExp('text-align:' + ([0,6,7,8].includes(columnIndex)?'right':'left')));
+  }
   assert.deepEqual(rows[0],['1055','A7053','鈴木電気','2025-07-01','T035','テレビA','85,000','10','850,000']);
   assert.deepEqual(rows[4],['2030','B7060','中村商会','2025-07-03','S172','Blu-rayプレイヤーB','78,000','10','780,000']);
   assert.deepEqual(rows[9],['3090','B7060','中村商会','2025-07-04','T035','テレビA','85,000','2','170,000']);
@@ -68,5 +75,5 @@ test('AM2 Q6: reconstructed accessible order table includes all 9 columns and 10
 test('Q6 table does not modify original-page viewer and script is fresh', () => {
   assert.match(html, /#localViewer\{display:block!important\}/);
   assert.doesNotMatch(clipScript, /getElementById\('localViewer'\)/);
-  assert.match(html, /src\/am2-figure-clips\.js\?v=20261117f/);
+  assert.match(html, /src\/am2-figure-clips\.js\?v=20261117g/);
 });
