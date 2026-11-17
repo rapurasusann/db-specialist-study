@@ -111,3 +111,14 @@ Neon公式の Production hardening で、FunctionのネイティブURLはWAF/Clo
 ## 81件試験の初回実行・テスト記述修正（2026-11-18）
 開発PCでコミット `ac130a8` に対し `npm run test:cs03` を実行：`tests=81`、`pass=80`、`fail=1`。失敗は `tests/cs03-account-client.test.mjs` の `assert.doesNotMatch(...,'jwt-a')` に文字列を指定したためで、Node.jsのassert APIが要求するRegExpではなく `ERR_INVALID_ARG_TYPE` となった。新しいアカウント・履歴の動作不良を示すものではない。
 修正コミット `e4b9ff6` で `/jwt-a/` に修正。**修正後の81件再実行は未実施**。ローカル試験合格の判定は再実行結果待ち。デプロイと既存画面の改修は未実施。
+
+## 81件再実行・画面統合作業（2026-11-18）
+開発PCでコミット `485ab1f` に対して `npm run test:cs03` を再実行し `tests=81 / pass=81 / fail=0 / CS03_TEST_EXIT_CODE=0`。前回のassert引数の誤りは解消。
+
+既存 `index.html` に `cs03AccountPanel` を追加（ユーザー登録／ログイン／ログアウト／状態表示）。`cs03-config.js` は `previewEnabled:false` が初期値。プレビューローダーは有効化されるまで機能本体のバンドルを要求しない。これにより現行の問題表示、画像表示、端末内履歴、従来のSupabase用同期コードは変更しない。
+
+`src/cs03-account-ui.mjs` はNeon Authクライアントを注入するフォーム操作制御で、入力・登録・ログイン・ログアウト・状態復元を実装。自動移行・自動同期は意図的に禁止し、別アカウントへの旧履歴混入を防ぐ。`src/cs03-account-entry.mjs` とビルド用 `npm run build:cs03-account` を追加。ブラウザ用バンドル `src/cs03-account.bundle.js` はまだ生成・配備していない。
+
+`tests/cs03-account-ui.test.mjs`（6件）と `tests/cs03-page-integration.test.mjs`（4件）を `npm run test:cs03` に追加。既存81件＋新10件＝**91件、未実行**。
+
+**公開前残条件**：`@neon/auth` のブラウザバンドル生成と実動作確認、CSPの `connect-src` を実際の信頼済みAuth/API接続先だけに絞った調整、Authのtrusted domains、隔離Functionの費用・アクセス制限、学習画面の保存イベントとアカウント履歴の安全な連携、PC・スマホの同期E2E。現時点では開発ブランチのUI部品が増えただけで、実際の登録・ログインや同期はまだ使えない。Neon Functionのデプロイは未実施。
