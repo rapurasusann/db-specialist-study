@@ -63,6 +63,43 @@ try{
  expect(r.status===200,'B_WRITES_OWN_DESPITE_SPOOFED_USERID');
  r=await runtime.handle(apiReq('GET',A.token,null,'?examCode=db&questionId='+QUESTION));
  expect(r.status===200&&(await r.json()).data?.data?.nonce===body.data.nonce,'A_UNCHANGED_AFTER_B');
+ stage='API_A_SECOND_SAVE_FOR_PAGINATION';
+ const secondQuestion='2025:am2:38';
+ const secondData={studyState:'cs03-e2e-a-second',nonce:id()};
+ r=await runtime.handle(apiReq('PUT',A.token,{examCode:'db',questionId:secondQuestion,data:secondData,revision:1}));
+ expect(r.status===200,'A_SECOND_SAVE_FOR_LIST');
+ stage='API_A_LIST_FIRST_PAGE';
+ r=await runtime.handle(apiReq('GET',A.token,null,'?examCode=db&limit=1'));
+ const listAFirst=(await r.json()).data;
+ expect(r.status===200&&listAFirst?.records?.length===1&&listAFirst.records[0].question_id===QUESTION&&
+  listAFirst.records[0].data?.nonce===body.data.nonce&&listAFirst.nextCursor===QUESTION,'A_LIST_PAGE_ONE');
+ stage='API_A_LIST_SECOND_PAGE';
+ r=await runtime.handle(apiReq('GET',A.token,null,'?examCode=db&limit=1&cursor='+encodeURIComponent(listAFirst.nextCursor)));
+ const listASecond=(await r.json()).data;
+ expect(r.status===200&&listASecond?.records?.length===1&&listASecond.records[0].question_id===secondQuestion&&
+  listASecond.records[0].data?.nonce===secondData.nonce&&listASecond.nextCursor===null,'A_LIST_PAGE_TWO');
+ stage='API_B_LIST_WITH_SPOOFED_USER';
+ r=await runtime.handle(apiReq('GET',B.token,null,'?examCode=db&limit=100&userId='+encodeURIComponent(userA)));
+ const listB=(await r.json()).data;
+ expect(r.status===200&&listB?.records?.length===1&&listB.records[0].question_id===QUESTION&&
+  listB.records[0].data?.studyState==='cs03-e2e-b'&&
+  !listB.records.some(row=>row.data?.nonce===body.data.nonce||row.data?.nonce===secondData.nonce),
+  'B_LIST_CANNOT_ACCESS_A');
+ stage='API_A_LIST_AFTER_B';
+ r=await runtime.handle(apiReq('GET',A.token,null,'?examCode=db&limit=100'));
+ const listA=(await r.json()).data;
+ expect(r.status===200&&listA?.records?.length===2&&
+  listA.records.some(row=>row.data?.nonce===body.data.nonce)&&
+  listA.records.some(row=>row.data?.nonce===secondData.nonce),'A_LIST_UNCHANGED_AFTER_B');
+ stage='API_ANONYMOUS_LIST';
+ r=await runtime.handle(apiReq('GET',null,null,'?examCode=db&limit=100'));
+ expect(r.status===401,'ANONYMOUS_LIST_DENIED');
+ stage='API_FORGED_LIST';
+ r=await runtime.handle(apiReq('GET','invalid.invalid.invalid',null,'?examCode=db&limit=100'));
+ expect(r.status===401,'FORGED_LIST_TOKEN_DENIED');
+ stage='API_LIST_BAD_CURSOR';
+ r=await runtime.handle(apiReq('GET',A.token,null,'?examCode=db&limit=100&cursor=bad'));
+ expect(r.status===400,'BAD_LIST_CURSOR_DENIED');
  stage='API_ANONYMOUS';
  r=await runtime.handle(apiReq('GET',null,null,'?examCode=db&questionId='+QUESTION));
  expect(r.status===401,'ANONYMOUS_DENIED');
