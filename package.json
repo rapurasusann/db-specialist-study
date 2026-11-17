@@ -3,7 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "test:cs03": "node --test tests/progress-access.test.js tests/neon-jwt-verifier.test.mjs"
+    "test:cs03": "node --test tests/progress-access.test.js tests/neon-jwt-verifier.test.mjs tests/progress-api.test.js"
   },
-  "dependencies": { "jose": "^6.0.0" }
+  "dependencies": {
+    "jose": "^6.0.0",
+    "pg": "^8.16.3"
+  }
 }
