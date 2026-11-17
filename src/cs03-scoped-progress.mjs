@@ -46,7 +46,13 @@ export function createCs03ScopedProgress({account}) {
   // Save is permitted only after the caller explicitly loaded this question.
   // A hidden pre-save pull could silently overwrite a newer remote value.
   if(!loaded.has(id))throw new Error('REMOTE_READ_REQUIRED');
-  const result=await account.save(id,structuredClone(data));
+  let result;
+  try{result=await account.save(id,structuredClone(data));}
+  catch(error){
+   // Any failed save invalidates the last explicit read, including conflicts.
+   loaded.delete(id);
+   throw error;
+  }
   await verifyBound();
   return structuredClone(result.data);
  }
