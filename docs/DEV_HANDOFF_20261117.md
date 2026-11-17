@@ -193,3 +193,11 @@
 - mainの `index.html` とDraftブランチの `index.html` を比較。新規アカウントパネルと追加JS読み込みを除いても一致しない。例：CSP inline-script SHA256がmain `OljkrvRt...`、Draft `FJkDWFIm...`。これは既存Draftブランチがmainと異なることを示す。差分全体の安全性は未確認。
 - **Draft PR #14はマージ禁止を維持。** アカウント画面は本番公開しない。公開版との差分を整理し、必要ならmain最新から専用の小さいPRに切り出して既存機能への影響を検証する。
 - 追加料金が発生する操作なし。Neon新規computeなし。GitHub Actions不使用。
+
+## 2026-11-17 CS-03 アカウント画面を最新mainから分離
+
+- 新規ブランチ `feat/cs03-account-preview-isolated-20261117` を最新mainから作成。Draft PR #14の4ファイル（`src/account-validation.js`、`src/account-form-preview.js`、`tests/account-validation.test.js`、`tests/account-form-preview.test.js`）を移植。`index.html` にはアカウント試作パネルと2本の外部JS読み込みのみ追加。
+- GitHub compare(main...新ブランチ)：ahead 5、behind 0、差分ファイル **5件のみ**（index.html + 上記4件）。Neon同期コード・旧Draftの他差分は混入なし。
+- 新ブランチの保存済みテスト13件をV8互換スタブで実行し **13/13 PASS**。Node正式ランナー／実ブラウザは未試験。
+- 新ブランチはPR未作成・未マージ。**Draft PR #14は引き続きマージ禁止**。公開サイト・main・Neon本番・学習履歴無変更。追加compute・追加料金なし、Actions不使用。
+- 次：この専用ブランチを単独PRとしてレビューし、実ブラウザ受入と本番公開の可否を別途判定する。Neon実認証・端末間同期は未完成。
