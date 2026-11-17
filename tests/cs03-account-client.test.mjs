@@ -4,7 +4,8 @@ import {createCs03AccountClient} from '../src/cs03-account-client.mjs';
 const A='a1111111-1111-4111-8111-111111111111',B='b2222222-2222-4222-8222-222222222222';
 const memory=()=>{const map=new Map();return {getItem:k=>map.get(k)??null,setItem:(k,v)=>map.set(k,v),map};};
 function fixture(){
- let user=A,token='jwt-a',revision=0,record=null,calls=[];
+ let user=A,token='jwt-a',calls=[];
+ const records=new Map();
  const storage=memory();
  const authClient={
   signUp:{email:async fields=>({data:{user:{id:A},fields}})},
@@ -15,11 +16,16 @@ function fixture(){
  };
  const fetcher=async (url,opt)=>{
   calls.push({url:String(url),method:opt.method,headers:opt.headers,credentials:opt.credentials});
-  if(opt.method==='GET')return Response.json({data:record?{data:record,revision,updated_at:'2026-11-18T00:00:00Z'}:null});
+  const userId=opt.headers.authorization==='Bearer jwt-b'?B:A;
+  const recordId=opt.method==='GET'?new URL(url).searchParams.get('questionId'):JSON.parse(opt.body).questionId;
+  const key=userId+':'+recordId;
+  const prior=records.get(key);
+  if(opt.method==='GET')return Response.json({data:prior?{data:prior.data,revision:prior.revision,updated_at:'2026-11-18T00:00:00Z'}:null});
   const body=JSON.parse(opt.body);
-  if(body.revision!==revision+1)return Response.json({error:'Conflict'},{status:409});
-  revision++;record=body.data;
-  return Response.json({data:{data:record,revision,updated_at:'2026-11-18T00:00:00Z'}});
+  if(body.revision!==(prior?.revision??0)+1)return Response.json({error:'Conflict'},{status:409});
+  const next={revision:(prior?.revision??0)+1,data:body.data};
+  records.set(key,next);
+  return Response.json({data:{data:next.data,revision:next.revision,updated_at:'2026-11-18T00:00:00Z'}});
  };
  const client=createCs03AccountClient({authClient,apiUrl:'https://api.example.invalid/',fetcher,storage});
  return {client,storage,calls,changeUser:id=>{user=id;token=id===B?'jwt-b':'jwt-a'}};
@@ -59,7 +65,7 @@ test('different account does not reuse previous user local progress',async()=>{
  f.changeUser(B);
  assert.deepEqual(f.client.readLocal(B),{});
  const other=await f.client.save('2025:am2:5',{level:'learning'});
- assert.equal(other.revision,2); // mock shared server, real RLS separates rows
+ assert.equal(other.revision,1);
  assert.ok(f.client.readLocal(A)['2025:am2:4']);
  assert.ok(f.client.readLocal(B)['2025:am2:5']);
  assert.equal(f.calls.at(-1).headers.authorization,'Bearer jwt-b');
@@ -82,8 +88,7 @@ test('token and password are not persisted in progress storage',async()=>{
  assert.doesNotMatch([...f.storage.map.values()].join(''),'jwt-a');
 });
 test('reject unsafe API targets including HTTP and query endpoints',()=>{
- const f=fixture();
+ const minimal={signUp:{email(){}},signIn:{email(){}},getSession(){},token(){},signOut(){}};
  for(const url of ['http://api.example.invalid/','https://user:pw@api.example.invalid/','https://api.example.invalid/?token=abc'])
-  assert.throws(()=>createCs03AccountClient({authClient:{},apiUrl:url}),/AUTH_CLIENT_REQUIRED/);
- assert.ok(f.client);
+  assert.throws(()=>createCs03AccountClient({authClient:minimal,apiUrl:url}),/API_NOT_CONFIGURED/);
 });
