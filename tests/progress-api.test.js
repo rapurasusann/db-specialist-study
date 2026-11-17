@@ -11,7 +11,7 @@ function mockDb({noRows=false,throwOnSelect=false}={}) {
       calls.push({sql,values});
       if(throwOnSelect&&/^SELECT data/.test(sql))throw new Error('secret database failure');
       if(/^SELECT data/.test(sql))return {rows:noRows?[]:[{revision:1,data:{ok:true}}]};
-      if(/^INSERT INTO/.test(sql))return {rows:noRows?[]:[{revision:1,data:{ok:true}}]};
+      if(/^INSERT INTO|^UPDATE public.study_progress/.test(sql))return {rows:noRows?[]:[{revision:1,data:{ok:true}}]};
       return {rows:[]};
     },
     release:()=>calls.push({sql:'RELEASE'})
@@ -53,7 +53,7 @@ test('A PUT with userId=B writes under verified A only',async()=>{
  const res=await handle(req('PUT','valid-a',{examCode:'db',questionId:'2025:am2:6',userId:B,data:{ok:true},revision:1}));
  assert.equal(res.status,200);
  const write=calls.find(x=>/^INSERT INTO/.test(x.sql));
- assert.deepEqual(write.values,[A,'db','2025:am2:6','{"ok":true}',1]);
+ assert.deepEqual(write.values,[A,'db','2025:am2:6','{"ok":true}']);
 });
 test('anonymous request never opens a DB connection',async()=>{
  const {handle,calls}=setup();
@@ -91,4 +91,19 @@ test('invalid method never uses DB',async()=>{
  const {handle,calls}=setup();
  assert.equal((await handle(new Request('https://localhost/progress',{method:'DELETE'}))).status,404);
  assert.equal(calls.length,0);
+});
+
+test('second write requires the exact next revision',async()=>{
+ const {handle,calls}=setup();
+ const response=await handle(req('PUT','valid-a',{examCode:'db',questionId:'2025:am2:6',data:{ok:true},revision:2}));
+ assert.equal(response.status,200);
+ const update=calls.find(c=>/^UPDATE public.study_progress/.test(c.sql));
+ assert.ok(update);assert.deepEqual(update.values,[A,'db','2025:am2:6','{"ok":true}',2]);
+ assert.match(update.sql,/revision=\\$5-1/);
+});
+
+test('bad oversized JSON is rejected before DB access',async()=>{
+ const {handle,calls}=setup();
+ const response=await handle(req('PUT','valid-a',{examCode:'db',questionId:'2025:am2:6',data:{text:'x'.repeat(21000)},revision:1}));
+ assert.equal(response.status,400);assert.equal(calls.length,0);
 });
