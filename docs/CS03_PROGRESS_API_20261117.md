@@ -200,3 +200,6 @@ Neon隔離DB `cs03_auth_sandbox` の `neon_auth."user"` を読み取り専用で
 `tests/cs03-scoped-progress.test.mjs`（10件）を既存 `npm run test:cs03` に追加。対象は旧履歴非混入、A/B分離、読み取り前書込禁止、競合拒否、アカウント切替中の書込禁止、保存失敗後の再読み取りなど。従来91件と合わせて**101件の予定だが、この新テストは未実行**。
 
 **重要：** このモジュールはまだ既存 `index.html` の `progress` 変数や保存イベントに接続していない。別端末の全問同期・安全な本番API配信・UI表示切替は未完成。Neon Functionsデプロイ、公開アプリ変更、GitHub Actionsはいずれも未実施。
+
+## 開発PCで101/101テスト合格（2026-11-18）
+隔離ブランチのコミット `ec063ae` で `npm run test:cs03` を実行。101 tests, 101 passed, 0 failed, `CS03_TEST_EXIT_CODE=0`。直前の `github.com` DNS解決失敗は再試行時に解消。安全なアカウント別保存のロジック試験は合格。ただし学習画面との実連携と端末間同期はまだ未実装・未検証。
