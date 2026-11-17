@@ -140,3 +140,10 @@
 - **追加料金を発生させないことを必須条件とする。** Neonの有料プランへの変更、有料リソースの作成、従量課金につながり得る操作は、無料枠内と確認できない限り実行しない。
 - 既存の隔離ブランチ `br-snowy-truth-a162pmdt` は `no_compute=true` で作成済み。**新規computeは未作成**。今後、実行環境を作る前に料金・無料枠・既存使用量を確認する。料金が確実にゼロと判断できない場合は停止する。
 - 代替としてGitHubのソース・設計・テスト作成・読み取り検証を優先する。GitHub Actionsは従来どおり無断使用しない。本番設定・履歴は無断変更しない。
+
+## 2026-11-17 Neon無料枠・実行環境の読み取り確認
+
+- Neon project `quiet-mouse-39990305` の `describe_project` にて owner.subscription_type=`free_v3`、owner.branches_limit=10、project branch_logical_size_limit_bytes=1073741824を確認。課金ゼロを保証する情報ではない。
+- `list_postgres_endpoints`：既存実行環境は本番mainの1件のみ（0.25〜1 CU、active）。隔離ブランチ `br-snowy-truth-a162pmdt` にcomputeなし。
+- 追加料金禁止を優先し、**隔離ブランチのcomputeを作成しない**。Auth/Data APIのプロビジョニングも未実施。無料枠と実費ゼロが明確になるまで保留。
+- 次はGitHubの設計・ソース・テストを費用のかからない範囲で進める。本番環境は無変更。
