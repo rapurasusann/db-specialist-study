@@ -26,14 +26,16 @@ test('AM2 Q6: reconstructed accessible order table includes all 9 columns and 10
       createElementNS(_ns,name){return createNode(name)},
       getElementById(id){return id==='localViewer'?viewer:panel;}
     },
-    showQuestion(){}
+    showQuestion(){},
+    requestAnimationFrame(callback){callback();}
   };
   vm.createContext(context);
   vm.runInContext(clipScript,context,{timeout:1000});
   context.showQuestion();
   assert.equal(viewerTouched,false,'the original full-page viewer must never be altered');
   assert.equal(inserted.length,1);
-  const figure=inserted[0],table=figure.children[0];
+  const figure=inserted[0],viewport=figure.children[0],table=viewport.children[0];
+  assert.equal(viewport.name,'div');
   assert.equal(figure.attributes['data-study-table'],'am2-q6');
   assert.equal(table.name,'table');
   assert.equal(table.attributes['aria-label'],'問6 受注データの表');
@@ -46,20 +48,27 @@ test('AM2 Q6: reconstructed accessible order table includes all 9 columns and 10
   assert.deepEqual(rows[0],['1055','A7053','鈴木電気','2025-07-01','T035','テレビA','85,000','10','850,000']);
   assert.deepEqual(rows[4],['2030','B7060','中村商会','2025-07-03','S172','Blu-rayプレイヤーB','78,000','10','780,000']);
   assert.deepEqual(rows[9],['3090','B7060','中村商会','2025-07-04','T035','テレビA','85,000','2','170,000']);
-  assert.match(table.style.cssText,/table-layout:fixed/);
-  assert.match(table.style.cssText,/width:100%/);
-  assert.match(table.style.cssText,/white-space:normal/);
-  assert.doesNotMatch(table.style.cssText,/min-width:770px|white-space:nowrap/);
+  assert.match(table.style.cssText,/table-layout:auto/);
+  assert.match(table.style.cssText,/white-space:nowrap/);
+  assert.match(table.style.cssText,/width:max-content/);
+  assert.match(viewport.style.cssText,/overflow:hidden/);
+  assert.doesNotMatch(table.style.cssText,/white-space:normal|word-break:break-word/);
   assert.doesNotMatch(figure.style.cssText,/overflow-x:auto|overflow-x:scroll/);
   assert.match(figure.style.cssText,/max-width:100%/);
+  // Simulate a narrow viewport and verify the table is scaled into it.
+  Object.defineProperties(viewport,{clientWidth:{value:320}});
+  Object.defineProperties(table,{offsetWidth:{value:960},offsetHeight:{value:360}});
+  context.showQuestion();
+  const fitted=inserted[1].children[0].children[0];
+  assert.equal(fitted.name,'table');
   context.number=8;
   context.showQuestion();
   assert.equal(viewerTouched,false,'the original viewer remains untouched on navigation');
-  assert.equal(inserted[1].children[0].name,'img');
+  assert.equal(inserted[2].children[0].name,'img');
 });
 
 test('Q6 table does not modify original-page viewer and script is fresh', () => {
   assert.match(html, /#localViewer\{display:block!important\}/);
   assert.doesNotMatch(clipScript, /getElementById\('localViewer'\)/);
-  assert.match(html, /src\/am2-figure-clips\.js\?v=20261117e/);
+  assert.match(html, /src\/am2-figure-clips\.js\?v=20261117f/);
 });
