@@ -56,4 +56,5 @@ export async function handleBrowserRequest(request, runtimeFactory=getRuntime) {
   return response(503,'Service Unavailable',headers);
  }
 }
-export default {fetch:handleBrowserRequest};
+// Neon calls fetch(request, env, ctx); never interpret env as the test runtime factory.
+export default {fetch(request){return handleBrowserRequest(request);}};
