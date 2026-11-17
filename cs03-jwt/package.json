@@ -1,9 +1,0 @@
-{
-  "name": "cs03-jwt-security-tests",
-  "private": true,
-  "version": "0.0.0",
-  "description": "Isolated test dependency for Neon Auth JWT verifier",
-  "type": "module",
-  "scripts": { "test": "node --test ../tests/neon-jwt-verifier.test.mjs" },
-  "dependencies": { "jose": "^6.0.0" }
-}
