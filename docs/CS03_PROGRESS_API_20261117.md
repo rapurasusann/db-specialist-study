@@ -31,3 +31,10 @@
 注意: `pg-connection-string` が `sslmode=require` の互換動作について将来のセキュリティ挙動変更を警告した。現行バージョンでのE2E PASSに影響はないが、今後は `sslmode=verify-full` を明示して再検証すること。
 
 次: パスワード非表示での接続設定・証跡管理、SSLモード厳密指定、公開APIの認証/CORS/濫用対策、ブラウザでの登録・ログイン・ログアウト・永続化、マルチデバイス同期の試験。正式公開とPR統合は未承認のまま。
+
+## TLS接続の明示的な受入条件（2026-11-18）
+`pg` は `sslmode=require` 等の将来の互換性警告を表示する。これを曖昧にせず、試験用実行環境の開始条件を `sslmode=verify-full` に固定した（`server/cs03-runtime.mjs`）。`uselibpqcompat` 等の上書き設定も拒否する。
+
+`scripts/cs03-check-db-config.mjs` はオフラインで同条件を検証する。`scripts/cs03-live-tls-check.mjs` は**読み取り専用**で実接続後に `current_database()`、`current_user`、`pg_stat_ssl` の自セッションを照合する。秘密情報は出力しない。追加のNeon Authアカウントは作らない。
+
+追加単体テスト `tests/cs03-runtime-ssl.test.mjs` は、必須TLSモード、別DB・別権限ロールの拒否を確認する。これらの新試験はまだ開発PCで未実施。実DB疎通も再試験前。
