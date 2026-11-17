@@ -10,6 +10,7 @@ export function assessCs03Deploy(env) {
  requireTrue(env.CS03_ISOLATED_BRANCH_ID===expectedBranch,'ISOLATED_MARKER');
  requireTrue(env.NEON_PROJECT_ID==='quiet-mouse-39990305','PROJECT_ID');
  requireTrue(env.CS03_DEPLOY_OPT_IN==='ISOLATED_ONLY','DEPLOY_OPT_IN');
+ requireTrue(typeof env.CS03_ORIGIN_SECRET==='string'&&Buffer.byteLength(env.CS03_ORIGIN_SECRET,'utf8')>=32,'ORIGIN_SECRET');
  const raw=env.CS03_TEST_DATABASE_URL;
  let url=null;
  try{if(raw)url=new URL(raw)}catch{}
