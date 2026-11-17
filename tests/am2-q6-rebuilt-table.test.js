@@ -9,7 +9,7 @@ const html = fs.readFileSync(path.join(__dirname,'..','index.html'),'utf8');
 
 test('AM2 Q6: reconstructed accessible order table includes all 9 columns and 10 exact rows', () => {
   const inserted=[];
-  let hidden=false;
+  let viewerTouched=false;
   const createNode = name => ({
     name,style:{cssText:''},children:[],attributes:{},textContent:'',
     append(...items){this.children.push(...items);},
@@ -17,7 +17,7 @@ test('AM2 Q6: reconstructed accessible order table includes all 9 columns and 10
     querySelector(q){return q==='h3' ? title : null}
   });
   const title={insertAdjacentElement(where,node){assert.equal(where,'afterend');inserted.push(node);}};
-  const viewer={classList:{toggle(name,value){assert.equal(name,'hide');hidden=value;}}};
+  const viewer={classList:{toggle(){viewerTouched=true;}}};
   const panel=createNode('panel');
   const context={
     year:2025,courseId:'am2',number:6,
@@ -31,7 +31,7 @@ test('AM2 Q6: reconstructed accessible order table includes all 9 columns and 10
   vm.createContext(context);
   vm.runInContext(clipScript,context,{timeout:1000});
   context.showQuestion();
-  assert.equal(hidden,true,'original full page must be hidden for Q6');
+  assert.equal(viewerTouched,false,'the original full-page viewer must never be altered');
   assert.equal(inserted.length,1);
   const figure=inserted[0],table=figure.children[0];
   assert.equal(figure.attributes['data-study-table'],'am2-q6');
@@ -50,12 +50,12 @@ test('AM2 Q6: reconstructed accessible order table includes all 9 columns and 10
   assert.match(figure.style.cssText,/overflow-x:auto/);
   context.number=8;
   context.showQuestion();
-  assert.equal(hidden,false,'other questions must show the original viewer again');
+  assert.equal(viewerTouched,false,'the original viewer remains untouched on navigation');
   assert.equal(inserted[1].children[0].name,'img');
 });
 
-test('Q6 original page is actually hideable and table script is fresh', () => {
-  assert.match(html, /\.hide\{display:none!important\}/);
-  assert.doesNotMatch(html, /#localViewer\{display:block!important\}/);
-  assert.match(html, /src\/am2-figure-clips\.js\?v=20261117c/);
+test('Q6 table does not modify original-page viewer and script is fresh', () => {
+  assert.match(html, /#localViewer\{display:block!important\}/);
+  assert.doesNotMatch(clipScript, /getElementById\('localViewer'\)/);
+  assert.match(html, /src\/am2-figure-clips\.js\?v=20261117d/);
 });

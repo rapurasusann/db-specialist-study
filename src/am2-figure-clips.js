@@ -97,9 +97,7 @@
     baseQuestion();
     const key = String(year)+':'+String(courseId)+':'+String(number);
     const isOrderTable = key === '2025:am2:6';
-    // For Q6 the reconstructed table is the only in-page figure. The original
-    // booklet remains available via the existing official-PDF link.
-    document.getElementById('localViewer').classList.toggle('hide',isOrderTable);
+    // Only replace the small inset figure; never alter the original page viewer.
     const selected = clips[key];
     if (!isOrderTable && !selected) return;
     const panel = document.getElementById('questionText');
