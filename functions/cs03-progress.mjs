@@ -1,6 +1,7 @@
 // Neon Functions adapter for CS-03. Kept undeployed until security gates pass.
 // Requires CS03_TEST_DATABASE_URL with the least-privileged cs03_progress_api role.
 import {createCs03Runtime} from '../server/cs03-runtime.mjs';
+import {timingSafeEqual} from 'node:crypto';
 const ORIGIN='https://rapurasusann.github.io';
 const METHODS='GET, PUT, OPTIONS';
 const HEADERS='authorization, content-type';
@@ -23,7 +24,15 @@ function getRuntime() {
  if(!runtime) runtime=createCs03Runtime();
  return runtime;
 }
-export async function handleBrowserRequest(request, runtimeFactory=getRuntime) {
+function verifyGatewaySecret(request,secret) {
+ if(typeof secret!=='string'||Buffer.byteLength(secret,'utf8')<32)return false;
+ const received=request.headers.get('x-secret');
+ if(received===null)return false;
+ const expectedBytes=Buffer.from(secret,'utf8');
+ const actualBytes=Buffer.from(received,'utf8');
+ return expectedBytes.length===actualBytes.length&&timingSafeEqual(expectedBytes,actualBytes);
+}
+export async function handleBrowserRequest(request, runtimeFactory=getRuntime, secret=process.env.CS03_ORIGIN_SECRET) {
  const url=new URL(request.url);
  const headers=corsHeaders(request);
  if(request.headers.get('origin')!==ORIGIN)
@@ -37,6 +46,10 @@ export async function handleBrowserRequest(request, runtimeFactory=getRuntime) {
  }
  if(!['GET','PUT'].includes(request.method))
   return response(405,'Method Not Allowed',headers);
+ // A native Neon invocation URL is public. Reject any request not sent by
+ // the trusted edge gateway, even if it carries a valid user JWT and Origin.
+ if(!verifyGatewaySecret(request,secret))
+  return response(401,'Unauthorized',headers);
  if(!request.headers.get('authorization')?.startsWith('Bearer '))
   return response(401,'Unauthorized',headers);
  if(request.method==='PUT'){
@@ -57,4 +70,5 @@ export async function handleBrowserRequest(request, runtimeFactory=getRuntime) {
  }
 }
 // Neon calls fetch(request, env, ctx); never interpret env as the test runtime factory.
+// The browser never receives CS03_ORIGIN_SECRET.
 export default {fetch(request){return handleBrowserRequest(request);}};
