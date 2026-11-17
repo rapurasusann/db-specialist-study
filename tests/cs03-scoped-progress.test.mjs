@@ -106,3 +106,21 @@ test('failed write requires a fresh explicit read before retry',async()=>{
  await scoped.save(Q,{level:'mastered'});
  assert.equal(f.db.get(A+':'+Q).data.level,'mastered');
 });
+
+test('full history list returns authenticated account records without local merge',async()=>{
+ const f=setup();
+ f.account.listProgress=async()=>({'2025:am2:4':{data:{level:'review'},revision:1}});
+ const scoped=createCs03ScopedProgress({account:f.account});
+ await scoped.bind();
+ const result=await scoped.list();
+ assert.equal(result.userId,A);
+ assert.equal(result.records[Q].data.level,'review');
+ assert.equal(f.local.size,0);
+});
+test('full history list refuses account switch mid-request',async()=>{
+ const f=setup();
+ f.account.listProgress=async()=>{f.change(B);return {'2025:am2:4':{data:{level:'review'},revision:1}};};
+ const scoped=createCs03ScopedProgress({account:f.account});
+ await scoped.bind();
+ await assert.rejects(scoped.list(),/ACCOUNT_CHANGED/);
+});
