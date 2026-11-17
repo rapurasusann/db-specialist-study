@@ -38,3 +38,10 @@
 `scripts/cs03-check-db-config.mjs` はオフラインで同条件を検証する。`scripts/cs03-live-tls-check.mjs` は**読み取り専用**で実接続後に `current_database()`、`current_user`、`pg_stat_ssl` の自セッションを照合する。秘密情報は出力しない。追加のNeon Authアカウントは作らない。
 
 追加単体テスト `tests/cs03-runtime-ssl.test.mjs` は、必須TLSモード、別DB・別権限ロールの拒否を確認する。これらの新試験はまだ開発PCで未実施。実DB疎通も再試験前。
+
+## SSL確認方式の修正（2026-11-18）
+開発PCの実試験で `sslmode=verify-full`、DB接続先、ユーザーロールはPASS。一方 `pg_stat_ssl.ssl` がFALSEとなった。Neonの `-pooler` エンドポイントを経由しており、これは**PostgreSQLバックエンド側**の接続状態であって、必ずしもNode.js→Neonプロキシ間のTLSを証明しない。
+
+`scripts/cs03-live-tls-check.mjs` の合否条件を修正。実際の `pg` 接続 `client.connection.stream` について `encrypted`、`authorized`、ピア証明書の存在、`tls.checkServerIdentity(host, peerCertificate)` を検証する。DB側の `pg_stat_ssl` は参考値として出力するのみ。接続情報/証明書全文は表示しない。
+
+新方式の開発PCでの結果は未取得。合格までSSL工程をCLOSEDにしない。
