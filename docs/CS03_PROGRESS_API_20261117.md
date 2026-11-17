@@ -135,3 +135,11 @@ Neon公式の Production hardening で、FunctionのネイティブURLはWAF/Clo
 コミット `0b3a216` にて、ローカルPlaywright Chromium + 127.0.0.1の一時配信による `scripts/cs03-browser-smoke.mjs` を実行。結果：`BUNDLE_EXISTS=PASS`、`PAGE_TITLE=PASS`、`LEGACY_STUDY_VISIBLE=PASS`、`LEGACY_BACKUP_VISIBLE=PASS`、`ACCOUNT_PANEL_DEFAULT_HIDDEN=PASS`、`PREVIEW_DISABLED=PASS`、`NO_PAGE_SCRIPT_ERRORS=PASS`、`CS03_BROWSER_SMOKE=PASS`、`CS03_BROWSER_TEST_EXIT_CODE=0`。外部通信遮断。これは**アカウント機能OFF状態のブラウザ表示スモークのみ**で、登録・ログインUIの実表示、Neon Authとの通信、端末間同期は未検証。
 
 次に、APIへの接続を行わない隔離プレビューの実表示・入力・ログアウト・非干渉試験を整備する。既存の学習履歴（`db-study-progress-v1`）には手を加えない。本番反映/Neon Functionsデプロイ/GitHub Actionsは未実施。
+
+## ブラウザによるアカウント画面の実操作試験（2026-11-18、未実行）
+
+`scripts/cs03-account-browser-ui.mjs` を追加。Playwright Chromiumで開発PCのループバック配信を開き、実際の `src/cs03-account-ui.mjs` を動的import、試験用の偽認証オブジェクトを注入して、非表示→試験欄表示→ユーザー登録→パスワード消去→ログイン→状態復元→ログアウトをUI操作で確認する。ブラウザのネットワークリクエストは127.0.0.1の当該サーバー以外すべて遮断し、Neon Auth、DB、公開API、外部サイトには接続しない。
+
+`db-study-progress-v1` にサンプル学習履歴を事前保存し、全操作後に同一内容のままかを比較する。新規のブラウザ操作試験は**未実行**であり、動作合格は結果待ち。Neon Authの本物のユーザー登録/ログイン、公開APIへの保存、端末間同期はまだ対象外。
+
+既存の81件/91件のテストとローカル非表示スモークは合格済み。試験データを実環境へ書かない。本番反映、Neon Functionsデプロイ、GitHub Actionsは実施しない。
