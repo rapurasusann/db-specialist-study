@@ -185,3 +185,11 @@ Neon隔離DB `cs03_auth_sandbox` の `neon_auth."user"` を読み取り専用で
 原因の有力候補：E2EテストのURLは `http://127.0.0.1:<動的ポート>` であり、Neonが開発用に許可する `localhost` と同一ではない場合がある。ただし前回403の応答本文エラーコードを記録していないため**原因確定ではない**。
 
 `scripts/cs03-neon-auth-real-browser.mjs` を `http://localhost:<動的ポート>` に固定（サーバー待受はループバック限定のまま）、登録HTTP拒否時は認められた少数のエラーコードだけを表示するよう改善。秘密情報や自由記述エラーメッセージは表示しない。**修正後のテストは未実行**。Neonの設定変更、実DBデータの削除、公開デプロイやGitHub Actionsは未実施。登録試験の再実行は新規試験ユーザー作成を伴う可能性がある。
+
+## 実Neon AuthブラウザE2E 合格（2026-11-18）
+
+開発PCでコミット `3c3903e` の隔離実認証試験を `http://localhost:<一時ポート>` で実行。結果 `SIGNUP_HTTP_STATUS=200`、`SIGNUP_UI_RESULT=SUCCESS_MESSAGE`、`SIGNUP_AUTH_NETWORK_FAILURES=0`、`SIGNUP_BROWSER_PAGE_ERRORS=0`、`NEON_AUTH_REAL_SIGNUP=PASS`、`NEON_AUTH_REAL_LOGIN=PASS`、`NEON_AUTH_SESSION_RESTORED=PASS`、`NEON_AUTH_REAL_LOGOUT=PASS`、`ONLY_ISOLATED_AUTH_NETWORK=PASS`、`NO_BROWSER_RUNTIME_ERRORS=PASS`、`CS03_NEON_AUTH_REAL_E2E=PASS`、`CS03_REAL_AUTH_EXIT_CODE=0`。
+
+`127.0.0.1` の以前の登録HTTP403は、localhostへの切替後200になった。接続元Originの違いが有力原因だが、403応答本文の正確なエラーコードは以前記録していないため厳密な原因特定には至っていない。隔離Authにランダムな試験ユーザー1件が実際に登録された（`TEST_USER_CREATED=YES`）。ユーザー削除はしていない。Neon Functionsや本番アプリには変更なし。
+
+次は、ブラウザの現行学習記録 `db-study-progress-v1` と認証済みユーザー別 `db-study-cs03-progress-<user UUID>` の取り扱いを決めて、既存履歴が誤アカウントへ混入しない安全な保存/取得の接続を実装する。現時点の `src/cs03-account-client.mjs` のGET/PUTキー（`examCode=db`、`questionId=年:科目:番号`、`revision`）は `src/progress-api.js` と形式互換だが、学習ページ側からの呼出しはまだ未接続。公開URLからの学習履歴同期も未実装・未検証。
