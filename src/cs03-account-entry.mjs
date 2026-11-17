@@ -8,6 +8,7 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    const {createAuthClient}=await import('@neon/auth');
    const {createCs03AccountClient}=await import('./cs03-account-client.mjs');
    const {mountCs03AccountPanel}=await import('./cs03-account-ui.mjs');
+   const {createCs03ScopedProgress}=await import('./cs03-scoped-progress.mjs');
    // Only allow the exact isolated Managed Auth instance.
    if(cfg.authUrl!=='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech/cs03_auth_sandbox/auth')
     throw Error('AUTH_TARGET_MISMATCH');
@@ -16,7 +17,19 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
     storage:window.localStorage
    });
    root.hidden=false;
-   const ui=mountCs03AccountPanel(root,client);
+   const scoped=createCs03ScopedProgress({account:client});
+   const ui=mountCs03AccountPanel(root,client,{
+    onSignedIn:async()=>{await scoped.bind();},
+    onSignedOut:()=>{scoped.unbind();},
+    onLoadProgress:async()=>{
+     const id=window.CS03_SELECTED_QUESTION?.read();
+     if(!id)throw Error('SELECTED_QUESTION_UNAVAILABLE');
+     const value=await scoped.pull(id);
+     if(!value)return id+'：アカウントの履歴はまだありません。';
+     const labels={unseen:'未学習',review:'要復習',learning:'学習中',mastered:'習得済み'};
+     return id+'：'+(labels[value.level]||'記録あり')+'（閲覧のみ。端末内履歴には反映しません）';
+    }
+   });
    await ui.refresh();
   }catch{
    // Fail closed. Existing local learning remains accessible.
