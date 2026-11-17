@@ -1,0 +1,9 @@
+{
+  "name": "db-study-cs03-security-test",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "test:cs03": "node --test tests/progress-access.test.js tests/neon-jwt-verifier.test.mjs"
+  },
+  "dependencies": { "jose": "^6.0.0" }
+}
