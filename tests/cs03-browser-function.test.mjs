@@ -73,7 +73,7 @@ test('native URL rejects incorrect gateway secret before any DB access',async()=
 });
 test('native URL rejects when server secret is not configured',async()=>{
  calls=0;
- const result=await handleBrowserRequest(req('GET'),handler,undefined);
+ const result=await handleBrowserRequest(req('GET'),handler,'');
  assert.equal(result.status,401);assert.equal(calls,0);
 });
 test('native URL rejects short server secret',async()=>{
