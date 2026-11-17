@@ -100,3 +100,10 @@ Neon公式の Production hardening で、FunctionのネイティブURLはWAF/Clo
 結果：`tests=72`、`pass=72`、`fail=0`、`CS03_TEST_EXIT_CODE=0`。
 内訳：ブラウザFunctions入口17件、デプロイ前ガード14件、SSL10件、JWT10件、ユーザー別アクセス制御9件、学習履歴API12件。
 これはローカル試験のみ。隔離Functionの実デプロイと公開HTTPアクセス、無料枠の運用監視は未実証。ネイティブURLへのリクエストは秘密鍵による401でも関数呼出しとして計上され得る。次工程では、これ以上セキュリティガードだけを増やすのではなく、ユーザー登録・ログイン・学習履歴同期のクライアント統合を並行して進め、デプロイ可否は明示的な費用上限保証を確認してから判断する。
+
+## ブラウザ側アカウント・学習履歴コーディネータ（2026-11-18）
+`src/cs03-account-client.mjs` を追加。Neon Managed Authの `signUp.email`、`signIn.email`、`getSession`、`token`、`signOut` を注入して使用する。ユーザーUUIDで端末内の新規保存キー `db-study-cs03-progress-<userUUID>` を分離。パスワード/JWTは端末内の学習履歴保存先に書かない。学習記録は問題ID単位に `GET/PUT /progress` へ送受信、楽観的リビジョン競合では再取得後に上書きを拒否する。HTTPと認証情報付きURLは拒否。
+
+`tests/cs03-account-client.test.mjs` に登録・ログイン・復元・アカウント分離・保存・取得・競合・誤設定の9件を追加し `npm run test:cs03` に組み込み。従前72件＋9件＝**81件（未実行）**。
+
+**重要な未完了**: 現行 `index.html` は従来のSupabase向け無効な同期欄と端末共通 `db-study-progress-v1` を持つ。今回の新モジュールはまだ画面に組み込んでいないため、ユーザー向けログイン画面と端末間同期は未完成。既存localStorageを新アカウントに自動統合しない（誤アカウントへの混入防止）。Neon Auth SDKの実ブラウザ接続、CSP、信頼済みドメイン、メール認証/SMTP、公開API経由の動作は別途確認する。Neon Functionは未デプロイ。
