@@ -39,6 +39,7 @@ test('binding never imports unowned legacy records',async()=>{
 test('explicit account write pulls revision then saves to bound identity',async()=>{
  const f=setup(),scoped=createCs03ScopedProgress({account:f.account});
  await scoped.bind();
+ await scoped.pull(Q);
  const r=await scoped.save(Q,{level:'learning'});
  assert.equal(r.level,'learning');
  assert.deepEqual(f.log,['pull:'+A+':'+Q,'save:'+A+':'+Q]);
@@ -57,6 +58,7 @@ test('switching accounts cannot save under another account',async()=>{
  await assert.rejects(scoped.save(Q,{level:'mastered'}),/ACCOUNT_CHANGED/);
  assert.equal(f.log.length,0);
  scoped.unbind();await scoped.bind();
+ await scoped.pull(Q);
  await scoped.save(Q,{level:'learning'});
  assert.equal(f.db.has(A+':'+Q),false);
  assert.equal(f.db.get(B+':'+Q).data.level,'learning');
@@ -64,12 +66,12 @@ test('switching accounts cannot save under another account',async()=>{
 test('account switch during a pull aborts before write',async()=>{
  const f=setup(),scoped=createCs03ScopedProgress({account:f.account});
  await scoped.bind();f.switchOnPull();
- await assert.rejects(scoped.save(Q,{level:'learning'}),/ACCOUNT_CHANGED/);
+ await assert.rejects(scoped.pull(Q),/ACCOUNT_CHANGED/);
  assert.equal(f.log.filter(x=>x.startsWith('save:')).length,0);
 });
 test('conflict is surfaced without blind retry',async()=>{
  const f=setup(),scoped=createCs03ScopedProgress({account:f.account});
- await scoped.bind();f.fail(true);
+ await scoped.bind();await scoped.pull(Q);f.fail(true);
  await assert.rejects(scoped.save(Q,{level:'mastered'}),/REVISION_CONFLICT_REFRESHED/);
  assert.equal(f.log.filter(x=>x.startsWith('save:')).length,1);
 });
@@ -84,5 +86,12 @@ test('unbind prevents further remote calls',async()=>{
  const f=setup(),scoped=createCs03ScopedProgress({account:f.account});
  await scoped.bind();scoped.unbind();
  await assert.rejects(scoped.pull(Q),/ACCOUNT_NOT_BOUND/);
+ assert.deepEqual(f.log,[]);
+});
+
+test('no save is permitted without an explicit remote read',async()=>{
+ const f=setup(),scoped=createCs03ScopedProgress({account:f.account});
+ await scoped.bind();
+ await assert.rejects(scoped.save(Q,{level:'mastered'}),/REMOTE_READ_REQUIRED/);
  assert.deepEqual(f.log,[]);
 });
