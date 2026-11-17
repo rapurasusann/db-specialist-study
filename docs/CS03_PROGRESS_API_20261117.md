@@ -130,3 +130,8 @@ Neon公式の Production hardening で、FunctionのネイティブURLはWAF/Clo
 開発PCにてコミット `6b5035a` から `npm install --ignore-scripts --no-audit --no-fund` が成功（追加28パッケージ）、`npm run build:cs03-account` 成功（約1.1 MBのバンドル）、`CS03_ACCOUNT_BUILD=PASS`。ビルド成功はブラウザ実動作・Neon Auth接続成功を意味しない。
 
 ` scripts/cs03-browser-smoke.mjs` を追加。開発PC内の127.0.0.1で一時HTTP配信し、Playwright Chromiumでページタイトル、学習・バックアップ操作の表示、アカウント試験パネルの初期非表示、プレビューOFF、ページスクリプトエラーなし、ビルド成果物の存在を確認する。外部通信はPlaywright側で遮断する。ログイン・ユーザー登録・Neonとの通信は行わない。**スモーク試験は未実行。** GitHub Actionsと公開デプロイは未使用。
+
+## 開発PC ブラウザ表示スモーク結果（2026-11-18）
+コミット `0b3a216` にて、ローカルPlaywright Chromium + 127.0.0.1の一時配信による `scripts/cs03-browser-smoke.mjs` を実行。結果：`BUNDLE_EXISTS=PASS`、`PAGE_TITLE=PASS`、`LEGACY_STUDY_VISIBLE=PASS`、`LEGACY_BACKUP_VISIBLE=PASS`、`ACCOUNT_PANEL_DEFAULT_HIDDEN=PASS`、`PREVIEW_DISABLED=PASS`、`NO_PAGE_SCRIPT_ERRORS=PASS`、`CS03_BROWSER_SMOKE=PASS`、`CS03_BROWSER_TEST_EXIT_CODE=0`。外部通信遮断。これは**アカウント機能OFF状態のブラウザ表示スモークのみ**で、登録・ログインUIの実表示、Neon Authとの通信、端末間同期は未検証。
+
+次に、APIへの接続を行わない隔離プレビューの実表示・入力・ログアウト・非干渉試験を整備する。既存の学習履歴（`db-study-progress-v1`）には手を加えない。本番反映/Neon Functionsデプロイ/GitHub Actionsは未実施。
