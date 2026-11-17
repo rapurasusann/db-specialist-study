@@ -217,3 +217,10 @@ Neon隔離DB `cs03_auth_sandbox` の `neon_auth."user"` を読み取り専用で
 次工程のため `scripts/cs03-selected-history-browser.mjs` を追加（現時点では未実行）。Playwright Chromiumとローカル限定HTTP配信を使い、選択問題IDの読取ブリッジ、アカウント欄初期非表示、ログイン前の履歴ボタン無効、偽認証ログイン後の履歴表示、端末内履歴 `db-study-progress-v1` の不変、ログアウト後の履歴ボタン無効、外部通信とブラウザエラーの不在を調べる。既存のUI/Scoped Progressモジュールを使用するが、偽の履歴サーバーを使うためNeon AuthやNeon DBへの接続・書込は発生しない。試験成功の判定は開発PCでの実行結果待ち。
 
 公開Neon Functions・GitHub Actions・本番環境への反映は実施せず。ブラウザの実サーバーからの履歴取得は、安全なHTTPSゲートウェイが整うまで未着手。
+
+## 選択中の1問の端末内履歴→アカウント明示保存（2026-11-18）
+開発PCでブラウザ取得試験を実行し `HISTORY_PANEL_DEFAULT_HIDDEN`、`BRIDGE_CURRENT_QUESTION`、`HISTORY_BUTTON_DISABLED_UNTIL_LOGIN`、`HISTORY_BUTTON_ENABLED_AFTER_LOGIN`、`HISTORY_READ_SELECTED_QUESTION`、`HISTORY_REQUEST_ONCE`、`LEGACY_PROGRESS_UNCHANGED`、`HISTORY_BUTTON_DISABLED_AFTER_LOGOUT`、`NO_NEON_REQUESTS`、`NO_SCRIPT_ERRORS` の10件すべてPASS。`CS03_SELECTED_HISTORY_BROWSER=PASS`、終了コード0。偽認証・ローカル履歴サーバーを使用、実Neon DB通信ではない。
+
+今回のコード変更：初期無効のCS-03プレビュー画面に「選択中の端末内履歴1件をアカウントに保存」ボタンを追加。`src/cs03-selected-question.js` は選択中の1問の端末内記録だけをコピーで渡す。`src/cs03-manual-transfer.mjs` はサーバー上の該当問題を先にGETし、**既存レコードがある場合は上書き禁止**、空であってもユーザーの確認ダイアログで明示承認されるまで保存しない。承認待ちの間に端末内記録が変わった場合も停止。認証済みユーザー専用の `scoped.save()` を使い、サーバー側のrevision競合も上書きせず停止する。旧端末内履歴そのものは変更せず、他の問題は一切コピーしない。
+
+新規ユニットテスト `tests/cs03-manual-transfer.test.mjs` 7件を `test:cs03` に追加。従来104件を含め **111件が今回の実行対象（未実行）**。ブラウザバンドルはソース変更に伴い再ビルドが必要。自動同期・アカウント履歴の学習画面への復元・実APIのHTTPS公開はまだ実装していない。初期設定 `previewEnabled:false` 維持、本番公開・Neon Functionsデプロイ・GitHub Actionsは未実施。
