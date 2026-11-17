@@ -32,8 +32,8 @@
     const table = document.createElement('table');
     table.setAttribute('aria-label','問6 受注データの表');
     table.style.cssText = 'border-collapse:collapse;table-layout:auto;width:max-content;max-width:none;font-size:12px;line-height:1.3;white-space:nowrap;transform-origin:top left;';
-    // Treat IDs and dates as identifiers/text; only quantities and amounts align right.
-    const numericColumns = new Set([6,7,8]);
+    // Numeric order numbers, prices, quantities, and amounts align right; codes and dates align left.
+    const numericColumns = new Set([0,6,7,8]);
     const thead = document.createElement('thead');
     const headings = document.createElement('tr');
     for (const [columnIndex,label] of orderColumns.entries()) {
