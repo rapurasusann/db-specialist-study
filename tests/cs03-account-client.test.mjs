@@ -92,3 +92,39 @@ test('reject unsafe API targets including HTTP and query endpoints',()=>{
  for(const url of ['http://api.example.invalid/','https://user:pw@api.example.invalid/','https://api.example.invalid/?token=abc'])
   assert.throws(()=>createCs03AccountClient({authClient:minimal,apiUrl:url}),/API_NOT_CONFIGURED/);
 });
+
+test('paginated account list is read-only and preserves legacy/device cache',async()=>{
+ const A='a1111111-1111-4111-8111-111111111111';
+ const storage=memory();
+ storage.setItem('db-study-progress-v1',JSON.stringify({'2025:am2:1':{level:'mastered'}}));
+ const calls=[];
+ const auth={signUp:{email:async()=>({data:{}})},signIn:{email:async()=>({data:{}})},signOut:async()=>({data:{}}),getSession:async()=>({data:{user:{id:A}}}),token:async()=>({data:{token:'jwt-a'}})};
+ const fetcher=async url=>{
+  calls.push(String(url));
+  const cursor=new URL(url).searchParams.get('cursor');
+  if(cursor===null)return Response.json({data:{records:[{question_id:'2025:am2:1',data:{level:'review'},revision:1,updated_at:'2026-11-18T00:00:00Z'}],nextCursor:'2025:am2:1'}});
+  return Response.json({data:{records:[{question_id:'2025:am2:2',data:{level:'learning'},revision:2,updated_at:'2026-11-18T01:00:00Z'}],nextCursor:null}});
+ };
+ const client=createCs03AccountClient({authClient:auth,apiUrl:'https://api.example.invalid/',fetcher,storage});
+ const result=await client.listProgress();
+ assert.equal(calls.length,2);
+ assert.equal(result['2025:am2:1'].data.level,'review');
+ assert.equal(result['2025:am2:2'].revision,2);
+ assert.equal(client.readLocal(A)['2025:am2:1'],undefined);
+ assert.equal(JSON.parse(storage.getItem('db-study-progress-v1'))['2025:am2:1'].level,'mastered');
+});
+test('account list rejects repeated cursor rather than looping indefinitely',async()=>{
+ const A='a1111111-1111-4111-8111-111111111111';
+ const auth={signUp:{email:async()=>({data:{}})},signIn:{email:async()=>({data:{}})},signOut:async()=>({data:{}}),getSession:async()=>({data:{user:{id:A}}}),token:async()=>({data:{token:'jwt-a'}})};
+ const fetcher=async()=>Response.json({data:{records:[{question_id:'2025:am2:1',data:{level:'review'},revision:1}],nextCursor:'2025:am2:1'}});
+ const client=createCs03AccountClient({authClient:auth,apiUrl:'https://api.example.invalid/',fetcher});
+ await assert.rejects(client.listProgress(),/PROGRESS_LIST_INVALID/);
+});
+test('account list rejects malformed record without caching data',async()=>{
+ const A='a1111111-1111-4111-8111-111111111111',storage=memory();
+ const auth={signUp:{email:async()=>({data:{}})},signIn:{email:async()=>({data:{}})},signOut:async()=>({data:{}}),getSession:async()=>({data:{user:{id:A}}}),token:async()=>({data:{token:'jwt-a'}})};
+ const fetcher=async()=>Response.json({data:{records:[{question_id:'../secret',data:{level:'review'},revision:1}],nextCursor:null}});
+ const client=createCs03AccountClient({authClient:auth,apiUrl:'https://api.example.invalid/',fetcher,storage});
+ await assert.rejects(client.listProgress(),/PROGRESS_LIST_INVALID/);
+ assert.equal(storage.map.size,0);
+});
