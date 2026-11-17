@@ -126,3 +126,11 @@
 - 既存工程の位置付け：CS-03＝認証／Data API方式・登録／メール確認／再設定の受入、CS-04＝ユーザー別RLS、CS-05＝認証済み同期、CS-06＝2端末競合・ログアウト／アカウント切替・データ移行・削除、CS-07＝UI・実機・公開受入。CS-01/02はCLOSEDのまま。
 - **現状**：仕様決定のみ。認証画面・サインアップ・メール送信・Neon Data API・RLS・同期は未完成。PR #14はDraftのままmainへマージしない。Neon本番設定／本番学習データは変更しない。GitHub Actionsは使用しない。
 - 次作業：CS-03の隔離Neonブランチでメール・パスワード登録の有効化条件、メール確認／再設定の実送信経路、セッションとJWT、Data API連携を検証。続いてRLSの本人・他人・匿名負試験。実装と公開は受入後。
+
+## 2026-11-17 CS-03 着手・Neon実測（今回）
+
+- Neon本番設定を再読取：Better Auth email_password enabled=true / allow_sign_up=false / require_email_verification=false / verification_method=otp / revoke_sessions_on_password_reset=false。メール送信元はNeon共有メール `auth@mail.myneon.app`。許可元 `https://rapurasusann.github.io`。Data APIは404（未作成）。
+- 本番設定は変更していない。隔離Neonブランチ `cs03-auth-isolation-20261117`（ID `br-snowy-truth-a162pmdt`、親 `br-nameless-pond-a1ucyf2q`）を **no_compute=true** で作成、READYを確認。追加コンピュートなし。
+- 隔離ブランチのNeon Authは未有効、Data APIも未有効。Neon Auth provisionを試みたが、`no read-write endpoint found for branch` で停止。**認証設定変更・ユーザー作成・本番書き込みは行っていない**。同じ操作を再試行しない。
+- 続きは隔離ブランチに読み書きcomputeが必要。利用コスト・無料枠を確認してからendpointを作成し、隔離Auth/登録・メール確認・再設定→Data API→本人/他人/匿名RLS試験を行う。Data APIの`add_default_grants`は安全性検証前にtrueにしない。
+- CS-03 IN PROGRESS、CS-04以降OPEN、PR #14はDraft維持、main未変更。GitHub Actions不使用。
