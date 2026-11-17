@@ -85,7 +85,7 @@ test('invalid record rejected before HTTP',async()=>{
 test('token and password are not persisted in progress storage',async()=>{
  const f=fixture();
  await f.client.save('2025:am2:4',{level:'known'});
- assert.doesNotMatch([...f.storage.map.values()].join(''),'jwt-a');
+ assert.doesNotMatch([...f.storage.map.values()].join(''),/jwt-a/);
 });
 test('reject unsafe API targets including HTTP and query endpoints',()=>{
  const minimal={signUp:{email(){}},signIn:{email(){}},getSession(){},token(){},signOut(){}};
