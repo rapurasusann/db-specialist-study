@@ -7,11 +7,11 @@
   'use strict';
   const clips = Object.freeze({
     '2025:am2:3': [{page:4, box:[0.17,0.16,0.67,0.20], caption:'UML：商品・倉庫・在庫商品の関係図'}],
-    '2025:am2:6': [{page:5, box:[0.10,0.43,0.82,0.34], caption:'正規化の対象となる受注データの表'}],
-    '2025:am2:8': [{page:7, box:[0.14,0.18,0.73,0.48], caption:'SQLの表定義とシステム担当者の初期データ'}],
-    '2025:am2:9': [{page:8, box:[0.12,0.14,0.74,0.38], caption:'名簿1・名簿2の表とSQL文'}],
+    '2025:am2:6': [{page:5, fullPage:true, caption:'正規化の対象となる受注データの表'}],
+    '2025:am2:8': [{page:7, fullPage:true, caption:'SQLの表定義とシステム担当者の初期データ'}],
+    '2025:am2:9': [{page:8, fullPage:true, caption:'名簿1・名簿2の表とSQL文'}],
     '2025:am2:11': [{page:9, box:[0.25,0.23,0.54,0.18], caption:'注文表・注文明細表の主キーと外部キーの関係図'}],
-    '2025:am2:12': [{page:10, box:[0.21,0.20,0.61,0.39], caption:'トランザクションの処理内容とチェックポイント図'}],
+    '2025:am2:12': [{page:10, fullPage:true, caption:'トランザクションの処理内容とチェックポイント図'}],
     '2025:am2:23': [{page:15, box:[0.16,0.21,0.73,0.34], caption:'RAID6の磁気ディスク配置図とパリティ計算式'}]
   });
   const baseQuestion = showQuestion;
@@ -19,6 +19,20 @@
   function buildClip(item) {
     const fig = document.createElement('figure');
     fig.style.cssText = 'margin:14px 0;padding:12px;border:1px solid #d5e2ed;border-radius:10px;background:#fff;max-width:100%;';
+    // Four affected diagrams are shown as complete originals, with the image's
+    // own intrinsic aspect ratio. No fixed-size SVG viewBox or guessed crop.
+    if (item.fullPage) {
+      const img = document.createElement('img');
+      img.src = 'pages/am2_qs_'+String(item.page).padStart(2,'0')+'.webp';
+      img.alt = item.caption+'（IPA公式問題冊子・ページ全体）';
+      img.loading = 'eager';
+      img.style.cssText = 'display:block;width:100%;height:auto;max-width:100%;object-fit:contain;';
+      const caption = document.createElement('figcaption');
+      caption.textContent = item.caption+'（原本ページ全体を縦横比を保って表示）';
+      caption.style.cssText = 'font-size:.85rem;color:#586b7b;margin-top:8px;';
+      fig.append(img,caption);
+      return fig;
+    }
     const [x,y,w,h] = item.box;
     const svg = document.createElementNS(ns,'svg');
     svg.setAttribute('viewBox', [x*852,y*1203,w*852,h*1203].join(' '));
