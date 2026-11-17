@@ -12,6 +12,7 @@ test('AM2 Q6: reconstructed accessible order table includes all 9 columns and 10
   let viewerTouched=false;
   const createNode = name => ({
     name,style:{cssText:''},children:[],attributes:{},textContent:'',
+    clientWidth:name==='div'?320:0,offsetWidth:name==='table'?960:0,offsetHeight:name==='table'?360:0,
     append(...items){this.children.push(...items);},
     setAttribute(name,value){this.attributes[name]=value;},
     querySelector(q){return q==='h3' ? title : null}
@@ -55,16 +56,13 @@ test('AM2 Q6: reconstructed accessible order table includes all 9 columns and 10
   assert.doesNotMatch(table.style.cssText,/white-space:normal|word-break:break-word/);
   assert.doesNotMatch(figure.style.cssText,/overflow-x:auto|overflow-x:scroll/);
   assert.match(figure.style.cssText,/max-width:100%/);
-  // Simulate a narrow viewport and verify the table is scaled into it.
-  Object.defineProperties(viewport,{clientWidth:{value:320}});
-  Object.defineProperties(table,{offsetWidth:{value:960},offsetHeight:{value:360}});
-  context.showQuestion();
-  const fitted=inserted[1].children[0].children[0];
-  assert.equal(fitted.name,'table');
+  // Mock viewport is 320px wide; natural table width is 960px.
+  assert.equal(table.style.transform,'scale(0.3333333333333333)');
+  assert.equal(viewport.style.height,'120px');
   context.number=8;
   context.showQuestion();
   assert.equal(viewerTouched,false,'the original viewer remains untouched on navigation');
-  assert.equal(inserted[2].children[0].name,'img');
+  assert.equal(inserted[1].children[0].name,'img');
 });
 
 test('Q6 table does not modify original-page viewer and script is fresh', () => {
