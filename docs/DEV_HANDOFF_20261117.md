@@ -69,3 +69,14 @@
 - 単独PR #17 `https://github.com/rapurasusann/db-specialist-study/pull/17` をmainへsquash merge。コミット `92a624fa6124862f916ce0be5fce5446897d444e`。
 - main読み戻しで指定テキストが除去されていること、各問の選択肢4件、原本画像参照（問9=8頁、11=9頁、12=10頁、23=15頁）、回帰テストの存在を確認。GitHub Pages配信反映は別途確認。
 - 未完成のCS-03やPR #14はmainにマージしていない。GitHub Actions未使用、PCコマンド要求なし。
+
+## 2026-11-17 画像見切れ・古い教材テキストの一括修正（最新）
+
+- ユーザー報告：午前Ⅱ問6/8/9/12の図表画像が歪む・見切れる。また問9/11/12/23で削除済みの表・SQL文字列が表示され続ける。
+- 原因を調査。画像切り抜きロジック `src/am2-figure-clips.js` は固定座標SVG viewBoxを使っており、切り抜きによって元図表の一部が表示されなくなる。対象4ページのWebP原本を取得してサイズ852×1203を確認。
+- 問6/8/9/12は切り抜きSVGをやめて、画像をネイティブ`img`で全ページ表示する方式に変更（`width:100%;height:auto;object-fit:contain`）。同梱原本ページ画像を維持。他のクリップは変更しない。
+- 問9/11/12/23の冗長な文字起こしは前回PR #17ですでに`main`から削除済み。ブラウザが古い教材スクリプトを参照する可能性を低減するため、`index.html`からロードする`am2-2025-questions.js`と`am2-figure-clips.js`のURLに `?v=20261117b`を付与。データとCSPインラインスクリプトは不変更。
+- `tests/am2-figure-fullpage-and-cache.test.js` を追加。ソース構文・4画像・4設問テキストの削除状態・バージョン指定の静的照合PASS。
+- 単独PR #18 `https://github.com/rapurasusann/db-specialist-study/pull/18` をmainへsquashマージ完了。コミット `44606022dd3515e62a0d26050e008eccbb15bfff`。マージ後mainを再読込して変更反映PASS。
+- 現時点で実ブラウザの視覚確認と、ローカルNode全試験は未実施。GitHub Pagesの配信反映も未検証。ユーザーはコマンド実行不可、Actionsは禁止。学習履歴を保護し、画面の再読込を案内する。
+- **CS-03の未完成Neon同期コードはmainにはマージしていない。**
