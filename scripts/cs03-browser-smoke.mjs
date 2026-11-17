@@ -4,9 +4,7 @@ import http from 'node:http';
 import {readFile,stat} from 'node:fs/promises';
 import {resolve,relative,extname} from 'node:path';
 import {createRequire} from 'node:module';
-import {pathToFileURL} from 'node:url';
 const require=createRequire(import.meta.url);
-const root=resolve(new URL('../',import.meta.url).pathname);
 // On Windows, fileURLToPath is required for drive-letter paths.
 import {fileURLToPath} from 'node:url';
 const site=resolve(fileURLToPath(new URL('../',import.meta.url)));
