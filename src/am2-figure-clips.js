@@ -28,16 +28,16 @@
   function buildOrderTable() {
     const figure = document.createElement('figure');
     figure.setAttribute('data-study-table','am2-q6');
-    figure.style.cssText = 'margin:14px 0;max-width:100%;overflow-x:auto;border:1px solid #d5e2ed;border-radius:10px;background:#fff;padding:8px;';
+    figure.style.cssText = 'margin:14px 0;width:100%;max-width:100%;min-width:0;overflow:visible;border:1px solid #d5e2ed;border-radius:10px;background:#fff;padding:4px;';
     const table = document.createElement('table');
     table.setAttribute('aria-label','問6 受注データの表');
-    table.style.cssText = 'border-collapse:collapse;min-width:770px;width:100%;font-size:.82rem;white-space:nowrap;';
+    table.style.cssText = 'border-collapse:collapse;table-layout:fixed;width:100%;max-width:100%;font-size:clamp(9px,1vw,12px);line-height:1.3;white-space:normal;';
     const thead = document.createElement('thead');
     const headings = document.createElement('tr');
     for (const label of orderColumns) {
       const th = document.createElement('th');
       th.scope = 'col'; th.textContent = label;
-      th.style.cssText = 'padding:7px 5px;border:1px solid #c6d4e0;background:#eaf2fa;text-align:left;';
+      th.style.cssText = 'padding:4px 2px;border:1px solid #c6d4e0;background:#eaf2fa;text-align:center;overflow-wrap:anywhere;word-break:break-word;';
       headings.append(th);
     }
     thead.append(headings);
@@ -47,7 +47,7 @@
       for (const value of row) {
         const td = document.createElement('td');
         td.textContent = value;
-        td.style.cssText = 'padding:6px 5px;border:1px solid #d2dee8;text-align:left;';
+        td.style.cssText = 'padding:4px 2px;border:1px solid #d2dee8;text-align:center;overflow-wrap:anywhere;word-break:break-word;';
         tr.append(td);
       }
       tbody.append(tr);
