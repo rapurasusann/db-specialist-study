@@ -164,3 +164,10 @@ Neon APIで隔離ブランチ `br-snowy-truth-a162pmdt` のAuth設定を読み�
 実行は `CS03_REAL_AUTH_OPT_IN=ISOLATED_TEST_USER` の明示指定必須。これは**実際に隔離環境へ試験用ユーザーを1件作成する操作**であり、偽認証試験とは異なる。試験後のアカウント削除は自動実行しない。共有SMTPは登録時メール確認が必須でない設定であることをAPIで確認済み。ただし配送有無・ブラウザCORS・実セッション維持は**未検証**。
 
 ステップ1 `scripts/cs03-neon-auth-live-preflight.mjs`（JWKS公開接続・副作用なし）、ステップ2 `scripts/cs03-neon-auth-real-browser.mjs`（隔離環境にテストユーザー作成）で進む。両方まだ未実行。Neon Functionsデプロイ・GitHub Actions・公開アプリへの変更は禁止のまま。
+
+## 隔離Neon Auth 実ユーザー登録E2Eの初回失敗（2026-11-18）
+開発PCでコミット `0a0453e` の試験を実行。読み取り専用JWKS HTTPS/HTTP200/公開鍵配列/公開鍵のみ4件すべてPASS、ブラウザ用バンドル/隔離アカウント画面表示PASS。実登録後に想定成功メッセージが確認できず `NEON_AUTH_REAL_SIGNUP=FAIL`、`CS03_NEON_AUTH_REAL_E2E=FAIL`。**登録API側でユーザー作成されたかは不明**、ログイン/セッション復元/ログアウトには未到達。
+
+原因未確定のため同じ登録E2Eを無条件に再実行しない。Neon Auth設定は隔離ブランチのメール/パスワード・新規登録有効、`allow_localhost=true`、trusted_origins=[]。試験サーバーが `http://127.0.0.1:<port>` を使っており、このoriginと `http://localhost:<port>` の区別で失敗する可能性があるが未実証。
+
+`scripts/cs03-neon-auth-readonly-browser-diag.mjs` を追加。両ホスト名でブラウザを起動し、APIの `GET /get-session` と公開 `GET /.well-known/jwks.json` の応答/CORS可否、CSP違反、画面エラーを確認する。**ユーザー登録・ログイン・メール送信・DB更新操作なし**。診断結果を見てから最小修正し、実登録の再試験は無駄なユーザー増加を避けて計画する。本番API/Functions/Actionsの操作なし。
