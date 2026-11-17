@@ -6,6 +6,7 @@ export function createCs03ScopedProgress({account}) {
  if(!account || !['session','pull','save','readLocal'].every(name=>typeof account[name]==='function'))
   throw new Error('ACCOUNT_PROGRESS_REQUIRED');
  let boundUser=null;
+ const loaded=new Set();
  async function verifyBound(){
   if(!boundUser)throw new Error('ACCOUNT_NOT_BOUND');
   const user=await account.session();
@@ -16,6 +17,7 @@ export function createCs03ScopedProgress({account}) {
   const user=await account.session();
   if(!UUID.test(user?.id??''))throw new Error('SIGN_IN_REQUIRED');
   boundUser=user.id;
+  loaded.clear();
   return {userId:boundUser,records:snapshot()};
  }
  function snapshot(){
@@ -33,6 +35,7 @@ export function createCs03ScopedProgress({account}) {
   await verifyBound();
   const result=await account.pull(id);
   await verifyBound();
+  loaded.add(id);
   // Absence on server is not permission to import legacy device progress.
   return result?.data?structuredClone(result.data):null;
  }
@@ -40,14 +43,13 @@ export function createCs03ScopedProgress({account}) {
   if(!KEY.test(id)||!data||typeof data!=='object'||Array.isArray(data))
    throw new Error('INVALID_RECORD');
   await verifyBound();
-  // Re-check server revision, then write. The underlying client fails on conflicts.
-  // Do NOT retry a conflict by overwriting a newer server revision.
-  await account.pull(id);
-  await verifyBound();
+  // Save is permitted only after the caller explicitly loaded this question.
+  // A hidden pre-save pull could silently overwrite a newer remote value.
+  if(!loaded.has(id))throw new Error('REMOTE_READ_REQUIRED');
   const result=await account.save(id,structuredClone(data));
   await verifyBound();
   return structuredClone(result.data);
  }
- function unbind(){boundUser=null;}
+ function unbind(){boundUser=null;loaded.clear();}
  return Object.freeze({bind,unbind,snapshot,pull,save});
 }
