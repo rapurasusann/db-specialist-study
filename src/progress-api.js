@@ -36,14 +36,18 @@ function createPgProgressStore(pool) {
     write({userId,examCode,questionId,data,revision}) {
       return transaction(userId,async client=>{
         // Revision 1 starts a new record. Updates require exact next revision.
-        const {rows}=await client.query(
-          `INSERT INTO public.study_progress(user_id,exam_code,question_id,data,revision)
-           VALUES($1,$2,$3,$4::jsonb,$5)
-           ON CONFLICT(user_id,exam_code,question_id) DO UPDATE
-             SET data=EXCLUDED.data,revision=EXCLUDED.revision,updated_at=now()
-           WHERE public.study_progress.revision=EXCLUDED.revision-1
-           RETURNING data,revision,updated_at`,
-          [userId,examCode,questionId,JSON.stringify(data),revision]);
+        const sql=revision===1
+          ? `INSERT INTO public.study_progress(user_id,exam_code,question_id,data,revision)
+             VALUES($1,$2,$3,$4::jsonb,1)
+             ON CONFLICT(user_id,exam_code,question_id) DO NOTHING
+             RETURNING data,revision,updated_at`
+          : `UPDATE public.study_progress SET data=$4::jsonb,revision=$5,updated_at=now()
+             WHERE user_id=$1 AND exam_code=$2 AND question_id=$3 AND revision=$5-1
+             RETURNING data,revision,updated_at`;
+        const params=revision===1
+          ? [userId,examCode,questionId,JSON.stringify(data)]
+          : [userId,examCode,questionId,JSON.stringify(data),revision];
+        const {rows}=await client.query(sql,params);
         if (rows.length===0) throw new Error('CONFLICT');
         return rows[0];
       });
