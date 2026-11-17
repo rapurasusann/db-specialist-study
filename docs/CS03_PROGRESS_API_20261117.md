@@ -210,3 +210,10 @@ Neon隔離DB `cs03_auth_sandbox` の `neon_auth."user"` を読み取り専用で
 `tests/cs03-selected-question.test.mjs` を3件追加し、試験予定数を101→**104件**に更新。**新しいコードと104件試験は未実行**。ブラウザ用バンドルはソース修正後に再ビルドが必要。
 
 注：実APIのHTTPS接続先は引き続き未公開で、現行の `cs03-config.js` は `previewEnabled:false`。読取ボタンも通常画面には表示されない。今回の接続は開発ブランチ内のプレビュー用であり、実Neon DBとのブラウザ通信成功や端末間同期の完成を意味しない。追加料金が発生するサービスの有効化やNeon Functionsのデプロイは行っていない。
+
+## 104件試験・ブラウザ用バンドル再生成（2026-11-18）
+開発PCにてコミット `10f1cce` の `npm run test:cs03` を実行し **104 tests / 104 pass / 0 fail**。続けて `npm run build:cs03-account` 成功、約1.1 MBのバンドルを再生成し `CS03_TEST_AND_BUILD=PASS`。
+
+次工程のため `scripts/cs03-selected-history-browser.mjs` を追加（現時点では未実行）。Playwright Chromiumとローカル限定HTTP配信を使い、選択問題IDの読取ブリッジ、アカウント欄初期非表示、ログイン前の履歴ボタン無効、偽認証ログイン後の履歴表示、端末内履歴 `db-study-progress-v1` の不変、ログアウト後の履歴ボタン無効、外部通信とブラウザエラーの不在を調べる。既存のUI/Scoped Progressモジュールを使用するが、偽の履歴サーバーを使うためNeon AuthやNeon DBへの接続・書込は発生しない。試験成功の判定は開発PCでの実行結果待ち。
+
+公開Neon Functions・GitHub Actions・本番環境への反映は実施せず。ブラウザの実サーバーからの履歴取得は、安全なHTTPSゲートウェイが整うまで未着手。
