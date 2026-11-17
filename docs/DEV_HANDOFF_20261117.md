@@ -185,3 +185,11 @@
 - GitHub再取得したソースを独立V8＋模擬DOMで8項目検証し **8/8 PASS**（初期化、登録・ログインのautocomplete、確認欄の有効・無効、メール不正、空パスワード、不一致）。実ブラウザ・Node正式ランナー・Neon実接続は未試験。
 - 本番main・公開サイト・Neon設定・ユーザー履歴は無変更。追加compute・追加料金なし。GitHub Actions不使用。
 - 次：無料で実施できるNodeテスト実行とソース回帰検証を優先し、実接続は費用ゼロが保証できるまで保留。
+
+## 2026-11-17 CS-03 保存済みテストの実行・main差分確認
+
+- GitHubから `src/account-validation.js`, `src/account-form-preview.js`, `tests/account-validation.test.js`, `tests/account-form-preview.test.js`, `index.html` を再取得。
+- 保存済みNodeテスト本体をV8で実行し、`node:test`/`assert`/`fs`/`path` は互換スタブを使用。**13/13 PASS**。正式なNodeテストランナー実行ではない。
+- mainの `index.html` とDraftブランチの `index.html` を比較。新規アカウントパネルと追加JS読み込みを除いても一致しない。例：CSP inline-script SHA256がmain `OljkrvRt...`、Draft `FJkDWFIm...`。これは既存Draftブランチがmainと異なることを示す。差分全体の安全性は未確認。
+- **Draft PR #14はマージ禁止を維持。** アカウント画面は本番公開しない。公開版との差分を整理し、必要ならmain最新から専用の小さいPRに切り出して既存機能への影響を検証する。
+- 追加料金が発生する操作なし。Neon新規computeなし。GitHub Actions不使用。
