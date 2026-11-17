@@ -55,6 +55,9 @@ try{
  });
  const page=await context.newPage();
  const errors=[];page.on('pageerror',e=>errors.push(e.name||'PageError'));
+ const signupResponses=[];const authFailures=[];
+ page.on('response',response=>{try{const u=new URL(response.url());if(u.origin===AUTH && u.pathname.endsWith('/sign-up/email'))signupResponses.push(response.status());}catch{}});
+ page.on('requestfailed',request=>{try{const u=new URL(request.url());if(u.origin===AUTH)authFailures.push(request.failure()?.errorText==='net::ERR_FAILED'?'NETWORK_OR_CORS_ERROR':'AUTH_NETWORK_ERROR');}catch{}});
  await page.goto(origin+'/',{waitUntil:'domcontentloaded'});
  await page.locator('#cs03AccountPanel').waitFor({state:'visible',timeout:15000});
  check('NEON_AUTH_PANEL_VISIBLE',await page.locator('#cs03AccountPanel').isVisible());
@@ -64,9 +67,17 @@ try{
  await page.locator('[data-cs03="name"]').fill('CS03 isolated test');
  await page.locator('[data-cs03="password"]').fill(password);
  await page.locator('[data-cs03="signup"]').click();
- await page.waitForFunction(()=>document.querySelector('[data-cs03="status"]').textContent.includes('登録要求'),null,{timeout:15000}).catch(()=>{});
+ await page.waitForFunction(()=>{
+  const status=document.querySelector('[data-cs03="status"]').textContent;
+  return status.includes('登録要求')||status.includes('失敗')||status.includes('ログインしていません');
+ },null,{timeout:15000}).catch(()=>{});
  const status=await page.locator('[data-cs03="status"]').textContent();
- check('NEON_AUTH_REAL_SIGNUP',status.includes('登録要求'));
+ const signupOk=status.includes('登録要求');
+ console.log('SIGNUP_HTTP_STATUS='+(signupResponses.length?signupResponses.join(','):'NO_RESPONSE_OBSERVED'));
+ console.log('SIGNUP_UI_RESULT='+(signupOk?'SUCCESS_MESSAGE':status.includes('失敗')?'ERROR_MESSAGE':'OTHER_MESSAGE'));
+ console.log('SIGNUP_AUTH_NETWORK_FAILURES='+authFailures.length);
+ console.log('SIGNUP_BROWSER_PAGE_ERRORS='+errors.length);
+ check('NEON_AUTH_REAL_SIGNUP',signupOk);
  await page.locator('[data-cs03="password"]').fill(password);
  await page.locator('[data-cs03="login"]').click();
  await page.waitForFunction(()=>document.querySelector('[data-cs03="identity"]').textContent.includes('ログイン中'),null,{timeout:15000}).catch(()=>{});
