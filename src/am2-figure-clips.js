@@ -32,22 +32,24 @@
     const table = document.createElement('table');
     table.setAttribute('aria-label','問6 受注データの表');
     table.style.cssText = 'border-collapse:collapse;table-layout:auto;width:max-content;max-width:none;font-size:12px;line-height:1.3;white-space:nowrap;transform-origin:top left;';
+    // Treat IDs and dates as identifiers/text; only quantities and amounts align right.
+    const numericColumns = new Set([6,7,8]);
     const thead = document.createElement('thead');
     const headings = document.createElement('tr');
-    for (const label of orderColumns) {
+    for (const [columnIndex,label] of orderColumns.entries()) {
       const th = document.createElement('th');
       th.scope = 'col'; th.textContent = label;
-      th.style.cssText = 'padding:4px 2px;border:1px solid #c6d4e0;background:#eaf2fa;text-align:center;white-space:nowrap;';
+      th.style.cssText = 'padding:4px 2px;border:1px solid #c6d4e0;background:#eaf2fa;text-align:'+(numericColumns.has(columnIndex)?'right':'left')+';white-space:nowrap;';
       headings.append(th);
     }
     thead.append(headings);
     const tbody = document.createElement('tbody');
     for (const row of orderRows) {
       const tr = document.createElement('tr');
-      for (const value of row) {
+      for (const [columnIndex,value] of row.entries()) {
         const td = document.createElement('td');
         td.textContent = value;
-        td.style.cssText = 'padding:4px 2px;border:1px solid #d2dee8;text-align:center;white-space:nowrap;';
+        td.style.cssText = 'padding:4px 2px;border:1px solid #d2dee8;text-align:'+(numericColumns.has(columnIndex)?'right':'left')+';white-space:nowrap;';
         tr.append(td);
       }
       tbody.append(tr);
