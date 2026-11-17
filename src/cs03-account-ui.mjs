@@ -11,6 +11,7 @@ export function mountCs03AccountPanel(root,account,options={}) {
  const signup=get('signup'),login=get('login'),logout=get('logout');
  const email=get('email'),password=get('password'),name=get('name'),status=get('status'),identity=get('identity');
  const load=root.querySelector('[data-cs03="load-progress"]');
+ const transfer=root.querySelector('[data-cs03="transfer-progress"]');
  const recordStatus=root.querySelector('[data-cs03="record-status"]');
  let busy=false,signedIn=false;
  function updateButtons(){
@@ -21,6 +22,7 @@ export function mountCs03AccountPanel(root,account,options={}) {
   name.disabled=busy||signedIn;
   password.disabled=busy||signedIn;
   if(load)load.disabled=busy||!signedIn;
+  if(transfer)transfer.disabled=busy||!signedIn;
  }
  function message(text){status.textContent=text;}
  function showUser(user){
@@ -54,6 +56,23 @@ export function mountCs03AccountPanel(root,account,options={}) {
   if(options.onSignedOut)await options.onSignedOut();
   showUser(null);if(recordStatus)recordStatus.textContent='ログアウトしました。';
   message('ログアウトしました。');
+ }));
+ if(transfer && typeof options.onTransferProgress==='function')transfer.addEventListener('click',()=>run(async()=>{
+  if(recordStatus)recordStatus.textContent='選択中の問題の保存条件を確認中…';
+  try{
+   const result=await options.onTransferProgress();
+   if(recordStatus)recordStatus.textContent=result;
+  }catch(error){
+   const code=String(error?.message||'');
+   if(recordStatus)recordStatus.textContent=
+    code==='REMOTE_RECORD_EXISTS'?'アカウント側に既存の履歴があります。上書きせず中止しました。':
+    code==='NO_DEVICE_RECORD'?'選択中の問題には端末内の記録がありません。':
+    code==='DEVICE_RECORD_CHANGED'?'端末内の記録が変わったため中止しました。':
+    code==='ACCOUNT_CHANGED'?'ログインユーザーが変わったため中止しました。':
+    code==='REVISION_CONFLICT_REFRESHED'?'別の端末で更新されています。上書きせず中止しました。':
+    '保存できませんでした。端末内履歴は変更していません。';
+   throw error;
+  }
  }));
  if(load && typeof options.onLoadProgress==='function')load.addEventListener('click',()=>run(async()=>{
   if(recordStatus)recordStatus.textContent='アカウントの履歴を取得中…';
