@@ -24,7 +24,7 @@ try {
  // Signature verification is independent of any untrusted claim.
  const jwks=createRemoteJWKSet(new URL(jwksUrl));
  let verified;
- try{verified=(await jwtVerify(token,jwks,{algorithms:['RS256','ES256'],requiredClaims:['sub','iat','exp']})).payload;}
+ try{verified=(await jwtVerify(token,jwks,{algorithms:['EdDSA','RS256','ES256'],requiredClaims:['sub','iat','exp']})).payload;}
  catch(e){
   console.log('JWKS_SIGNATURE=FAIL');
   const header=decodeProtectedHeader(token);
