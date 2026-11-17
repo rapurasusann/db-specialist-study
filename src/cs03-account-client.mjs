@@ -93,6 +93,37 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
   }
   return value;
  }
+ async function listProgress(){
+  const user=await session();
+  const records={};
+  let cursor=null;
+  const seen=new Set();
+  // An account is bounded to 4 years x 4 exams x 100 questions by the UI.
+  // Abort rather than silently returning a partial view.
+  for(let page=0;page<80;page++){
+   const path='progress?examCode=db&limit=100'+(cursor?'&cursor='+encodeURIComponent(cursor):'');
+   const value=await request(user.id,'GET',path);
+   if(!value||!Array.isArray(value.records)||value.records.length>100)throw appError('PROGRESS_LIST_INVALID');
+   for(const row of value.records){
+    if(!RECORD_ID.test(row?.question_id??'')||!Number.isSafeInteger(row.revision)||row.revision<1 ||
+       !row.data||typeof row.data!=='object'||Array.isArray(row.data)||
+       new TextEncoder().encode(JSON.stringify(row.data)).length>16384 ||
+       Object.hasOwn(records,row.question_id))throw appError('PROGRESS_LIST_INVALID');
+    records[row.question_id]={data:structuredClone(row.data),revision:row.revision,updatedAt:row.updated_at};
+   }
+   const next=value.nextCursor;
+   if(next===null){
+    const latest=await session();
+    if(latest.id!==user.id)throw appError('ACCOUNT_CHANGED');
+    // Return an isolated snapshot; never merge into legacy progress or another user's cache.
+    return structuredClone(records);
+   }
+   if(typeof next!=='string'||!RECORD_ID.test(next)||seen.has(next)||value.records.length===0||
+      value.records.at(-1).question_id!==next)throw appError('PROGRESS_LIST_INVALID');
+   seen.add(next);cursor=next;
+  }
+  throw appError('PROGRESS_LIST_LIMIT');
+ }
  async function save(questionId,data){
   checkRecord(questionId,data);
   const user=await session();
@@ -110,5 +141,5 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
   writeLocal(user.id,local);
   return result;
  }
- return Object.freeze({signUp,signIn,signOut,session,pull,save,readLocal,storageKey});
+ return Object.freeze({signUp,signIn,signOut,session,pull,save,listProgress,readLocal,storageKey});
 }
