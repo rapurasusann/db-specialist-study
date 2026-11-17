@@ -156,3 +156,11 @@ Neon APIで隔離ブランチ `br-snowy-truth-a162pmdt` のAuth設定を読み�
 `scripts/cs03-neon-auth-live-preflight.mjs` を追加：特定の隔離Authの公開JWKSに限りHTTPS GET（リダイレクト禁止）し、HTTP 200、公開鍵配列、秘密鍵パラメータの不在を検査する。**試験未実行**。本試験はユーザー登録・メール送信・ログイン・DB変更をしない。まず接続先の真正性・疎通を確認してから、本物のユーザーを作成する必要がある隔離認証試験へ段階的に進む。
 
 既存のCS03画面CSP `connect-src 'self'` と `cs03-config.js` の `previewEnabled:false` は維持。実Neon Authへのブラウザからの接続はまだ有効化していない。公開デプロイ、GitHub Actions、Neon Functionsデプロイは未実施。
+
+## 隔離Neon Authの実ブラウザE2Eスクリプト（2026-11-18、未実行）
+
+`scripts/cs03-neon-auth-real-browser.mjs` を追加。開発PCの一時localhostサーバーだけでCSPを隔離Authドメイン向けに緩和し、`cs03-config.js` のレスポンスをローカルのみプレビューONに差し替える。ブラウザ内でテスト専用ランダムなexample.comメールとランダムパスワードを生成し、Neon Auth隔離ブランチ `cs03_auth_sandbox` に実際の登録・ログイン・画面再読み込みによるセッション復元・ログアウトを試験する。認証ドメインとローカル以外の外部通信は遮断。テストパスワード・JWT・メールはGitHubに書かない/標準出力に出さない。GitHub Pagesの本番JS/CSP/設定は変更しない。学習履歴APIには接続しない。
+
+実行は `CS03_REAL_AUTH_OPT_IN=ISOLATED_TEST_USER` の明示指定必須。これは**実際に隔離環境へ試験用ユーザーを1件作成する操作**であり、偽認証試験とは異なる。試験後のアカウント削除は自動実行しない。共有SMTPは登録時メール確認が必須でない設定であることをAPIで確認済み。ただし配送有無・ブラウザCORS・実セッション維持は**未検証**。
+
+ステップ1 `scripts/cs03-neon-auth-live-preflight.mjs`（JWKS公開接続・副作用なし）、ステップ2 `scripts/cs03-neon-auth-real-browser.mjs`（隔離環境にテストユーザー作成）で進む。両方まだ未実行。Neon Functionsデプロイ・GitHub Actions・公開アプリへの変更は禁止のまま。
