@@ -49,3 +49,13 @@
 - mainの対象ファイルを再取得し、修正ブランチと完全一致（blob `fdbc5b065ce9a20507f068e218b222662bfe09ff`）、余分な表がないことを確認。
 - PR #14（CS-03開発）はDraftのまま、未完成のNeon連携はmainへ含めていない。GitHub Actionsの手動実行なし。
 - GitHub Pagesの配信反映は別途検証が必要。学習ユーザーにはブラウザ更新案内を行う。
+
+## 2026-11-17 午前Ⅱ問8・前後移動時自動採点（公開用mainへ反映）
+
+- ユーザー要望：問8で原本画像と重複するSQL/表テキストは不要。「前の問題」「次の問題」で離脱する際、選択済みなら自動採点し理解度へ反映する。
+- 問8の `stem` から `【表定義】` `【システム担当者（初期データ）】` `【トランザクションA】` 以下の重複転記を削除。選択肢4つ・設問・解説・公式画像参照 `sourcePage=7` を維持。
+- `index.html` に `gradeCurrentAnswer` を追加。選択済みなら前後移動前に採点、`correct`、`attempts`、理解度（正解 `learning`／不正解 `review`）を保存。未選択時／移動先がない場合は採点しない。同じ選択肢を明示的に採点後の移動では二重採点しない。別選択肢に変更して移動する場合は新規採点。
+- CSP inline SHA-256を更新し照合済み。回帰テスト `tests/am2-q8-auto-grade-navigation.test.js` を追加し、既存の `tests/am2-answers-and-reset.test.js` の判定条件を更新。
+- 接続済みGitHubソースに対してV8実行・模擬遷移で正解/不正解、二重判定防止PASS。**ローカルの全Nodeテストと実ブラウザE2Eは未実施**（ユーザーPCコマンド不可・Actions禁止）。
+- **独立PR #16** `https://github.com/rapurasusann/db-specialist-study/pull/16` を `main` にsquashマージ済み。マージコミット `07ec33d899875d73931ffe33fc60418f71d8862b`。mainから読み戻して変更の存在を確認。
+- NeonやCS-03ドラフトPR #14のコードはマージしていない。GitHub Pagesへの配信タイミングは未確認。今後、公開版で前後移動の実操作による確認と、開発PC復帰後の全自動テストを行う。
