@@ -10,6 +10,7 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    const {mountCs03AccountPanel}=await import('./cs03-account-ui.mjs');
    const {createCs03ScopedProgress}=await import('./cs03-scoped-progress.mjs');
    const {createCs03ManualTransfer}=await import('./cs03-manual-transfer.mjs');
+   const {renderCs03HistoryView,clearCs03HistoryView}=await import('./cs03-history-view.mjs');
    // Only allow the exact isolated Managed Auth instance.
    if(cfg.authUrl!=='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech/cs03_auth_sandbox/auth')
     throw Error('AUTH_TARGET_MISMATCH');
@@ -19,18 +20,23 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    });
    root.hidden=false;
    const scoped=createCs03ScopedProgress({account:client});
+   const historyRoot=root.querySelector('[data-cs03="history-list"]');
+   if(!historyRoot)throw Error('HISTORY_VIEW_MISSING');
+   clearCs03HistoryView(historyRoot);
    const manual=createCs03ManualTransfer({scoped,
     readLegacy:id=>window.CS03_SELECTED_QUESTION.readLegacy(id),
     confirmTransfer:id=>window.confirm(id+' の端末内履歴1件をログイン中のアカウントにコピーしますか？\n既存の端末内履歴は残ります。')
    });
    const ui=mountCs03AccountPanel(root,client,{
-    onSignedIn:async()=>{await scoped.bind();},
-    onSignedOut:()=>{scoped.unbind();},
+    onSignedIn:async()=>{clearCs03HistoryView(historyRoot);await scoped.bind();},
+    onSignedOut:()=>{scoped.unbind();clearCs03HistoryView(historyRoot);},
     onListProgress:async()=>{
+     clearCs03HistoryView(historyRoot);
      const listing=await scoped.list();
+     const display=renderCs03HistoryView(historyRoot,listing);
      const records=Object.values(listing.records);
      const learned=records.filter(r=>r.data?.level&&r.data.level!=='unseen').length;
-     return 'アカウント履歴 '+records.length+'件（学習済み '+learned+'件）。閲覧のみ。端末内履歴は変更しません。';
+     return 'アカウント履歴 '+records.length+'件（学習済み '+learned+'件、表示 '+display.shown+'件）。端末内履歴は変更しません。';
     },
     onTransferProgress:async()=>{
      const id=window.CS03_SELECTED_QUESTION?.read();
