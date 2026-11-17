@@ -99,7 +99,7 @@ test('second write requires the exact next revision',async()=>{
  assert.equal(response.status,200);
  const update=calls.find(c=>/^UPDATE public.study_progress/.test(c.sql));
  assert.ok(update);assert.deepEqual(update.values,[A,'db','2025:am2:6','{"ok":true}',2]);
- assert.match(update.sql,/revision=\\$5-1/);
+ assert.match(update.sql,/revision=\$5-1/);
 });
 
 test('bad oversized JSON is rejected before DB access',async()=>{
