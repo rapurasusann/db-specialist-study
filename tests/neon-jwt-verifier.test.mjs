@@ -27,3 +27,31 @@ test('configuration must declare trusted issuer, audience and keys',()=>{
   assert.throws(()=>createNeonJwtVerifier({issuer:ISS,jwks}),/AUTH_JWT_CONFIG_REQUIRED/);
   assert.throws(()=>createNeonJwtVerifier({issuer:'http://insecure',audience:AUD,jwks}),/AUTH_JWT_CONFIG_REQUIRED/);
 });
+
+test('EdDSA signed Neon-style JWT accepted',async()=>{
+  const pair=await generateKeyPair('EdDSA');
+  const publicJwk=await exportJWK(pair.publicKey);
+  const verifier=createNeonJwtVerifier({
+    issuer:ISS,audience:AUD,
+    jwks:createLocalJWKSet({keys:[{...publicJwk,kid:'ed-test',alg:'EdDSA'}]})
+  });
+  const token=await new SignJWT({})
+    .setProtectedHeader({alg:'EdDSA',kid:'ed-test'})
+    .setSubject(USER).setIssuer(ISS).setAudience(AUD)
+    .setIssuedAt().setExpirationTime('5m').sign(pair.privateKey);
+  assert.equal((await verifier(token)).userId,USER);
+});
+test('EdDSA forged signature rejected',async()=>{
+  const trusted=await generateKeyPair('EdDSA');
+  const attacker=await generateKeyPair('EdDSA');
+  const publicJwk=await exportJWK(trusted.publicKey);
+  const verifier=createNeonJwtVerifier({
+    issuer:ISS,audience:AUD,
+    jwks:createLocalJWKSet({keys:[{...publicJwk,kid:'ed-test',alg:'EdDSA'}]})
+  });
+  const token=await new SignJWT({})
+    .setProtectedHeader({alg:'EdDSA',kid:'ed-test'})
+    .setSubject(USER).setIssuer(ISS).setAudience(AUD)
+    .setIssuedAt().setExpirationTime('5m').sign(attacker.privateKey);
+  await assert.rejects(verifier(token),/UNAUTHORIZED/);
+});
