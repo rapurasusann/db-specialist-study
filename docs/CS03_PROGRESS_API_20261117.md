@@ -122,3 +122,6 @@ Neon公式の Production hardening で、FunctionのネイティブURLはWAF/Clo
 `tests/cs03-account-ui.test.mjs`（6件）と `tests/cs03-page-integration.test.mjs`（4件）を `npm run test:cs03` に追加。既存81件＋新10件＝**91件、未実行**。
 
 **公開前残条件**：`@neon/auth` のブラウザバンドル生成と実動作確認、CSPの `connect-src` を実際の信頼済みAuth/API接続先だけに絞った調整、Authのtrusted domains、隔離Functionの費用・アクセス制限、学習画面の保存イベントとアカウント履歴の安全な連携、PC・スマホの同期E2E。現時点では開発ブランチのUI部品が増えただけで、実際の登録・ログインや同期はまだ使えない。Neon Functionのデプロイは未実施。
+
+## 開発PC 91件ローカル試験（2026-11-18）
+コミット `82be2d5` に対する `npm run test:cs03` の実行結果：91 tests / 91 pass / 0 fail / `CS03_TEST_EXIT_CODE=0`。追加分はアカウントフォーム6件、既存ページ維持4件。ブラウザバンドルはまだ未生成で、実ブラウザでのNeon Auth通信・画面操作は未確認。次は依存導入と `build:cs03-account` のローカル検証。公開デプロイ・Actionsは禁止したまま。
