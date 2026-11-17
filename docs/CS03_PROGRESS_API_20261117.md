@@ -125,3 +125,8 @@ Neon公式の Production hardening で、FunctionのネイティブURLはWAF/Clo
 
 ## 開発PC 91件ローカル試験（2026-11-18）
 コミット `82be2d5` に対する `npm run test:cs03` の実行結果：91 tests / 91 pass / 0 fail / `CS03_TEST_EXIT_CODE=0`。追加分はアカウントフォーム6件、既存ページ維持4件。ブラウザバンドルはまだ未生成で、実ブラウザでのNeon Auth通信・画面操作は未確認。次は依存導入と `build:cs03-account` のローカル検証。公開デプロイ・Actionsは禁止したまま。
+
+## ブラウザバンドル・ローカル表示スモーク（2026-11-18）
+開発PCにてコミット `6b5035a` から `npm install --ignore-scripts --no-audit --no-fund` が成功（追加28パッケージ）、`npm run build:cs03-account` 成功（約1.1 MBのバンドル）、`CS03_ACCOUNT_BUILD=PASS`。ビルド成功はブラウザ実動作・Neon Auth接続成功を意味しない。
+
+` scripts/cs03-browser-smoke.mjs` を追加。開発PC内の127.0.0.1で一時HTTP配信し、Playwright Chromiumでページタイトル、学習・バックアップ操作の表示、アカウント試験パネルの初期非表示、プレビューOFF、ページスクリプトエラーなし、ビルド成果物の存在を確認する。外部通信はPlaywright側で遮断する。ログイン・ユーザー登録・Neonとの通信は行わない。**スモーク試験は未実行。** GitHub Actionsと公開デプロイは未使用。
