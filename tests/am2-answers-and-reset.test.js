@@ -27,7 +27,10 @@ assert.ok(html.includes('<script src="src/am2-2025-explanations.js"></script>'))
 assert.ok(html.includes('let sessionSelected=null;'));
 assert.ok(html.includes('function renderStudy(){sessionSelected=null;'));
 assert.ok(html.includes('input.checked=sessionSelected===l'));
-assert.ok(html.includes('const selected=sessionSelected;'));
+assert.ok(html.includes('function gradeCurrentAnswer(showMissingAlert=false)'));
+assert.ok(html.includes('sessionGradedSelection===sessionSelected'));
+assert.ok(html.includes('gradeCurrentAnswer();number=target;'));
+assert.ok(html.includes("$('grade').onclick=()=>gradeCurrentAnswer(true)"));
 assert.ok(!html.includes('input.checked=r.selected===l'));
 assert.ok(!html.includes('const selected=rec().selected;'));
 assert.ok(!html.includes('put({selected:l})'));
