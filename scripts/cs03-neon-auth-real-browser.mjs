@@ -44,7 +44,8 @@ try{
   }catch{res.writeHead(404);res.end();}
  });
  await new Promise(done=>server.listen(0,'127.0.0.1',done));
- const origin='http://127.0.0.1:'+server.address().port;
+ // Neon Auth permits localhost development origins; the GET probes do not validate POST Origin.
+ const origin='http://localhost:'+server.address().port;
  browser=await playwright.chromium.launch({headless:true});
  const context=await browser.newContext({serviceWorkers:'block'});
  await context.route('**/*',route=>{
@@ -55,8 +56,21 @@ try{
  });
  const page=await context.newPage();
  const errors=[];page.on('pageerror',e=>errors.push(e.name||'PageError'));
- const signupResponses=[];const authFailures=[];
- page.on('response',response=>{try{const u=new URL(response.url());if(u.origin===AUTH && u.pathname.endsWith('/sign-up/email'))signupResponses.push(response.status());}catch{}});
+ const signupResponses=[];const signupErrorCodes=[];const authFailures=[];
+ page.on('response',response=>{
+  try{
+   const u=new URL(response.url());
+   if(u.origin!==AUTH||!u.pathname.endsWith('/sign-up/email'))return;
+   signupResponses.push(response.status());
+   if(response.status()>=400){
+    void response.json().then(body=>{
+     // Never print a server message: it can contain user input or tokens.
+     const code=body?.code;
+     signupErrorCodes.push(['INVALID_ORIGIN','MISSING_OR_NULL_ORIGIN','ORIGIN_NOT_ALLOWED','FORBIDDEN','CSRF_ERROR','RATE_LIMITED','TOO_MANY_REQUESTS'].includes(code)?code:'UNCLASSIFIED_ERROR');
+    }).catch(()=>signupErrorCodes.push('ERROR_BODY_UNAVAILABLE'));
+   }
+  }catch{}
+ });
  page.on('requestfailed',request=>{try{const u=new URL(request.url());if(u.origin===AUTH)authFailures.push(request.failure()?.errorText==='net::ERR_FAILED'?'NETWORK_OR_CORS_ERROR':'AUTH_NETWORK_ERROR');}catch{}});
  await page.goto(origin+'/',{waitUntil:'domcontentloaded'});
  await page.locator('#cs03AccountPanel').waitFor({state:'visible',timeout:15000});
@@ -75,6 +89,7 @@ try{
  const signupOk=status.includes('登録要求');
  console.log('SIGNUP_HTTP_STATUS='+(signupResponses.length?signupResponses.join(','):'NO_RESPONSE_OBSERVED'));
  console.log('SIGNUP_UI_RESULT='+(signupOk?'SUCCESS_MESSAGE':status.includes('失敗')?'ERROR_MESSAGE':'OTHER_MESSAGE'));
+ console.log('SIGNUP_ERROR_CODE='+(signupErrorCodes[0]||'NOT_CAPTURED'));
  console.log('SIGNUP_AUTH_NETWORK_FAILURES='+authFailures.length);
  console.log('SIGNUP_BROWSER_PAGE_ERRORS='+errors.length);
  check('NEON_AUTH_REAL_SIGNUP',signupOk);
