@@ -64,3 +64,9 @@
 `tests/cs03-browser-function.test.mjs` を追加、`npm run test:cs03` に編入。**未実行**。
 
 **デプロイ禁止の現時点のブロッカー**: Neon Functionsで自動注入される `DATABASE_URL` のロール/DBは必ずしも `cs03_progress_api/cs03_auth_sandbox` ではない。本入口はデフォルト接続URLを使わず、別途安全なサーバー環境変数 `CS03_TEST_DATABASE_URL` が必要。ブランチID環境変数 `CS03_ISOLATED_BRANCH_ID` も必要。これらなしでは初期化拒否。FunctionのネイティブURLは公開されるため、JWT認証に加え、正式公開前にエッジ側で適切な濫用防止・レート制御、応答制限、費用/無料枠監視が必要。ユーザー登録・ログイン・セッション維持・同期は未実装。Neon Functionsの無料プラン利用可能性は確認済み、ただし実際の利用量は未計測。
+
+## ブラウザAPIのローカル試験結果（2026-11-18）
+開発PCでコミット `09a3160` に対して `npm run test:cs03` 実行。
+結果 `54 tests / 54 pass / 0 fail / TEST_EXIT_CODE=0`。
+内訳: ブラウザFunctions入口 13/13、SSLランタイム10/10、JWT10/10、ユーザー別アクセス制御9/9、学習履歴API12/12。
+Neon Functionsデプロイは行っていないため、実行時の環境変数、CORS経由の公開アクセス、JWTの実運用レート制御は未検証。ネイティブURLへの匿名リクエストにも関数起動コストが生じ得る。無料枠の利用量を確認し、厳密なDBロール設定/公開対策/料金リスクを検証するまで公開しない。
