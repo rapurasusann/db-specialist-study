@@ -177,3 +177,11 @@
 - **Nodeの正式テストランナー、実ブラウザ、Neon認証・メール・Data API・RLSは未試験**。合格の範囲を拡大解釈しない。
 - 本番main・Neon設定・学習履歴無変更。追加computeなし、追加料金なし、GitHub Actions不使用。
 - 次：無料のソース側試験・画面改善を継続し、実ブラウザ受入とNeon実接続は安全な実行条件が整ってから行う。
+
+## 2026-11-17 CS-03 フォームのアクセシビリティ改善
+
+- `src/account-form-preview.js` を修正：登録／ログインのpassword autocomplete切替（new-password/current-password）、ログイン時の確認欄disabled、aria-invalidの付与・解除。
+- `tests/account-form-preview.test.js` に静的テスト2件追加（合計7件定義、Node未実行）。
+- GitHub再取得したソースを独立V8＋模擬DOMで8項目検証し **8/8 PASS**（初期化、登録・ログインのautocomplete、確認欄の有効・無効、メール不正、空パスワード、不一致）。実ブラウザ・Node正式ランナー・Neon実接続は未試験。
+- 本番main・公開サイト・Neon設定・ユーザー履歴は無変更。追加compute・追加料金なし。GitHub Actions不使用。
+- 次：無料で実施できるNodeテスト実行とソース回帰検証を優先し、実接続は費用ゼロが保証できるまで保留。
