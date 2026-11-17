@@ -34,7 +34,7 @@
     "sourcePage": 5
   },
   "2025:am2:8": {
-    "stem": "表定義に基づいて作成された“システム担当者”表において，トランザクションAの複合文内のSQL文全てを正常終了させるために a に入れる字句はどれか。ここで，実線の下線は主キーを表す。\n\n【表定義】\nCREATE TABLE システム担当者 (\n  システム番号 INTEGER,\n  担当者番号 INTEGER NOT NULL,\n  CONSTRAINT PK_システム番号 PRIMARY KEY(システム番号),\n  CONSTRAINT UK_担当者番号 UNIQUE(担当者番号)\n    DEFERRABLE INITIALLY IMMEDIATE\n)\n\n【システム担当者（初期データ）】\nシステム番号／担当者番号\n1234／111\n6789／222\n\n【トランザクションA】\nSET CONSTRAINTS [a];\nUPDATE システム担当者 SET 担当者番号 = 222 WHERE システム番号 = 1234;\nUPDATE システム担当者 SET 担当者番号 = 111 WHERE システム番号 = 6789;\nCOMMIT;",
+    "stem": "表定義に基づいて作成された“システム担当者”表において，トランザクションAの複合文内のSQL文全てを正常終了させるために a に入れる字句はどれか。ここで，実線の下線は主キーを表す。",
     "options": {
       "ア": "PK_システム番号 DEFERRED",
       "イ": "PK_システム番号 IMMEDIATE",
