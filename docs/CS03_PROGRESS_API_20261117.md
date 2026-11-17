@@ -240,3 +240,6 @@ Neon隔離DB `cs03_auth_sandbox` の `neon_auth."user"` を読み取り専用で
 `src/cs03-account-client.mjs` に `listProgress()` を追加。ページ送り、悪意あるレコード/重複カーソル/不正なページ応答の拒否、80ページ上限、処理後のアカウント再確認を行う。`src/cs03-scoped-progress.mjs` から本人にバインドして取得するが、旧端末内履歴（`db-study-progress-v1`）にも、アカウント別端末キャッシュにも勝手に反映しない。プレビュー専用アカウント欄に「アカウント全履歴の件数を確認」を追加。ユーザーがボタンを押したときだけ件数を読み込み、結果件数・学習済み件数を表示する。
 
 一覧取得の新規テストは `progress-api.test.js` 4件、`progress-access.test.js` 3件、`cs03-account-client.test.mjs` 3件、`cs03-scoped-progress.test.mjs` 2件、計12件追加。前回111件と合わせ **123件が実行対象（未実行）**。今回のブラウザ用バンドル再ビルドも未実施。本番サイト/Neon Functions/GitHub Actionsへの変更なし。**別端末の履歴を既存の学習画面へ切り替える表示処理や自動同期は未実装。** 公開APIゲートウェイ・無料枠・負荷対策の確認が終わるまで公開は禁止。
+
+## 123件の単体テストとビルドの実行結果（2026-11-18）
+開発PCでブランチ HEAD `2353345` を取得し `npm run test:cs03` を実行。`tests 123` / `pass 123` / `fail 0`、続けて `npm run build:cs03-account` が成功し `CS03_TEST_AND_BUILD=PASS`。これにより一覧取得のAPI認可・ページネーション・ブラウザ側読み取りロジックのユニット試験が合格。Playwrightによる一覧取得画面操作、および実Neon API経由での一括取得・複数端末間同期はまだ未実施。
