@@ -18,7 +18,7 @@ const newPolicy="'self' "+tokens.join(' ');
 const nextMeta=original.replace(parts[0],parts[0].replace('script-src '+policy,'script-src '+newPolicy));
 if(nextMeta===original){console.log('CSP_HASHES_ALREADY_CURRENT=YES');process.exit(0)}
 const updated=html.replace(meta[0],meta[0].replace(original,nextMeta));
-if(updated===html||updated.includes("'unsafe-inline'"))throw Error('CSP_REPAIR_FAILED');
+if(updated===html||newPolicy.includes("'unsafe-inline'")||newPolicy.includes("'unsafe-eval'"))throw Error('CSP_REPAIR_FAILED');
 writeFileSync(file,updated,'utf8');
 console.log('CSP_INLINE_HASHES_RECALCULATED='+tokens.length);
 console.log('CSP_STRICT_POLICY_PRESERVED=YES');
