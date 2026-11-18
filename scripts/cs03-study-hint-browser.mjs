@@ -74,9 +74,10 @@ try{
  // Hint is deliberately inside the study view, not the dashboard.
  stage='OPEN_STUDY';
  await page.locator('#viewStudy').click();
- check('STUDY_VIEW_VISIBLE',await page.locator('#study').isVisible());
+ const study=await page.locator('#study').evaluate(el=>({hidden:el.hidden,classes:el.className,display:getComputedStyle(el).display,mode:document.querySelector('#viewStudy')?.className}));
+ check('STUDY_MODE_SELECTED',study.mode!==undefined && !study.mode.includes('primary'));
+ check('STUDY_VIEW_VISIBLE',study.hidden===false&&!study.classes.split(/\s+/).includes('hide')&&study.display!=='none');
  stage='LOAD_ACCOUNT_HISTORY';
- stage='RELOAD_AFTER_NAVIGATION';
  await page.locator('[data-cs03="load-progress"]').click();
  await page.waitForFunction(()=>document.getElementById('cs03StudyHint').textContent.includes('要復習'),null,{timeout:4500});
  check('HINT_SHOWS_REMOTE_LEVEL',await page.locator('#cs03StudyHint').isVisible());
@@ -103,14 +104,27 @@ try{
  console.log('CS03_STUDY_HINT_BROWSER=FAIL');
  console.log('FAIL_CLASS='+(e?.message==='PLAYWRIGHT_MISSING'?'PLAYWRIGHT_MISSING':e?.message==='ASSERTION_FAILED'?'ASSERTION_FAILED':'BROWSER_OR_ENVIRONMENT_ERROR'));
  console.log('FAIL_STAGE='+stage);
- if(pageRef){try{
-  const d=await pageRef.evaluate(()=>({status:document.querySelector('[data-cs03="record-status"]')?.textContent||'',panelStatus:document.querySelector('[data-cs03="status"]')?.textContent||'',hint:document.getElementById('cs03StudyHint')?.textContent||'',id:window.CS03_SELECTED_QUESTION?.read?.()||''}));
-  // Whitelisted diagnostic categories only: never output login details or server responses.
-  console.log('DIAG_SELECTED_ID_MATCH='+(d.id==='2025:am2:1'?'YES':'NO'));
-  console.log('DIAG_HINT_NONEMPTY='+(d.hint.length>0?'YES':'NO'));
-  console.log('DIAG_LOAD_FINISHED='+(d.status.includes('読み込み完了')?'YES':'NO'));
-  console.log('DIAG_GENERIC_ERROR='+(d.panelStatus.includes('操作に失敗')?'YES':'NO'));
- }catch{console.log('DIAG_PAGE_UNAVAILABLE=YES')}}
+ if(pageRef){
+  console.log('DIAG_PAGE_CLOSED='+(pageRef.isClosed()?'YES':'NO'));
+  if(!pageRef.isClosed()){
+   try{
+    const d=await pageRef.evaluate(()=>({
+     studyClass:document.getElementById('study')?.className||'',
+     studyDisplay:document.getElementById('study')?getComputedStyle(document.getElementById('study')).display:'MISSING',
+     viewClass:document.getElementById('viewStudy')?.className||'',
+     hintPresent:Boolean(document.getElementById('cs03StudyHint')),
+     hintNonempty:Boolean(document.getElementById('cs03StudyHint')?.textContent),
+     recordStatus:document.querySelector('[data-cs03="record-status"]')?.textContent||''
+    }));
+    console.log('DIAG_STUDY_HAS_HIDE='+(d.studyClass.split(/\\s+/).includes('hide')?'YES':'NO'));
+    console.log('DIAG_STUDY_DISPLAY_NONE='+(d.studyDisplay==='none'?'YES':'NO'));
+    console.log('DIAG_VIEW_STUDY_PRIMARY='+(d.viewClass.includes('primary')?'YES':'NO'));
+    console.log('DIAG_HINT_PRESENT='+(d.hintPresent?'YES':'NO'));
+    console.log('DIAG_HINT_NONEMPTY='+(d.hintNonempty?'YES':'NO'));
+    console.log('DIAG_LOAD_FINISHED='+(d.recordStatus.includes('読み込み完了')?'YES':'NO'));
+   }catch{console.log('DIAG_EVALUATION_FAILED=YES')}
+  }
+ }
  process.exitCode=1;
 }finally{
  if(browser)await browser.close().catch(()=>{});
