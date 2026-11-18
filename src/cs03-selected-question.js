@@ -14,5 +14,13 @@
   const record=progress[id];
   return record&&typeof record==='object'&&!Array.isArray(record)?structuredClone(record):null;
  };
- Object.defineProperty(window,'CS03_SELECTED_QUESTION',{value:Object.freeze({read,readLegacy}),writable:false,configurable:false});
+ const readLegacySnapshot=()=>{
+  const result=Object.create(null);
+  for(const [id,row] of Object.entries(progress)){
+   if(!pattern.test(id)||!row||typeof row!=='object'||Array.isArray(row))continue;
+   result[id]=structuredClone(row);
+  }
+  return result;
+ };
+ Object.defineProperty(window,'CS03_SELECTED_QUESTION',{value:Object.freeze({read,readLegacy,readLegacySnapshot}),writable:false,configurable:false});
 })();
