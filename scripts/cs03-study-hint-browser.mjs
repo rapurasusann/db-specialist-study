@@ -8,7 +8,7 @@ const require=createRequire(import.meta.url);
 const root=resolve(fileURLToPath(new URL('../',import.meta.url)));
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.json':'application/json','.png':'image/png','.svg':'image/svg+xml'};
 const legacy={'2025:am2:1':{level:'mastered'}};
-let browser,server,external=0;
+let browser,server,external=0,stage='INIT',pageRef=null;
 function check(name,valid){console.log(name+'='+(valid?'PASS':'FAIL'));if(!valid)throw Error('ASSERTION_FAILED');}
 try{
  if(!process.env.PLAYWRIGHT_MODULE_PATH)throw Error('PLAYWRIGHT_MISSING');
@@ -30,6 +30,7 @@ try{
  });
  await context.addInitScript(r=>localStorage.setItem('db-study-progress-v1',JSON.stringify(r)),legacy);
  const page=await context.newPage(),errors=[];
+ pageRef=page;
  page.on('pageerror',e=>errors.push(e.name||'PAGE_ERROR'));
  await page.goto(origin+'/',{waitUntil:'domcontentloaded'});
  await page.waitForFunction(()=>window.CS03_SELECTED_QUESTION?.read);
@@ -70,20 +71,26 @@ try{
  await page.locator('[data-cs03="login"]').click();
  await page.waitForFunction(()=>document.querySelector('[data-cs03="identity"]').textContent.includes('ログイン中'));
  check('NO_EAGER_READ',await page.evaluate(()=>window.__hintTest.stats().reads===0));
+ // Hint is deliberately inside the study view, not the dashboard.
+ stage='OPEN_STUDY';
+ await page.locator('#viewStudy').click();
+ check('STUDY_VIEW_VISIBLE',await page.locator('#study').isVisible());
+ stage='LOAD_ACCOUNT_HISTORY';
+ stage='RELOAD_AFTER_NAVIGATION';
  await page.locator('[data-cs03="load-progress"]').click();
- await page.waitForFunction(()=>document.getElementById('cs03StudyHint').textContent.includes('要復習'));
+ await page.waitForFunction(()=>document.getElementById('cs03StudyHint').textContent.includes('要復習'),null,{timeout:4500});
  check('HINT_SHOWS_REMOTE_LEVEL',await page.locator('#cs03StudyHint').isVisible());
  check('HINT_READ_ONLY_TEXT',(await page.locator('#cs03StudyHint').textContent()).includes('閲覧専用'));
  check('ACCOUNT_READ_ONCE',await page.evaluate(()=>window.__hintTest.stats().reads===1));
  check('DEVICE_RECORD_UNCHANGED_AFTER_READ',await page.evaluate(r=>localStorage.getItem('db-study-progress-v1')===JSON.stringify(r),legacy));
- await page.evaluate(()=>{
-  document.getElementById('viewStudy').click();
-  document.getElementById('next').click();
- });
+ stage='NAVIGATE_NEXT';
+ await page.evaluate(()=>document.getElementById('next').click());
  check('HINT_HIDDEN_AFTER_NAVIGATION',!(await page.locator('#cs03StudyHint').isVisible()));
+ stage='NAVIGATE_BACK';
  await page.evaluate(()=>document.getElementById('previous').click());
  await page.locator('[data-cs03="load-progress"]').click();
  await page.waitForFunction(()=>document.getElementById('cs03StudyHint').textContent.includes('要復習'));
+ stage='LOGOUT';
  await page.locator('[data-cs03="logout"]').click();
  await page.waitForFunction(()=>document.querySelector('[data-cs03="identity"]').textContent==='未ログイン');
  check('HINT_HIDDEN_AFTER_LOGOUT',!(await page.locator('#cs03StudyHint').isVisible()));
@@ -95,6 +102,15 @@ try{
 }catch(e){
  console.log('CS03_STUDY_HINT_BROWSER=FAIL');
  console.log('FAIL_CLASS='+(e?.message==='PLAYWRIGHT_MISSING'?'PLAYWRIGHT_MISSING':e?.message==='ASSERTION_FAILED'?'ASSERTION_FAILED':'BROWSER_OR_ENVIRONMENT_ERROR'));
+ console.log('FAIL_STAGE='+stage);
+ if(pageRef){try{
+  const d=await pageRef.evaluate(()=>({status:document.querySelector('[data-cs03="record-status"]')?.textContent||'',panelStatus:document.querySelector('[data-cs03="status"]')?.textContent||'',hint:document.getElementById('cs03StudyHint')?.textContent||'',id:window.CS03_SELECTED_QUESTION?.read?.()||''}));
+  // Whitelisted diagnostic categories only: never output login details or server responses.
+  console.log('DIAG_SELECTED_ID_MATCH='+(d.id==='2025:am2:1'?'YES':'NO'));
+  console.log('DIAG_HINT_NONEMPTY='+(d.hint.length>0?'YES':'NO'));
+  console.log('DIAG_LOAD_FINISHED='+(d.status.includes('読み込み完了')?'YES':'NO'));
+  console.log('DIAG_GENERIC_ERROR='+(d.panelStatus.includes('操作に失敗')?'YES':'NO'));
+ }catch{console.log('DIAG_PAGE_UNAVAILABLE=YES')}}
  process.exitCode=1;
 }finally{
  if(browser)await browser.close().catch(()=>{});
