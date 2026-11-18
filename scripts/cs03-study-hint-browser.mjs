@@ -112,6 +112,10 @@ try{
      studyClass:document.getElementById('study')?.className||'',
      studyHidden:document.getElementById('study')?.hidden===true,
      studyInlineDisplay:document.getElementById('study')?.style.display||'',
+     studyMatchedRules:[...document.styleSheets].flatMap(sheet=>{try{return [...sheet.cssRules].filter(rule=>rule.type===CSSRule.STYLE_RULE&&rule.selectorText?.split(',').some(selector=>{try{return document.getElementById('study')?.matches(selector.trim())}catch{return false}})).map(rule=>({selector:rule.selectorText,display:rule.style.display}))}catch{return []}}).filter(rule=>rule.display),
+     studyTag:document.getElementById('study')?.tagName||'',
+     studyDuplicateIds:document.querySelectorAll('#study').length,
+     studyParentHidden:[...(()=>{const nodes=[];let p=document.getElementById('study')?.parentElement;while(p&&nodes.length<8){nodes.push({tag:p.tagName,hidden:p.hidden===true,display:getComputedStyle(p).display});p=p.parentElement}return nodes})()].some(x=>x.hidden||x.display==='none'),
      studyDisplay:document.getElementById('study')?getComputedStyle(document.getElementById('study')).display:'MISSING',
      viewClass:document.getElementById('viewStudy')?.className||'',
      hintPresent:Boolean(document.getElementById('cs03StudyHint')),
@@ -120,6 +124,9 @@ try{
     }));
     console.log('DIAG_STUDY_HIDDEN_ATTR='+(d.studyHidden?'YES':'NO'));
     console.log('DIAG_STUDY_INLINE_NONE='+(d.studyInlineDisplay==='none'?'YES':'NO'));
+    console.log('DIAG_STUDY_DUPLICATE_ID='+(d.studyDuplicateIds!==1?'YES':'NO'));
+    console.log('DIAG_STUDY_PARENT_HIDDEN='+(d.studyParentHidden?'YES':'NO'));
+    console.log('DIAG_STUDY_MATCHED_DISPLAY_RULES='+(d.studyMatchedRules.map(x=>x.selector+':'+x.display).join(',')||'NONE').slice(0,240));
     console.log('DIAG_STUDY_HAS_HIDE='+(d.studyClass.split(/\\s+/).includes('hide')?'YES':'NO'));
     console.log('DIAG_STUDY_DISPLAY_NONE='+(d.studyDisplay==='none'?'YES':'NO'));
     console.log('DIAG_VIEW_STUDY_PRIMARY='+(d.viewClass.includes('primary')?'YES':'NO'));
