@@ -76,6 +76,8 @@ try{
  await page.locator('#viewStudy').click();
  const study=await page.locator('#study').evaluate(el=>({hidden:el.hidden,classes:el.className,display:getComputedStyle(el).display,mode:document.querySelector('#viewStudy')?.className}));
  check('STUDY_MODE_SELECTED',study.mode!==undefined && study.mode.includes('primary'));
+ console.log('STUDY_HIDE_CLASS='+(/(?:^|\\s)hide(?:\\s|$)/.test(study.classes)?'YES':'NO'));
+ console.log('STUDY_COMPUTED_DISPLAY='+(['none','grid','block'].includes(study.display)?study.display:'OTHER'));
  check('STUDY_VIEW_VISIBLE',study.hidden===false&&!study.classes.split(/\s+/).includes('hide')&&study.display!=='none');
  stage='LOAD_ACCOUNT_HISTORY';
  await page.locator('[data-cs03="load-progress"]').click();
@@ -127,7 +129,7 @@ try{
     console.log('DIAG_STUDY_DUPLICATE_ID='+(d.studyDuplicateIds!==1?'YES':'NO'));
     console.log('DIAG_STUDY_PARENT_HIDDEN='+(d.studyParentHidden?'YES':'NO'));
     console.log('DIAG_STUDY_MATCHED_DISPLAY_RULES='+(d.studyMatchedRules.map(x=>x.selector+':'+x.display).join(',')||'NONE').slice(0,240));
-    console.log('DIAG_STUDY_HAS_HIDE='+(d.studyClass.split(/\\s+/).includes('hide')?'YES':'NO'));
+    console.log('DIAG_STUDY_HAS_HIDE='+(d.studyClass.split(/\s+/).includes('hide')?'YES':'NO'));
     console.log('DIAG_STUDY_DISPLAY_NONE='+(d.studyDisplay==='none'?'YES':'NO'));
     console.log('DIAG_VIEW_STUDY_PRIMARY='+(d.viewClass.includes('primary')?'YES':'NO'));
     console.log('DIAG_HINT_PRESENT='+(d.hintPresent?'YES':'NO'));
