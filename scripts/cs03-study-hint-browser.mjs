@@ -57,6 +57,12 @@ try{
   console.log('LEGACY_PAGEERROR_'+i+'_AT='+(location||'UNKNOWN'));
   const hint=item.message.match(/(?:is not defined|Cannot read properties of|Unexpected token|already been declared|Cannot access|is not a function)/)?.[0];
   console.log('LEGACY_PAGEERROR_'+i+'_HINT='+(hint||'OTHER'));
+  // Show only the first error's safe category details. No URLs, credentials, or arbitrary stack.
+  if(i===0){
+   const safe=item.message.replace(/(?:postgres(?:ql)?:\/\/|https?:\/\/)[^\s]+/g,'[REDACTED_URL]').replace(/(?:npg_|Bearer\s+)[A-Za-z0-9._-]+/g,'[REDACTED_SECRET]').slice(0,220);
+   console.log('LEGACY_PAGEERROR_FIRST_MESSAGE='+safe);
+   console.log('LEGACY_PAGEERROR_FIRST_STACK_SOURCE='+(item.stack.match(/(?:index\.html|[A-Za-z0-9._-]+\.(?:m?js)):\d+:\d+/)?.[0]||'UNKNOWN'));
+  }
  }
  if(!initialized.handler)throw Error('LEGACY_INITIALIZATION_FAILED');
  check('HINT_HIDDEN_BY_DEFAULT',!(await page.locator('#cs03StudyHint').isVisible()));
