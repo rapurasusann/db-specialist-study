@@ -73,10 +73,20 @@ try{
  check('NO_EAGER_READ',await page.evaluate(()=>window.__hintTest.stats().reads===0));
  // Hint is deliberately inside the study view, not the dashboard.
  stage='OPEN_STUDY';
- await page.locator('#viewStudy').click();
- const study=await page.locator('#study').evaluate(el=>({hidden:el.hidden,classes:el.className,display:getComputedStyle(el).display,mode:document.querySelector('#viewStudy')?.className}));
+ const study=await page.evaluate(()=>{
+  const button=document.getElementById('viewStudy');
+  const element=document.getElementById('study');
+  const before={className:element.className,display:getComputedStyle(element).display};
+  button.click();
+  const after={className:element.className,display:getComputedStyle(element).display};
+  return {hidden:element.hidden,classes:after.className,display:after.display,mode:button.className,before,after,
+   hasHandler:typeof button.onclick==='function'};
+ });
+ console.log('STUDY_BUTTON_HANDLER='+(study.hasHandler?'YES':'NO'));
+ console.log('STUDY_HIDE_BEFORE='+(study.before.className.split(/\s+/).includes('hide')?'YES':'NO'));
+ console.log('STUDY_HIDE_AFTER='+(study.after.className.split(/\s+/).includes('hide')?'YES':'NO'));
  check('STUDY_MODE_SELECTED',study.mode!==undefined && study.mode.includes('primary'));
- console.log('STUDY_HIDE_CLASS='+(/(?:^|\\s)hide(?:\\s|$)/.test(study.classes)?'YES':'NO'));
+ console.log('STUDY_HIDE_CLASS='+(study.classes.split(/\s+/).includes('hide')?'YES':'NO'));
  console.log('STUDY_COMPUTED_DISPLAY='+(['none','grid','block'].includes(study.display)?study.display:'OTHER'));
  check('STUDY_VIEW_VISIBLE',study.hidden===false&&!study.classes.split(/\s+/).includes('hide')&&study.display!=='none');
  stage='LOAD_ACCOUNT_HISTORY';
