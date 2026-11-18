@@ -34,6 +34,22 @@ try{
  page.on('pageerror',e=>errors.push(e.name||'PAGE_ERROR'));
  await page.goto(origin+'/',{waitUntil:'domcontentloaded'});
  await page.waitForFunction(()=>window.CS03_SELECTED_QUESTION?.read);
+ // The legacy page must initialize before an account preview can be accepted.
+ // Report only error names and HTML line numbers, never potentially sensitive messages.
+ const initialized=await page.evaluate(()=>({
+  handler:typeof document.getElementById('viewStudy')?.onclick==='function',
+  renderMode:typeof window.renderMode==='function',
+  courses:document.getElementById('coursebars')?.children.length||0,
+  loaded:document.readyState
+ }));
+ console.log('LEGACY_INIT_HANDLER='+(initialized.handler?'PASS':'FAIL'));
+ console.log('LEGACY_INIT_RENDER_FUNCTION='+(initialized.renderMode?'YES':'NO'));
+ console.log('LEGACY_INIT_DASHBOARD_ROWS='+initialized.courses);
+ console.log('LEGACY_PAGEERROR_COUNT='+errors.length);
+ for(let i=0;i<Math.min(errors.length,3);i++){
+  console.log('LEGACY_PAGEERROR_'+i+'_TYPE='+errors[i].name);
+ }
+ if(!initialized.handler)throw Error('LEGACY_INITIALIZATION_FAILED');
  check('HINT_HIDDEN_BY_DEFAULT',!(await page.locator('#cs03StudyHint').isVisible()));
  check('ACCOUNT_PANEL_HIDDEN_BY_DEFAULT',!(await page.locator('#cs03AccountPanel').isVisible()));
  await page.evaluate(async()=>{
@@ -114,7 +130,7 @@ try{
  console.log('CS03_STUDY_HINT_BROWSER=PASS');
 }catch(e){
  console.log('CS03_STUDY_HINT_BROWSER=FAIL');
- console.log('FAIL_CLASS='+(e?.message==='PLAYWRIGHT_MISSING'?'PLAYWRIGHT_MISSING':e?.message==='ASSERTION_FAILED'?'ASSERTION_FAILED':'BROWSER_OR_ENVIRONMENT_ERROR'));
+ console.log('FAIL_CLASS='+(e?.message==='PLAYWRIGHT_MISSING'?'PLAYWRIGHT_MISSING':e?.message==='ASSERTION_FAILED'?'ASSERTION_FAILED':e?.message==='LEGACY_INITIALIZATION_FAILED'?'LEGACY_INITIALIZATION_FAILED':'BROWSER_OR_ENVIRONMENT_ERROR'));
  console.log('FAIL_STAGE='+stage);
  if(pageRef){
   console.log('DIAG_PAGE_CLOSED='+(pageRef.isClosed()?'YES':'NO'));
