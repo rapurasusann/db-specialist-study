@@ -1,7 +1,7 @@
 /* IPA 2025 秋期 DB 午前II: source-checked question text; diagram/table is transcribed in the stem. */
 (function(){'use strict';if(typeof transcribed==='undefined')throw Error('transcribed must load first');Object.assign(transcribed,{
   "2025:am2:3": {
-    "stem": "UMLを用いて表した商品と倉庫のデータモデルに関する記述のうち，適切なものはどれか。ここで，商品の倉庫間の移動はないものとする。\n\n【データモデル（図の読み替え）】\n商品（商品コード）1 ─ 1..* 在庫商品（/在庫数量）\n倉庫（倉庫番号）1 ─ 0..* 在庫商品（格納先）\n在庫商品 1 ─ 1..* 入庫（入庫年月日・数量）\n在庫商品 1 ─ 0..* 出庫（出庫年月日・数量）\n※図の多重度と関連は下の原本画像でも確認できる。",
+    "stem": "UMLを用いて表した商品と倉庫のデータモデルに関する記述のうち，適切なものはどれか。ここで，商品の倉庫間の移動はないものとする。",
     "options": {
       "ア": "1種類の商品を二つの倉庫に初めて入庫すると，“在庫商品”データが2件追加される。",
       "イ": "2種類の商品を一つの倉庫に入庫すると，“入庫”データが1件追加される。",
