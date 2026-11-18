@@ -11,6 +11,7 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    const {createCs03ScopedProgress}=await import('./cs03-scoped-progress.mjs');
    const {createCs03ManualTransfer}=await import('./cs03-manual-transfer.mjs');
    const {renderCs03HistoryView,clearCs03HistoryView}=await import('./cs03-history-view.mjs');
+   const {previewCs03Sync}=await import('./cs03-sync-preview.mjs');
    // Only allow the exact isolated Managed Auth instance.
    if(cfg.authUrl!=='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech/cs03_auth_sandbox/auth')
     throw Error('AUTH_TARGET_MISMATCH');
@@ -37,6 +38,15 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
      const records=Object.values(listing.records);
      const learned=records.filter(r=>r.data?.level&&r.data.level!=='unseen').length;
      return 'アカウント履歴 '+records.length+'件（学習済み '+learned+'件、表示 '+display.shown+'件）。端末内履歴は変更しません。';
+    },
+    onCompareProgress:async()=>{
+     // Always fetch fresh account records. Never import a device record or write to either store.
+     const listing=await scoped.list();
+     const deviceRecords=window.CS03_SELECTED_QUESTION?.readLegacySnapshot();
+     if(!deviceRecords)throw Error('DEVICE_SNAPSHOT_UNAVAILABLE');
+     const preview=previewCs03Sync({deviceRecords,accountListing:listing});
+     const n=preview.counts;
+     return '比較結果：端末のみ '+n.deviceOnly+'件／アカウントのみ '+n.accountOnly+'件／両方にある問題 '+n.conflicts+'件。自動上書き・自動統合は行っていません。';
     },
     onTransferProgress:async()=>{
      const id=window.CS03_SELECTED_QUESTION?.read();
