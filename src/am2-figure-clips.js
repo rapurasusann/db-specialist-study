@@ -76,6 +76,63 @@
     requestAnimationFrame(fitTable);
     return figure;
   }
+  // Rebuilt from IPA 2025 AM2 Q3, page 4. Keep the original page viewer unchanged.
+  // All entities, attributes and multiplicities are rendered as text/vector shapes.
+  function buildQ3Diagram() {
+    const fig = document.createElement('figure');
+    fig.setAttribute('data-study-diagram','am2-q3');
+    fig.style.cssText = 'margin:14px 0;width:100%;max-width:100%;min-width:0;overflow:hidden;border:1px solid #d5e2ed;border-radius:10px;background:#fff;padding:8px;';
+    const svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+    const nsSvg = 'http://www.w3.org/2000/svg';
+    svg.setAttribute('viewBox','0 0 960 400');
+    svg.setAttribute('role','img');
+    svg.setAttribute('aria-label','問3 UMLデータモデル。商品1対在庫商品1以上、倉庫1対在庫商品0以上、在庫商品1対入庫1以上、在庫商品1対出庫0以上。格納先は倉庫と在庫商品の関連。');
+    svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+    svg.style.cssText = 'display:block;width:100%;height:auto;max-width:100%;font-family:system-ui,sans-serif;';
+    function element(tag,attrs={},label) {
+      const el=document.createElementNS(nsSvg,tag);
+      for (const [key,value] of Object.entries(attrs)) el.setAttribute(key,String(value));
+      if (label!==undefined) el.textContent=label;
+      svg.append(el);return el;
+    }
+    function line(x1,y1,x2,y2) {element('line',{x1,y1,x2,y2,stroke:'#263747','stroke-width':2.3});}
+    function label(x,y,value,anchor='middle') {
+      element('text',{x,y,'font-size':22,'text-anchor':anchor,fill:'#172437'},value);
+    }
+    function entity(x,y,width,title,attributes) {
+      const rowHeight=34,height=rowHeight+attributes.length*33+8;
+      element('rect',{x,y,width,height,fill:'#fff',stroke:'#263747','stroke-width':2.3});
+      line(x,y+rowHeight,x+width,y+rowHeight);
+      label(x+width/2,y+25,title);
+      attributes.forEach((value,i)=>label(x+10,y+rowHeight+29+i*33,value,'start'));
+    }
+    // Draw associations before entity boxes so all endpoints remain beneath boxes.
+    line(190,291,386,291);                       // 商品 -- 在庫商品
+    line(574,291,759,291);                       // 在庫商品 -- 倉庫
+    line(374,117,439,248);                       // 入庫 -- 在庫商品
+    line(691,117,524,248);                       // 出庫 -- 在庫商品
+    entity(35,251,155,'商品',['商品コード']);
+    entity(386,248,188,'在庫商品',['/在庫数量']);
+    entity(759,251,165,'倉庫',['倉庫番号']);
+    entity(290,24,168,'入庫',['入庫年月日','数量']);
+    entity(606,24,168,'出庫',['出庫年月日','数量']);
+    // Multiplicity always appears at the endpoint it qualifies.
+    label(210,281,'1','start');
+    label(376,281,'1..*','end');
+    label(586,281,'0..*','start');
+    label(748,281,'1','end');
+    label(347,149,'1..*');
+    label(426,236,'1');
+    label(725,149,'0..*');
+    label(540,236,'1');
+    label(661,281,'格納先');
+    fig.append(svg);
+    const caption=document.createElement('figcaption');
+    caption.textContent='問3 商品・倉庫のUMLデータモデル（原本の関連と多重度を再構成）';
+    caption.style.cssText='font-size:.85rem;color:#586b7b;margin-top:6px;';
+    fig.append(caption);
+    return fig;
+  }
   const baseQuestion = showQuestion;
   const ns = 'http://www.w3.org/2000/svg';
   function buildClip(item) {
@@ -125,6 +182,10 @@
     if (!title) return;
     if (isOrderTable) {
       title.insertAdjacentElement('afterend',buildOrderTable());
+      return;
+    }
+    if (key === '2025:am2:3') {
+      title.insertAdjacentElement('afterend',buildQ3Diagram());
       return;
     }
     // Insert the original figures immediately after the question stem,
