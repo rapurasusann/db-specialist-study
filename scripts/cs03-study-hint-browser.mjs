@@ -75,7 +75,7 @@ try{
  stage='OPEN_STUDY';
  await page.locator('#viewStudy').click();
  const study=await page.locator('#study').evaluate(el=>({hidden:el.hidden,classes:el.className,display:getComputedStyle(el).display,mode:document.querySelector('#viewStudy')?.className}));
- check('STUDY_MODE_SELECTED',study.mode!==undefined && !study.mode.includes('primary'));
+ check('STUDY_MODE_SELECTED',study.mode!==undefined && study.mode.includes('primary'));
  check('STUDY_VIEW_VISIBLE',study.hidden===false&&!study.classes.split(/\s+/).includes('hide')&&study.display!=='none');
  stage='LOAD_ACCOUNT_HISTORY';
  await page.locator('[data-cs03="load-progress"]').click();
@@ -110,12 +110,16 @@ try{
    try{
     const d=await pageRef.evaluate(()=>({
      studyClass:document.getElementById('study')?.className||'',
+     studyHidden:document.getElementById('study')?.hidden===true,
+     studyInlineDisplay:document.getElementById('study')?.style.display||'',
      studyDisplay:document.getElementById('study')?getComputedStyle(document.getElementById('study')).display:'MISSING',
      viewClass:document.getElementById('viewStudy')?.className||'',
      hintPresent:Boolean(document.getElementById('cs03StudyHint')),
      hintNonempty:Boolean(document.getElementById('cs03StudyHint')?.textContent),
      recordStatus:document.querySelector('[data-cs03="record-status"]')?.textContent||''
     }));
+    console.log('DIAG_STUDY_HIDDEN_ATTR='+(d.studyHidden?'YES':'NO'));
+    console.log('DIAG_STUDY_INLINE_NONE='+(d.studyInlineDisplay==='none'?'YES':'NO'));
     console.log('DIAG_STUDY_HAS_HIDE='+(d.studyClass.split(/\\s+/).includes('hide')?'YES':'NO'));
     console.log('DIAG_STUDY_DISPLAY_NONE='+(d.studyDisplay==='none'?'YES':'NO'));
     console.log('DIAG_VIEW_STUDY_PRIMARY='+(d.viewClass.includes('primary')?'YES':'NO'));
