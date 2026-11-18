@@ -258,3 +258,11 @@ Neon隔離DB `cs03_auth_sandbox` の `neon_auth."user"` を読み取り専用で
 ブラウザ一覧UI試験は開発PCで `CS03_HISTORY_VIEW_BROWSER=PASS` / `CS03_ALL_CHECKS=PASS`、Node 128/128 PASS、バンドルビルドPASS。ログイン前後、3行の閲覧専用表、ログアウト時の全消去、端末内履歴の不変を確認済み。**実Neon DBの一覧取得試験はまだ実行していない。**
 
 既存 `scripts/cs03-real-api-db-e2e.mjs` に隔離DBでの `A_SECOND_SAVE_FOR_LIST`、`A_LIST_PAGE_ONE`、`A_LIST_PAGE_TWO`、`B_LIST_CANNOT_ACCESS_A`、`A_LIST_UNCHANGED_AFTER_B`、`ANONYMOUS_LIST_DENIED`、`FORGED_LIST_TOKEN_DENIED`、`BAD_LIST_CURSOR_DENIED` の8確認を追加。実Neon Authでランダムな使い捨てユーザー2件を登録し、隔離DBへ新たに3件のテスト履歴を書き込む方式。使い捨てユーザー・履歴は自動削除しないので、事後棚卸対象。既存の実JWT/DB単一問題GET/PUT 8件と合わせ、独立した試験項目を合計16件予定。実行前に `CS03_ISOLATED_BRANCH_ID=br-snowy-truth-a162pmdt` と、`cs03_progress_api` / `cs03_auth_sandbox` / `sslmode=verify-full` の隔離DB URLをマスク入力し、接続先ガードがPASSしない限り起動しない。実ユーザーのDBや本番サイト、Neon Functions、GitHub Actionsは変更しない。出力にパスワード/JWT/DB URLを印字しない。
+
+
+## 実Neon DB履歴一覧E2E合格（2026-11-19）
+開発PCで `scripts/cs03-real-api-db-e2e.mjs` を実行。暗号化保存された接続URLを読み込み、隔離DB `cs03_auth_sandbox` / 最小権限ロール `cs03_progress_api` / `sslmode=verify-full` で実行。`RUNTIME_CONFIG=PASS`、`JWT_A_VERIFY=PASS` に加え、学習履歴の個別保存・取得8件と一覧のページ分割・他ユーザー隔離・未認証/偽造JWT/不正カーソル拒否8件の計16件が全件PASS。`CS03_LIVE_E2E=PASS`、`CS03_LIVE_LIST_EXIT_CODE=0`。これは開発PCから隔離Neon AuthとDBを利用した試験であり、公開エンドポイント経由・端末間同期の実証ではない。
+
+今回の試験で使い捨てAuthユーザー2件と履歴3件が隔離環境に作成され、自動削除は未実施。秘密情報は記録しない。公開アプリ・Neon Functions・GitHub Actionsは変更なし。
+
+**次工程**: アカウント別の学習画面履歴復元と明示的同期の設計/実装、公開APIの安全な接続・濫用対策・無課金運用確認、2端末E2E。端末内 `db-study-progress-v1` を暗黙にアカウントへ移行しない。公開は未承認。
