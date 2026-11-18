@@ -31,7 +31,7 @@ try{
  await context.addInitScript(r=>localStorage.setItem('db-study-progress-v1',JSON.stringify(r)),legacy);
  const page=await context.newPage(),errors=[];
  pageRef=page;
- page.on('pageerror',e=>errors.push(e.name||'PAGE_ERROR'));
+ page.on('pageerror',e=>errors.push({name:e?.name||'UNKNOWN',message:String(e?.message||'').slice(0,180),stack:String(e?.stack||'').slice(0,500)}));
  await page.goto(origin+'/',{waitUntil:'domcontentloaded'});
  await page.waitForFunction(()=>window.CS03_SELECTED_QUESTION?.read);
  // The legacy page must initialize before an account preview can be accepted.
@@ -40,14 +40,23 @@ try{
   handler:typeof document.getElementById('viewStudy')?.onclick==='function',
   renderMode:typeof window.renderMode==='function',
   courses:document.getElementById('coursebars')?.children.length||0,
-  loaded:document.readyState
+  loaded:document.readyState,
+  legacyInlineSyntax:(()=>{try{const inline=[...document.scripts].find(x=>!x.src&&x.textContent.includes('function renderMode()'));if(!inline)return 'MISSING';new Function(inline.textContent);return 'VALID'}catch{return 'INVALID'}})()
  }));
  console.log('LEGACY_INIT_HANDLER='+(initialized.handler?'PASS':'FAIL'));
  console.log('LEGACY_INIT_RENDER_FUNCTION='+(initialized.renderMode?'YES':'NO'));
  console.log('LEGACY_INIT_DASHBOARD_ROWS='+initialized.courses);
  console.log('LEGACY_PAGEERROR_COUNT='+errors.length);
+ console.log('LEGACY_INLINE_SYNTAX='+initialized.legacyInlineSyntax);
  for(let i=0;i<Math.min(errors.length,3);i++){
-  console.log('LEGACY_PAGEERROR_'+i+'_TYPE='+errors[i].name);
+  const item=errors[i];
+  console.log('LEGACY_PAGEERROR_'+i+'_TYPE='+item.name);
+  // Error classes and source locations only; do not print arbitrary error messages or secrets.
+  console.log('LEGACY_PAGEERROR_'+i+'_CLASS='+(item.message.match(/^(?:Uncaught )?(?:SyntaxError|ReferenceError|TypeError|RangeError|EvalError|Error)/)?.[0]||'OTHER'));
+  const location=item.stack.match(/(?:index\.html|[A-Za-z0-9._-]+\.js):\d+:\d+/)?.[0];
+  console.log('LEGACY_PAGEERROR_'+i+'_AT='+(location||'UNKNOWN'));
+  const hint=item.message.match(/(?:is not defined|Cannot read properties of|Unexpected token|already been declared|Cannot access|is not a function)/)?.[0];
+  console.log('LEGACY_PAGEERROR_'+i+'_HINT='+(hint||'OTHER'));
  }
  if(!initialized.handler)throw Error('LEGACY_INITIALIZATION_FAILED');
  check('HINT_HIDDEN_BY_DEFAULT',!(await page.locator('#cs03StudyHint').isVisible()));
