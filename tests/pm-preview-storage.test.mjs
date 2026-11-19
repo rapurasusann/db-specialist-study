@@ -26,6 +26,7 @@ async function preview(initial,scenario){
  const root=new Node('div'),status=new Node('p');
  let value=initial===undefined?null:initial;
  const writes=[];
+ let rejectWrite=false;
  globalThis.document={
   getElementById:id=>id==='pmRoot'?root:id==='storageStatus'?status:null,
   createElement:tag=>new Node(tag),
@@ -35,18 +36,23 @@ async function preview(initial,scenario){
  globalThis.Option=function(text,value){const option=new Node('option',text);option.value=value;return option};
  const storage={
   getItem:key=>key==='db-study-progress-v1'?value:null,
-  setItem:(key,next)=>{assert.equal(key,'db-study-progress-v1');writes.push(next);value=next}
+  setItem:(key,next)=>{assert.equal(key,'db-study-progress-v1');if(rejectWrite)throw Error('QUOTA_EXCEEDED');writes.push(next);value=next}
  };
  globalThis.localStorage=storage;
  try{
   await import('../src/pm-preview-entry.mjs?scenario='+scenario);
   const textarea=walk(root,n=>n.tag==='textarea');
-  return {root,status,writes,stored:()=>value,textarea,
-   input:text=>{
-    const previous=globalThis.localStorage;
-    globalThis.localStorage=storage;
-    try{textarea.fire('input',text)}finally{globalThis.localStorage=previous}
-   }
+  const withStorage=action=>{
+   const previous=globalThis.localStorage;
+   globalThis.localStorage=storage;
+   try{action()}finally{globalThis.localStorage=previous}
+  };
+  const retry=walk(root,n=>n.tag==='button'&&n.textContent==='再保存');
+  return {root,status,writes,stored:()=>value,textarea,retryButton:retry,
+   externalWrite:next=>{value=next},
+   rejectWrites:flag=>{rejectWrite=flag},
+   input:text=>withStorage(()=>textarea.fire('input',text)),
+   retry:()=>withStorage(()=>retry.fire('click'))
   };
  }finally{
   globalThis.document=originalDocument;globalThis.localStorage=originalStorage;globalThis.Option=originalOption;
@@ -99,5 +105,48 @@ test('array-shaped legacy question record must not be overwritten',async()=>{
  ui.input('回答');
  assert.equal(ui.writes.length,0);
  assert.equal(ui.stored(),initial);
+ assert.match(ui.status.textContent,/保存できませんでした/);
+});
+
+test('an external progress update is preserved when the preview saves later',async()=>{
+ const initial=JSON.stringify({'2025:pm1:1':{written:'元の本文'}});
+ const ui=await preview(initial,'external-update');
+ const changed={
+  '2025:pm1:1':{written:'別画面の新しい本文',level:'mastered',writtenBySubquestion:{'s2':'別設問の更新'}},
+  '2025:pm1:2':{written:'別の問題への更新'}
+ };
+ ui.externalWrite(JSON.stringify(changed));
+ ui.input('この設問の新しい回答');
+ const out=JSON.parse(ui.stored());
+ assert.equal(out['2025:pm1:1'].written,'別画面の新しい本文');
+ assert.equal(out['2025:pm1:1'].level,'mastered');
+ assert.equal(out['2025:pm1:1'].writtenBySubquestion.s2,'別設問の更新');
+ assert.equal(out['2025:pm1:1'].writtenBySubquestion['s1-1'],'この設問の新しい回答');
+ assert.deepEqual(out['2025:pm1:2'],changed['2025:pm1:2']);
+});
+test('a quota failure retains the unsaved draft until manual retry succeeds',async()=>{
+ const initial=JSON.stringify({'2025:pm1:1':{written:'保持する本文'}});
+ const ui=await preview(initial,'quota-retry');
+ ui.rejectWrites(true);
+ ui.input('失いたくない回答');
+ assert.equal(ui.writes.length,0);
+ assert.equal(ui.stored(),initial);
+ assert.equal(ui.textarea.value,'失いたくない回答');
+ assert.equal(ui.retryButton.hidden,false);
+ assert.match(ui.status.textContent,/保存できませんでした/);
+ ui.rejectWrites(false);
+ ui.retry();
+ assert.equal(ui.retryButton.hidden,true);
+ assert.equal(ui.writes.length,1);
+ assert.equal(JSON.parse(ui.stored())['2025:pm1:1'].writtenBySubquestion['s1-1'],'失いたくない回答');
+ assert.equal(JSON.parse(ui.stored())['2025:pm1:1'].written,'保持する本文');
+});
+test('a malformed nested answer container cannot erase existing progress',async()=>{
+ const initial=JSON.stringify({'2025:pm1:1':{written:'残す回答',writtenBySubquestion:[]},other:{level:'review'}});
+ const ui=await preview(initial,'bad-answer-map');
+ ui.input('上書きしない');
+ assert.equal(ui.writes.length,0);
+ assert.equal(ui.stored(),initial);
+ assert.equal(ui.retryButton.hidden,false);
  assert.match(ui.status.textContent,/保存できませんでした/);
 });
