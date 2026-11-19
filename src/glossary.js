@@ -92,6 +92,7 @@
       const text = node.nodeValue;
       const fragment = document.createDocumentFragment();
       let pos = 0;
+      let createdButton = false;
       while (pos < text.length) {
         let best = null, at = text.length;
         for (const item of applicable) {
@@ -117,11 +118,14 @@
           button.setAttribute('aria-label', best.phrase + '：用語の説明を表示');
           fragment.append(button);
           annotatedConceptIds.add(conceptId);
+          createdButton = true;
         }
         pos = at + best.phrase.length;
       }
       fragment.append(document.createTextNode(text.slice(pos)));
-      node.parentNode.replaceChild(fragment, node);
+      // Avoid replacing an unchanged, text-only node: MutationObserver would
+      // otherwise re-annotate repeated plain terms forever.
+      if (createdButton) node.parentNode.replaceChild(fragment, node);
     }
   }
 
