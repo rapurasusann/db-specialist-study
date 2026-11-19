@@ -74,7 +74,7 @@ try{
    for(let i=0;i<10;i++)buttons[0].click();
    return {last,lastDisabled,first:document.querySelector('.pmIntroText').textContent,firstDisabled:buttons[0].disabled}
   })()`);
-  assert.match(v.last,/原本 10 ページ/);assert.equal(v.lastDisabled,true);
+  assert.match(v.last,/原本 10 ページ/);assert.match(v.last,/⑥ スーパータイプ/);assert.match(v.last,/\(4\) レポート課題/);assert.equal(v.lastDisabled,true);
   assert.match(v.first,/原本 6 ページ/);assert.equal(v.firstDisabled,true);
  });
  check('auto and manual figure selection',async()=>{
@@ -87,6 +87,8 @@ try{
     buttons[3].click();return {automatic,manual,after:material(),reset:selector.value}
   })()`);
   assert.match(v.automatic,/図2/);assert.match(v.manual,/図1/);assert.match(v.after,/図3/);assert.equal(v.reset,'auto');
+  const heading=await cdp.eval("document.querySelector('.pmQuestionText h4').textContent");
+  assert.match(heading,/設問2：拡充後の関係スキーマ/);
  });
  check('independent answers and reload persistence',async()=>{
   const v=await cdp.eval(`(()=>{
