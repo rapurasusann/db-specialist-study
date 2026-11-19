@@ -114,6 +114,26 @@ test('figure 1 review SVG contains 24 text boxes, its original blank and a visib
  }finally{undo()}
 });
 
+test('numbered extension sections and selected question group appear without claiming verbatim source',()=>{
+ const undo=setup();
+ try{
+  const root=createPmSubquestionView(pmVerifiedStructure['2025:pm1:1']);
+  const intro=walk(root,n=>n.className==='pmIntroText')[0];
+  const next=byText(root,'button','次ページ');
+  for(let i=0;i<3;i++)next.fire('click');
+  assert.ok(walk(intro,n=>n.tag==='h4'&&n.textContent.includes('学習管理システムの拡充')).length);
+  assert.ok(walk(intro,n=>n.tag==='p'&&n.textContent.startsWith('(1)')).length);
+  next.fire('click');
+  assert.ok(walk(intro,n=>n.tag==='p'&&n.textContent.startsWith('⑥')).length);
+  byText(root,'button','設問2').fire('click');
+  const group=walk(root,n=>n.tag==='h4'&&n.textContent==='設問2：拡充後の関係スキーマ');
+  assert.equal(group.length,1);
+  assert.ok(walk(root,n=>n.tag==='p'&&n.textContent.includes('原文の全文転記ではなく')).length);
+  byText(root,'button','設問1 (1)').fire('click');
+  assert.ok(walk(root,n=>n.tag==='h4'&&n.textContent.startsWith('設問1：')).length);
+ }finally{undo()}
+});
+
 test('all four subquestions automatically select their associated source figure',()=>{
  const undo=setup();
  try{
