@@ -311,9 +311,9 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
  assert.ok(fig2.entries.some(row=>row.name==='コンテンツ使用'&&row.attributes.includes('[コンテンツ区分]')));
  assert.deepEqual(fig2.entries[0].attributes,['学部コード','学部名']);
  assert.deepEqual(fig2.entries[5].attributes.slice(-1),['[ ア ]']);
- assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='PK_SOLID').length,5);
+ assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='PK_SOLID').length,6);
  assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='NONE').length,28);
- assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='UNVERIFIED').length,95);
+ assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='UNVERIFIED').length,94);
  assert.deepEqual(fig2.entries[0].keyAudit,['PK_SOLID','NONE']);
  assert.deepEqual(fig2.entries[2].keyAudit,['PK_SOLID','NONE','NONE','NONE','NONE','NONE','NONE']);
  assert.deepEqual(fig2.entries[6].keyAudit.slice(5),['NONE','NONE','NONE','NONE','NONE']);
@@ -325,14 +325,18 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
   assert.equal(e.auditSourcePages[0],9);
   assert.ok(e.keyAudit.slice(1).every(k=>k==='NONE'||k==='UNVERIFIED'||k==='FK_DASHED'));
  }
- assert.ok(fig2.entries.slice(5).every(e=>e.primaryKeyColumns.length===0));
+ assert.deepEqual(fig2.entries[13].primaryKeyColumns,[0]);
+ assert.deepEqual(fig2.entries[13].keyAudit,['PK_SOLID','NONE','NONE','NONE','NONE']);
+ assert.equal(fig2.entries[13].auditSourcePages.every(p=>p===9),true);
+ assert.ok(fig2.entries.slice(5).every((e,i)=>i===8||e.primaryKeyColumns.length===0));
  assert.deepEqual(fig2.entries[5].primaryKeyCandidates,[0,1,2,3]);
  for(const e of fig2.entries.slice(6,12))assert.deepEqual(e.primaryKeyCandidates,[0,1,2,3,4]);
- for(const e of fig2.entries.slice(13,16))assert.deepEqual(e.primaryKeyCandidates,[0]);
+ assert.deepEqual(fig2.entries[13].primaryKeyCandidates,[]);
+ for(const e of fig2.entries.slice(14,16))assert.deepEqual(e.primaryKeyCandidates,[0]);
  for(const e of fig2.entries.slice(16,19))assert.deepEqual(e.primaryKeyCandidates,[0,1,2,3,4,5]);
  for(const e of fig2.entries.slice(20,23))assert.deepEqual(e.primaryKeyCandidates,[0,1,2,3,4,5]);
  assert.deepEqual(fig2.entries[23].primaryKeyCandidates,[0,1,2,3,4,5,6]);
- assert.equal(fig2.entries.flatMap(e=>e.primaryKeyCandidates).length,80);
+ assert.equal(fig2.entries.flatMap(e=>e.primaryKeyCandidates).length,79);
  assert.deepEqual(fig2.entries[1].foreignKeyColumns,[2]);
  assert.equal(fig2.entries[1].attributes[2],'学部コード');
  assert.equal(fig2.entries[1].keyAudit[2],'FK_DASHED');
@@ -394,7 +398,7 @@ test('preview warning never advertises incomplete figures as usable materials',(
  const doc=pmVerifiedStructure['2025:pm1:1'];
  assert.ok(doc.materials.every(mat=>mat.verifiedStructure===false));
  assert.ok(html.includes('図1は作業中のSVG再構成図として表示します'));
- assert.ok(html.includes('図2は確認用の表として表示し、原本で確認済みの主キー5属性を実線、外部キー1属性を破線で表示します'));
+ assert.ok(html.includes('図2は確認用の表として表示し、原本で確認済みの主キー6属性を実線、外部キー1属性を破線で表示します'));
  assert.ok(html.includes('図3は引き続き再構成・照合中のため表示していません'));
  assert.ok(!html.includes('原本に照合できた図3のみテキストで表示します'));
 });
