@@ -12,7 +12,7 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.deepEqual(doc.materials.map(m=>m.sourcePage),[8,9,10]);
  assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
  assert.ok(doc.introductionPages.every(p=>!p.complete));
- assert.deepEqual(doc.materials.map(m=>m.verifiedStructure),[false,false,true]);
+ assert.deepEqual(doc.materials.map(m=>m.verifiedStructure),[false,false,false]);
  const fig1=doc.materials.find(m=>m.id==='fig1');
  assert.equal(fig1.verifiedStructure,false);
  assert.deepEqual(fig1.edges,[]);
@@ -22,6 +22,7 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.deepEqual(doc.introductionPages.map(p=>p.sourcePage),[6,7,8,9,10]);
  const schema=doc.materials.find(m=>m.id==='fig3');
  assert.equal(schema.kind,'schema');
+ assert.equal(schema.keyNotationVerified,false);
  assert.deepEqual(schema.entries.map(e=>e.name),['レポート課題','レポート課題出題','評価結果','テスト結果','レポート評価結果']);
  assert.deepEqual(schema.entries.flatMap(e=>e.attributes).filter(a=>/^\[ [セソタチツ] \]$/.test(a)),['[ セ ]','[ ソ ]','[ タ ]','[ チ ]','[ ツ ]']);
 });
@@ -77,4 +78,12 @@ test('preview is opt-in, not mounted in production index, and preserves the old 
  assert.ok(entry.includes('getSubquestionAnswers('));
  assert.ok(!index.includes('pm-preview-entry.mjs'));
  assert.ok(style.includes('focus-visible'));
+});
+
+test('figure 3 cannot be marked verified until original PK/FK underlines are audited',()=>{
+ const doc=structuredClone(pmVerifiedStructure['2025:pm1:1']);
+ doc.materials[2].verifiedStructure=true;
+ assert.equal(validatePmStructure(doc),false);
+ doc.materials[2].verifiedStructure=false;
+ assert.equal(validatePmStructure(doc),true);
 });
