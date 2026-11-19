@@ -309,11 +309,13 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
  const blanks=fig2.entries.flatMap(row=>row.attributes.filter(x=>/^\[ [ア-ス] \]$/.test(x))).map(x=>x.replace(/[^ア-ス]/g,''));
  assert.deepEqual(blanks,'アイウエオカキクケコサシス'.split(''));
  assert.ok(fig2.entries.some(row=>row.name==='コンテンツ使用'&&row.attributes.includes('[コンテンツ区分]')));
+ assert.equal(fig2.entries[16].keyAudit[6],'NONE');
+ assert.equal(fig2.entries[16].auditSourcePages[6],9);
  assert.deepEqual(fig2.entries[0].attributes,['学部コード','学部名']);
  assert.deepEqual(fig2.entries[5].attributes.slice(-1),['[ ア ]']);
  assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='PK_SOLID').length,6);
- assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='NONE').length,28);
- assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='UNVERIFIED').length,94);
+ assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='NONE').length,29);
+ assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='UNVERIFIED').length,93);
  assert.deepEqual(fig2.entries[0].keyAudit,['PK_SOLID','NONE']);
  assert.deepEqual(fig2.entries[2].keyAudit,['PK_SOLID','NONE','NONE','NONE','NONE','NONE','NONE']);
  assert.deepEqual(fig2.entries[6].keyAudit.slice(5),['NONE','NONE','NONE','NONE','NONE']);
