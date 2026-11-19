@@ -93,7 +93,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
     svg.setAttribute('viewBox',data.viewBox);
     svg.setAttribute('role','img');
     svg.setAttribute('aria-label','図1の作業中の再構成図。空欄aと欠落関係は解答されていません。');
-    svg.classList.add('pmModelSvg');
+    svg.setAttribute('class','pmModelSvg');
     const element=(name,attrs={})=>{
      const el=document.createElementNS(ns,name);
      for(const [k,v] of Object.entries(attrs))el.setAttribute(k,String(v));
