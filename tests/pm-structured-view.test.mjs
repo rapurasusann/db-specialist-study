@@ -13,6 +13,11 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
  assert.ok(doc.introductionPages.every(p=>!p.complete));
  assert.deepEqual(doc.materials.map(m=>m.verifiedStructure),[false,false,true]);
+ const fig1=doc.materials.find(m=>m.id==='fig1');
+ assert.equal(fig1.verifiedStructure,false);
+ assert.deepEqual(fig1.edges,[]);
+ assert.deepEqual(fig1.inheritance,[]);
+ assert.equal(fig1.nodes.length,24);
  assert.equal(doc.introductionPages.length,5);
  assert.deepEqual(doc.introductionPages.map(p=>p.sourcePage),[6,7,8,9,10]);
  const schema=doc.materials.find(m=>m.id==='fig3');
