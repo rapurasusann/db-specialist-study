@@ -9,7 +9,7 @@ panel.id='termPractice';panel.hidden=true;panel.setAttribute('aria-label','単�
 panel.innerHTML='<h2>単語理解</h2><p class="muted">一度に1つの用語を学びます。正しい説明を4つの選択肢から選んでください。</p><div class="toolbar" id="termCategories"></div><div class="termPracticeLayout"><nav id="termItems" aria-label="学ぶ用語"></nav><div class="termPracticeQuestion"><p class="muted" id="termPosition"></p><h3 id="termPrompt"></h3><div id="termChoices"></div><div id="termFeedback" role="status" aria-live="polite" hidden></div><div class="toolbar separate"><button type="button" id="termNext">次の用語</button><button type="button" id="termReset">この用語をもう一度</button></div></div></div><p id="termSummary" class="muted"></p>';
 document.getElementById('study')?.insertAdjacentElement('afterend',panel);
 const css=document.createElement('style');
-css.textContent='#termPractice .termPracticeLayout{display:grid;grid-template-columns:210px minmax(0,1fr);gap:14px;margin-top:14px}#termItems{display:grid;align-content:start;gap:6px}#termItems button{justify-content:flex-start;text-align:left}#termItems button.active{background:#dceefa;border-color:#4a93c5;font-weight:650}#termPractice .termPracticeQuestion{min-width:0;border:1px solid #d5e2ed;padding:14px;border-radius:12px;background:#fbfdff}#termPractice h3{font-size:1.05rem}#termChoices{display:grid;gap:9px}#termChoices button{justify-content:flex-start;white-space:normal;text-align:left;line-height:1.5;padding:12px;min-height:48px}#termChoices button.correct{background:#d7f3e2;border-color:#3d8f63}#termChoices button.incorrect{background:#ffe4df;border-color:#be6f68}#termFeedback{margin-top:14px;padding:12px;background:#eef5fc;border-radius:8px;white-space:pre-line;line-height:1.8}#termSummary{margin-top:14px}@media(max-width:700px){#termPractice .termPracticeLayout{grid-template-columns:1fr}#termItems{display:flex;flex-wrap:wrap}#termItems button{flex:1 1 115px}}';
+css.textContent='#termPractice[hidden],.metrics[hidden]{display:none!important}#termPractice .termPracticeLayout{display:grid;grid-template-columns:210px minmax(0,1fr);gap:14px;margin-top:14px}#termItems{display:grid;align-content:start;gap:6px}#termItems button{justify-content:flex-start;text-align:left}#termItems button.active{background:#dceefa;border-color:#4a93c5;font-weight:650}#termPractice .termPracticeQuestion{min-width:0;border:1px solid #d5e2ed;padding:14px;border-radius:12px;background:#fbfdff}#termPractice h3{font-size:1.05rem}#termChoices{display:grid;gap:9px}#termChoices button{justify-content:flex-start;white-space:normal;text-align:left;line-height:1.5;padding:12px;min-height:48px}#termChoices button.correct{background:#d7f3e2;border-color:#3d8f63}#termChoices button.incorrect{background:#ffe4df;border-color:#be6f68}#termFeedback{margin-top:14px;padding:12px;background:#eef5fc;border-radius:8px;white-space:pre-line;line-height:1.8}#termSummary{margin-top:14px}@media(max-width:700px){#termPractice .termPracticeLayout{grid-template-columns:1fr}#termItems{display:flex;flex-wrap:wrap}#termItems button{flex:1 1 115px}}';
 document.head.append(css);
 const $=id=>document.getElementById(id);
 let category='正規形',index=0,answered=false,records={};
@@ -56,6 +56,9 @@ function answer(choice){
  answered=true;
  const q=current(),correct=choice===q.answer;
  saveResult(q,correct);
+ // Refresh the selected term status immediately without changing the chosen question.
+ const activeTerm=$('termItems').children[index];
+ if(activeTerm)activeTerm.textContent=q.term+(correct?' ✓':'');
  [...$('termChoices').children].forEach((button,i)=>{
   button.disabled=true;
   if(i===q.answer)button.classList.add('correct');
