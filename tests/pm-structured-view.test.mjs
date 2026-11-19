@@ -162,3 +162,20 @@ test('figure 3 requires provenance for every individual key mark',()=>{
  schema.entries[1].auditSourcePages[3]=null;
  assert.equal(validatePmStructure(doc),false,'unverified provenance must fail closed');
 });
+
+test('figure 2 cannot be published before accurate source transcription',()=>{
+ const doc=structuredClone(pmVerifiedStructure['2025:pm1:1']);
+ const fig2=doc.materials.find(m=>m.id==='fig2');
+ assert.equal(fig2.kind,'schema');
+ assert.equal(fig2.sourcePage,9);
+ assert.equal(fig2.verifiedStructure,false);
+ assert.deepEqual(fig2.entries,[]);
+ fig2.verifiedStructure=true;
+ fig2.keyNotationVerified=true;
+ assert.equal(validatePmStructure(doc),false,'empty figure 2 may never be marked complete');
+ fig2.entries=[{name:'検証専用',attributes:['属性'],
+  primaryKeyColumns:[0],foreignKeyColumns:[],keyAudit:['PK_SOLID'],auditSourcePages:[10]}];
+ assert.equal(validatePmStructure(doc),false,'source page 10 must not certify a page 9 diagram');
+ fig2.entries[0].auditSourcePages=[9];
+ assert.equal(validatePmStructure(doc),true,'only structurally complete source-backed figure 2 can pass');
+});
