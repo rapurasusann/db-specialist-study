@@ -167,7 +167,8 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
   Array.from(buttons.children).forEach((b,i)=>
    b.setAttribute('aria-pressed',String(doc.subquestions[i]?.id===selected)));
   prompt.textContent=sub()?.text||'設問の問題文は未整備です。';
-  promptNotice.textContent=sub()?.textStatus==='VERIFIED_TRANSCRIPTION'?'':'この設問文は原文の全文転記ではなく、内容をまとめた説明です。正式な設問はIPA公式問題冊子を確認してください。';
+  const questionIsVerified=doc.status==='FULL_SOURCE_VERIFICATION'&&sub()?.textStatus==='VERIFIED_TRANSCRIPTION'&&Boolean(sub()?.text);
+  promptNotice.textContent=questionIsVerified?'':'この設問文は原文の全文転記ではなく、内容をまとめた説明です。正式な設問はIPA公式問題冊子を確認してください。';
   answer.value=answers[selected]||'';
   warning.textContent=unsaved.has(selected)?'この設問の最新の回答は保存できていません。画面を閉じる前に保存設定を確認してください。':'設問ごとに回答を分離します。原本未整備の内容は公式原本で確認してください。';
   retry.hidden=!unsaved.has(selected);
