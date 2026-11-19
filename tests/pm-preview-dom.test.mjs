@@ -54,9 +54,16 @@ test('interactive PM preview pages, figure auto/manual mode and separate answers
   assert.equal(textarea.value,'以前の回答');
   let mats=walk(root,n=>n.className==='pmMaterialBody')[0];
   assert.ok(walk(mats,n=>n.textContent.includes('図・表のテキスト再構成は未整備です')).length);
+  const figure1Link=walk(mats,n=>n.tag==='a'&&n.textContent.includes('8ページ'))[0];
+  assert.ok(figure1Link);
+  assert.equal(figure1Link.href,original.source+'#page=8');
+  assert.equal(figure1Link.rel,'noopener noreferrer');
   assert.equal(walk(mats,n=>n.tag==='svg').length,0);
   byText(root,'button','設問2').fire('click');
   assert.equal(textarea.value,'別の回答');
+  const figure3Link=walk(mats,n=>n.tag==='a'&&n.textContent.includes('10ページ'))[0];
+  assert.ok(figure3Link);
+  assert.equal(figure3Link.href,original.source+'#page=10');
   assert.equal(walk(mats,n=>n.tag==='table').length,0);
   assert.ok(walk(mats,n=>n.textContent.includes('図・表のテキスト再構成は未整備です')).length);
   textarea.fire('input','設問2の新しい回答');
