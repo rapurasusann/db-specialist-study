@@ -78,6 +78,13 @@
           ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
       }
     });
+    // Only the first appearance of each concept within the current question
+    // may become a tooltip. Count existing annotations too: the observer can
+    // run again after a partial DOM update.
+    const annotatedConceptIds = new Set(
+      Array.from(root.querySelectorAll('.glossary-term[data-glossary-id]'),
+        button => button.dataset.glossaryId)
+    );
     const nodes = [];
     while (walker.nextNode()) nodes.push(walker.currentNode);
     for (const node of nodes) {
@@ -95,13 +102,22 @@
         }
         if (!best || at === text.length) break;
         if (at > pos) fragment.append(document.createTextNode(text.slice(pos, at)));
-        const button = document.createElement('button');
-        button.type = 'button';
-        button.className = 'glossary-term';
-        button.textContent = best.phrase;
-        button.dataset.glossaryDefinition = best.definition;
-        button.setAttribute('aria-label', best.phrase + '：用語の説明を表示');
-        fragment.append(button);
+        // An alias is another spelling of the same concept, not a second
+        // tooltip opportunity. Repeated appearances remain plain text.
+        const conceptId = best.id || best.phrase;
+        if (annotatedConceptIds.has(conceptId)) {
+          fragment.append(document.createTextNode(best.phrase));
+        } else {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'glossary-term';
+          button.textContent = best.phrase;
+          button.dataset.glossaryId = conceptId;
+          button.dataset.glossaryDefinition = best.definition;
+          button.setAttribute('aria-label', best.phrase + '：用語の説明を表示');
+          fragment.append(button);
+          annotatedConceptIds.add(conceptId);
+        }
         pos = at + best.phrase.length;
       }
       fragment.append(document.createTextNode(text.slice(pos)));
