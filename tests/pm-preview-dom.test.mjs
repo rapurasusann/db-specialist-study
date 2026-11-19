@@ -151,7 +151,7 @@ test('figure 2 text review shows 24 relations but omits all unaudited key underl
   const relationNames=walk(table[0],n=>n.tag==='th');
   assert.ok(relationNames.some(n=>n.textContent==='開講科目'));
   assert.ok(relationNames.some(n=>n.textContent==='テスト結果'));
-  const text=walk(table[0],n=>n.tag==='td').map(n=>n.textContent).join(' ');
+  const text=walk(table[0],n=>n.tag==='span').map(n=>n.textContent).join(' ');
   assert.ok(text.includes('[ ア ]'));
   assert.ok(text.includes('[ ス ]'));
   assert.ok(text.includes('[コンテンツ区分]'));
