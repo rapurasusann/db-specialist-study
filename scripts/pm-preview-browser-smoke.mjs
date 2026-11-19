@@ -104,7 +104,7 @@ try{
   })()`);
   assert.deepEqual(restored,{first:'TEST-111',second:'TEST-222'});
  });
- check('figure 1 review-only SVG and unverified figure 2/3 remain gated',async()=>{
+ check('figure 1 review SVG, figure 2 five PK + one FK marks, figure 3 gated',async()=>{
   const v=await cdp.eval(`(()=>{
    const buttons=[...document.querySelectorAll('.pmQuestionNav button')];
    const area=document.querySelector('.pmMaterialBody');
@@ -118,7 +118,7 @@ try{
   })()`);
   assert.equal(v.fig1.svg,1);assert.match(v.fig1.text,/作業中の再構成図/);
   assert.match(v.fig1.text,/最終照合は未完了/);
-  assert.equal(v.fig2.svg,0);assert.equal(v.fig2.table,1);assert.equal(v.fig2.verifiedPk,5);assert.equal(v.fig2.foreignKeys,0);assert.match(v.fig2.text,/残るキー下線は未確認/);assert.match(v.fig2.text,/\[ ア \]/);
+  assert.equal(v.fig2.svg,0);assert.equal(v.fig2.table,1);assert.equal(v.fig2.verifiedPk,5);assert.equal(v.fig2.foreignKeys,1);assert.match(v.fig2.text,/残るキー下線は未確認/);assert.match(v.fig2.text,/\[ ア \]/);
   assert.equal(v.fig3.svg,0);assert.equal(v.fig3.table,0);assert.match(v.fig3.text,/未整備/);
  });
  let failed=0;
