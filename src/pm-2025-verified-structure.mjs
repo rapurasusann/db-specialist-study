@@ -228,14 +228,17 @@ export const pmVerifiedStructure=Object.freeze({
       // strokes as well: prior "PK_SOLID" labels are retained as candidates,
       // not falsely recorded as a complete per-attribute audit.
       const confirmedPrimary=index<5?[0]:[];
+      // Directly visible dashed underline: 学科.学部コード (page 9).
+      // Do not infer any other FK solely from its attribute name.
+      const confirmedForeign=index===1?[2]:[];
       const compositePrimaryCandidates=auditedSolidIndices[index]||[];
       const noUnderline=auditedNoneIndices[index]||[];
       return {...row,
        primaryKeyColumns:confirmedPrimary,
        primaryKeyCandidates:compositePrimaryCandidates.filter(i=>!confirmedPrimary.includes(i)),
-       foreignKeyColumns:[],
-       keyAudit:row.attributes.map((_,i)=>confirmedPrimary.includes(i)?'PK_SOLID':noUnderline.includes(i)?'NONE':'UNVERIFIED'),
-       auditSourcePages:row.attributes.map((_,i)=>confirmedPrimary.includes(i)||noUnderline.includes(i)?9:null)
+       foreignKeyColumns:confirmedForeign,
+       keyAudit:row.attributes.map((_,i)=>confirmedPrimary.includes(i)?'PK_SOLID':confirmedForeign.includes(i)?'FK_DASHED':noUnderline.includes(i)?'NONE':'UNVERIFIED'),
+       auditSourcePages:row.attributes.map((_,i)=>confirmedPrimary.includes(i)||confirmedForeign.includes(i)||noUnderline.includes(i)?9:null)
       };
     })
    },
