@@ -92,7 +92,7 @@ export function validatePmStructure(doc){
  if(doc.materials.some(m=>m.verifiedStructure && (
    (m.kind==='svg' && (!Array.isArray(m.nodes)||!Array.isArray(m.edges)||!m.edges.length))||
    (m.kind==='schema' && (!Array.isArray(m.entries)||!m.entries.length||m.keyNotationVerified!==true
-      ||m.entries.some(e=>!Array.isArray(e.primaryKeyColumns)||!Array.isArray(e.foreignKeyColumns)
+      ||m.entries.some(e=>!Array.isArray(e.primaryKeyColumns)||!e.primaryKeyColumns.length||!Array.isArray(e.foreignKeyColumns)
         ||e.primaryKeyColumns.some(i=>!Number.isInteger(i)||i<0||i>=e.attributes.length)
         ||e.foreignKeyColumns.some(i=>!Number.isInteger(i)||i<0||i>=e.attributes.length))))
   )))return false;
