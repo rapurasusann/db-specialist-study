@@ -154,4 +154,4 @@ $('syncLogout').onclick=async()=>{
 if(cloudReady){$('syncControls').hidden=false;statusLine(cloudSession?'同期設定済み：ログイン状態を確認中…':'同期設定済み：ログインしてください。');if(cloudSession)syncAll()}
 window.addEventListener('online',()=>{if(pendingSync&&cloudSession)syncAll()});
 window.addEventListener('visibilitychange',()=>{if(!document.hidden&&pendingSync&&cloudSession)syncAll()});
-</script><script src="src/cs03-selected-question.js"></script><script src="cs03-config.js"></script><script type="module" src="src/cs03-account-preview-loader.mjs"></script></body></html>
+</script><script src="src/cs03-selected-question.js"></script><script src="cs03-config.js"></script><script type="module" src="src/cs03-account-preview-loader.mjs"></script><script type="module" src="src/term-understanding-ui.mjs"></script></body></html>
