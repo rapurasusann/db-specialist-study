@@ -40,7 +40,7 @@ test('interactive PM preview pages, figure auto/manual mode and separate answers
   const writes=[];
   const root=createPmSubquestionView(original,{
    loadAnswers:()=>({'s1-1':'以前の回答','s2':'別の回答'}),
-   saveAnswer:(id,value)=>writes.push([id,value])
+   saveAnswer:(id,value)=>{writes.push([id,value]);return true}
   });
   const intro=walk(root,n=>n.className==='pmIntroText')[0];
   const page=walk(root,n=>n.tag==='span'&&n.textContent==='1 / 5')[0];
