@@ -30,7 +30,7 @@ export const pmVerifiedStructure=Object.freeze({
    ]}
   ],
   materials:[
-   {id:'fig1',title:'図1 現状の学習管理システムの概念データモデル（未完成）',sourcePage:8,kind:'svg',verifiedStructure:true,
+   {id:'fig1',title:'図1 現状の学習管理システムの概念データモデル（未完成）',sourcePage:8,kind:'svg',verifiedStructure:false,
     // Nodes and drawn relationships are transcribed from the official printed figure,
     // intentionally leaving the missing relationships missing, as in the exam.
     nodes:[
