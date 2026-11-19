@@ -87,7 +87,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
    if(mat.id==='fig2'&&mat.verifiedStructure===false&&
       mat.transcriptionStage==='TEXT_DRAFT_PARTIAL_KEY_AUDIT'&&
       mat.sourceTranscriptionVerified===false&&mat.keyNotationVerified===false){
-    box.append(make('p','作業中の関係スキーマです。原本9ページで確認済みの主キー5属性は実線、外部キー1属性は破線で表示します。残るキー下線は未確認のため省略します。空欄は未回答です。','muted'));
+    box.append(make('p','作業中の関係スキーマです。原本9ページで確認済みの主キー6属性は実線、外部キー1属性は破線で表示します。残るキー下線は未確認のため省略します。空欄は未回答です。','muted'));
     const table=box.appendChild(make('table'));
     table.className='pmFig2ReviewTable';
     const head=table.appendChild(make('tr'));
