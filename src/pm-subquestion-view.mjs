@@ -82,6 +82,68 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
     !Array.isArray(mat.entries)||mat.entries.some(e=>
      e.primaryKeyCandidates?.length||e.keyAudit?.includes('UNVERIFIED'))
    );
+   // Review-only Fig.1: display only traced shapes; never mark the whole
+   // figure as verified and never invent any missing exam relationships.
+   if(mat.id==='fig1'&&mat.verifiedStructure===false&&mat.partialSvgSource?.status==='REVIEW_ONLY'){
+    const data=mat.partialSvgSource,ns='http://www.w3.org/2000/svg';
+    const notice=box.appendChild(make('p','作業中の再構成図（原本との最終照合は未完了）','muted'));
+    notice.setAttribute('role','status');
+    const viewport=box.appendChild(make('div',undefined,'pmSvgViewport'));
+    const svg=document.createElementNS(ns,'svg');
+    svg.setAttribute('viewBox',data.viewBox);
+    svg.setAttribute('role','img');
+    svg.setAttribute('aria-label','図1の作業中の再構成図。空欄aと欠落関係は解答されていません。');
+    svg.classList.add('pmModelSvg');
+    const element=(name,attrs={})=>{
+     const el=document.createElementNS(ns,name);
+     for(const [k,v] of Object.entries(attrs))el.setAttribute(k,String(v));
+     svg.appendChild(el);return el;
+    };
+    const path=(points)=>element('polyline',{
+     points:points.map(p=>p.join(',')).join(' '),
+     fill:'none',stroke:'currentColor','stroke-width':1.7
+    });
+    for(const poly of data.arrows||[]){
+     path(poly);
+     const last=poly.at(-1),prev=poly.at(-2);
+     if(last&&prev){
+      const angle=Math.atan2(last[1]-prev[1],last[0]-prev[0]),size=7;
+      const wing=a=>[last[0]-size*Math.cos(angle+a),last[1]-size*Math.sin(angle+a)];
+      path([wing(Math.PI/6),last,wing(-Math.PI/6)]);
+     }
+    }
+    for(const group of data.subtypeGroups||[]){
+     const [x,y]=group.apex;
+     const bar=group.bar;
+     // Branching lines and open subtype triangle. Explicit source-traced only.
+     path([[x,y-10],[x,y]]);
+     path([[x,y],bar[0]]);
+     path([[x,y],bar[1]]);
+     path(bar);
+     for(const p of group.children||[]){
+      const start=bar[0][0]===p[0]?bar[0]:bar[1][0]===p[0]?bar[1]:[p[0],bar[0][1]];
+      path([start,p]);
+     }
+    }
+    const indexed=new Map(mat.nodes.map(node=>[node.id,node]));
+    for(const entry of data.boxes||[]){
+     const [id,x,y,w,h]=entry;
+     const n=indexed.get(id);if(!n)continue;
+     element('rect',{x,y,width:w,height:h,fill:'none',stroke:'currentColor','stroke-width':1.5});
+     if(id==='a'){
+      element('rect',{x:x+18,y:y+9,width:w-36,height:h-18,fill:'none',stroke:'currentColor','stroke-width':1.5});
+     }
+     const lines=String(n.label).split('\\n');
+     lines.forEach((line,i)=>{
+      const t=element('text',{x:x+w/2,y:y+h/2+(i-(lines.length-1)/2)*14+4,
+       'font-size':13,'text-anchor':'middle',fill:'currentColor'});
+      t.textContent=line;
+     });
+    }
+    viewport.appendChild(svg);
+    if(mat.note)box.append(make('p',mat.note,'muted'));
+    continue;
+   }
    if(!mat.verifiedStructure||unresolvedFig2){box.append(make('p','図・表のテキスト再構成は未整備です。上記のIPA公式原本を確認してください。','muted'));continue}
    if(mat.kind==='schema'){
     const table=box.appendChild(make('table'));
