@@ -69,7 +69,7 @@ export const pmVerifiedStructure=Object.freeze({
    },
    {id:'fig2',title:'図2 現状の学習管理システムの関係スキーマ',sourcePage:9,kind:'table',verifiedStructure:false},
    {id:'fig3',title:'図3 追加及び変更する関係スキーマ（未完成）',sourcePage:10,kind:'schema',verifiedStructure:false,keyNotationVerified:false,sourceChecked:'IPA 2025 PM1 booklet page 10 (PDF page index 9)',entries:[
-    {name:'レポート課題',attributes:['コンテンツID','[ セ ]'],keyColumns:[0]},
+    {name:'レポート課題',attributes:['コンテンツID','[ セ ]'],keyColumns:[0],primaryKeyColumns:[0],foreignKeyColumns:[],keyAudit:{0:'CONFIRMED_SOLID_ON_P10',1:'PLACEHOLDER_NO_KEY_MARK'}},
     {name:'レポート課題出題',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','[ ソ ]'],keyColumns:[0,1,2,3,4,5]},
     {name:'評価結果',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','学籍番号','評価結果区分','[ タ ]'],keyColumns:[0,1,2,3,4,5,6]},
     {name:'テスト結果',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','学籍番号','[ チ ]'],keyColumns:[0,1,2,3,4,5,6]},
