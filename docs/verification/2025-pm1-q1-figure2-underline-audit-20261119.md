@@ -32,3 +32,11 @@
 - 現在のデータ上の分類件数は `PK_SOLID=85`、`NONE=28`、`UNVERIFIED=16`（合計129）。85の実線登録は以前の工程からの引継ぎ値であり、この再照合だけで全85件の正確性を証明したわけではない。
 - 破線を含む外部キー／実線と破線の重なりは追加判定していない。完全な原文照合および実ブラウザ試験も未完了。
 - `verifiedStructure:false` / `keyNotationVerified:false` / `sourceTranscriptionVerified:false` を維持。mainや公開版には変更しない。
+
+## 2026-11-19 原本ページ画像による監査区分の訂正（重要・最新判断）
+- 公式PDFの9ページのページ画像を表示して確認。従来の `PK_SOLID=85` は**検証済み実線85件を意味しない**。複合キーでは破線外部キーとの重なりがあり、単に下線が見えることから `PK_SOLID` と断定できない。
+- 以前の85件を「明確な単一属性の主キー下線5件」と「下線のある複合キー候補80件」に分離した。後者は `primaryKeyCandidates` に退避し、正式な `primaryKeyColumns` / `keyAudit` では `UNVERIFIED` に戻した。
+- 下線なしとして以前記録した28件は監査候補のまま保持。すべての転記・下線を正式受入するには原本との1件単位の最終照合が必要。
+- 現行メタデータ分類：`PK_SOLID=5`、`NONE=28`、`UNVERIFIED=96`（うち80件は複合キー候補、残り16件は未分類）。合計129。
+- `sourceTranscriptionVerified:false` / `verifiedStructure:false` / `keyNotationVerified:false` を維持。複合キー候補が1件でも残ると `validatePmStructure` は完成判定を拒否する。
+- 前項までの「85件確認済み」表記は旧記録であり、**最新判断として無効**。原本の読み取り可能性やJS検査をNode/実ブラウザ試験のPASSと混同しない。
