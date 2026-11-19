@@ -57,8 +57,8 @@ test('interactive PM preview pages, figure auto/manual mode and separate answers
   assert.equal(walk(mats,n=>n.tag==='svg').length,0);
   byText(root,'button','設問2').fire('click');
   assert.equal(textarea.value,'別の回答');
-  assert.ok(walk(mats,n=>n.tag==='table').length);
-  assert.ok(walk(mats,n=>n.textContent==='レポート課題').length);
+  assert.equal(walk(mats,n=>n.tag==='table').length,0);
+  assert.ok(walk(mats,n=>n.textContent.includes('図・表のテキスト再構成は未整備です')).length);
   textarea.fire('input','設問2の新しい回答');
   assert.deepEqual(writes,[['s2','設問2の新しい回答']]);
   const selector=walk(root,n=>n.tag==='select')[0];
