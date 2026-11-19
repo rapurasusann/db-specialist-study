@@ -180,7 +180,7 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
   'オンデマンド型講義受講','テスト結果'
  ]);
  assert.equal(fig2.entries.reduce((sum,row)=>sum+row.attributes.length,0),129);
- const blanks=fig2.entries.flatMap(row=>row.attributes.filter(x=>/^\\[ [ア-ス] \\]$/.test(x))).map(x=>x.replace(/[^ア-ス]/g,''));
+ const blanks=fig2.entries.flatMap(row=>row.attributes.filter(x=>/^\[ [ア-ス] \]$/.test(x))).map(x=>x.replace(/[^ア-ス]/g,''));
  assert.deepEqual(blanks,'アイウエオカキクケコサシス'.split(''));
  assert.ok(fig2.entries.some(row=>row.name==='コンテンツ使用'&&row.attributes.includes('[コンテンツ区分]')));
  assert.deepEqual(fig2.entries[0].attributes,['学部コード','学部名']);
@@ -191,7 +191,7 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
  assert.equal(fig2.verifiedStructure,false);
  fig2.verifiedStructure=true;
  fig2.keyNotationVerified=true;
- assert.equal(validatePmStructure(doc),false,'empty figure 2 may never be marked complete');
+ assert.equal(validatePmStructure(doc),false,'unverified figure 2 may never be marked complete');
  assert.equal(validatePmStructure(doc),false,'partial rows have no audited keys');
  fig2.entries=[{name:'検証専用',attributes:['属性'],
   primaryKeyColumns:[0],foreignKeyColumns:[],keyAudit:['PK_SOLID'],auditSourcePages:[10]}];
