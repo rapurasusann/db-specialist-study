@@ -203,6 +203,19 @@ test('IPA page 11 source audit preserves all four question scopes without claimi
  assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
 });
 
+test('each subquestion has grounded introduction-page links and original-page 11 reference',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const pages=new Set(doc.introductionPages.map(p=>p.sourcePage));
+ const expected=[[8],[8],[8,9],[9,10]];
+ assert.deepEqual(doc.subquestions.map(q=>q.relatedIntroPages),expected);
+ for(const q of doc.subquestions){
+  assert.equal(q.sourcePage,11);
+  assert.ok(q.relatedIntroPages.every(p=>pages.has(p)));
+  assert.ok(q.relatedIntroPages.every(p=>p>=6&&p<=10));
+ }
+ assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
+});
+
 test('source is a staged UI, not wired to public pages or legacy storage',()=>{
  assert.equal(typeof createPmSubquestionView,'function');
  assert.ok(source.includes('前ページ'));
