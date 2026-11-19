@@ -53,3 +53,11 @@
 - `sourceAudit:'SECTION_SCOPE_CHECKED'`、`sectionNumbers`、`sectionItemCounts` で構造確認を明示。全文字単位の照合済みではなく `complete:false` と `PARTIAL_SOURCE_VERIFICATION` を維持。
 - `tests/pm-structured-view.test.mjs` に番号・節内項目数・継続先・主な数値や識別子を固定する1件を追加。既存16件と合わせV8アサーション再実行：**17 PASS / 0 FAIL**。一度は表現差分によって2件失敗したが、記述を修正し再実行して全件PASS。正式なNode.jsテストランナー／実ブラウザは未実施。
 - 公開状態：PM-01 OPEN、午後Ⅰ問1 NO-GO。mainや既存の学習履歴に変更なし。
+
+## 2026-11-19 PM-01 原本7ページ講義・デジタルコンテンツの項目照合
+- IPA公式問題冊子7ページを画面で確認。第5節「講義」は6ページの(1)の続きに加え(2)～(9)、第6節「デジタルコンテンツ」は(1)～(6)を収録し、最後の(6)は8ページへ続く。
+- 講義の3形態、講義番号・各開催条件、オンライン講義・時間固定講義、補助教員の条件を**要約**として補強。
+- デジタルコンテンツの識別・区分、教材の種類・公開期間、テスト問題の利用対象と回答期限（8ページへ続く）を**要約**として補強。
+- `intro-2` に `sourceAudit:'SECTION_SCOPE_CHECKED'`、`sectionNumbers:['5','6']`、`sectionItemCounts:{'5':9,'6':6}`、前ページ6・次ページ8への参照を追加。
+- `complete:false` を維持。これは節構成・主な条件の照合であり、原文の逐語転記を意味しない。PM-01 OPEN、公開NO-GOは不変。
+- `tests/pm-structured-view.test.mjs` に項目番号、主要条件、ページ跨ぎ参照を検証する1件を追加。JavaScript V8簡易ハーネスで **18 PASS / 0 FAIL**（再実行後）。正式 `node --test` と実ブラウザ試験は未実施。
