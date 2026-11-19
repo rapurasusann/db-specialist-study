@@ -190,6 +190,7 @@ export function validatePmStructure(doc){
    'コンテンツ使用','教材使用','テスト問題使用','科目履修登録',
    '講義受講','時間固定講義受講','オンデマンド型講義受講','テスト結果'];
   if(entries.some((e,i)=>e.name!==requiredNames[i]))return false;
+  if(entries.some(e=>Array.isArray(e.primaryKeyCandidates)&&e.primaryKeyCandidates.length>0))return false;
   const blanks=entries.flatMap(e=>e.attributes).filter(x=>/^\[ [アイウエオカキクケコサシス] \]$/.test(x));
   if(blanks.map(x=>x.slice(2,-2)).join('')!=='アイウエオカキクケコサシス')return false;
  }
