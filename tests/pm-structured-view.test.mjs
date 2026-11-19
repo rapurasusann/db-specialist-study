@@ -390,6 +390,7 @@ test('preview warning never advertises incomplete figures as usable materials',(
  const doc=pmVerifiedStructure['2025:pm1:1'];
  assert.ok(doc.materials.every(mat=>mat.verifiedStructure===false));
  assert.ok(html.includes('図1は作業中のSVG再構成図として表示します'));
- assert.ok(html.includes('図2・図3は引き続き再構成・照合中のため表示していません'));
+ assert.ok(html.includes('図2は関係名・属性名のみ確認用の表として表示しますが、キーの下線は未確認です'));
+ assert.ok(html.includes('図3は引き続き再構成・照合中のため表示していません'));
  assert.ok(!html.includes('原本に照合できた図3のみテキストで表示します'));
 });
