@@ -141,11 +141,25 @@ test('IPA pages 9 and 10 have separate expansion and answer-rule summaries while
  assert.equal(page10.complete,false);
  assert.ok(page9.paragraphs.some(x=>x.includes('学習管理システムの拡充')));
  assert.ok(page9.paragraphs.some(x=>x.includes('レポート課題')));
- assert.ok(page9.paragraphs.some(x=>x.includes('提出開始日')));
+ assert.ok(page9.paragraphs.some(x=>x.includes('レポート課題')));
+ assert.deepEqual(page9.sourceSections[1].itemNumbers,['(1)','(2)','(3)']);
+ assert.ok(page10.paragraphs.some(x=>x.includes('提出を受け付ける開始日')));
  assert.ok(page10.paragraphs.some(x=>x.includes('評価結果')));
  assert.ok(page10.paragraphs.some(x=>x.includes('第3正規形')));
- assert.ok(page10.paragraphs.some(x=>x.includes('主キーは実線')));
+ assert.ok(page10.paragraphs.some(x=>x.includes('主キーを実線')));
+ assert.deepEqual(page10.sourceSections[1].itemNumbers,['①','②','③','④','⑤','⑥']);
+ assert.deepEqual(page10.continuesFromPreviousPage,{section:'学習管理システムの拡充',item:'(3)',sourcePage:9});
  assert.ok(doc.introductionPages.every(x=>x.complete===false));
+ assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
+});
+
+test('page 9 and 10 show ordered extension requirements and six numbered answer rules',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const page9=doc.introductionPages[3],page10=doc.introductionPages[4];
+ for(const number of ['(1)','(2)','(3)'])assert.ok(page9.paragraphs.some(x=>x.startsWith(number)),number);
+ for(const number of ['(4)','(5)','①','②','③','④','⑤','⑥'])assert.ok(page10.paragraphs.some(x=>x.startsWith(number)),number);
+ assert.equal(page9.complete,false);
+ assert.equal(page10.complete,false);
  assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
 });
 
