@@ -75,7 +75,18 @@ try{
    return {last,lastDisabled,first:document.querySelector('.pmIntroText').textContent,firstDisabled:buttons[0].disabled}
   })()`);
   assert.match(v.last,/原本 10 ページ/);assert.match(v.last,/⑥ スーパータイプ/);assert.match(v.last,/\(4\) レポート課題/);assert.equal(v.lastDisabled,true);
-  assert.match(v.first,/原本 6 ページ/);assert.equal(v.firstDisabled,true);
+  assert.match(v.first,/原本 6 ページ/);assert.match(v.first,/【1\. 学部、学科、学期】/);assert.match(v.first,/\(4\) 一つの学科/);assert.equal(v.firstDisabled,true);
+ });
+ check('page-11 question scopes retain one-or-more attribute instructions',async()=>{
+  const v=await cdp.eval(`(()=>{
+   const buttons=[...document.querySelectorAll('.pmQuestionNav button')];
+   const prompt=()=>document.querySelector('.pmQuestionText > p')?.textContent;
+   buttons[2].click();const fig2=prompt();
+   buttons[3].click();const fig3=prompt();
+   return {fig2,fig3};
+  })()`);
+  assert.match(v.fig2,/一つまたは複数/);
+  assert.match(v.fig3,/一つまたは複数/);
  });
  check('auto and manual figure selection',async()=>{
   const v=await cdp.eval(`(()=>{
