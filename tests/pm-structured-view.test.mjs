@@ -185,9 +185,9 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
  assert.ok(fig2.entries.some(row=>row.name==='コンテンツ使用'&&row.attributes.includes('[コンテンツ区分]')));
  assert.deepEqual(fig2.entries[0].attributes,['学部コード','学部名']);
  assert.deepEqual(fig2.entries[5].attributes.slice(-1),['[ ア ]']);
- assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='PK_SOLID').length,85);
+ assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='PK_SOLID').length,5);
  assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='NONE').length,28);
- assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='UNVERIFIED').length,16);
+ assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='UNVERIFIED').length,96);
  assert.deepEqual(fig2.entries[0].keyAudit,['PK_SOLID','NONE']);
  assert.deepEqual(fig2.entries[2].keyAudit,['PK_SOLID','NONE','NONE','NONE','NONE','NONE','NONE']);
  assert.deepEqual(fig2.entries[6].keyAudit.slice(5),['NONE','NONE','NONE','NONE','NONE']);
@@ -199,12 +199,14 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
   assert.equal(e.auditSourcePages[0],9);
   assert.ok(e.keyAudit.slice(1).every(k=>k==='NONE'||k==='UNVERIFIED'));
  }
- assert.deepEqual(fig2.entries[5].primaryKeyColumns,[0,1,2,3]);
- for(const e of fig2.entries.slice(6,12))assert.deepEqual(e.primaryKeyColumns,[0,1,2,3,4]);
- for(const e of fig2.entries.slice(13,16))assert.deepEqual(e.primaryKeyColumns,[0]);
- for(const e of fig2.entries.slice(16,19))assert.deepEqual(e.primaryKeyColumns,[0,1,2,3,4,5]);
- for(const e of fig2.entries.slice(20,23))assert.deepEqual(e.primaryKeyColumns,[0,1,2,3,4,5]);
- assert.deepEqual(fig2.entries[23].primaryKeyColumns,[0,1,2,3,4,5,6]);
+ assert.ok(fig2.entries.slice(5).every(e=>e.primaryKeyColumns.length===0));
+ assert.deepEqual(fig2.entries[5].primaryKeyCandidates,[0,1,2,3]);
+ for(const e of fig2.entries.slice(6,12))assert.deepEqual(e.primaryKeyCandidates,[0,1,2,3,4]);
+ for(const e of fig2.entries.slice(13,16))assert.deepEqual(e.primaryKeyCandidates,[0]);
+ for(const e of fig2.entries.slice(16,19))assert.deepEqual(e.primaryKeyCandidates,[0,1,2,3,4,5]);
+ for(const e of fig2.entries.slice(20,23))assert.deepEqual(e.primaryKeyCandidates,[0,1,2,3,4,5]);
+ assert.deepEqual(fig2.entries[23].primaryKeyCandidates,[0,1,2,3,4,5,6]);
+ assert.equal(fig2.entries.flatMap(e=>e.primaryKeyCandidates).length,80);
  assert.ok(fig2.entries.every(e=>e.foreignKeyColumns.length===0));
  assert.ok(fig2.entries.flatMap(e=>e.keyAudit).includes('UNVERIFIED'));
  assert.ok(fig2.entries.every(e=>e.keyAudit.every((status,i)=>
@@ -222,6 +224,23 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
  assert.equal(validatePmStructure(doc),false,'one fabricated row must not pass the full figure 2 completeness gate');
 });
 
+test('figure 2 cannot be verified when composite key candidates remain unresolved',()=>{
+ const doc=structuredClone(pmVerifiedStructure['2025:pm1:1']);
+ const fig=doc.materials.find(m=>m.id==='fig2');
+ fig.verifiedStructure=true;
+ fig.keyNotationVerified=true;
+ fig.sourceTranscriptionVerified=true;
+ for(const e of fig.entries){
+  e.primaryKeyColumns=[0];
+  e.foreignKeyColumns=[];
+  e.keyAudit=e.attributes.map((_,i)=>i===0?'PK_SOLID':'NONE');
+  e.auditSourcePages=e.attributes.map(()=>9);
+ }
+ assert.equal(validatePmStructure(doc),false,'candidate marks are not verified marks');
+ for(const e of fig.entries)e.primaryKeyCandidates=[];
+ assert.equal(validatePmStructure(doc),true,'gate permits complete structurally consistent audit data');
+});
+
 test('figure 2 rejects incomplete source data even if key metadata is fabricated as valid',()=>{
  const doc=structuredClone(pmVerifiedStructure['2025:pm1:1']);
  const fig=doc.materials.find(m=>m.id==='fig2');
@@ -234,7 +253,9 @@ test('figure 2 rejects incomplete source data even if key metadata is fabricated
  }
  assert.equal(validatePmStructure(doc),false,'mocked key audits cannot substitute for a verified full transcription');
  fig.sourceTranscriptionVerified=true;
- assert.equal(validatePmStructure(doc),true,'structural gate passes only when explicit source transcription audit is also recorded');
+ assert.equal(validatePmStructure(doc),false,'candidate key marks are still unresolved');
+ for(const e of fig.entries)e.primaryKeyCandidates=[];
+ assert.equal(validatePmStructure(doc),true,'only fully resolved metadata and source approval can pass the structural gate');
  fig.entries.pop();
  assert.equal(validatePmStructure(doc),false,'missing relation is blocked');
 });
