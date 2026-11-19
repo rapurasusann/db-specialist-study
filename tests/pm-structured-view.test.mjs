@@ -21,6 +21,10 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.equal(doc.introductionPages.length,5);
  assert.deepEqual(doc.introductionPages.map(p=>p.sourcePage),[6,7,8,9,10]);
  const schema=doc.materials.find(m=>m.id==='fig3');
+ assert.equal(doc.materials[2].entries.flatMap(e=>e.keyAudit).filter(v=>v==='UNVERIFIED').length,32);
+ assert.deepEqual(doc.materials[2].entries[0].keyAudit,['PK_SOLID','NONE']);
+ assert.equal(doc.materials[2].entries.every(e=>!Object.hasOwn(e,'keyColumns')),true);
+
  assert.equal(schema.kind,'schema');
  assert.equal(schema.keyNotationVerified,false);
  assert.deepEqual(schema.entries.map(e=>e.name),['レポート課題','レポート課題出題','評価結果','テスト結果','レポート評価結果']);
@@ -105,6 +109,7 @@ test('PK and FK have distinct underline styles and schema requires audited keys'
  for(const row of schema.entries){
   row.primaryKeyColumns=[0];
   row.foreignKeyColumns=[];
+  row.auditSourcePages=row.attributes.map(()=>10);
  }
  assert.equal(validatePmStructure(doc),false,'unreviewed attributes cannot be accepted even with key column arrays');
  for(const row of schema.entries)row.keyAudit=row.attributes.map((_,i)=>i===0?'PK_SOLID':'NONE');
@@ -120,6 +125,7 @@ test('figure 3 audit metadata must agree with PK and FK indices',()=>{
  schema.keyNotationVerified=true;
  for(const row of schema.entries){
   row.primaryKeyColumns=[0];row.foreignKeyColumns=[];
+  row.auditSourcePages=row.attributes.map(()=>10);
   row.keyAudit=row.attributes.map((_,i)=>i===0?'PK_SOLID':'NONE');
  }
  assert.equal(validatePmStructure(doc),true);
@@ -129,4 +135,20 @@ test('figure 3 audit metadata must agree with PK and FK indices',()=>{
  schema.entries[0].foreignKeyColumns=[0];
  schema.entries[0].keyAudit[0]='BOTH';
  assert.equal(validatePmStructure(doc),true,'both marks are supported');
+});
+
+test('figure 3 requires provenance for every individual key mark',()=>{
+ const doc=structuredClone(pmVerifiedStructure['2025:pm1:1']);
+ const schema=doc.materials[2];
+ schema.verifiedStructure=true;
+ schema.keyNotationVerified=true;
+ for(const row of schema.entries){
+  row.primaryKeyColumns=[0];
+  row.foreignKeyColumns=[];
+  row.keyAudit=row.attributes.map((_,i)=>i===0?'PK_SOLID':'NONE');
+  row.auditSourcePages=row.attributes.map(()=>10);
+ }
+ assert.equal(validatePmStructure(doc),true);
+ schema.entries[1].auditSourcePages[3]=null;
+ assert.equal(validatePmStructure(doc),false,'unverified provenance must fail closed');
 });
