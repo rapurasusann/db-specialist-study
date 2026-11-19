@@ -69,3 +69,13 @@
 - `intro-3` に `sectionNumbers`、`sectionItemCounts`、7ページからの継続参照、図1・図2参照を付与し、本文要約を5項目に整理。
 - 設問の全文転記や図形全体の精密照合は未完了。全体の `PARTIAL_SOURCE_VERIFICATION`、PM-01 OPEN、公開NO-GOを維持。
 - `tests/pm-structured-view.test.mjs` に第7節の5項目・ページ連続性・未完成図の表示制限をチェックするテストを追加。**Node.js正式テストの再実行は開発PCで実施待ち**（先行結果42/42 PASSは今回の変更前）。
+
+## 2026-11-19 図1の作業用SVG表示（部分実装・公開不可）
+- IPA公式問題冊子8ページの図1を画像で再確認。24個のエンティティ等の枠、原本に見える矢印7本、5組の継承関係、内側に小枠がある空欄aを、**レビュー専用のSVG描画データ**として追加。
+- `src/pm-2025-verified-structure.mjs` に `partialSvgSource.status:'REVIEW_ONLY'` と座標・経路を追加。描画は `src/pm-subquestion-view.mjs` の独立分岐で行い、図2・図3には変更なし。外部画像、SVGへのHTML注入、正解推測は行っていない。
+- 図1の個別の形・接続・座標は**最終的な画素単位照合が未完了**のため、`verifiedStructure:false`、`edges:[]`、`inheritance:[]`を維持。画面には「作業中の再構成図」「最終照合は未完了」の警告を表示。公式原本へのリンクを残す。
+- `pm-preview.html` の警告を図1だけ作業図を表示・図2と図3は未表示という現在の仕様に合わせて修正。
+- `tests/pm-preview-dom.test.mjs` でSVG枠24個＋空欄aの内側の枠、設問との連動、図2の表示制限を確認。
+- `scripts/pm-preview-browser-smoke.mjs` の最後の検査を、図1作業用SVG表示＋図2/3非表示の検査に更新。
+- V8単体アサーション再生（DOM/構造の2ファイル）**29 PASS / 0 FAIL**。これは正式Node.js・実ブラウザテストの代替ではない。開発PCで `npm.cmd run test:pm` と実ブラウザ自動試験の再実行が必要。
+- **公開判定NO-GOのまま**。原文全文、図1最終照合、図2/3再構成は未完了。main・公開ページ・既存の学習履歴は変更していない。
