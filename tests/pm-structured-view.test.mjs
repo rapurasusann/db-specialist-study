@@ -204,6 +204,7 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
  assert.ok(fig2.entries.every(e=>e.keyAudit.every((status,i)=>
    status!=='PK_SOLID'||e.auditSourcePages[i]===9)));
  assert.equal(fig2.verifiedStructure,false);
+ assert.equal(fig2.sourceTranscriptionVerified,false);
  fig2.verifiedStructure=true;
  fig2.keyNotationVerified=true;
  assert.equal(validatePmStructure(doc),false,'unverified figure 2 may never be marked complete');
@@ -225,7 +226,9 @@ test('figure 2 rejects incomplete source data even if key metadata is fabricated
   e.keyAudit=e.attributes.map((_,i)=>i===0?'PK_SOLID':'NONE');
   e.auditSourcePages=e.attributes.map(()=>9);
  }
- assert.equal(validatePmStructure(doc),true,'complete structure with full mock key audits passes only structural check, not real source verification');
+ assert.equal(validatePmStructure(doc),false,'mocked key audits cannot substitute for a verified full transcription');
+ fig.sourceTranscriptionVerified=true;
+ assert.equal(validatePmStructure(doc),true,'structural gate passes only when explicit source transcription audit is also recorded');
  fig.entries.pop();
  assert.equal(validatePmStructure(doc),false,'missing relation is blocked');
 });
