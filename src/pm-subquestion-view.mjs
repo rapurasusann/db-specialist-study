@@ -33,6 +33,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
  const warning=answerArea.appendChild(make('p',''));warning.className='muted';
  let page=0,selected=doc.subquestions[0]?.id||'',selectedMaterial='auto';
  let answers={...(loadAnswers()||{})};
+ const unsaved=new Set();
  const sub=()=>doc.subquestions.find(q=>q.id===selected);
  function renderIntro(){
   const pages=doc.introductionPages;
@@ -154,14 +155,17 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
   prompt.textContent=sub()?.text||'設問の問題文は未整備です。';
   promptNotice.textContent=sub()?.textStatus==='VERIFIED_TRANSCRIPTION'?'':'この設問文は原文の全文転記ではなく、内容をまとめた説明です。正式な設問はIPA公式問題冊子を確認してください。';
   answer.value=answers[selected]||'';
-  warning.textContent='設問ごとに回答を分離します。原本未整備の内容は公式原本で確認してください。';
+  warning.textContent=unsaved.has(selected)?'この設問の最新の回答は保存できていません。画面を閉じる前に保存設定を確認してください。':'設問ごとに回答を分離します。原本未整備の内容は公式原本で確認してください。';
  }
  materialSelector.appendChild(new Option('自動：選択中の設問に関連する図・表','auto'));
  for(const mat of doc.materials)materialSelector.appendChild(new Option(mat.title,mat.id));
  materialSelector.addEventListener('change',()=>{selectedMaterial=materialSelector.value;renderMaterials()});
  prev.addEventListener('click',()=>{page=Math.max(0,page-1);renderIntro()});
  next.addEventListener('click',()=>{page=Math.min(doc.introductionPages.length-1,page+1);renderIntro()});
- answer.addEventListener('input',()=>{if(!selected)return;answers[selected]=answer.value;saveAnswer(selected,answer.value)});
+ answer.addEventListener('input',()=>{if(!selected)return;answers[selected]=answer.value;
+  try{if(saveAnswer(selected,answer.value)===false)unsaved.add(selected);else unsaved.delete(selected)}catch{unsaved.add(selected)}
+  warning.textContent=unsaved.has(selected)?'この設問の最新の回答は保存できていません。画面を閉じる前に保存設定を確認してください。':'この設問の回答を保存しました。';
+ });
  renderIntro();renderQuestion();renderMaterials();
  return root;
 }
