@@ -156,7 +156,14 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
       path([wing(Math.PI/6),last,wing(-Math.PI/6)]);
      }
     }
+    const knownNodeIds=new Set(mat.nodes.map(n=>n.id));
     for(const group of data.subtypeGroups||[]){
+     // Never draw a review-only inheritance edge if it is not backed by
+     // the printed page, or if its referenced entities are missing.
+     if(group.sourcePage!==mat.sourcePage||!knownNodeIds.has(group.parentId)||
+        !Array.isArray(group.childIds)||group.childIds.length!==2||
+        !group.childIds.every(id=>knownNodeIds.has(id))||
+        !Array.isArray(group.children)||group.children.length!==group.childIds.length)continue;
      const [x,y]=group.apex,bar=group.bar;
      if(group.parent)path(group.parent);
      // A small open specialization triangle above a common subtype bar.
