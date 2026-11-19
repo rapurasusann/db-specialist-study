@@ -17,6 +17,16 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.equal(fig1.verifiedStructure,false);
  assert.deepEqual(fig1.edges,[]);
  assert.deepEqual(fig1.inheritance,[]);
+ assert.equal(fig1.checkedVisibleConnectors.length,7);
+ assert.ok(fig1.checkedVisibleConnectors.every(c=>c.sourcePage===8&&c.type==='arrow'));
+ assert.ok(fig1.checkedVisibleConnectors.every(c=>fig1.nodes.some(n=>n.id===c.from)&&fig1.nodes.some(n=>n.id===c.to)));
+ assert.deepEqual(fig1.checkedVisibleConnectors.slice(0,4).map(c=>[c.from,c.to]),[
+  ['faculty','department'],['department','offering'],['subject','offering'],['offering','lecture']
+ ]);
+ assert.equal(doc.introductionPages.slice(0,3).every(p=>p.complete===false),true);
+ assert.ok(doc.introductionPages[0].paragraphs.some(t=>t.includes('約15回')));
+ assert.ok(doc.introductionPages[1].paragraphs.some(t=>t.includes('オンデマンド')));
+
  assert.equal(fig1.nodes.length,24);
  assert.equal(doc.introductionPages.length,5);
  assert.deepEqual(doc.introductionPages.map(p=>p.sourcePage),[6,7,8,9,10]);
