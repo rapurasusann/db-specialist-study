@@ -152,7 +152,7 @@ test('copy answer backs up the selected unsaved draft without changing persisten
   });
   const textarea=walk(root,n=>n.tag==='textarea')[0];
   const copy=byText(root,'button','回答をコピー');
-  const copyStatus=walk(root,n=>n.attrs.role==='status'&&n.tag==='p')[0];
+  const copyStatus=walk(root,n=>n.attrs.role==='status'&&n.tag==='p'&&n.textContent==='')[0];
   assert.ok(copy);
   assert.ok(copyStatus);
   textarea.fire('input','回答のバックアップ');
