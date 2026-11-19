@@ -131,11 +131,20 @@ export const pmVerifiedStructure=Object.freeze({
        20:[0,1,2,3,4,5],21:[0,1,2,3,4,5],22:[0,1,2,3,4,5],
        23:[0,1,2,3,4,5,6]
       };
+      // No-underline attributes visually legible on IPA booklet page 9.
+      // Deliberately exclude blank tokens, reference-column dashed lines
+      // and any ambiguous combined solid/dashed key mark.
+      const auditedNoneIndices={
+       0:[1],1:[1],2:[1,2,3,4,5,6],3:[1,2],4:[1,2],
+       5:[4,5],6:[5,6,7,8,9],13:[1,2,3,4],14:[1],15:[1],
+       20:[6],23:[7,8]
+      };
       const primaryKeyColumns=auditedSolidIndices[index]||[];
+      const noUnderline=auditedNoneIndices[index]||[];
       return {...row,
        primaryKeyColumns,foreignKeyColumns:[],
-       keyAudit:row.attributes.map((_,i)=>primaryKeyColumns.includes(i)?'PK_SOLID':'UNVERIFIED'),
-       auditSourcePages:row.attributes.map((_,i)=>primaryKeyColumns.includes(i)?9:null)
+       keyAudit:row.attributes.map((_,i)=>primaryKeyColumns.includes(i)?'PK_SOLID':noUnderline.includes(i)?'NONE':'UNVERIFIED'),
+       auditSourcePages:row.attributes.map((_,i)=>primaryKeyColumns.includes(i)||noUnderline.includes(i)?9:null)
       };
     })
    },
