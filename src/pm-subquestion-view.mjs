@@ -149,11 +149,15 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
   }
  }
  function renderQuestion(){
-  buttons.replaceChildren();
-  for(const q of doc.subquestions){
-   const b=buttons.appendChild(make('button',q.label));b.type='button';b.setAttribute('aria-pressed',String(q.id===selected));
-   b.addEventListener('click',()=>{selected=q.id;selectedMaterial='auto';materialSelector.value='auto';renderQuestion();renderMaterials()});
+  // Keep button nodes stable so keyboard focus is not lost during selection.
+  if(!buttons.children.length){
+   for(const q of doc.subquestions){
+    const b=buttons.appendChild(make('button',q.label));b.type='button';
+    b.addEventListener('click',()=>{selected=q.id;selectedMaterial='auto';materialSelector.value='auto';renderQuestion();renderMaterials()});
+   }
   }
+  Array.from(buttons.children).forEach((b,i)=>
+   b.setAttribute('aria-pressed',String(doc.subquestions[i]?.id===selected)));
   prompt.textContent=sub()?.text||'設問の問題文は未整備です。';
   promptNotice.textContent=sub()?.textStatus==='VERIFIED_TRANSCRIPTION'?'':'この設問文は原文の全文転記ではなく、内容をまとめた説明です。正式な設問はIPA公式問題冊子を確認してください。';
   answer.value=answers[selected]||'';
