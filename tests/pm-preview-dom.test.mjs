@@ -157,7 +157,7 @@ test('figure 2 text review shows 24 relations but omits all unaudited key underl
   assert.ok(text.includes('[ ア ]'));
   assert.ok(text.includes('[ ス ]'));
   assert.ok(text.includes('[コンテンツ区分]'));
-  const marks=walk(table[0],n=>n.tag==='span');
+  const marks=walk(table[0],n=>n.tag==='td').flatMap(cell=>walk(cell,n=>n.tag==='span'));
   assert.equal(marks.length,129);
   const confirmed=marks.filter(n=>n.classList?.values?.includes('pmPrimaryKey'));
   assert.equal(confirmed.length,6);
@@ -177,7 +177,7 @@ test('figure 2 review never promotes composite key candidates to verified underl
   const root=createPmSubquestionView(draft);
   byText(root,'button','設問1 (3)').fire('click');
   const table=walk(root,n=>n.className==='pmFig2ReviewTable')[0];
-  const marks=walk(table,n=>n.tag==='span');
+  const marks=walk(table,n=>n.tag==='td').flatMap(cell=>walk(cell,n=>n.tag==='span'));
   assert.equal(marks.filter(n=>n.classList?.values?.includes('pmPrimaryKey')).length,6);
   assert.ok(fig2.entries.some(row=>row.keyAudit.includes('UNVERIFIED')));
   assert.deepEqual(marks.filter(n=>n.classList?.values?.includes('pmForeignKey')).map(n=>n.textContent),['学部コード']);
