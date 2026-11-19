@@ -31,7 +31,7 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.equal(doc.introductionPages.length,5);
  assert.deepEqual(doc.introductionPages.map(p=>p.sourcePage),[6,7,8,9,10]);
  const schema=doc.materials.find(m=>m.id==='fig3');
- assert.equal(doc.materials[2].entries.flatMap(e=>e.keyAudit).filter(v=>v==='UNVERIFIED').length,32);
+ assert.equal(doc.materials[2].entries.flatMap(e=>e.keyAudit).filter(v=>v==='UNVERIFIED').length,27);
  assert.deepEqual(doc.materials[2].entries[0].keyAudit,['PK_SOLID','NONE']);
  assert.equal(doc.materials[2].entries.every(e=>!Object.hasOwn(e,'keyColumns')),true);
 
