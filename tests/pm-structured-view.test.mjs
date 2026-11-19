@@ -96,7 +96,7 @@ test('IPA page 7 lecture and digital-content section counts and boundaries are a
  const page6=doc.introductionPages[0],page7=doc.introductionPages[1];
  assert.equal(page7.sourcePage,7);
  assert.equal(page7.complete,false);
- assert.equal(page7.sourceAudit,'SECTION_SCOPE_CHECKED');
+ assert.equal(page7.sourceAudit,'NUMBERED_CONDITION_PARAPHRASE');
  assert.deepEqual(page7.sectionNumbers,['5','6']);
  assert.deepEqual(page7.sectionItemCounts,{'5':9,'6':6});
  assert.deepEqual(page7.continuesFromPreviousPage,{section:'5',item:'(1)',sourcePage:6});
@@ -106,7 +106,7 @@ test('IPA page 7 lecture and digital-content section counts and boundaries are a
  assert.equal(page6.continuesOnNextPage.section,page7.continuesFromPreviousPage.section);
  assert.equal(page6.continuesOnNextPage.item,page7.continuesFromPreviousPage.item);
  for(const fact of ['90分','講義番号','オンデマンド','リアルタイム','オンライン教室ID','補助教員',
-  'コンテンツID','文書・画像・動画','公開期間','解答時間','リアルタイム型講義']){
+  'コンテンツID','文書・画像・動画','公開開始日','解答時間','リアルタイム型']){
   assert.ok(page7.paragraphs.some(line=>line.includes(fact)),fact);
  }
  assert.ok(page7.paragraphs.some(line=>line.includes('要約・全文転記ではありません')));
@@ -119,15 +119,38 @@ test('IPA page 6 section structure, details and page 7 continuation remain ident
  const page6=doc.introductionPages[0];
  assert.equal(page6.sourcePage,6);
  assert.equal(page6.complete,false);
- assert.equal(page6.sourceAudit,'SECTION_SCOPE_CHECKED');
+ assert.equal(page6.sourceAudit,'NUMBERED_CONDITION_PARAPHRASE');
  assert.deepEqual(page6.sectionNumbers,['1','2','3','4','5']);
  assert.deepEqual(page6.sectionItemCounts,{'1':3,'2':2,'3':2,'4':4,'5':1});
  assert.deepEqual(page6.continuesOnNextPage,{section:'5',item:'(1)',sourcePage:7});
  for(const fact of ['4年制','4～9月','10月～翌3月','教員番号','学籍番号',
-  '科目ID','単位数','担当教員1名','並行開講','インターネット','約15回','約30回']){
+  '科目ID','単位数','担当教員1名','並行開講','接続先URL','約15回','約30回']){
   assert.ok(page6.paragraphs.some(line=>line.includes(fact)),fact);
  }
  assert.ok(page6.paragraphs.some(line=>line.includes('要約・全文転記ではありません')));
+ assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
+});
+
+test('source page 6 and 7 numbered paraphrases cover every stated condition without claiming full transcription',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const page6=doc.introductionPages[0],page7=doc.introductionPages[1];
+ const groups=[
+  [page6,{'1':3,'2':2,'3':2,'4':4,'5':1}],
+  [page7,{'5':9,'6':6}]
+ ];
+ for(const [page,counts] of groups){
+  for(const [group,count] of Object.entries(counts)){
+   const headers=page.paragraphs.filter(line=>line.startsWith('【'+group+'. '));
+   assert.equal(headers.length,1,'missing group '+group+' on page '+page.sourcePage);
+   const at=page.paragraphs.indexOf(headers[0]);
+   const next=page.paragraphs.findIndex((line,i)=>i>at&&/^【[0-9]+\. /.test(line));
+   const body=page.paragraphs.slice(at,next<0?undefined:next);
+   const numbered=body.filter(line=>/^\([1-9]\) /.test(line));
+   assert.equal(numbered.length,count,'condition count '+group+' on page '+page.sourcePage);
+  }
+  assert.equal(page.complete,false);
+  assert.ok(page.paragraphs.some(p=>p.includes('全文転記ではありません')));
+ }
  assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
 });
 
