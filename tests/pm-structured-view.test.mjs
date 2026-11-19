@@ -12,7 +12,7 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.deepEqual(doc.materials.map(m=>m.sourcePage),[8,9,10]);
  assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
  assert.ok(doc.introductionPages.every(p=>!p.complete));
- assert.deepEqual(doc.materials.map(m=>m.verifiedStructure),[false,false,true]);
+ assert.deepEqual(doc.materials.map(m=>m.verifiedStructure),[false,false,false]);
  const fig1=doc.materials.find(m=>m.id==='fig1');
  assert.equal(fig1.verifiedStructure,false);
  assert.deepEqual(fig1.edges,[]);
@@ -38,7 +38,7 @@ test('source is a staged UI, not wired to public pages or legacy storage',()=>{
  assert.ok(!html.includes('src/pm-subquestion-view.mjs'));
 });
 
-test('verified figure 3 is rendered as text, never as a cropped image',()=>{
+test('figure 3 text renderer is prepared but source fidelity remains gated',()=>{
  assert.ok(source.includes("mat.kind==='schema'"));
  assert.ok(source.includes("make('table')"));
  assert.ok(source.includes("make('span',attribute)"));
