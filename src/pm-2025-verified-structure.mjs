@@ -173,7 +173,8 @@ export const pmVerifiedStructure=Object.freeze({
     sourceChecked:'IPA 2025 PM1 booklet page 9 (PDF page index 8): relation names and attribute strings transcribed; key underlines not yet fully audited',
     transcriptionStage:'TEXT_DRAFT_PARTIAL_KEY_AUDIT',
     sourceTranscriptionVerified:false, // Must be explicitly approved after a full source-by-source comparison.
-    // Figure 2 data only: never display until key classification and blanks are audited.
+    // Figure 2 REVIEW table may display unstyled names/attributes only. Never display
+    // source-like PK/FK underlines or mark the schema verified before a full audit.
     // The literal [コンテンツ区分] is ordinary optional notation, not an answer blank.
     // The entity "a" and blank tokens are left unresolved exactly as in the exam.
     entries:[
