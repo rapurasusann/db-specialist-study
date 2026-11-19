@@ -26,6 +26,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
  const questionNav=root.appendChild(make('section',undefined,'pmQuestionNav'));questionNav.append(make('h3','設問選択部'));
  const buttons=questionNav.appendChild(make('div',undefined,'toolbar'));
  const questionArea=root.appendChild(make('section',undefined,'pmQuestionText'));questionArea.append(make('h3','選択された設問の問題文'));
+ const questionGroup=questionArea.appendChild(make('h4',''));
  const prompt=questionArea.appendChild(make('p',''));
  const promptNotice=questionArea.appendChild(make('p','','muted'));
  const answerArea=root.appendChild(make('section',undefined,'pmQuestionAnswer'));answerArea.append(make('h3','回答欄'));
@@ -43,7 +44,10 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
   const item=pages[page];
   if(item){
    introText.append(make('p','原本 '+item.sourcePage+' ページ'));
-   for(const text of item.paragraphs||[])introText.append(make('p',text));
+   for(const text of item.paragraphs||[]){
+    const sectionHeader=/^【[^】]+】/.test(text);
+    introText.append(make(sectionHeader?'h4':'p',text,sectionHeader?'pmIntroHeading':undefined));
+   }
    if(!item.complete)introText.append(make('p','このページは要約・作業メモであり、原文の全文ではありません。解答時は公式原本を確認してください。','muted'));
   }else introText.append(make('p','大問本文は未整備です。公式原本を確認してください。','muted'));
   indicator.textContent=(pages.length?String(page+1):'0')+' / '+pages.length;
@@ -260,6 +264,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
   }
   Array.from(buttons.children).forEach((b,i)=>
    b.setAttribute('aria-pressed',String(doc.subquestions[i]?.id===selected)));
+  questionGroup.textContent=selected==='s2'?'設問2：拡充後の関係スキーマ':'設問1：現状の概念データモデルと関係スキーマ';
   prompt.textContent=sub()?.text||'設問の問題文は未整備です。';
   const questionIsVerified=doc.status==='FULL_SOURCE_VERIFICATION'&&sub()?.textStatus==='VERIFIED_TRANSCRIPTION'&&Boolean(sub()?.text);
   promptNotice.textContent=questionIsVerified?'':'この設問文は原文の全文転記ではなく、内容をまとめた説明です。正式な設問はIPA公式問題冊子を確認してください。';
