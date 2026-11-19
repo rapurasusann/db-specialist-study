@@ -25,7 +25,7 @@ function render(){
  const questions=subset();if(index>=questions.length)index=0;
  const q=current();answered=false;
  $('termCategories').replaceChildren();
- for(const name of ['正規形','関係演算','隔離性水準']){
+ for(const name of ['正規形','関係演算','隔離性水準','XPのプラクティス','暗号技術']){
   const b=document.createElement('button');b.type='button';b.textContent=name;
   if(category===name)b.className='primary';
   b.addEventListener('click',()=>{category=name;index=0;render()});
