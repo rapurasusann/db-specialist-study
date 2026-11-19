@@ -163,7 +163,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
  prev.addEventListener('click',()=>{page=Math.max(0,page-1);renderIntro()});
  next.addEventListener('click',()=>{page=Math.min(doc.introductionPages.length-1,page+1);renderIntro()});
  answer.addEventListener('input',()=>{if(!selected)return;answers[selected]=answer.value;
-  try{if(saveAnswer(selected,answer.value)===false)unsaved.add(selected);else unsaved.delete(selected)}catch{unsaved.add(selected)}
+  try{if(saveAnswer(selected,answer.value)===true)unsaved.delete(selected);else unsaved.add(selected)}catch{unsaved.add(selected)}
   warning.textContent=unsaved.has(selected)?'この設問の最新の回答は保存できていません。画面を閉じる前に保存設定を確認してください。':'この設問の回答を保存しました。';
  });
  renderIntro();renderQuestion();renderMaterials();
