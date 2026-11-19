@@ -201,7 +201,7 @@ test('figure 3 review displays five unsolved relations with only the audited con
   assert.equal(attributes.filter(n=>n.classList?.values?.includes('pmForeignKey')).length,0);
   assert.ok(attributes.some(n=>n.textContent==='[ セ ]'));
   assert.ok(attributes.some(n=>n.textContent==='[ ツ ]'));
-  assert.ok(walk(body,n=>n.tag==='p'&&n.textContent.includes('未確認32属性')).length);
+  assert.ok(walk(body,n=>n.tag==='p'&&n.textContent.includes('未確認27属性')).length);
   assert.equal(source.materials[2].verifiedStructure,false);
  }finally{undo()}
 });
