@@ -82,6 +82,24 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
     !Array.isArray(mat.entries)||mat.entries.some(e=>
      e.primaryKeyCandidates?.length||e.keyAudit?.includes('UNVERIFIED'))
    );
+   // Review-only Figure 2: show transcribed names/attributes without key
+   // underlines. Do not claim confirmed PK/FK, solve blanks or pass source gate.
+   if(mat.id==='fig2'&&mat.verifiedStructure===false&&
+      mat.transcriptionStage==='TEXT_DRAFT_PARTIAL_KEY_AUDIT'&&
+      mat.sourceTranscriptionVerified===false&&mat.keyNotationVerified===false){
+    box.append(make('p','作業中の関係スキーマ（属性名と並びの確認用）。主キー・外部キーの下線は未確認のため表示しません。空欄は未回答です。','muted'));
+    const table=box.appendChild(make('table'));
+    table.className='pmFig2ReviewTable';
+    const head=table.appendChild(make('tr'));
+    head.append(make('th','関係名'));
+    head.append(make('th','属性（キー下線は省略）'));
+    for(const row of mat.entries||[]){
+     const tr=table.appendChild(make('tr'));
+     tr.append(make('th',row.name));
+     tr.append(make('td',row.attributes.join('、')));
+    }
+    continue;
+   }
    // Review-only Fig.1: display only traced shapes; never mark the whole
    // figure as verified and never invent any missing exam relationships.
    if(mat.id==='fig1'&&mat.verifiedStructure===false&&mat.partialSvgSource?.status==='REVIEW_ONLY'){
