@@ -179,6 +179,21 @@ test('source is a staged UI, not wired to public pages or legacy storage',()=>{
  assert.ok(!html.includes('src/pm-subquestion-view.mjs'));
 });
 
+test('figure 3 original page 10 has no underline on the four answer boxes and evaluation type',()=>{
+ const fig=pmVerifiedStructure['2025:pm1:1'].materials.find(m=>m.id==='fig3');
+ for(const [relation,attribute] of [
+  ['レポート課題出題','[ ソ ]'],['評価結果','評価結果区分'],
+  ['評価結果','[ タ ]'],['テスト結果','[ チ ]'],['レポート評価結果','[ ツ ]']]){
+  const row=fig.entries.find(e=>e.name===relation),i=row?.attributes.indexOf(attribute);
+  assert.ok(i>=0,relation+' / '+attribute);
+  assert.equal(row.keyAudit[i],'NONE');
+  assert.equal(row.auditSourcePages[i],10);
+ }
+ assert.equal(fig.entries.flatMap(e=>e.keyAudit).filter(k=>k==='NONE').length,6);
+ assert.equal(fig.entries.flatMap(e=>e.keyAudit).filter(k=>k==='UNVERIFIED').length,27);
+ assert.equal(fig.verifiedStructure,false);
+});
+
 test('figure 3 text renderer is prepared but source fidelity remains gated',()=>{
  assert.ok(source.includes("mat.kind==='schema'"));
  assert.ok(source.includes("make('table')"));
