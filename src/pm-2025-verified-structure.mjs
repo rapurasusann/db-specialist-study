@@ -141,6 +141,22 @@ export function validatePmStructure(doc){
  const ids=new Set(doc.materials.map(m=>m.id));
  if(ids.size!==doc.materials.length)return false;
  if(new Set(doc.introductionPages.map(p=>p.id)).size!==doc.introductionPages.length)return false;
+ // Figure 2 must preserve the full IPA page-9 problem, not merely pass generic
+ // key-notation checks with one artificial or incomplete schema entry.
+ const fig2=doc.materials.find(m=>m.id==='fig2');
+ if(fig2?.verifiedStructure){
+  const entries=fig2.entries;
+  if(!Array.isArray(entries)||entries.length!==24||
+     entries.reduce((n,e)=>n+(Array.isArray(e.attributes)?e.attributes.length:0),0)!==129)return false;
+  const requiredNames=['学部','学科','科目','教員','学生','開講科目','講義',
+   '時間固定講義','オンライン講義','対面講義','リアルタイム型講義',
+   'オンデマンド型講義','a','デジタルコンテンツ','教材','テスト問題',
+   'コンテンツ使用','教材使用','テスト問題使用','科目履修登録',
+   '講義受講','時間固定講義受講','オンデマンド型講義受講','テスト結果'];
+  if(entries.some((e,i)=>e.name!==requiredNames[i]))return false;
+  const blanks=entries.flatMap(e=>e.attributes).filter(x=>/^\[ [アイウエオカキクケコサシス] \]$/.test(x));
+  if(blanks.map(x=>x.slice(2,-2)).join('')!=='アイウエオカキクケコサシス')return false;
+ }
  if(doc.materials.some(m=>m.verifiedStructure && (
    (m.kind==='svg' && (!Array.isArray(m.nodes)||!Array.isArray(m.edges)||!m.edges.length))||
    (m.kind==='schema' && (!Array.isArray(m.entries)||!m.entries.length||m.keyNotationVerified!==true
