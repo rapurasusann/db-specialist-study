@@ -128,6 +128,26 @@ test('page navigation is bounded at first and last source page',()=>{
  }finally{undo()}
 });
 
+test('a flipped figure 2 display flag cannot expose incomplete source data',()=>{
+ const undo=setup();
+ try{
+  const draft=structuredClone(pmVerifiedStructure['2025:pm1:1']);
+  const fig2=draft.materials.find(m=>m.id==='fig2');
+  fig2.verifiedStructure=true;
+  const root=createPmSubquestionView(draft);
+  const selector=walk(root,n=>n.tag==='select')[0];
+  const materials=walk(root,n=>n.className==='pmMaterialBody')[0];
+  selector.fire('change','fig2');
+  assert.equal(walk(materials,n=>n.tag==='table').length,0);
+  assert.ok(walk(materials,n=>n.textContent.includes('未整備です')).length);
+  assert.ok(walk(materials,n=>n.tag==='a'&&n.textContent.includes('9ページ')).length);
+  fig2.sourceTranscriptionVerified=true;
+  fig2.keyNotationVerified=true;
+  selector.fire('change','fig2');
+  assert.equal(walk(materials,n=>n.tag==='table').length,0,'unresolved key candidates still block display');
+ }finally{undo()}
+});
+
 test('failed storage writes are visible per subquestion, and unsaved drafts survive switching',()=>{
  const undo=setup();
  try{
