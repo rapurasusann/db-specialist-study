@@ -170,8 +170,19 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
  assert.equal(fig2.kind,'schema');
  assert.equal(fig2.sourcePage,9);
  assert.equal(fig2.verifiedStructure,false);
- assert.equal(fig2.transcriptionStage,'PARTIAL_FIRST_SEVEN_RELATIONS');
- assert.deepEqual(fig2.entries.map(e=>e.name),['学部','学科','科目','教員','学生','開講科目','講義']);
+ assert.equal(fig2.transcriptionStage,'FULL_TEXT_KEYS_UNVERIFIED');
+ assert.equal(fig2.entries.length,24);
+ assert.deepEqual(fig2.entries.slice(0,7).map(e=>e.name),['学部','学科','科目','教員','学生','開講科目','講義']);
+ assert.deepEqual(fig2.entries.slice(7).map(e=>e.name),[
+  '時間固定講義','オンライン講義','対面講義','リアルタイム型講義','オンデマンド型講義',
+  'a','デジタルコンテンツ','教材','テスト問題','コンテンツ使用','教材使用',
+  'テスト問題使用','科目履修登録','講義受講','時間固定講義受講',
+  'オンデマンド型講義受講','テスト結果'
+ ]);
+ assert.equal(fig2.entries.reduce((sum,row)=>sum+row.attributes.length,0),129);
+ const blanks=fig2.entries.flatMap(row=>row.attributes.filter(x=>/^\\[ [ア-ス] \\]$/.test(x))).map(x=>x.replace(/[^ア-ス]/g,''));
+ assert.deepEqual(blanks,'アイウエオカキクケコサシス'.split(''));
+ assert.ok(fig2.entries.some(row=>row.name==='コンテンツ使用'&&row.attributes.includes('[コンテンツ区分]')));
  assert.deepEqual(fig2.entries[0].attributes,['学部コード','学部名']);
  assert.deepEqual(fig2.entries[5].attributes.slice(-1),['[ ア ]']);
  assert.ok(fig2.entries.every(e=>e.keyAudit.every(k=>k==='UNVERIFIED')));
