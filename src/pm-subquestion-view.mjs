@@ -29,6 +29,10 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
  const questionGroup=questionArea.appendChild(make('h4',''));
  const prompt=questionArea.appendChild(make('p',''));
  const promptNotice=questionArea.appendChild(make('p','','muted'));
+ const relatedPages=questionArea.appendChild(make('div',undefined,'pmRelatedPages toolbar'));
+ relatedPages.setAttribute('aria-label','この設問に関連する大問ページ');
+ const questionSourceLink=doc.source?questionArea.appendChild(make('a','設問の原本11ページを開く')):null;
+ if(questionSourceLink){questionSourceLink.target='_blank';questionSourceLink.rel='noopener noreferrer'}
  const answerArea=root.appendChild(make('section',undefined,'pmQuestionAnswer'));answerArea.append(make('h3','回答欄'));
  const answer=answerArea.appendChild(make('textarea'));answer.rows=5;answer.setAttribute('aria-label','選択中の設問の回答');
  const warning=answerArea.appendChild(make('p',''));warning.className='muted';
@@ -266,6 +270,21 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
    b.setAttribute('aria-pressed',String(doc.subquestions[i]?.id===selected)));
   questionGroup.textContent=selected==='s2'?'設問2：拡充後の関係スキーマ':'設問1：現状の概念データモデルと関係スキーマ';
   prompt.textContent=sub()?.text||'設問の問題文は未整備です。';
+  relatedPages.replaceChildren();
+  const related=Array.isArray(sub()?.relatedIntroPages)?sub().relatedIntroPages:[];
+  for(const sourcePage of [...new Set(related)]){
+   const index=doc.introductionPages.findIndex(p=>p.sourcePage===sourcePage);
+   if(index<0)continue; // No fabricated local page for absent source sections.
+   const shortcut=relatedPages.appendChild(make('button',sourcePage+'ページの大問を見る'));
+   shortcut.type='button';
+   shortcut.setAttribute('aria-label','大問の'+sourcePage+'ページを表示');
+   shortcut.addEventListener('click',()=>{page=index;renderIntro()});
+  }
+  if(questionSourceLink){
+   const sourcePage=sub()?.sourcePage;
+   questionSourceLink.textContent=Number.isInteger(sourcePage)?'原本の設問（'+sourcePage+'ページ）を開く':'IPA公式設問を開く';
+   questionSourceLink.href=doc.source.split('#')[0]+(Number.isInteger(sourcePage)?'#page='+sourcePage:'');
+  }
   const questionIsVerified=doc.status==='FULL_SOURCE_VERIFICATION'&&sub()?.textStatus==='VERIFIED_TRANSCRIPTION'&&Boolean(sub()?.text);
   promptNotice.textContent=questionIsVerified?'':'この設問文は原文の全文転記ではなく、内容をまとめた説明です。正式な設問はIPA公式問題冊子を確認してください。';
   answer.value=answers[selected]||'';
