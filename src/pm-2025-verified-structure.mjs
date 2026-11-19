@@ -86,21 +86,40 @@ export const pmVerifiedStructure=Object.freeze({
     ],
     note:'図1は原本でも未完成です。現時点では名称の索引のみ登録済みで、接続・配置は未検証のため学習画面には表示しません。'
    },
-   {id:'fig2',title:'図2 現状の学習管理システムの関係スキーマ',sourcePage:9,kind:'schema',verifiedStructure:false,keyNotationVerified:false,
-    sourceChecked:'IPA 2025 PM1 booklet page 9 (PDF page index 8): first seven relation names and attribute sequences only',
-    transcriptionStage:'PARTIAL_FIRST_SEVEN_RELATIONS',
-    // These seven rows have source-checked labels and attribute order. Key / FK
-    // underlines remain UNVERIFIED: the complete diagram MUST stay hidden.
+   {id:'fig2',title:'図2 現状の学習管理システムの関係スキーマ（未完成）',sourcePage:9,kind:'schema',verifiedStructure:false,keyNotationVerified:false,
+    sourceChecked:'IPA 2025 PM1 booklet page 9 (PDF page index 8): relation names and attribute strings transcribed; key underlines not yet fully audited',
+    transcriptionStage:'FULL_TEXT_KEYS_UNVERIFIED',
+    // Figure 2 data only: never display until key classification and blanks are audited.
+    // The literal [コンテンツ区分] is ordinary optional notation, not an answer blank.
+    // The entity "a" and blank tokens are left unresolved exactly as in the exam.
     entries:[
-     {name:'学部',attributes:['学部コード','学部名']},
-     {name:'学科',attributes:['学科コード','学科名','学部コード']},
-     {name:'科目',attributes:['科目ID','科目名','科目目標','科目概要','単位数','必須選択区分','開講期間']},
-     {name:'教員',attributes:['教員番号','氏名','生年月日']},
-     {name:'学生',attributes:['学籍番号','氏名','生年月日']},
-     {name:'開講科目',attributes:['学科コード','科目ID','年度','学期','開講曜日','開講時限','[ ア ]']},
-     {name:'講義',attributes:['学科コード','科目ID','年度','学期','講義番号','講義概要','開講形態区分','オンライン講義フラグ','時間固定講義フラグ','開講年月日設定要否']}
+     {name:"学部",attributes:["学部コード","学部名"]},
+     {name:"学科",attributes:["学科コード","学科名","学部コード"]},
+     {name:"科目",attributes:["科目ID","科目名","科目目標","科目概要","単位数","必須選択区分","開講期間"]},
+     {name:"教員",attributes:["教員番号","氏名","生年月日"]},
+     {name:"学生",attributes:["学籍番号","氏名","生年月日"]},
+     {name:"開講科目",attributes:["学科コード","科目ID","年度","学期","開講曜日","開講時限","[ ア ]"]},
+     {name:"講義",attributes:["学科コード","科目ID","年度","学期","講義番号","講義概要","開講形態区分","オンライン講義フラグ","時間固定講義フラグ","開講年月日設定要否"]},
+     {name:"時間固定講義",attributes:["学科コード","科目ID","年度","学期","講義番号","[ イ ]"]},
+     {name:"オンライン講義",attributes:["学科コード","科目ID","年度","学期","講義番号","[ ウ ]"]},
+     {name:"対面講義",attributes:["学科コード","科目ID","年度","学期","講義番号","[ エ ]"]},
+     {name:"リアルタイム型講義",attributes:["学科コード","科目ID","年度","学期","講義番号","[ オ ]"]},
+     {name:"オンデマンド型講義",attributes:["学科コード","科目ID","年度","学期","講義番号","[ カ ]"]},
+     {name:"a",attributes:["[ キ ]","教員番号"]},
+     {name:"デジタルコンテンツ",attributes:["コンテンツID","コンテンツ名","コンテンツ区分","コンテンツ概要","作成年月日時分"]},
+     {name:"教材",attributes:["コンテンツID","ファイル形式"]},
+     {name:"テスト問題",attributes:["コンテンツID","解答時間"]},
+     {name:"コンテンツ使用",attributes:["学科コード","科目ID","年度","学期","講義番号","コンテンツID","[コンテンツ区分]"]},
+     {name:"教材使用",attributes:["学科コード","科目ID","年度","学期","講義番号","コンテンツID","[ ク ]"]},
+     {name:"テスト問題使用",attributes:["学科コード","科目ID","年度","学期","講義番号","コンテンツID","[ ケ ]"]},
+     {name:"科目履修登録",attributes:["[ コ ]"]},
+     {name:"講義受講",attributes:["学科コード","科目ID","年度","学期","講義番号","学籍番号","講義受講区分","[ サ ]"]},
+     {name:"時間固定講義受講",attributes:["学科コード","科目ID","年度","学期","講義番号","学籍番号","[ シ ]"]},
+     {name:"オンデマンド型講義受講",attributes:["学科コード","科目ID","年度","学期","講義番号","学籍番号","[ ス ]"]},
+     {name:"テスト結果",attributes:["学科コード","科目ID","年度","学期","講義番号","コンテンツID","学籍番号","得点","評価年月日"]}
     ].map(row=>({...row,primaryKeyColumns:[],foreignKeyColumns:[],
-      keyAudit:row.attributes.map(()=>'UNVERIFIED'),auditSourcePages:row.attributes.map(()=>null)}))},
+      keyAudit:row.attributes.map(()=>'UNVERIFIED'),auditSourcePages:row.attributes.map(()=>null)}))
+   },
    {id:'fig3',title:'図3 追加及び変更する関係スキーマ（未完成）',sourcePage:10,kind:'schema',verifiedStructure:false,keyNotationVerified:false,sourceChecked:'IPA 2025 PM1 booklet page 10 (PDF page index 9)',entries:[
     {name:'レポート課題',attributes:['コンテンツID','[ セ ]'],primaryKeyColumns:[0],foreignKeyColumns:[],keyAudit:['PK_SOLID','NONE'],auditSourcePages:[10,10]},
     {name:'レポート課題出題',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','[ ソ ]'],primaryKeyColumns:[],foreignKeyColumns:[],keyAudit:['UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED'],auditSourcePages:[null,null,null,null,null,null,null]},
