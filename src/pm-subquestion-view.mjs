@@ -6,6 +6,14 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
  const make=(tag,text,cls)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el};
  const intro=root.appendChild(make('section',undefined,'pmIntro'));intro.append(make('h3','大問表示部'));
  const introText=intro.appendChild(make('div',undefined,'pmIntroText'));
+ if(doc.status!=='FULL_SOURCE_VERIFICATION'){
+  const notice=intro.appendChild(make('p','この問題は原本の転記・照合が未完了です。表示中の大問本文は要約を含み、試験問題の全文ではありません。','muted'));
+  notice.setAttribute('role','status');
+ }
+ if(doc.source){
+  const sourceLink=intro.appendChild(make('a','IPA公式問題冊子で原文を確認する'));
+  sourceLink.href=doc.source;sourceLink.target='_blank';sourceLink.rel='noopener noreferrer';
+ }
  const pager=intro.appendChild(make('div',undefined,'toolbar'));
  const prev=pager.appendChild(make('button','前ページ'));prev.type='button';
  const indicator=pager.appendChild(make('span',''));
@@ -30,7 +38,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
   if(item){
    introText.append(make('p','原本 '+item.sourcePage+' ページ'));
    for(const text of item.paragraphs||[])introText.append(make('p',text));
-   if(!item.complete)introText.append(make('p','このページの全文は未整備です。必ず公式原本でも確認してください。','muted'));
+   if(!item.complete)introText.append(make('p','このページは要約・作業メモであり、原文の全文ではありません。解答時は公式原本を確認してください。','muted'));
   }else introText.append(make('p','大問本文は未整備です。公式原本を確認してください。','muted'));
   indicator.textContent=(pages.length?String(page+1):'0')+' / '+pages.length;
   prev.disabled=page<=0;next.disabled=page>=pages.length-1;
