@@ -28,9 +28,12 @@ function saveAnswer(subquestionId,value){
   const next=updateSubquestionAnswer(progress[recordId]??{},subquestionId,value);
   localStorage.setItem(KEY,JSON.stringify({...progress,[recordId]:next}));
   status.textContent='設問 '+subquestionId+' の回答を端末内に保存しました。';
+  delete status.dataset.error;
+  return true;
  }catch(e){
   status.textContent='回答を保存できませんでした。ブラウザの保存設定またはデータを確認してください。';
   status.dataset.error=e?.message||'SAVE_FAILED';
+  return false;
  }
 }
 if(!validatePmStructure(doc)){
