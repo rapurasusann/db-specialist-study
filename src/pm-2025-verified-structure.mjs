@@ -87,6 +87,13 @@ export const pmVerifiedStructure=Object.freeze({
 export function validatePmStructure(doc){
  if(!doc||!Array.isArray(doc.subquestions)||!Array.isArray(doc.materials)||!Array.isArray(doc.introductionPages))return false;
  const ids=new Set(doc.materials.map(m=>m.id));
- return doc.subquestions.every(q=>q.id&&q.text&&q.materialIds.every(id=>ids.has(id)))
+ if(ids.size!==doc.materials.length)return false;
+ if(new Set(doc.introductionPages.map(p=>p.id)).size!==doc.introductionPages.length)return false;
+ if(doc.materials.some(m=>m.verifiedStructure && (
+   (m.kind==='svg' && (!Array.isArray(m.nodes)||!Array.isArray(m.edges)||!m.edges.length))||
+   (m.kind==='schema' && (!Array.isArray(m.entries)||!m.entries.length))
+  )))return false;
+ return doc.subquestions.every(q=>q.id&&q.text&&Array.isArray(q.materialIds)
+   &&q.materialIds.every(id=>ids.has(id)))
    &&new Set(doc.subquestions.map(q=>q.id)).size===doc.subquestions.length;
 }
