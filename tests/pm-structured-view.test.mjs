@@ -185,16 +185,21 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
  assert.ok(fig2.entries.some(row=>row.name==='コンテンツ使用'&&row.attributes.includes('[コンテンツ区分]')));
  assert.deepEqual(fig2.entries[0].attributes,['学部コード','学部名']);
  assert.deepEqual(fig2.entries[5].attributes.slice(-1),['[ ア ]']);
- assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='PK_SOLID').length,5);
- assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='UNVERIFIED').length,124);
+ assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='PK_SOLID').length,42);
+ assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='UNVERIFIED').length,87);
  for(const e of fig2.entries.slice(0,5)){
   assert.deepEqual(e.primaryKeyColumns,[0]);
   assert.equal(e.keyAudit[0],'PK_SOLID');
   assert.equal(e.auditSourcePages[0],9);
   assert.ok(e.keyAudit.slice(1).every(k=>k==='UNVERIFIED'));
  }
- assert.ok(fig2.entries.slice(5).every(e=>e.primaryKeyColumns.length===0));
+ assert.deepEqual(fig2.entries[5].primaryKeyColumns,[0,1,2,3]);
+ for(const e of fig2.entries.slice(6,12))assert.deepEqual(e.primaryKeyColumns,[0,1,2,3,4]);
+ for(const e of fig2.entries.slice(13,16))assert.deepEqual(e.primaryKeyColumns,[0]);
  assert.ok(fig2.entries.every(e=>e.foreignKeyColumns.length===0));
+ assert.ok(fig2.entries.flatMap(e=>e.keyAudit).includes('UNVERIFIED'));
+ assert.ok(fig2.entries.every(e=>e.keyAudit.every((status,i)=>
+   status!=='PK_SOLID'||e.auditSourcePages[i]===9)));
  assert.equal(fig2.verifiedStructure,false);
  fig2.verifiedStructure=true;
  fig2.keyNotationVerified=true;
