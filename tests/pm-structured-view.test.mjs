@@ -40,6 +40,32 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.deepEqual(schema.entries.map(e=>e.name),['レポート課題','レポート課題出題','評価結果','テスト結果','レポート評価結果']);
  assert.deepEqual(schema.entries.flatMap(e=>e.attributes).filter(a=>/^\[ [セソタチツ] \]$/.test(a)),['[ セ ]','[ ソ ]','[ タ ]','[ チ ]','[ ツ ]']);
 });
+test('figure 1 traced positions keep original diagram structure and incomplete exam edges',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const fig=doc.materials.find(x=>x.id==='fig1'),trace=fig.partialSvgSource;
+ assert.equal(trace.status,'REVIEW_ONLY');
+ assert.equal(trace.sourcePage,8);
+ assert.deepEqual(trace.boxes.map(b=>b[0]),fig.nodes.map(n=>n.id));
+ const boxes=new Map(trace.boxes.map(b=>[b[0],b]));
+ assert.deepEqual(boxes.get('faculty').slice(1),[10,18,106,42]);
+ assert.deepEqual(boxes.get('lecture').slice(1),[10,298,106,42]);
+ assert.deepEqual(boxes.get('materialUse').slice(1),[572,524,106,42]);
+ assert.deepEqual(boxes.get('testResult').slice(1),[719,650,106,42]);
+ assert.deepEqual(trace.arrows[0],[[63,60],[63,82]]);
+ assert.deepEqual(trace.arrows[2],[[182,60],[182,135],[83,135],[83,171]]);
+ assert.deepEqual(trace.arrows[4].at(-1),[215,526]);
+ assert.equal(trace.arrows.length,7);
+ assert.equal(trace.subtypeGroups.length,5);
+ for(const line of trace.arrows){
+  assert.ok(line.length>=2);
+  assert.ok(line.every(p=>p.length===2&&p.every(v=>Number.isFinite(v)&&v>=0&&v<=960)));
+ }
+ assert.equal(fig.verifiedStructure,false);
+ assert.deepEqual(fig.edges,[]);
+ assert.deepEqual(fig.inheritance,[]);
+ assert.ok(fig.nodes.find(n=>n.id==='a').unfinished);
+});
+
 test('IPA page 8 section 7 records all five conditions and page 7 continuation without completing the original',()=>{
  const doc=pmVerifiedStructure['2025:pm1:1'];
  const page7=doc.introductionPages[1],page8=doc.introductionPages[2];
