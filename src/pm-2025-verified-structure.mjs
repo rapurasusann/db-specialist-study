@@ -227,7 +227,11 @@ export const pmVerifiedStructure=Object.freeze({
       // evidence of solid underlining. Composite marks can have dashed FK
       // strokes as well: prior "PK_SOLID" labels are retained as candidates,
       // not falsely recorded as a complete per-attribute audit.
-      const confirmedPrimary=index<5?[0]:[];
+      // Page-9 source trace: the five initial identifier rows, plus
+      // デジタルコンテンツ.コンテンツID, have unambiguous solid PK marks.
+      // Do not extend this list to subtype or composite keys without
+      // separating their overlapping dashed foreign-key marks.
+      const confirmedPrimary=index<5||index===13?[0]:[];
       // Directly visible dashed underline: 学科.学部コード (page 9).
       // Do not infer any other FK solely from its attribute name.
       const confirmedForeign=index===1?[2]:[];
