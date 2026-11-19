@@ -28,3 +28,20 @@ test('term practice is isolated and does not replace legacy progress or question
  assert.ok(ui.includes("q.term+'の説明として正しいのは次のうちどれでしょうか？'"));
  assert.ok(ui.includes("document.getElementById('study')?.insertAdjacentElement('afterend',panel)"));
 });
+
+test('switching to terms hides legacy dashboard metrics and preserves the legacy history',()=>{
+ assert.ok(ui.includes('#termPractice[hidden],.metrics[hidden]{display:none!important}'));
+ assert.ok(ui.includes("if(metrics)metrics.hidden=true"));
+ assert.ok(ui.includes("if(metrics)metrics.hidden=false"));
+ assert.ok(ui.includes("$('dashboard').classList.add('hide')"));
+ assert.ok(ui.includes("$('study').classList.add('hide')"));
+ assert.ok(ui.includes("$('viewStudy').addEventListener('click',leaveTerms)"));
+ assert.ok(ui.includes("$('viewDashboard').addEventListener('click',leaveTerms)"));
+});
+test('answer records are separate, update visibly, and cannot be submitted twice',()=>{
+ assert.ok(ui.includes("if(answered)return"));
+ assert.ok(ui.includes("localStorage.setItem(recordsKey,JSON.stringify(records))"));
+ assert.ok(ui.includes("activeTerm.textContent=q.term+(correct?' ✓':'')"));
+ assert.ok(ui.includes("button.disabled=true"));
+ assert.ok(!ui.includes("localStorage.setItem('db-study-progress-v1'"));
+});
