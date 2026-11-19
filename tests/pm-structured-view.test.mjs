@@ -46,7 +46,7 @@ test('source is a staged UI, not wired to public pages or legacy storage',()=>{
  assert.ok(source.includes('次ページ'));
  assert.ok(source.includes("'auto'"));
  assert.ok(source.includes('selectedMaterial=\'auto\''));
- assert.ok(source.includes('saveAnswer(selected,answer.value)'));
+ assert.ok(source.includes("saveAnswer(selected,answers[selected]||'')"),'save latest answer for the currently selected subquestion');
  assert.ok(!source.includes('localStorage.setItem('));
  assert.ok(!source.includes('innerHTML'));
  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
