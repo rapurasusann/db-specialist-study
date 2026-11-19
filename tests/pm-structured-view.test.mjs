@@ -197,9 +197,23 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
   primaryKeyColumns:[0],foreignKeyColumns:[],keyAudit:['PK_SOLID'],auditSourcePages:[10]}];
  assert.equal(validatePmStructure(doc),false,'source page 10 must not certify a page 9 diagram');
  fig2.entries[0].auditSourcePages=[9];
- assert.equal(validatePmStructure(doc),true,'only structurally complete source-backed figure 2 can pass');
+ assert.equal(validatePmStructure(doc),false,'one fabricated row must not pass the full figure 2 completeness gate');
 });
 
+test('figure 2 rejects incomplete source data even if key metadata is fabricated as valid',()=>{
+ const doc=structuredClone(pmVerifiedStructure['2025:pm1:1']);
+ const fig=doc.materials.find(m=>m.id==='fig2');
+ fig.verifiedStructure=true;
+ fig.keyNotationVerified=true;
+ for(const e of fig.entries){
+  e.primaryKeyColumns=[0]; e.foreignKeyColumns=[];
+  e.keyAudit=e.attributes.map((_,i)=>i===0?'PK_SOLID':'NONE');
+  e.auditSourcePages=e.attributes.map(()=>9);
+ }
+ assert.equal(validatePmStructure(doc),true,'complete structure with full mock key audits passes only structural check, not real source verification');
+ fig.entries.pop();
+ assert.equal(validatePmStructure(doc),false,'missing relation is blocked');
+});
 test('preview warning never advertises incomplete figures as usable materials',()=>{
  const html=readFileSync(new URL('../pm-preview.html',import.meta.url),'utf8');
  const doc=pmVerifiedStructure['2025:pm1:1'];
