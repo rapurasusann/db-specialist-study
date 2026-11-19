@@ -82,18 +82,18 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
     !Array.isArray(mat.entries)||mat.entries.some(e=>
      e.primaryKeyCandidates?.length||e.keyAudit?.includes('UNVERIFIED'))
    );
-   // Review-only Figure 2: show transcribed names/attributes without key
-   // underlines. Do not claim confirmed PK/FK, solve blanks or pass source gate.
-   if(mat.id==='fig2'&&mat.verifiedStructure===false&&
+   // Source-checked review tables (Figures 2 and 3) render only individually
+   // audited marks, never infer or fill incomplete source/blank answers.
+   if((mat.id==='fig2'||mat.id==='fig3')&&mat.verifiedStructure===false&&
       mat.transcriptionStage==='TEXT_DRAFT_PARTIAL_KEY_AUDIT'&&
       mat.sourceTranscriptionVerified===false&&mat.keyNotationVerified===false){
     const auditMarks=(mat.entries||[]).flatMap(row=>row.keyAudit||[]);
     const pkCount=auditMarks.filter(k=>k==='PK_SOLID').length;
     const fkCount=auditMarks.filter(k=>k==='FK_DASHED').length;
     const pendingCount=auditMarks.filter(k=>k==='UNVERIFIED').length;
-    box.append(make('p',`作業中の関係スキーマです。原本9ページで確認済みの主キー${pkCount}属性は実線、外部キー${fkCount}属性は破線で表示します。未確認${pendingCount}属性のキー下線は省略します。空欄は未回答です。`,'muted'));
+    box.append(make('p',`作業中の関係スキーマです。原本${mat.sourcePage}ページで確認済みの主キー${pkCount}属性は実線、外部キー${fkCount}属性は破線で表示します。未確認${pendingCount}属性のキー下線は省略します。空欄は未回答です。`,'muted'));
     const table=box.appendChild(make('table'));
-    table.className='pmFig2ReviewTable';
+    table.className=mat.id==='fig2'?'pmFig2ReviewTable':'pmFig3ReviewTable';
     const head=table.appendChild(make('tr'));
     head.append(make('th','関係名'));
     head.append(make('th','属性（確認済みのキーだけ下線表示）'));
@@ -106,9 +106,9 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
      row.attributes.forEach((attribute,i)=>{
       if(i)cell.appendChild(document.createTextNode('、'));
       const mark=cell.appendChild(make('span',attribute));
-      // Figure 2 is unfinished: only independently audited source-page-9
-      // solid PK marks may be drawn. Candidate keys are never promoted.
-      if(row.auditSourcePages?.[i]===9){
+      // Only source-page-matched marks are visible. Candidate keys and
+      // source-incomplete rows never receive inferred underline styles.
+      if(row.auditSourcePages?.[i]===mat.sourcePage){
        if(row.keyAudit?.[i]==='PK_SOLID'&&row.primaryKeyColumns?.includes(i))
         mark.classList.add('pmPrimaryKey');
        if(row.keyAudit?.[i]==='FK_DASHED'&&row.foreignKeyColumns?.includes(i))
