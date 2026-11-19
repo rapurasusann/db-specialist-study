@@ -74,7 +74,15 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
     originalLink.target='_blank';
     originalLink.rel='noopener noreferrer';
    }
-   if(!mat.verifiedStructure){box.append(make('p','図・表のテキスト再構成は未整備です。上記のIPA公式原本を確認してください。','muted'));continue}
+   // A single toggled display flag must not expose unverified Figure 2.
+   // The preview entry also validates the complete document, but this
+   // reusable view must fail closed when called directly with draft data.
+   const unresolvedFig2=mat.id==='fig2'&&(
+    mat.sourceTranscriptionVerified!==true||mat.keyNotationVerified!==true||
+    !Array.isArray(mat.entries)||mat.entries.some(e=>
+     e.primaryKeyCandidates?.length||e.keyAudit?.includes('UNVERIFIED'))
+   );
+   if(!mat.verifiedStructure||unresolvedFig2){box.append(make('p','図・表のテキスト再構成は未整備です。上記のIPA公式原本を確認してください。','muted'));continue}
    if(mat.kind==='schema'){
     const table=box.appendChild(make('table'));
     const head=table.appendChild(make('tr'));
