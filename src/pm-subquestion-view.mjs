@@ -67,7 +67,12 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
      entry.attributes.forEach((attribute,i)=>{
       if(i)cell.append(document.createTextNode('、'));
       const name=cell.appendChild(make('span',attribute));
-      if(entry.keyColumns?.includes(i))name.className='pmKeyAttribute';
+      // Distinguish the IPA booklet's solid PK underline from dashed FK
+      // underline. Both can apply to the same attribute.
+      if(entry.primaryKeyColumns?.includes(i))name.classList.add('pmPrimaryKey');
+      if(entry.foreignKeyColumns?.includes(i))name.classList.add('pmForeignKey');
+      if(entry.primaryKeyColumns?.includes(i)&&entry.foreignKeyColumns?.includes(i))
+       name.classList.add('pmBothKeys');
      });
     }
    }else if(mat.kind==='table'){
