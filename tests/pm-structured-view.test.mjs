@@ -103,7 +103,7 @@ test('PK and FK have distinct underline styles and schema requires audited keys'
  schema.keyNotationVerified=true;
  assert.equal(validatePmStructure(doc),false,'cannot publish schema with missing key classifications');
  for(const row of schema.entries){
-  row.primaryKeyColumns=[];
+  row.primaryKeyColumns=[0];
   row.foreignKeyColumns=[];
  }
  assert.equal(validatePmStructure(doc),true,'valid metadata shape after a deliberate source-check gate');
