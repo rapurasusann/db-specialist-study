@@ -106,7 +106,27 @@ test('PK and FK have distinct underline styles and schema requires audited keys'
   row.primaryKeyColumns=[0];
   row.foreignKeyColumns=[];
  }
- assert.equal(validatePmStructure(doc),true,'valid metadata shape after a deliberate source-check gate');
+ assert.equal(validatePmStructure(doc),false,'unreviewed attributes cannot be accepted even with key column arrays');
+ for(const row of schema.entries)row.keyAudit=row.attributes.map((_,i)=>i===0?'PK_SOLID':'NONE');
+ assert.equal(validatePmStructure(doc),true,'only complete, internally consistent audited metadata is structurally valid');
  schema.entries[0].foreignKeyColumns=[99];
  assert.equal(validatePmStructure(doc),false,'out-of-range key column rejected');
+});
+
+test('figure 3 audit metadata must agree with PK and FK indices',()=>{
+ const doc=structuredClone(pmVerifiedStructure['2025:pm1:1']);
+ const schema=doc.materials[2];
+ schema.verifiedStructure=true;
+ schema.keyNotationVerified=true;
+ for(const row of schema.entries){
+  row.primaryKeyColumns=[0];row.foreignKeyColumns=[];
+  row.keyAudit=row.attributes.map((_,i)=>i===0?'PK_SOLID':'NONE');
+ }
+ assert.equal(validatePmStructure(doc),true);
+ schema.entries[0].keyAudit[0]='FK_DASHED';
+ assert.equal(validatePmStructure(doc),false,'PK/FK mark mismatch must fail closed');
+ schema.entries[0].keyAudit[0]='PK_SOLID';
+ schema.entries[0].foreignKeyColumns=[0];
+ schema.entries[0].keyAudit[0]='BOTH';
+ assert.equal(validatePmStructure(doc),true,'both marks are supported');
 });
