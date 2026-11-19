@@ -40,6 +40,24 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.deepEqual(schema.entries.map(e=>e.name),['レポート課題','レポート課題出題','評価結果','テスト結果','レポート評価結果']);
  assert.deepEqual(schema.entries.flatMap(e=>e.attributes).filter(a=>/^\[ [セソタチツ] \]$/.test(a)),['[ セ ]','[ ソ ]','[ タ ]','[ チ ]','[ ツ ]']);
 });
+test('IPA pages 9 and 10 have separate expansion and answer-rule summaries while remaining incomplete',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ assert.deepEqual(doc.introductionPages.map(x=>x.sourcePage),[6,7,8,9,10]);
+ const page9=doc.introductionPages[3],page10=doc.introductionPages[4];
+ assert.equal(page9.sourceAudit,'SECTION_SCOPE_CHECKED');
+ assert.equal(page10.sourceAudit,'SECTION_SCOPE_CHECKED');
+ assert.equal(page9.complete,false);
+ assert.equal(page10.complete,false);
+ assert.ok(page9.paragraphs.some(x=>x.includes('学習管理システムの拡充')));
+ assert.ok(page9.paragraphs.some(x=>x.includes('レポート課題')));
+ assert.ok(page9.paragraphs.some(x=>x.includes('提出開始日')));
+ assert.ok(page10.paragraphs.some(x=>x.includes('評価結果')));
+ assert.ok(page10.paragraphs.some(x=>x.includes('第3正規形')));
+ assert.ok(page10.paragraphs.some(x=>x.includes('主キーは実線')));
+ assert.ok(doc.introductionPages.every(x=>x.complete===false));
+ assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
+});
+
 test('IPA page 11 source audit preserves all four question scopes without claiming full transcription',()=>{
  const doc=pmVerifiedStructure['2025:pm1:1'];
  const qs=doc.subquestions;
