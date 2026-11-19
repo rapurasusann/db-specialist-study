@@ -12,7 +12,13 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.deepEqual(doc.materials.map(m=>m.sourcePage),[8,9,10]);
  assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
  assert.ok(doc.introductionPages.every(p=>!p.complete));
- assert.ok(doc.materials.every(m=>m.verifiedStructure===false));
+ assert.deepEqual(doc.materials.map(m=>m.verifiedStructure),[false,false,true]);
+ assert.equal(doc.introductionPages.length,5);
+ assert.deepEqual(doc.introductionPages.map(p=>p.sourcePage),[6,7,8,9,10]);
+ const schema=doc.materials.find(m=>m.id==='fig3');
+ assert.equal(schema.kind,'schema');
+ assert.deepEqual(schema.entries.map(e=>e.name),['レポート課題','レポート課題出題','評価結果','テスト結果','レポート評価結果']);
+ assert.deepEqual(schema.entries.flatMap(e=>e.attributes).filter(a=>/^\\[ [セソタチツ] \\]$/.test(a)),['[ セ ]','[ ソ ]','[ タ ]','[ チ ]','[ ツ ]']);
 });
 test('source is a staged UI, not wired to public pages or legacy storage',()=>{
  assert.equal(typeof createPmSubquestionView,'function');
@@ -25,4 +31,12 @@ test('source is a staged UI, not wired to public pages or legacy storage',()=>{
  assert.ok(!source.includes('innerHTML'));
  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
  assert.ok(!html.includes('src/pm-subquestion-view.mjs'));
+});
+
+test('verified figure 3 is rendered as text, never as a cropped image',()=>{
+ assert.ok(source.includes("mat.kind==='schema'"));
+ assert.ok(source.includes("make('table')"));
+ assert.ok(source.includes("make('span',attribute)"));
+ assert.ok(source.includes("'関係名'"));
+ assert.ok(!source.includes('drawImage('));
 });
