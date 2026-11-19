@@ -133,36 +133,37 @@ export const pmVerifiedStructure=Object.freeze({
      // Approximate tracing of the printed page-8 diagram in normalized coordinates.
      // The figure is deliberately INCOMPLETE. These are not inferred answers.
      boxes:[
-      ['faculty',10,18,106,42],['subject',129,18,106,42],['teacher',266,18,106,42],
-      ['student',388,18,106,42],['content',508,18,106,42],
-      ['department',10,82,106,42],['material',565,76,106,42],['test',676,76,106,42],
-      ['offering',10,171,106,42],['courseReg',266,258,106,42],['lecture',10,298,106,42],
-      ['fixed',42,378,106,42],['online',428,378,106,42],
-      ['inperson',90,438,106,42],['realtime',235,438,106,42],
-      ['ondemand',378,438,106,42],['a',162,526,106,42],
-      ['use',636,378,106,42],['materialUse',572,524,106,42],
-      ['testUse',685,524,106,42],['attendance',468,581,106,42],
-      ['fixedAttendance',235,650,106,42],['ondemandAttendance',345,650,106,42],
-      ['testResult',719,650,106,42]
+      ['faculty',20,18,106,42],['subject',140,18,104,42],['teacher',277,18,105,42],
+      ['student',399,18,104,42],['content',518,18,105,42],
+      ['department',20,84,105,40],['material',574,76,106,42],['test',685,76,107,42],
+      ['offering',20,171,106,40],['courseReg',277,258,105,42],['lecture',20,298,106,42],
+      ['fixed',52,377,106,42],['online',438,377,106,42],
+      ['inperson',100,438,106,42],['realtime',244,438,106,42],
+      ['ondemand',390,438,106,42],['a',173,526,104,41],
+      ['use',646,378,107,42],['materialUse',581,526,106,42],
+      ['testUse',693,526,106,42],['attendance',477,582,105,42],
+      ['fixedAttendance',244,649,106,42],['ondemandAttendance',356,649,106,42],
+      ['testResult',729,649,105,42]
      ],
-     // Endpoint paths follow the seven visibly drawn arrows in the original.
+     // Printed arrows only: department, offering, lecture, blank a, and
+     // the two content-usage destinations. Missing exam relationships stay absent.
      arrows:[
-      [[63,60],[63,82]],
-      [[63,124],[63,171]],
-      [[182,60],[182,135],[83,135],[83,171]],
-      [[63,213],[63,298]],
-      [[143,480],[143,513],[215,513],[215,526]],
-      [[618,118],[618,524]],
-      [[729,118],[729,524]]
+      [[73,60],[73,84]],
+      [[73,124],[73,171]],
+      [[192,60],[192,135],[93,135],[93,171]],
+      [[73,211],[73,298]],
+      [[187,480],[187,513],[225,513],[225,526]],
+      [[626,118],[626,526]],
+      [[776,118],[776,526]]
      ],
-     // Five open triangles and the printed lines to the subtype boxes.
-     // The vertices/connectors can still be refined by visual comparison.
+     // The diagram's five open generalization triangles: two overlap at
+     // realtime lecture. Coordinates are a traced review, not a fidelity claim.
      subtypeGroups:[
-      {parent:[[614,39],[672,39],[672,64]],apex:[672,64],bar:[[618,76],[729,76]],children:[[618,76],[729,76]]},
-      {parent:[[148,399],[195,399],[195,423]],apex:[195,423],bar:[[143,438],[288,438]],children:[[143,438],[288,438]]},
-      {parent:[[428,399],[378,399],[378,423]],apex:[378,423],bar:[[288,438],[431,438]],children:[[288,438],[431,438]]},
-      {parent:[[689,420],[689,443]],apex:[689,443],bar:[[625,524],[738,524]],children:[[625,524],[738,524]]},
-      {parent:[[468,602],[345,602],[345,623]],apex:[345,623],bar:[[288,650],[398,650]],children:[[288,650],[398,650]]}
+      {parent:[[623,39],[683,39],[683,48]],apex:[683,48],bar:[[627,76],[739,76]],children:[[627,76],[739,76]]},
+      {parent:[[158,398],[205,398],[205,406]],apex:[205,406],bar:[[153,438],[297,438]],children:[[153,438],[297,438]]},
+      {parent:[[438,398],[390,398],[390,406]],apex:[390,406],bar:[[297,438],[443,438]],children:[[297,438],[443,438]]},
+      {parent:[[699,420],[699,438]],apex:[699,438],bar:[[634,526],[746,526]],children:[[634,526],[746,526]]},
+      {parent:[[477,603],[353,603],[353,616]],apex:[353,616],bar:[[297,649],[409,649]],children:[[297,649],[409,649]]}
      ],
      blankA:{outer:'a',innerLabel:'a'}
     },
