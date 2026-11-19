@@ -12,7 +12,7 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.deepEqual(doc.materials.map(m=>m.sourcePage),[8,9,10]);
  assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
  assert.ok(doc.introductionPages.every(p=>!p.complete));
- assert.deepEqual(doc.materials.map(m=>m.verifiedStructure),[false,false,false]);
+ assert.deepEqual(doc.materials.map(m=>m.verifiedStructure),[false,false,true]);
  const fig1=doc.materials.find(m=>m.id==='fig1');
  assert.equal(fig1.verifiedStructure,false);
  assert.deepEqual(fig1.edges,[]);
@@ -61,4 +61,20 @@ test('diagram has only reference nodes and no unverified relationships',()=>{
  assert.ok(labels.includes('テスト結果'));
  assert.equal(diagram.edges.length,0);
  assert.equal(diagram.verifiedStructure,false);
+});
+
+test('preview is opt-in, not mounted in production index, and preserves the old progress key',()=>{
+ const preview=readFileSync(new URL('../pm-preview.html',import.meta.url),'utf8');
+ const entry=readFileSync(new URL('../src/pm-preview-entry.mjs',import.meta.url),'utf8');
+ const style=readFileSync(new URL('../src/pm-preview.css',import.meta.url),'utf8');
+ const index=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+ assert.ok(preview.includes('src/pm-preview-entry.mjs'));
+ assert.ok(preview.includes('src/pm-preview.css'));
+ assert.ok(preview.includes('Content-Security-Policy'));
+ assert.ok(entry.includes("const KEY='db-study-progress-v1'"));
+ assert.ok(entry.includes('currentProgress()'));
+ assert.ok(entry.includes('updateSubquestionAnswer('));
+ assert.ok(entry.includes('getSubquestionAnswers('));
+ assert.ok(!index.includes('pm-preview-entry.mjs'));
+ assert.ok(style.includes('focus-visible'));
 });
