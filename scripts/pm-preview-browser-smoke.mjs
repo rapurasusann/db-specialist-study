@@ -111,14 +111,14 @@ try{
    buttons[0].click();
    const fig1={svg:area.querySelectorAll('svg').length,text:area.textContent};
    buttons[2].click();
-   const fig2={svg:area.querySelectorAll('svg').length,table:area.querySelectorAll('table').length,text:area.textContent};
+   const fig2={svg:area.querySelectorAll('svg').length,table:area.querySelectorAll('table').length,text:area.textContent,verifiedPk:area.querySelectorAll('table .pmPrimaryKey').length,foreignKeys:area.querySelectorAll('table .pmForeignKey').length};
    buttons[3].click();
    const fig3={svg:area.querySelectorAll('svg').length,table:area.querySelectorAll('table').length,text:area.textContent};
    return {fig1,fig2,fig3};
   })()`);
   assert.equal(v.fig1.svg,1);assert.match(v.fig1.text,/作業中の再構成図/);
   assert.match(v.fig1.text,/最終照合は未完了/);
-  assert.equal(v.fig2.svg,0);assert.equal(v.fig2.table,1);assert.match(v.fig2.text,/下線は未確認/);assert.match(v.fig2.text,/\[ ア \]/);
+  assert.equal(v.fig2.svg,0);assert.equal(v.fig2.table,1);assert.equal(v.fig2.verifiedPk,5);assert.equal(v.fig2.foreignKeys,0);assert.match(v.fig2.text,/残るキー下線は未確認/);assert.match(v.fig2.text,/\[ ア \]/);
   assert.equal(v.fig3.svg,0);assert.equal(v.fig3.table,0);assert.match(v.fig3.text,/未整備/);
  });
  let failed=0;
