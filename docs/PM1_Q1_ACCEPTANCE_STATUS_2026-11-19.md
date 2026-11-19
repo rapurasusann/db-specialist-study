@@ -45,3 +45,11 @@
 - この追加は `sourceAudit:'SECTION_SCOPE_CHECKED'`（章題と話題の範囲の確認）であり、原文全文確認を意味しない。5ページとも `complete:false`、全体 `PARTIAL_SOURCE_VERIFICATION` を維持。PM-01はOPEN。
 - `tests/pm-structured-view.test.mjs` に9・10ページの構成・未完了フラグ・内容範囲の確認を追加。V8で既存15件＋今回1件 = **16 PASS / 0 FAIL**。正式Node.js・実ブラウザは未実施。
 - 図1～3の逐語・図形・キー下線照合は今回完了していない。
+
+## 2026-11-19 PM-01 原本6ページ節構成の個別照合
+- IPA公式問題冊子のPDFページ6（印字6ページ）を視覚確認。節「1. 学部・学科・学期」(1)～(3)、「2. 教員」(1)～(2)、「3. 学生」(1)～(2)、「4. 科目・開講科目」(1)～(4)、「5. 講義」(1)開始、の構成を原本ページに照合。
+- 5節(1)の講義時間条件は次の7ページまで続く。ページ6の末尾で文章が完結したかのように扱わないため `continuesOnNextPage` を追加。
+- 原本6ページで認識できる条件（大学の年制、学期の月範囲、登録情報、担当教員1人、学科別の並行開講禁止・別学科での開講許容）を要約として補強。
+- `sourceAudit:'SECTION_SCOPE_CHECKED'`、`sectionNumbers`、`sectionItemCounts` で構造確認を明示。全文字単位の照合済みではなく `complete:false` と `PARTIAL_SOURCE_VERIFICATION` を維持。
+- `tests/pm-structured-view.test.mjs` に番号・節内項目数・継続先・主な数値や識別子を固定する1件を追加。既存16件と合わせV8アサーション再実行：**17 PASS / 0 FAIL**。一度は表現差分によって2件失敗したが、記述を修正し再実行して全件PASS。正式なNode.jsテストランナー／実ブラウザは未実施。
+- 公開状態：PM-01 OPEN、午後Ⅰ問1 NO-GO。mainや既存の学習履歴に変更なし。
