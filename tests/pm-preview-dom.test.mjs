@@ -71,8 +71,8 @@ test('interactive PM preview pages, figure auto/manual mode and separate answers
   const figure3Link=walk(mats,n=>n.tag==='a'&&n.textContent.includes('10ページ'))[0];
   assert.ok(figure3Link);
   assert.equal(figure3Link.href,original.source+'#page=10');
-  assert.equal(walk(mats,n=>n.tag==='table').length,0);
-  assert.ok(walk(mats,n=>n.textContent.includes('図・表のテキスト再構成は未整備です')).length);
+  assert.equal(walk(mats,n=>n.tag==='table').length,1);
+  assert.ok(walk(mats,n=>n.textContent.includes('未確認32属性')).length);
   textarea.fire('input','設問2の新しい回答');
   assert.deepEqual(writes,[['s2','設問2の新しい回答']]);
   const selector=walk(root,n=>n.tag==='select')[0];
@@ -132,7 +132,7 @@ test('all four subquestions automatically select their associated source figure'
    const figureTitles=walk(body,n=>n.tag==='h4');
    assert.equal(figureTitles.length,1);
    assert.equal(figureTitles[0].textContent,doc.materials.find(m=>m.id===figId).title);
-   assert.equal(walk(body,n=>n.tag==='table').length,figId==='fig2'?1:0);
+   assert.equal(walk(body,n=>n.tag==='table').length,figId==='fig1'?0:1);
    assert.equal(walk(body,n=>n.tag==='svg').length,figId==='fig1'?1:0);
   }
  }finally{undo()}
