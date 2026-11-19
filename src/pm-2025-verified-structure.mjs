@@ -130,34 +130,39 @@ export const pmVerifiedStructure=Object.freeze({
     // Coordinates use an independent 960x720 SVG canvas; no image is embedded.
     partialSvgSource:{
      sourcePage:8,status:'REVIEW_ONLY',viewBox:'0 0 960 720',
+     // Approximate tracing of the printed page-8 diagram in normalized coordinates.
+     // The figure is deliberately INCOMPLETE. These are not inferred answers.
      boxes:[
-      ['faculty',20,10,106,42],['subject',145,10,106,42],['teacher',290,10,106,42],
-      ['student',425,10,106,42],['content',550,10,106,42],
-      ['department',20,74,106,42],['material',610,69,106,42],['test',725,69,106,42],
-      ['offering',20,163,106,42],['courseReg',290,250,106,42],['lecture',20,291,106,42],
-      ['fixed',60,371,106,42],['online',460,369,106,42],
-      ['inperson',115,431,106,42],['realtime',265,431,106,42],
-      ['ondemand',410,431,106,42],['a',190,519,106,42],
-      ['use',680,369,106,42],['materialUse',610,519,106,42],
-      ['testUse',730,519,106,42],['attendance',505,581,106,42],
-      ['fixedAttendance',265,650,106,42],['ondemandAttendance',380,650,106,42],
-      ['testResult',780,665,106,42]
+      ['faculty',10,18,106,42],['subject',129,18,106,42],['teacher',266,18,106,42],
+      ['student',388,18,106,42],['content',508,18,106,42],
+      ['department',10,82,106,42],['material',565,76,106,42],['test',676,76,106,42],
+      ['offering',10,171,106,42],['courseReg',266,258,106,42],['lecture',10,298,106,42],
+      ['fixed',42,378,106,42],['online',428,378,106,42],
+      ['inperson',90,438,106,42],['realtime',235,438,106,42],
+      ['ondemand',378,438,106,42],['a',162,526,106,42],
+      ['use',636,378,106,42],['materialUse',572,524,106,42],
+      ['testUse',685,524,106,42],['attendance',468,581,106,42],
+      ['fixedAttendance',235,650,106,42],['ondemandAttendance',345,650,106,42],
+      ['testResult',719,650,106,42]
      ],
-     // Reviewed visible arrows. x/y points trace connectors as seen, not inferred.
+     // Endpoint paths follow the seven visibly drawn arrows in the original.
      arrows:[
-      [[73,52],[73,74]],[[73,116],[73,163]],
-      [[198,52],[198,126],[93,126],[93,163]],
-      [[73,205],[73,291]],
-      [[168,473],[168,499],[243,499],[243,519]],
-      [[663,111],[663,519]],[[778,111],[778,519]]
+      [[63,60],[63,82]],
+      [[63,124],[63,171]],
+      [[182,60],[182,135],[83,135],[83,171]],
+      [[63,213],[63,298]],
+      [[143,480],[143,513],[215,513],[215,526]],
+      [[618,118],[618,524]],
+      [[729,118],[729,524]]
      ],
-     // Five printed subtype groups: apex, horizontal bar and downward branches.
+     // Five open triangles and the printed lines to the subtype boxes.
+     // The vertices/connectors can still be refined by visual comparison.
      subtypeGroups:[
-      {parent:[[656,31],[710,31],[710,38]],apex:[710,38],bar:[[663,64],[778,64]],children:[[663,69],[778,69]]},
-      {parent:[[166,390],[212,390],[212,396]],apex:[212,396],bar:[[168,425],[318,425]],children:[[168,431],[318,431]]},
-      {parent:[[460,390],[410,390],[410,396]],apex:[410,396],bar:[[318,425],[463,425]],children:[[318,431],[463,431]]},
-      {parent:[[733,411],[733,435]],apex:[733,435],bar:[[663,461],[783,461]],children:[[663,519],[783,519]]},
-      {parent:[[505,604],[456,604],[456,611]],apex:[456,611],bar:[[318,645],[433,645]],children:[[318,650],[433,650]]}
+      {parent:[[614,39],[672,39],[672,64]],apex:[672,64],bar:[[618,76],[729,76]],children:[[618,76],[729,76]]},
+      {parent:[[148,399],[195,399],[195,423]],apex:[195,423],bar:[[143,438],[288,438]],children:[[143,438],[288,438]]},
+      {parent:[[428,399],[378,399],[378,423]],apex:[378,423],bar:[[288,438],[431,438]],children:[[288,438],[431,438]]},
+      {parent:[[689,420],[689,443]],apex:[689,443],bar:[[625,524],[738,524]],children:[[625,524],[738,524]]},
+      {parent:[[468,602],[345,602],[345,623]],apex:[345,623],bar:[[288,650],[398,650]],children:[[288,650],[398,650]]}
      ],
      blankA:{outer:'a',innerLabel:'a'}
     },
