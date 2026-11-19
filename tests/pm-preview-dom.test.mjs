@@ -88,3 +88,26 @@ test('interactive PM preview pages, figure auto/manual mode and separate answers
   assert.deepEqual(writes,[['s2','設問2の新しい回答'],['s1-1','設問1の新しい回答']]);
  }finally{undo()}
 });
+
+test('failed storage writes are visible per subquestion, and unsaved drafts survive switching',()=>{
+ const undo=setup();
+ try{
+  const failures=[];
+  const root=createPmSubquestionView(pmVerifiedStructure['2025:pm1:1'],{
+   loadAnswers:()=>({'s1-1':'元の回答'}),
+   saveAnswer:(id,value)=>{failures.push([id,value]);return false}
+  });
+  const textarea=walk(root,n=>n.tag==='textarea')[0];
+  const note=walk(root,n=>n.className==='muted'&&n.tag==='p'
+   &&n.textContent.includes('設問ごとに回答'))[0];
+  assert.ok(note);
+  textarea.fire('input','保存されない回答');
+  assert.ok(note.textContent.includes('保存できていません'));
+  byText(root,'button','設問2').fire('click');
+  assert.ok(!note.textContent.includes('保存できていません'));
+  byText(root,'button','設問1 (1)').fire('click');
+  assert.equal(textarea.value,'保存されない回答');
+  assert.ok(note.textContent.includes('保存できていません'));
+  assert.deepEqual(failures,[['s1-1','保存されない回答']]);
+ }finally{undo()}
+});
