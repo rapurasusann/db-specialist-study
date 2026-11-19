@@ -131,11 +131,34 @@ test('all four subquestions automatically select their associated source figure'
    const figureTitles=walk(body,n=>n.tag==='h4');
    assert.equal(figureTitles.length,1);
    assert.equal(figureTitles[0].textContent,doc.materials.find(m=>m.id===figId).title);
-   assert.equal(walk(body,n=>n.tag==='table').length,0);
+   assert.equal(walk(body,n=>n.tag==='table').length,figId==='fig2'?1:0);
    assert.equal(walk(body,n=>n.tag==='svg').length,figId==='fig1'?1:0);
   }
  }finally{undo()}
 });
+test('figure 2 text review shows 24 relations but omits all unaudited key underlines and retains blanks',()=>{
+ const undo=setup();
+ try{
+  const root=createPmSubquestionView(pmVerifiedStructure['2025:pm1:1']);
+  const body=walk(root,n=>n.className==='pmMaterialBody')[0];
+  byText(root,'button','設問1 (3)').fire('click');
+  const table=walk(body,n=>n.tag==='table');
+  assert.equal(table.length,1);
+  assert.equal(walk(table[0],n=>n.tag==='tr').length,25);
+  const warning=walk(body,n=>n.tag==='p'&&n.textContent.includes('主キー・外部キーの下線は未確認'));
+  assert.equal(warning.length,1);
+  const relationNames=walk(table[0],n=>n.tag==='th');
+  assert.ok(relationNames.some(n=>n.textContent==='開講科目'));
+  assert.ok(relationNames.some(n=>n.textContent==='テスト結果'));
+  const text=walk(table[0],n=>n.tag==='td').map(n=>n.textContent).join(' ');
+  assert.ok(text.includes('[ ア ]'));
+  assert.ok(text.includes('[ ス ]'));
+  assert.ok(text.includes('[コンテンツ区分]'));
+  assert.equal(walk(table[0],n=>n.tag==='span').length,0);
+  assert.equal(walk(body,n=>n.tag==='svg').length,0);
+ }finally{undo()}
+});
+
 test('manual figure selection overrides auto, then next subquestion restores auto',()=>{
  const undo=setup();
  try{
