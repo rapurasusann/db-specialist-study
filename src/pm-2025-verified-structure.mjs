@@ -185,11 +185,11 @@ export const pmVerifiedStructure=Object.freeze({
      // The diagram's five open generalization triangles: two overlap at
      // realtime lecture. Coordinates are a traced review, not a fidelity claim.
      subtypeGroups:[
-      {parent:[[623,39],[683,39],[683,48]],apex:[683,48],bar:[[627,62],[739,62]],children:[[627,76],[739,76]]},
-      {parent:[[158,398],[205,398],[205,406]],apex:[205,406],bar:[[153,422],[297,422]],children:[[153,438],[297,438]]},
-      {parent:[[438,398],[390,398],[390,406]],apex:[390,406],bar:[[297,422],[443,422]],children:[[297,438],[443,438]]},
-      {parent:[[699,420],[699,438]],apex:[699,438],bar:[[634,460],[746,460]],children:[[634,526],[746,526]]},
-      {parent:[[477,603],[353,603],[353,616]],apex:[353,616],bar:[[297,645],[409,645]],children:[[297,649],[409,649]]}
+      {parentId:'content',childIds:['material','test'],sourcePage:8,parent:[[623,39],[683,39],[683,48]],apex:[683,48],bar:[[627,62],[739,62]],children:[[627,76],[739,76]]},
+      {parentId:'fixed',childIds:['inperson','realtime'],sourcePage:8,parent:[[158,398],[205,398],[205,406]],apex:[205,406],bar:[[153,422],[297,422]],children:[[153,438],[297,438]]},
+      {parentId:'online',childIds:['realtime','ondemand'],sourcePage:8,parent:[[438,398],[390,398],[390,406]],apex:[390,406],bar:[[297,422],[443,422]],children:[[297,438],[443,438]]},
+      {parentId:'use',childIds:['materialUse','testUse'],sourcePage:8,parent:[[699,420],[699,438]],apex:[699,438],bar:[[634,460],[746,460]],children:[[634,526],[746,526]]},
+      {parentId:'attendance',childIds:['fixedAttendance','ondemandAttendance'],sourcePage:8,parent:[[477,603],[353,603],[353,616]],apex:[353,616],bar:[[297,645],[409,645]],children:[[297,649],[409,649]]}
      ],
      blankA:{outer:'a',innerLabel:'a'}
     },
