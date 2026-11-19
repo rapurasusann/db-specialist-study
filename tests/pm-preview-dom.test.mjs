@@ -101,6 +101,8 @@ test('failed storage writes are visible per subquestion, and unsaved drafts surv
   const note=walk(root,n=>n.className==='muted'&&n.tag==='p'
    &&n.textContent.includes('設問ごとに回答'))[0];
   assert.ok(note);
+  assert.equal(note.attrs.role,'status');
+  assert.equal(note.attrs['aria-live'],'polite');
   textarea.fire('input','保存されない回答');
   assert.ok(note.textContent.includes('保存できていません'));
   byText(root,'button','設問2').fire('click');
