@@ -86,6 +86,7 @@ test('preview is opt-in, not mounted in production index, and preserves the old 
  assert.ok(preview.includes('src/pm-preview-entry.mjs'));
  assert.ok(preview.includes('src/pm-preview.css'));
  assert.ok(preview.includes('Content-Security-Policy'));
+ assert.ok(preview.includes('図1～図3は再構成・照合中のため表示していません'));
  assert.ok(entry.includes("const KEY='db-study-progress-v1'"));
  assert.ok(entry.includes('currentProgress()'));
  assert.ok(entry.includes('updateSubquestionAnswer('));
@@ -178,4 +179,12 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
  assert.equal(validatePmStructure(doc),false,'source page 10 must not certify a page 9 diagram');
  fig2.entries[0].auditSourcePages=[9];
  assert.equal(validatePmStructure(doc),true,'only structurally complete source-backed figure 2 can pass');
+});
+
+test('preview warning never advertises incomplete figures as usable materials',()=>{
+ const html=readFileSync(new URL('../pm-preview.html',import.meta.url),'utf8');
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ assert.ok(doc.materials.every(mat=>mat.verifiedStructure===false));
+ assert.ok(html.includes('図1～図3は再構成・照合中のため表示していません'));
+ assert.ok(!html.includes('原本に照合できた図3のみテキストで表示します'));
 });
