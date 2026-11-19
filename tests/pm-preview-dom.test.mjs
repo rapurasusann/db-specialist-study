@@ -59,12 +59,12 @@ test('interactive PM preview pages, figure auto/manual mode and separate answers
   const textarea=walk(root,n=>n.tag==='textarea')[0];
   assert.equal(textarea.value,'以前の回答');
   let mats=walk(root,n=>n.className==='pmMaterialBody')[0];
-  assert.ok(walk(mats,n=>n.textContent.includes('図・表のテキスト再構成は未整備です')).length);
+  assert.ok(walk(mats,n=>n.textContent.includes('作業中の再構成図')).length);
   const figure1Link=walk(mats,n=>n.tag==='a'&&n.textContent.includes('8ページ'))[0];
   assert.ok(figure1Link);
   assert.equal(figure1Link.href,original.source+'#page=8');
   assert.equal(figure1Link.rel,'noopener noreferrer');
-  assert.equal(walk(mats,n=>n.tag==='svg').length,0);
+  assert.equal(walk(mats,n=>n.tag==='svg').length,1);
   byText(root,'button','設問2').fire('click');
   assert.equal(textarea.value,'別の回答');
   const figure3Link=walk(mats,n=>n.tag==='a'&&n.textContent.includes('10ページ'))[0];
@@ -76,8 +76,8 @@ test('interactive PM preview pages, figure auto/manual mode and separate answers
   assert.deepEqual(writes,[['s2','設問2の新しい回答']]);
   const selector=walk(root,n=>n.tag==='select')[0];
   selector.fire('change','fig1');
-  assert.equal(walk(mats,n=>n.tag==='svg').length,0);
-  assert.ok(walk(mats,n=>n.textContent.includes('未整備です')).length);
+  assert.equal(walk(mats,n=>n.tag==='svg').length,1);
+  assert.ok(walk(mats,n=>n.textContent.includes('作業中の再構成図')).length);
   byText(root,'button','設問1 (1)').fire('click');
   assert.equal(selector.value,'auto');
   assert.equal(textarea.value,'以前の回答');
@@ -86,6 +86,30 @@ test('interactive PM preview pages, figure auto/manual mode and separate answers
   byText(root,'button','設問1 (1)').fire('click');
   assert.equal(textarea.value,'設問1の新しい回答');
   assert.deepEqual(writes,[['s2','設問2の新しい回答'],['s1-1','設問1の新しい回答']]);
+ }finally{undo()}
+});
+
+test('figure 1 review SVG contains 24 text boxes, its original blank and a visible review warning',()=>{
+ const undo=setup();
+ try{
+  const doc=pmVerifiedStructure['2025:pm1:1'];
+  const fig=doc.materials.find(m=>m.id==='fig1');
+  assert.equal(fig.verifiedStructure,false);
+  assert.equal(fig.partialSvgSource.status,'REVIEW_ONLY');
+  assert.equal(fig.partialSvgSource.boxes.length,24);
+  assert.equal(fig.partialSvgSource.arrows.length,7);
+  assert.equal(fig.partialSvgSource.subtypeGroups.length,5);
+  const root=createPmSubquestionView(doc);
+  const mat=walk(root,n=>n.className==='pmMaterialBody')[0];
+  const svg=walk(mat,n=>n.tag==='svg');
+  assert.equal(svg.length,1);
+  assert.equal(svg[0].attrs.role,'img');
+  assert.ok(svg[0].attrs['aria-label'].includes('作業中'));
+  assert.equal(walk(svg[0],n=>n.tag==='rect').length,25); // 24 boxes and nested blank a
+  assert.equal(walk(svg[0],n=>n.tag==='text').filter(n=>n.textContent==='a').length,1);
+  assert.ok(walk(mat,n=>n.textContent.includes('最終照合は未完了')).length);
+  byText(root,'button','設問1 (3)').fire('click');
+  assert.equal(walk(mat,n=>n.tag==='svg').length,0,'figure 2 stays gated');
  }finally{undo()}
 });
 
@@ -107,7 +131,8 @@ test('all four subquestions automatically select their associated source figure'
    const figureTitles=walk(body,n=>n.tag==='h4');
    assert.equal(figureTitles.length,1);
    assert.equal(figureTitles[0].textContent,doc.materials.find(m=>m.id===figId).title);
-   assert.equal(walk(body,n=>n.tag==='table'||n.tag==='svg').length,0);
+   assert.equal(walk(body,n=>n.tag==='table').length,0);
+   assert.equal(walk(body,n=>n.tag==='svg').length,figId==='fig1'?1:0);
   }
  }finally{undo()}
 });
