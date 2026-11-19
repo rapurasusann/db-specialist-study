@@ -118,7 +118,7 @@ try{
   })()`);
   assert.equal(v.fig1.svg,1);assert.match(v.fig1.text,/作業中の再構成図/);
   assert.match(v.fig1.text,/最終照合は未完了/);
-  assert.equal(v.fig2.svg,0);assert.equal(v.fig2.table,1);assert.equal(v.fig2.verifiedPk,6);assert.equal(v.fig2.foreignKeys,1);assert.match(v.fig2.text,/残るキー下線は未確認/);assert.match(v.fig2.text,/\[ ア \]/);
+  assert.equal(v.fig2.svg,0);assert.equal(v.fig2.table,1);assert.equal(v.fig2.verifiedPk,6);assert.equal(v.fig2.foreignKeys,1);assert.match(v.fig2.text,/未確認93属性のキー下線は省略/);assert.match(v.fig2.text,/\[ ア \]/);
   assert.equal(v.fig3.svg,0);assert.equal(v.fig3.table,0);assert.match(v.fig3.text,/未整備/);
  });
  let failed=0;
