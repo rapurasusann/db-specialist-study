@@ -89,6 +89,45 @@ test('interactive PM preview pages, figure auto/manual mode and separate answers
  }finally{undo()}
 });
 
+test('subquestion selection keeps button identity and keyboard focus target',()=>{
+ const undo=setup();
+ try{
+  const root=createPmSubquestionView(pmVerifiedStructure['2025:pm1:1']);
+  const nav=walk(root,n=>n.className==='pmQuestionNav')[0];
+  const buttons=walk(nav,n=>n.tag==='button');
+  assert.equal(buttons.length,4);
+  const second=byText(root,'button','設問1 (2)');
+  assert.ok(second);
+  second.fire('click');
+  assert.equal(byText(root,'button','設問1 (2)'),second);
+  assert.equal(second.attrs['aria-pressed'],'true');
+  assert.equal(buttons[0].attrs['aria-pressed'],'false');
+  byText(root,'button','設問2').fire('click');
+  assert.equal(byText(root,'button','設問1 (2)'),second);
+  assert.equal(second.attrs['aria-pressed'],'false');
+  assert.equal(byText(root,'button','設問2').attrs['aria-pressed'],'true');
+ }finally{undo()}
+});
+test('page navigation is bounded at first and last source page',()=>{
+ const undo=setup();
+ try{
+  const root=createPmSubquestionView(pmVerifiedStructure['2025:pm1:1']);
+  const prev=byText(root,'button','前ページ'),next=byText(root,'button','次ページ');
+  const position=walk(root,n=>n.tag==='span'&&n.textContent==='1 / 5')[0];
+  assert.equal(prev.disabled,true);
+  prev.fire('click');
+  assert.equal(position.textContent,'1 / 5');
+  for(let i=0;i<12;i++)next.fire('click');
+  assert.equal(position.textContent,'5 / 5');
+  assert.equal(next.disabled,true);
+  next.fire('click');
+  assert.equal(position.textContent,'5 / 5');
+  prev.fire('click');
+  assert.equal(position.textContent,'4 / 5');
+  assert.equal(next.disabled,false);
+ }finally{undo()}
+});
+
 test('failed storage writes are visible per subquestion, and unsaved drafts survive switching',()=>{
  const undo=setup();
  try{
