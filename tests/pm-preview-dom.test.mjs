@@ -146,6 +146,8 @@ test('figure 2 text review shows 24 relations but omits all unaudited key underl
   const table=walk(body,n=>n.tag==='table');
   assert.equal(table.length,1);
   assert.equal(walk(table[0],n=>n.tag==='tr').length,25);
+  assert.ok(walk(body,n=>n.tag==='p'&&n.textContent.includes('未確認93属性')).length);
+  assert.ok(walk(table[0],n=>n.tag==='span'&&n.textContent==='（未確認0）').length>=1);
   const warning=walk(body,n=>n.tag==='p'&&n.textContent.includes('確認済みの主キー6属性は実線、外部キー1属性は破線'));
   assert.equal(warning.length,1);
   const relationNames=walk(table[0],n=>n.tag==='th');
