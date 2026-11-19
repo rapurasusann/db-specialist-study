@@ -40,6 +40,23 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.deepEqual(schema.entries.map(e=>e.name),['レポート課題','レポート課題出題','評価結果','テスト結果','レポート評価結果']);
  assert.deepEqual(schema.entries.flatMap(e=>e.attributes).filter(a=>/^\[ [セソタチツ] \]$/.test(a)),['[ セ ]','[ ソ ]','[ タ ]','[ チ ]','[ ツ ]']);
 });
+test('IPA page 11 source audit preserves all four question scopes without claiming full transcription',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const qs=doc.subquestions;
+ assert.equal(qs.length,4);
+ assert.deepEqual(qs.map(q=>q.sourcePage),[11,11,11,11]);
+ assert.ok(qs.every(q=>q.sourceQuestionAudit==='QUESTION_SCOPE_CHECKED'));
+ assert.ok(qs.every(q=>q.textStatus==='PARAPHRASE'));
+ assert.deepEqual(qs.map(q=>q.answerFormat),[
+  'ENTITY_NAME','DIAGRAM_RELATIONSHIPS','ATTRIBUTE_NAMES','ATTRIBUTE_NAMES'
+ ]);
+ assert.deepEqual(qs.map(q=>q.answerBlankTokens),[
+  ['a'],[],'アイウエオカキクケコサシス'.split(''),'セソタチツ'.split('')
+ ]);
+ assert.deepEqual(qs.map(q=>q.materialIds),[['fig1'],['fig1'],['fig2'],['fig3']]);
+ assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
+});
+
 test('source is a staged UI, not wired to public pages or legacy storage',()=>{
  assert.equal(typeof createPmSubquestionView,'function');
  assert.ok(source.includes('前ページ'));
