@@ -128,6 +128,27 @@ test('page navigation is bounded at first and last source page',()=>{
  }finally{undo()}
 });
 
+test('a partially verified problem always labels subquestion text as a paraphrase',()=>{
+ const undo=setup();
+ try{
+  const doc=structuredClone(pmVerifiedStructure['2025:pm1:1']);
+  // A mistaken individual transcription flag must not override the document status.
+  doc.subquestions[0].textStatus='VERIFIED_TRANSCRIPTION';
+  const root=createPmSubquestionView(doc);
+  const notice=walk(root,n=>n.className==='muted'&&n.tag==='p'&&n.textContent.includes('この設問文は原文の全文転記ではなく'))[0];
+  assert.ok(notice,'partial source still needs the paraphrase warning');
+  byText(root,'button','設問1 (2)').fire('click');
+  assert.ok(notice.textContent.includes('原文の全文転記ではなく'));
+  const full=structuredClone(doc);
+  full.status='FULL_SOURCE_VERIFICATION';
+  const fullyVerified=createPmSubquestionView(full);
+  const fullNotice=walk(fullyVerified,n=>n.className==='muted'&&n.tag==='p'&&n.textContent==='')[0];
+  assert.ok(fullNotice,'fully verified question may omit the warning');
+  byText(fullyVerified,'button','設問1 (2)').fire('click');
+  assert.ok(walk(fullyVerified,n=>n.tag==='p'&&n.textContent.includes('この設問文は原文の全文転記ではなく')).length);
+ }finally{undo()}
+});
+
 test('a flipped figure 2 display flag cannot expose incomplete source data',()=>{
  const undo=setup();
  try{
