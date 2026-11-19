@@ -313,7 +313,7 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
  assert.deepEqual(fig2.entries[5].attributes.slice(-1),['[ ア ]']);
  assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='PK_SOLID').length,5);
  assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='NONE').length,28);
- assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='UNVERIFIED').length,96);
+ assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='UNVERIFIED').length,95);
  assert.deepEqual(fig2.entries[0].keyAudit,['PK_SOLID','NONE']);
  assert.deepEqual(fig2.entries[2].keyAudit,['PK_SOLID','NONE','NONE','NONE','NONE','NONE','NONE']);
  assert.deepEqual(fig2.entries[6].keyAudit.slice(5),['NONE','NONE','NONE','NONE','NONE']);
@@ -323,7 +323,7 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
   assert.deepEqual(e.primaryKeyColumns,[0]);
   assert.equal(e.keyAudit[0],'PK_SOLID');
   assert.equal(e.auditSourcePages[0],9);
-  assert.ok(e.keyAudit.slice(1).every(k=>k==='NONE'||k==='UNVERIFIED'));
+  assert.ok(e.keyAudit.slice(1).every(k=>k==='NONE'||k==='UNVERIFIED'||k==='FK_DASHED'));
  }
  assert.ok(fig2.entries.slice(5).every(e=>e.primaryKeyColumns.length===0));
  assert.deepEqual(fig2.entries[5].primaryKeyCandidates,[0,1,2,3]);
@@ -333,7 +333,11 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
  for(const e of fig2.entries.slice(20,23))assert.deepEqual(e.primaryKeyCandidates,[0,1,2,3,4,5]);
  assert.deepEqual(fig2.entries[23].primaryKeyCandidates,[0,1,2,3,4,5,6]);
  assert.equal(fig2.entries.flatMap(e=>e.primaryKeyCandidates).length,80);
- assert.ok(fig2.entries.every(e=>e.foreignKeyColumns.length===0));
+ assert.deepEqual(fig2.entries[1].foreignKeyColumns,[2]);
+ assert.equal(fig2.entries[1].attributes[2],'学部コード');
+ assert.equal(fig2.entries[1].keyAudit[2],'FK_DASHED');
+ assert.equal(fig2.entries[1].auditSourcePages[2],9);
+ assert.ok(fig2.entries.every((e,i)=>i===1||e.foreignKeyColumns.length===0));
  assert.ok(fig2.entries.flatMap(e=>e.keyAudit).includes('UNVERIFIED'));
  assert.ok(fig2.entries.every(e=>e.keyAudit.every((status,i)=>
    status!=='PK_SOLID'||e.auditSourcePages[i]===9)));
@@ -390,7 +394,7 @@ test('preview warning never advertises incomplete figures as usable materials',(
  const doc=pmVerifiedStructure['2025:pm1:1'];
  assert.ok(doc.materials.every(mat=>mat.verifiedStructure===false));
  assert.ok(html.includes('図1は作業中のSVG再構成図として表示します'));
- assert.ok(html.includes('図2は確認用の表として表示し、原本で確認済みの主キー5属性のみ実線の下線を表示します'));
+ assert.ok(html.includes('図2は確認用の表として表示し、原本で確認済みの主キー5属性を実線、外部キー1属性を破線で表示します'));
  assert.ok(html.includes('図3は引き続き再構成・照合中のため表示していません'));
  assert.ok(!html.includes('原本に照合できた図3のみテキストで表示します'));
 });
