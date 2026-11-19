@@ -114,6 +114,23 @@ test('figure 1 review SVG contains 24 text boxes, its original blank and a visib
  }finally{undo()}
 });
 
+test('Figure 1 review rejects an inheritance symbol with an unverified source page',()=>{
+ const undo=setup();
+ try{
+  const original=pmVerifiedStructure['2025:pm1:1'];
+  const approved=createPmSubquestionView(original);
+  const approvedSvg=walk(approved,n=>n.tag==='svg')[0];
+  const approvedLines=walk(approvedSvg,n=>n.tag==='polyline').length;
+  const draft=structuredClone(original);
+  draft.materials[0].partialSvgSource.subtypeGroups[0].sourcePage=99;
+  const altered=createPmSubquestionView(draft);
+  const alteredSvg=walk(altered,n=>n.tag==='svg')[0];
+  const alteredLines=walk(alteredSvg,n=>n.tag==='polyline').length;
+  assert.equal(approvedLines-alteredLines,6);
+  assert.equal(draft.materials[0].verifiedStructure,false);
+ }finally{undo()}
+});
+
 test('numbered extension sections and selected question group appear without claiming verbatim source',()=>{
  const undo=setup();
  try{
