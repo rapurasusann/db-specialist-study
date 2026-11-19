@@ -33,27 +33,33 @@ export const pmVerifiedStructure=Object.freeze({
    {id:'fig1',title:'図1 現状の学習管理システムの概念データモデル（未完成）',sourcePage:8,kind:'svg',verifiedStructure:false,
     // Nodes and drawn relationships are transcribed from the official printed figure,
     // intentionally leaving the missing relationships missing, as in the exam.
+    // Layout approximate to the IPA p.8 illustration. NOT eligible for user
+    // display until all geometry, arrowheads, roles and inheritance are audited.
     nodes:[
-     {id:'faculty',label:'学部',x:18,y:18},{id:'department',label:'学科',x:18,y:82},
-     {id:'subject',label:'科目',x:166,y:18},{id:'offering',label:'開講科目',x:18,y:153},
-     {id:'lecture',label:'講義',x:18,y:235},{id:'teacher',label:'教員',x:310,y:18},
-     {id:'student',label:'学生',x:456,y:18},
-     {id:'content',label:'デジタル\\nコンテンツ',x:625,y:18},
-     {id:'material',label:'教材',x:610,y:85},{id:'test',label:'テスト問題',x:770,y:85},
-     {id:'enrollment',label:'科目履修登録',x:310,y:220},
-     {id:'fixed',label:'時間固定講義',x:55,y:325},
-     {id:'online',label:'オンライン\\n講義',x:445,y:300},
-     {id:'inperson',label:'対面講義',x:130,y:405},
-     {id:'realtime',label:'リアルタイム\\n型講義',x:285,y:405},
-     {id:'ondemand',label:'オンデマンド\\n型講義',x:445,y:405},
-     {id:'a',label:'a',x:200,y:485,unfinished:true},
-     {id:'use',label:'コンテンツ\\n使用',x:715,y:315},
-     {id:'materialUse',label:'教材使用',x:620,y:485},
-     {id:'testUse',label:'テスト問題\\n使用',x:790,y:485},
-     {id:'attendance',label:'講義受講',x:600,y:565},
-     {id:'fixedAttendance',label:'時間固定講義\\n受講',x:325,y:635},
-     {id:'ondemandAttendance',label:'オンデマンド\\n型講義受講',x:480,y:635},
-     {id:'testResult',label:'テスト結果',x:800,y:635}
+     {id:'faculty',label:'学部',x:20,y:10},
+     {id:'subject',label:'科目',x:165,y:10},
+     {id:'teacher',label:'教員',x:310,y:10},
+     {id:'student',label:'学生',x:455,y:10},
+     {id:'content',label:'デジタル\\nコンテンツ',x:600,y:10},
+     {id:'department',label:'学科',x:20,y:75},
+     {id:'material',label:'教材',x:600,y:75},
+     {id:'test',label:'テスト問題',x:755,y:75},
+     {id:'offering',label:'開講科目',x:20,y:140},
+     {id:'courseReg',label:'科目履修登録',x:310,y:225},
+     {id:'lecture',label:'講義',x:20,y:225},
+     {id:'fixed',label:'時間固定講義',x:35,y:305},
+     {id:'online',label:'オンライン\\n講義',x:455,y:305},
+     {id:'inperson',label:'対面講義',x:85,y:395},
+     {id:'realtime',label:'リアルタイム\\n型講義',x:215,y:395},
+     {id:'ondemand',label:'オンデマンド\\n型講義',x:455,y:395},
+     {id:'a',label:'a',x:160,y:478,unfinished:true},
+     {id:'use',label:'コンテンツ\\n使用',x:685,y:320},
+     {id:'materialUse',label:'教材使用',x:610,y:480},
+     {id:'testUse',label:'テスト問題\\n使用',x:780,y:480},
+     {id:'attendance',label:'講義受講',x:550,y:535},
+     {id:'fixedAttendance',label:'時間固定講義\\n受講',x:340,y:605},
+     {id:'ondemandAttendance',label:'オンデマンド\\n型講義受講',x:475,y:605},
+     {id:'testResult',label:'テスト結果',x:780,y:605}
     ],
     // Relationships, inheritance and layout are intentionally withheld until
     // every endpoint and inheritance marker is visually verified from page 8.
@@ -71,10 +77,10 @@ export const pmVerifiedStructure=Object.freeze({
    ]}
   ],
   subquestions:[
-   {id:'s1-1',label:'設問1 (1)',text:'図1中の「a」に入れる適切なエンティティタイプ名を答えよ。',materialIds:['fig1'],sourcePage:11},
-   {id:'s1-2',label:'設問1 (2)',text:'図1は未完成である。欠落しているリレーションシップを補って図を完成させよ。',materialIds:['fig1'],sourcePage:11},
-   {id:'s1-3',label:'設問1 (3)',text:'図2中の「ア」～「ス」に入れる一つ又は複数の適切な属性名を補って関係スキーマを完成させよ。',materialIds:['fig2'],sourcePage:11},
-   {id:'s2',label:'設問2',text:'図3中の「セ」～「ツ」に入れる一つ又は複数の適切な属性名を補って関係スキーマを完成させよ。',materialIds:['fig3'],sourcePage:11}
+   {id:'s1-1',label:'設問1 (1)',text:'図1の空欄aに当てはまるエンティティタイプ名を答える。',textStatus:'PARAPHRASE',materialIds:['fig1'],sourcePage:11},
+   {id:'s1-2',label:'設問1 (2)',text:'図1に不足しているリレーションシップを補って完成させる。',textStatus:'PARAPHRASE',materialIds:['fig1'],sourcePage:11},
+   {id:'s1-3',label:'設問1 (3)',text:'図2の空欄ア～スに属性名を補い、関係スキーマを完成させる。',textStatus:'PARAPHRASE',materialIds:['fig2'],sourcePage:11},
+   {id:'s2',label:'設問2',text:'図3の空欄セ～ツに属性名を補い、関係スキーマを完成させる。',textStatus:'PARAPHRASE',materialIds:['fig3'],sourcePage:11}
   ]
  }
 });
