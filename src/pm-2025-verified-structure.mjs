@@ -118,14 +118,20 @@ export const pmVerifiedStructure=Object.freeze({
      {name:"オンデマンド型講義受講",attributes:["学科コード","科目ID","年度","学期","講義番号","学籍番号","[ ス ]"]},
      {name:"テスト結果",attributes:["学科コード","科目ID","年度","学期","講義番号","コンテンツID","学籍番号","得点","評価年月日"]}
     ].map((row,index)=>{
-      // IPA p.9: only the first-attribute solid underlines of the first five
-      // relations have been visually confirmed here. Other marks are NOT inferred.
-      const auditedFirstPrimary=index<5;
+      // The following solid underlines are legible in the original IPA p.9
+      // figure. Everything else, especially dashed FK marks, stays UNVERIFIED.
+      const auditedSolidIndices={
+       0:[0],1:[0],2:[0],3:[0],4:[0],
+       5:[0,1,2,3],6:[0,1,2,3,4],
+       7:[0,1,2,3,4],8:[0,1,2,3,4],9:[0,1,2,3,4],
+       10:[0,1,2,3,4],11:[0,1,2,3,4],
+       13:[0],14:[0],15:[0]
+      };
+      const primaryKeyColumns=auditedSolidIndices[index]||[];
       return {...row,
-       primaryKeyColumns:auditedFirstPrimary?[0]:[],
-       foreignKeyColumns:[],
-       keyAudit:row.attributes.map((_,i)=>auditedFirstPrimary&&i===0?'PK_SOLID':'UNVERIFIED'),
-       auditSourcePages:row.attributes.map((_,i)=>auditedFirstPrimary&&i===0?9:null)
+       primaryKeyColumns,foreignKeyColumns:[],
+       keyAudit:row.attributes.map((_,i)=>primaryKeyColumns.includes(i)?'PK_SOLID':'UNVERIFIED'),
+       auditSourcePages:row.attributes.map((_,i)=>primaryKeyColumns.includes(i)?9:null)
       };
     })
    },
