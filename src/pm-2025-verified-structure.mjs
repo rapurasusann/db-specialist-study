@@ -69,11 +69,11 @@ export const pmVerifiedStructure=Object.freeze({
    },
    {id:'fig2',title:'図2 現状の学習管理システムの関係スキーマ',sourcePage:9,kind:'table',verifiedStructure:false},
    {id:'fig3',title:'図3 追加及び変更する関係スキーマ（未完成）',sourcePage:10,kind:'schema',verifiedStructure:false,keyNotationVerified:false,sourceChecked:'IPA 2025 PM1 booklet page 10 (PDF page index 9)',entries:[
-    {name:'レポート課題',attributes:['コンテンツID','[ セ ]'],keyColumns:[0],primaryKeyColumns:[0],foreignKeyColumns:[],keyAudit:['PK_SOLID','NONE']},
-    {name:'レポート課題出題',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','[ ソ ]'],keyColumns:[0,1,2,3,4,5]},
-    {name:'評価結果',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','学籍番号','評価結果区分','[ タ ]'],keyColumns:[0,1,2,3,4,5,6]},
-    {name:'テスト結果',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','学籍番号','[ チ ]'],keyColumns:[0,1,2,3,4,5,6]},
-    {name:'レポート評価結果',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','学籍番号','[ ツ ]'],keyColumns:[0,1,2,3,4,5,6]}
+    {name:'レポート課題',attributes:['コンテンツID','[ セ ]'],primaryKeyColumns:[0],foreignKeyColumns:[],keyAudit:['PK_SOLID','NONE'],auditSourcePages:[10,10]},
+    {name:'レポート課題出題',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','[ ソ ]'],primaryKeyColumns:[],foreignKeyColumns:[],keyAudit:['UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED'],auditSourcePages:[null,null,null,null,null,null,null]},
+    {name:'評価結果',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','学籍番号','評価結果区分','[ タ ]'],primaryKeyColumns:[],foreignKeyColumns:[],keyAudit:['UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED'],auditSourcePages:[null,null,null,null,null,null,null,null,null]},
+    {name:'テスト結果',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','学籍番号','[ チ ]'],primaryKeyColumns:[],foreignKeyColumns:[],keyAudit:['UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED'],auditSourcePages:[null,null,null,null,null,null,null,null]},
+    {name:'レポート評価結果',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','学籍番号','[ ツ ]'],primaryKeyColumns:[],foreignKeyColumns:[],keyAudit:['UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED'],auditSourcePages:[null,null,null,null,null,null,null,null]}
    ]}
   ],
   subquestions:[
@@ -96,6 +96,8 @@ export function validatePmStructure(doc){
         ||e.primaryKeyColumns.some(i=>!Number.isInteger(i)||i<0||i>=e.attributes.length)
         ||e.foreignKeyColumns.some(i=>!Number.isInteger(i)||i<0||i>=e.attributes.length)
         ||!Array.isArray(e.keyAudit)||e.keyAudit.length!==e.attributes.length
+        ||!Array.isArray(e.auditSourcePages)||e.auditSourcePages.length!==e.attributes.length
+        ||e.auditSourcePages.some(p=>p!==10)
         ||e.keyAudit.some((value,i)=>{
           const pk=e.primaryKeyColumns.includes(i),fk=e.foreignKeyColumns.includes(i);
           const expected=pk&&fk?'BOTH':pk?'PK_SOLID':fk?'FK_DASHED':'NONE';
