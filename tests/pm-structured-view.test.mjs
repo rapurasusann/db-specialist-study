@@ -401,6 +401,6 @@ test('preview warning never advertises incomplete figures as usable materials',(
  assert.ok(doc.materials.every(mat=>mat.verifiedStructure===false));
  assert.ok(html.includes('図1は作業中のSVG再構成図として表示します'));
  assert.ok(html.includes('図2は確認用の表として表示し、原本で確認済みの主キー6属性を実線、外部キー1属性を破線で表示します'));
- assert.ok(html.includes('図3は引き続き再構成・照合中のため表示していません'));
+ assert.ok(html.includes('図3は5関係の属性を確認用の表として表示しますが、未確認の主キー・外部キー下線は表示しません'));
  assert.ok(!html.includes('原本に照合できた図3のみテキストで表示します'));
 });
