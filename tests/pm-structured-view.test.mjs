@@ -45,3 +45,20 @@ test('verified figure 3 is rendered as text, never as a cropped image',()=>{
  assert.ok(source.includes("'関係名'"));
  assert.ok(!source.includes('drawImage('));
 });
+
+test('unverified drawing cannot be made verified by flipping a flag',()=>{
+ const doc=structuredClone(pmVerifiedStructure['2025:pm1:1']);
+ doc.materials[0].verifiedStructure=true;
+ assert.equal(validatePmStructure(doc),false);
+ doc.materials[0].verifiedStructure=false;
+ assert.equal(validatePmStructure(doc),true);
+});
+test('diagram has only reference nodes and no unverified relationships',()=>{
+ const diagram=pmVerifiedStructure['2025:pm1:1'].materials[0];
+ const labels=diagram.nodes.map(n=>n.label.replace('\\n',''));
+ assert.equal(new Set(diagram.nodes.map(n=>n.id)).size,24);
+ assert.ok(labels.includes('科目履修登録'));
+ assert.ok(labels.includes('テスト結果'));
+ assert.equal(diagram.edges.length,0);
+ assert.equal(diagram.verifiedStructure,false);
+});
