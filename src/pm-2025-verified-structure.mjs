@@ -216,12 +216,14 @@ export const pmVerifiedStructure=Object.freeze({
        23:[0,1,2,3,4,5,6]
       };
       // No-underline attributes visually legible on IPA booklet page 9.
+      // In コンテンツ使用, [コンテンツ区分] is bracketed text, not an answer blank,
+      // and has no underline in the printed source. It must not become an FK.
       // Deliberately exclude blank tokens, reference-column dashed lines
       // and any ambiguous combined solid/dashed key mark.
       const auditedNoneIndices={
        0:[1],1:[1],2:[1,2,3,4,5,6],3:[1,2],4:[1,2],
        5:[4,5],6:[5,6,7,8,9],13:[1,2,3,4],14:[1],15:[1],
-       20:[6],23:[7,8]
+       16:[6],20:[6],23:[7,8]
       };
       // Only the five single-column PK marks have independent, unambiguous
       // evidence of solid underlining. Composite marks can have dashed FK
