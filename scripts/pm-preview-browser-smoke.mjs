@@ -97,7 +97,7 @@ try{
   })()`);
   assert.equal(v.first,'TEST-111');assert.ok(v.stored?.includes('TEST-222'));
   await cdp.send('Page.reload',{ignoreCache:true});
-  await until(()=>cdp.eval("document.querySelectorAll('.pmQuestionNav button').length===4"));
+  await until(()=>cdp.eval("document.querySelectorAll('.pmQuestionNav button').length===4 && performance.getEntriesByType('navigation')[0]?.type==='reload'"));
   const restored=await cdp.eval(`(()=>{
    const buttons=[...document.querySelectorAll('.pmQuestionNav button')],ta=document.querySelector('.pmQuestionAnswer textarea');
    buttons[0].click();const first=ta.value;buttons[1].click();return {first,second:ta.value}
