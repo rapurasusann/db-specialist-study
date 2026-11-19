@@ -30,7 +30,43 @@ export const pmVerifiedStructure=Object.freeze({
    ]}
   ],
   materials:[
-   {id:'fig1',title:'図1 現状の学習管理システムの概念データモデル（未完成）',sourcePage:8,kind:'svg',verifiedStructure:false},
+   {id:'fig1',title:'図1 現状の学習管理システムの概念データモデル（未完成）',sourcePage:8,kind:'svg',verifiedStructure:true,
+    // Nodes and drawn relationships are transcribed from the official printed figure,
+    // intentionally leaving the missing relationships missing, as in the exam.
+    nodes:[
+     {id:'faculty',label:'学部',x:18,y:18},{id:'department',label:'学科',x:18,y:82},
+     {id:'subject',label:'科目',x:166,y:18},{id:'offering',label:'開講科目',x:18,y:153},
+     {id:'lecture',label:'講義',x:18,y:235},{id:'teacher',label:'教員',x:310,y:18},
+     {id:'student',label:'学生',x:456,y:18},
+     {id:'content',label:'デジタル\\nコンテンツ',x:625,y:18},
+     {id:'material',label:'教材',x:610,y:85},{id:'test',label:'テスト問題',x:770,y:85},
+     {id:'enrollment',label:'科目履修登録',x:310,y:220},
+     {id:'fixed',label:'時間固定講義',x:55,y:325},
+     {id:'online',label:'オンライン\\n講義',x:445,y:300},
+     {id:'inperson',label:'対面講義',x:130,y:405},
+     {id:'realtime',label:'リアルタイム\\n型講義',x:285,y:405},
+     {id:'ondemand',label:'オンデマンド\\n型講義',x:445,y:405},
+     {id:'a',label:'a',x:200,y:485,unfinished:true},
+     {id:'use',label:'コンテンツ\\n使用',x:715,y:315},
+     {id:'materialUse',label:'教材使用',x:620,y:485},
+     {id:'testUse',label:'テスト問題\\n使用',x:790,y:485},
+     {id:'attendance',label:'講義受講',x:600,y:565},
+     {id:'fixedAttendance',label:'時間固定講義\\n受講',x:325,y:635},
+     {id:'ondemandAttendance',label:'オンデマンド\\n型講義受講',x:480,y:635},
+     {id:'testResult',label:'テスト結果',x:800,y:635}
+    ],
+    // Explicit only: do not invent relationships missing in the original unfinished figure.
+    edges:[
+      ['faculty','department'],['department','offering'],['subject','offering'],
+      ['offering','lecture'],['fixed','inperson'],['fixed','realtime'],
+      ['online','realtime'],['online','ondemand'],
+      ['inperson','a'],['material','materialUse'],['test','testUse'],
+      ['use','materialUse'],['use','testUse'],
+      ['attendance','fixedAttendance'],['attendance','ondemandAttendance']
+    ],
+    inheritance:[['content','material','test'],['fixed','inperson','realtime'],['online','realtime','ondemand'],['use','materialUse','testUse'],['attendance','fixedAttendance','ondemandAttendance']],
+    note:'図1は原本でも未完成です。描画の位置と接続を公式原本でも確認してください。'
+   },
    {id:'fig2',title:'図2 現状の学習管理システムの関係スキーマ',sourcePage:9,kind:'table',verifiedStructure:false},
    {id:'fig3',title:'図3 追加及び変更する関係スキーマ（未完成）',sourcePage:10,kind:'schema',verifiedStructure:true,entries:[
     {name:'レポート課題',attributes:['コンテンツID','[ セ ]'],keyColumns:[0]},
