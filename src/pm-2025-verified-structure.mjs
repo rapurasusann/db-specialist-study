@@ -119,8 +119,8 @@ export const pmVerifiedStructure=Object.freeze({
      {name:"オンデマンド型講義受講",attributes:["学科コード","科目ID","年度","学期","講義番号","学籍番号","[ ス ]"]},
      {name:"テスト結果",attributes:["学科コード","科目ID","年度","学期","講義番号","コンテンツID","学籍番号","得点","評価年月日"]}
     ].map((row,index)=>{
-      // The following solid underlines are legible in the original IPA p.9
-      // figure. Everything else, especially dashed FK marks, stays UNVERIFIED.
+      // Provisional candidate marks from the earlier draft. These must not be
+      // treated as confirmed solid-only marks until solid/dashed overlap is checked.
       const auditedSolidIndices={
        0:[0],1:[0],2:[0],3:[0],4:[0],
        5:[0,1,2,3],6:[0,1,2,3,4],
@@ -139,12 +139,19 @@ export const pmVerifiedStructure=Object.freeze({
        5:[4,5],6:[5,6,7,8,9],13:[1,2,3,4],14:[1],15:[1],
        20:[6],23:[7,8]
       };
-      const primaryKeyColumns=auditedSolidIndices[index]||[];
+      // Only the five single-column PK marks have independent, unambiguous
+      // evidence of solid underlining. Composite marks can have dashed FK
+      // strokes as well: prior "PK_SOLID" labels are retained as candidates,
+      // not falsely recorded as a complete per-attribute audit.
+      const confirmedPrimary=index<5?[0]:[];
+      const compositePrimaryCandidates=auditedSolidIndices[index]||[];
       const noUnderline=auditedNoneIndices[index]||[];
       return {...row,
-       primaryKeyColumns,foreignKeyColumns:[],
-       keyAudit:row.attributes.map((_,i)=>primaryKeyColumns.includes(i)?'PK_SOLID':noUnderline.includes(i)?'NONE':'UNVERIFIED'),
-       auditSourcePages:row.attributes.map((_,i)=>primaryKeyColumns.includes(i)||noUnderline.includes(i)?9:null)
+       primaryKeyColumns:confirmedPrimary,
+       primaryKeyCandidates:compositePrimaryCandidates.filter(i=>!confirmedPrimary.includes(i)),
+       foreignKeyColumns:[],
+       keyAudit:row.attributes.map((_,i)=>confirmedPrimary.includes(i)?'PK_SOLID':noUnderline.includes(i)?'NONE':'UNVERIFIED'),
+       auditSourcePages:row.attributes.map((_,i)=>confirmedPrimary.includes(i)||noUnderline.includes(i)?9:null)
       };
     })
    },
