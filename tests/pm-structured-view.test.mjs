@@ -170,7 +170,7 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
  assert.equal(fig2.kind,'schema');
  assert.equal(fig2.sourcePage,9);
  assert.equal(fig2.verifiedStructure,false);
- assert.equal(fig2.transcriptionStage,'FULL_TEXT_KEYS_UNVERIFIED');
+ assert.equal(fig2.transcriptionStage,'TEXT_DRAFT_PARTIAL_KEY_AUDIT');
  assert.equal(fig2.entries.length,24);
  assert.deepEqual(fig2.entries.slice(0,7).map(e=>e.name),['学部','学科','科目','教員','学生','開講科目','講義']);
  assert.deepEqual(fig2.entries.slice(7).map(e=>e.name),[
@@ -185,14 +185,21 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
  assert.ok(fig2.entries.some(row=>row.name==='コンテンツ使用'&&row.attributes.includes('[コンテンツ区分]')));
  assert.deepEqual(fig2.entries[0].attributes,['学部コード','学部名']);
  assert.deepEqual(fig2.entries[5].attributes.slice(-1),['[ ア ]']);
- assert.ok(fig2.entries.every(e=>e.keyAudit.every(k=>k==='UNVERIFIED')));
- assert.ok(fig2.entries.every(e=>e.auditSourcePages.every(p=>p===null)));
- assert.ok(fig2.entries.every(e=>e.primaryKeyColumns.length===0));
+ assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='PK_SOLID').length,5);
+ assert.equal(fig2.entries.flatMap(e=>e.keyAudit).filter(k=>k==='UNVERIFIED').length,124);
+ for(const e of fig2.entries.slice(0,5)){
+  assert.deepEqual(e.primaryKeyColumns,[0]);
+  assert.equal(e.keyAudit[0],'PK_SOLID');
+  assert.equal(e.auditSourcePages[0],9);
+  assert.ok(e.keyAudit.slice(1).every(k=>k==='UNVERIFIED'));
+ }
+ assert.ok(fig2.entries.slice(5).every(e=>e.primaryKeyColumns.length===0));
+ assert.ok(fig2.entries.every(e=>e.foreignKeyColumns.length===0));
  assert.equal(fig2.verifiedStructure,false);
  fig2.verifiedStructure=true;
  fig2.keyNotationVerified=true;
  assert.equal(validatePmStructure(doc),false,'unverified figure 2 may never be marked complete');
- assert.equal(validatePmStructure(doc),false,'partial rows have no audited keys');
+ assert.equal(validatePmStructure(doc),false,'incomplete key evidence must fail closed');
  fig2.entries=[{name:'検証専用',attributes:['属性'],
   primaryKeyColumns:[0],foreignKeyColumns:[],keyAudit:['PK_SOLID'],auditSourcePages:[10]}];
  assert.equal(validatePmStructure(doc),false,'source page 10 must not certify a page 9 diagram');
