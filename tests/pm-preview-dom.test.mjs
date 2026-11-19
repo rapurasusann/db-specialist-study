@@ -72,7 +72,7 @@ test('interactive PM preview pages, figure auto/manual mode and separate answers
   assert.ok(figure3Link);
   assert.equal(figure3Link.href,original.source+'#page=10');
   assert.equal(walk(mats,n=>n.tag==='table').length,1);
-  assert.ok(walk(mats,n=>n.textContent.includes('未確認32属性')).length);
+  assert.ok(walk(mats,n=>n.textContent.includes('未確認27属性')).length);
   textarea.fire('input','設問2の新しい回答');
   assert.deepEqual(writes,[['s2','設問2の新しい回答']]);
   const selector=walk(root,n=>n.tag==='select')[0];
