@@ -10,17 +10,24 @@ export const pmVerifiedStructure=Object.freeze({
   introductionPages:[
    {id:'intro-1',sourcePage:6,complete:false,paragraphs:[
     '大学の学習管理システムの概念データモデリング',
-    '現状の学習管理の概要：学部・学科・学期、教員、学生、科目、開講科目、講義について説明している。',
-    'T大学には複数の学部と学科があり、学生は年度ごとに半期または通期の科目履修登録を行う。',
-    '科目には開講科目があり、講義は講義番号で区別される。'
+    '【現状の学習管理の概要】（原本の要約・全文転記ではありません）',
+    '学部・学科・学期：学部と学科はそれぞれコードで識別する。学期には前期・後期・通期がある。',
+    '教員・学生：教員番号、学籍番号で識別する。学生は年度ごとに学期区分を選んで履修登録する。',
+    '科目・開講科目：科目IDを使用し、学科ごとに開講年度・学期・担当教員・曜日・時限などを登録する。',
+    '講義：半期は約15回、通期は約30回で、1回の講義は90分とする。'
    ]},
    {id:'intro-2',sourcePage:7,complete:false,paragraphs:[
-    '講義には対面、リアルタイム、オンデマンドの開講形態がある。',
-    '講義に使うデジタルコンテンツには教材とテスト問題がある。'
+    '【講義の開講形態】（原本の要約）',
+    '講義は対面型、リアルタイム型、オンデマンド型に分類する。同一講義で複数形態を組み合わせない。',
+    'リアルタイム型とオンデマンド型がオンライン講義、リアルタイム型と対面型が時間固定講義である。',
+    '【デジタルコンテンツ】（原本の要約）',
+    '教材とテスト問題をコンテンツ区分で分類する。教材は文書・画像・動画があり、テスト問題には解答期限を設定する。'
    ]},
    {id:'intro-3',sourcePage:8,complete:false,paragraphs:[
-    '講義受講とテスト結果、成績の記録について説明している。',
-    '図1は現状の学習管理システムの概念データモデル（未完成）である。'
+    '【講義受講とテスト結果、成績の記録】（原本の要約）',
+    '時間固定講義では遅刻・早退の有無を記録し、オンデマンド型講義では受講完了日時を記録する。',
+    'テスト問題の得点・評価年月日を記録し、全講義終了後に出席状況やテストの採点結果をもとに成績を登録する。',
+    '図1は概念データモデル（未完成）である。原本の空欄や欠けている関係線は問題の一部であり、補完しない。'
    ]},
    {id:'intro-4',sourcePage:9,complete:false,paragraphs:[
     '図2の関係スキーマと関連する説明については全文照合が未完了。'
@@ -65,6 +72,18 @@ export const pmVerifiedStructure=Object.freeze({
     // every endpoint and inheritance marker is visually verified from page 8.
     edges:[],
     inheritance:[],
+    // Visually checked visible connectors in the official booklet on p.8.
+    // This subset is NOT the whole figure; keep verifiedStructure=false until
+    // all arrows, subtype triangles, positions and missing relationships are audited.
+    checkedVisibleConnectors:[
+      {from:'faculty',to:'department',type:'arrow',sourcePage:8},
+      {from:'department',to:'offering',type:'arrow',sourcePage:8},
+      {from:'subject',to:'offering',type:'arrow',sourcePage:8},
+      {from:'offering',to:'lecture',type:'arrow',sourcePage:8},
+      {from:'inperson',to:'a',type:'arrow',sourcePage:8},
+      {from:'material',to:'materialUse',type:'arrow',sourcePage:8},
+      {from:'test',to:'testUse',type:'arrow',sourcePage:8}
+    ],
     note:'図1は原本でも未完成です。現時点では名称の索引のみ登録済みで、接続・配置は未検証のため学習画面には表示しません。'
    },
    {id:'fig2',title:'図2 現状の学習管理システムの関係スキーマ',sourcePage:9,kind:'table',verifiedStructure:false},
