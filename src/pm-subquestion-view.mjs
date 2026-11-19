@@ -75,9 +75,53 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
     for(const row of mat.rows||[]){const tr=table.appendChild(make('tr'));for(const val of row)tr.append(make('td',String(val)))}
    }else if(mat.kind==='code'){
     box.append(make('pre',mat.text||''));
-   }else if(mat.kind==='svg'&&typeof mat.render==='function'){
-    // SVG creation is supplied by vetted app code, never raw HTML or text imported from the source.
-    mat.render(box);
+   }else if(mat.kind==='svg'&&Array.isArray(mat.nodes)){
+    // Safe native SVG elements: no injected HTML, image files or event handlers.
+    const ns='http://www.w3.org/2000/svg';
+    const svg=document.createElementNS(ns,'svg');
+    svg.setAttribute('viewBox','0 0 960 700');
+    svg.setAttribute('role','img');
+    svg.setAttribute('aria-label',mat.title+'。'+(mat.note||''));
+    svg.style.maxWidth='100%';svg.style.height='auto';
+    svg.style.minWidth='640px';
+    const byId=new Map(mat.nodes.map(n=>[n.id,n]));
+    const parentPairs=new Set((mat.inheritance||[]).flatMap(g=>g.slice(1).map(c=>g[0]+'|'+c)));
+    function line(x1,y1,x2,y2){
+     const el=document.createElementNS(ns,'line');
+     for(const [k,v] of Object.entries({x1,y1,x2,y2}))el.setAttribute(k,String(v));
+     el.setAttribute('stroke','currentColor');el.setAttribute('stroke-width','1.5');
+     svg.appendChild(el);
+    }
+    for(const [a,b] of mat.edges||[]){
+     const p=byId.get(a),q=byId.get(b);
+     if(!p||!q)continue;
+     const startX=p.x+52,startY=p.y+36,endX=q.x+52,endY=q.y;
+     line(startX,startY,endX,endY);
+     if(!parentPairs.has(a+'|'+b)){
+      // Relationships are directional in this simplified diagram.
+      const arrow=document.createElementNS(ns,'circle');
+      arrow.setAttribute('cx',String(endX));arrow.setAttribute('cy',String(endY));
+      arrow.setAttribute('r','2.5');arrow.setAttribute('fill','currentColor');svg.appendChild(arrow);
+     }
+    }
+    for(const node of mat.nodes){
+     const rect=document.createElementNS(ns,'rect');
+     rect.setAttribute('x',String(node.x));rect.setAttribute('y',String(node.y));
+     rect.setAttribute('width','106');rect.setAttribute('height','42');
+     rect.setAttribute('fill','none');rect.setAttribute('stroke','currentColor');
+     svg.appendChild(rect);
+     const lines=String(node.label).split('\\n');
+     lines.forEach((lineText,i)=>{
+      const txt=document.createElementNS(ns,'text');
+      txt.setAttribute('x',String(node.x+53));
+      txt.setAttribute('y',String(node.y+(lines.length===1?25:17)+i*15));
+      txt.setAttribute('font-size','13');txt.setAttribute('text-anchor','middle');
+      txt.setAttribute('fill','currentColor');txt.textContent=lineText;svg.appendChild(txt);
+     });
+    }
+    const viewport=box.appendChild(make('div',undefined,'pmSvgViewport'));
+    viewport.style.overflowX='auto';viewport.appendChild(svg);
+    if(mat.note)box.append(make('p',mat.note,'muted'));
    }else box.append(make('p','対応する図の表示形式を確認中です。','muted'));
   }
  }
