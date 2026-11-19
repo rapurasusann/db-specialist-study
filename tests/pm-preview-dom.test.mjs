@@ -46,8 +46,14 @@ test('interactive PM preview pages, figure auto/manual mode and separate answers
   const page=walk(root,n=>n.tag==='span'&&n.textContent==='1 / 5')[0];
   assert.ok(page);
   assert.ok(intro.children.some(n=>n.textContent==='原本 6 ページ'));
+  const introLink=walk(root,n=>n.tag==='a'&&n.textContent==='原本の6ページを開く')[0];
+  assert.ok(introLink);
+  assert.equal(introLink.href,original.source+'#page=6');
+  assert.equal(introLink.rel,'noopener noreferrer');
   byText(root,'button','次ページ').fire('click');
   assert.ok(intro.children.some(n=>n.textContent==='原本 7 ページ'));
+  assert.equal(introLink.href,original.source+'#page=7');
+  assert.equal(introLink.textContent,'原本の7ページを開く');
   byText(root,'button','前ページ').fire('click');
   assert.ok(intro.children.some(n=>n.textContent==='原本 6 ページ'));
   const textarea=walk(root,n=>n.tag==='textarea')[0];
