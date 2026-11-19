@@ -87,16 +87,24 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
    if(mat.id==='fig2'&&mat.verifiedStructure===false&&
       mat.transcriptionStage==='TEXT_DRAFT_PARTIAL_KEY_AUDIT'&&
       mat.sourceTranscriptionVerified===false&&mat.keyNotationVerified===false){
-    box.append(make('p','作業中の関係スキーマ（属性名と並びの確認用）。主キー・外部キーの下線は未確認のため表示しません。空欄は未回答です。','muted'));
+    box.append(make('p','作業中の関係スキーマです。原本9ページで確認済みの主キー5属性だけ実線の下線を表示します。残るキー下線は未確認のため省略します。空欄は未回答です。','muted'));
     const table=box.appendChild(make('table'));
     table.className='pmFig2ReviewTable';
     const head=table.appendChild(make('tr'));
     head.append(make('th','関係名'));
-    head.append(make('th','属性（キー下線は省略）'));
+    head.append(make('th','属性（確認済みの主キーだけ実線）'));
     for(const row of mat.entries||[]){
      const tr=table.appendChild(make('tr'));
      tr.append(make('th',row.name));
-     tr.append(make('td',row.attributes.join('、')));
+     const cell=tr.appendChild(make('td'));
+     row.attributes.forEach((attribute,i)=>{
+      if(i)cell.appendChild(document.createTextNode('、'));
+      const mark=cell.appendChild(make('span',attribute));
+      // Figure 2 is unfinished: only independently audited source-page-9
+      // solid PK marks may be drawn. Candidate keys are never promoted.
+      if(row.keyAudit?.[i]==='PK_SOLID'&&row.auditSourcePages?.[i]===9&&
+         row.primaryKeyColumns?.includes(i))mark.classList.add('pmPrimaryKey');
+     });
     }
     continue;
    }
