@@ -67,7 +67,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
      entry.attributes.forEach((attribute,i)=>{
       if(i)cell.append(document.createTextNode('、'));
       const name=cell.appendChild(make('span',attribute));
-      if(entry.keyColumns?.includes(i))name.style.textDecoration='underline';
+      if(entry.keyColumns?.includes(i))name.className='pmKeyAttribute';
      });
     }
    }else if(mat.kind==='table'){
@@ -83,8 +83,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
     svg.setAttribute('viewBox','0 0 960 700');
     svg.setAttribute('role','img');
     svg.setAttribute('aria-label',mat.title+'。'+(mat.note||''));
-    svg.style.maxWidth='100%';svg.style.height='auto';
-    svg.style.minWidth='640px';
+    svg.classList.add('pmModelSvg');
     const byId=new Map(mat.nodes.map(n=>[n.id,n]));
     const parentPairs=new Set((mat.inheritance||[]).flatMap(g=>g.slice(1).map(c=>g[0]+'|'+c)));
     function line(x1,y1,x2,y2){
@@ -121,7 +120,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
      });
     }
     const viewport=box.appendChild(make('div',undefined,'pmSvgViewport'));
-    viewport.style.overflowX='auto';viewport.appendChild(svg);
+    viewport.appendChild(svg);
     if(mat.note)box.append(make('p',mat.note,'muted'));
    }else box.append(make('p','対応する図の表示形式を確認中です。','muted'));
   }
