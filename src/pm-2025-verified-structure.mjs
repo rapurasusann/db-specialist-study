@@ -89,6 +89,7 @@ export const pmVerifiedStructure=Object.freeze({
    {id:'fig2',title:'図2 現状の学習管理システムの関係スキーマ（未完成）',sourcePage:9,kind:'schema',verifiedStructure:false,keyNotationVerified:false,
     sourceChecked:'IPA 2025 PM1 booklet page 9 (PDF page index 8): relation names and attribute strings transcribed; key underlines not yet fully audited',
     transcriptionStage:'TEXT_DRAFT_PARTIAL_KEY_AUDIT',
+    sourceTranscriptionVerified:false, // Must be explicitly approved after a full source-by-source comparison.
     // Figure 2 data only: never display until key classification and blanks are audited.
     // The literal [コンテンツ区分] is ordinary optional notation, not an answer blank.
     // The entity "a" and blank tokens are left unresolved exactly as in the exam.
@@ -163,6 +164,7 @@ export function validatePmStructure(doc){
  // key-notation checks with one artificial or incomplete schema entry.
  const fig2=doc.materials.find(m=>m.id==='fig2');
  if(fig2?.verifiedStructure){
+  if(fig2.sourceTranscriptionVerified!==true)return false;
   const entries=fig2.entries;
   if(!Array.isArray(entries)||entries.length!==24||
      entries.reduce((n,e)=>n+(Array.isArray(e.attributes)?e.attributes.length:0),0)!==129)return false;
