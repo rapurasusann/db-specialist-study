@@ -55,17 +55,11 @@ export const pmVerifiedStructure=Object.freeze({
      {id:'ondemandAttendance',label:'オンデマンド\\n型講義受講',x:480,y:635},
      {id:'testResult',label:'テスト結果',x:800,y:635}
     ],
-    // Explicit only: do not invent relationships missing in the original unfinished figure.
-    edges:[
-      ['faculty','department'],['department','offering'],['subject','offering'],
-      ['offering','lecture'],['fixed','inperson'],['fixed','realtime'],
-      ['online','realtime'],['online','ondemand'],
-      ['inperson','a'],['material','materialUse'],['test','testUse'],
-      ['use','materialUse'],['use','testUse'],
-      ['attendance','fixedAttendance'],['attendance','ondemandAttendance']
-    ],
-    inheritance:[['content','material','test'],['fixed','inperson','realtime'],['online','realtime','ondemand'],['use','materialUse','testUse'],['attendance','fixedAttendance','ondemandAttendance']],
-    note:'図1は原本でも未完成です。描画の位置と接続を公式原本でも確認してください。'
+    // Relationships, inheritance and layout are intentionally withheld until
+    // every endpoint and inheritance marker is visually verified from page 8.
+    edges:[],
+    inheritance:[],
+    note:'図1は原本でも未完成です。現時点では名称の索引のみ登録済みで、接続・配置は未検証のため学習画面には表示しません。'
    },
    {id:'fig2',title:'図2 現状の学習管理システムの関係スキーマ',sourcePage:9,kind:'table',verifiedStructure:false},
    {id:'fig3',title:'図3 追加及び変更する関係スキーマ（未完成）',sourcePage:10,kind:'schema',verifiedStructure:true,entries:[
@@ -77,7 +71,7 @@ export const pmVerifiedStructure=Object.freeze({
    ]}
   ],
   subquestions:[
-   {id:'s1-1',label:'設問1 (1)',text:'図1中の「a」に入る適切なエンティティタイプ名を答えよ。',materialIds:['fig1'],sourcePage:11},
+   {id:'s1-1',label:'設問1 (1)',text:'図1中の「a」に入れる適切なエンティティタイプ名を答えよ。',materialIds:['fig1'],sourcePage:11},
    {id:'s1-2',label:'設問1 (2)',text:'図1は未完成である。欠落しているリレーションシップを補って図を完成させよ。',materialIds:['fig1'],sourcePage:11},
    {id:'s1-3',label:'設問1 (3)',text:'図2中の「ア」～「ス」に入れる一つ又は複数の適切な属性名を補って関係スキーマを完成させよ。',materialIds:['fig2'],sourcePage:11},
    {id:'s2',label:'設問2',text:'図3中の「セ」～「ツ」に入れる一つ又は複数の適切な属性名を補って関係スキーマを完成させよ。',materialIds:['fig3'],sourcePage:11}
