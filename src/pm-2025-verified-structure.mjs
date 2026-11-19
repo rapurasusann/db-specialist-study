@@ -282,13 +282,13 @@ export const pmVerifiedStructure=Object.freeze({
   ],
   subquestions:[
    {id:'s1-1',label:'設問1 (1)',text:'図1の空欄aに適切なエンティティタイプ名を記入する。',textStatus:'PARAPHRASE',materialIds:['fig1'],sourcePage:11,
-    sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',answerFormat:'ENTITY_NAME',answerBlankTokens:['a']},
+    sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',relatedIntroPages:[8],answerFormat:'ENTITY_NAME',answerBlankTokens:['a']},
    {id:'s1-2',label:'設問1 (2)',text:'図1に不足しているリレーションシップを補って完成させる。',textStatus:'PARAPHRASE',materialIds:['fig1'],sourcePage:11,
-    sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',answerFormat:'DIAGRAM_RELATIONSHIPS',answerBlankTokens:[]},
+    sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',relatedIntroPages:[8],answerFormat:'DIAGRAM_RELATIONSHIPS',answerBlankTokens:[]},
    {id:'s1-3',label:'設問1 (3)',text:'図2の空欄ア～スについて、一つまたは複数の適切な属性名を記入し、関係スキーマを完成させる。',textStatus:'PARAPHRASE',materialIds:['fig2'],sourcePage:11,
-    sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',answerFormat:'ATTRIBUTE_NAMES',answerBlankTokens:'アイウエオカキクケコサシス'.split('')},
+    sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',relatedIntroPages:[8,9],answerFormat:'ATTRIBUTE_NAMES',answerBlankTokens:'アイウエオカキクケコサシス'.split('')},
    {id:'s2',label:'設問2',text:'図3の空欄セ～ツについて、一つまたは複数の適切な属性名を記入し、関係スキーマを完成させる。',textStatus:'PARAPHRASE',materialIds:['fig3'],sourcePage:11,
-    sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',answerFormat:'ATTRIBUTE_NAMES',answerBlankTokens:'セソタチツ'.split('')}
+    sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',relatedIntroPages:[9,10],answerFormat:'ATTRIBUTE_NAMES',answerBlankTokens:'セソタチツ'.split('')}
   ]
  }
 });
