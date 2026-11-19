@@ -83,3 +83,21 @@ test('saved answer restores on a fresh preview initialization',async()=>{
  assert.equal(second.textarea.value,'再表示する回答');
  assert.equal(second.writes.length,0);
 });
+
+test('malformed JSON must not be overwritten by a new answer',async()=>{
+ const initial='{broken';
+ const ui=await preview(initial,'malformed-json');
+ assert.ok(ui.textarea);
+ ui.input('回答');
+ assert.equal(ui.writes.length,0);
+ assert.equal(ui.stored(),initial);
+ assert.match(ui.status.textContent,/保存できませんでした/);
+});
+test('array-shaped legacy question record must not be overwritten',async()=>{
+ const initial=JSON.stringify({'2025:pm1:1':[],'2025:pm1:2':{written:'保存済み'}});
+ const ui=await preview(initial,'array-record');
+ ui.input('回答');
+ assert.equal(ui.writes.length,0);
+ assert.equal(ui.stored(),initial);
+ assert.match(ui.status.textContent,/保存できませんでした/);
+});
