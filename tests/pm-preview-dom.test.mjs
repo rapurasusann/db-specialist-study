@@ -134,6 +134,25 @@ test('numbered extension sections and selected question group appear without cla
  }finally{undo()}
 });
 
+test('pages 6 and 7 retain their source-numbered conditions and question blanks',()=>{
+ const undo=setup();
+ try{
+  const root=createPmSubquestionView(pmVerifiedStructure['2025:pm1:1']);
+  const intro=walk(root,n=>n.className==='pmIntroText')[0];
+  assert.equal(walk(intro,n=>n.tag==='h4'&&n.textContent.startsWith('【1. 学部')).length,1);
+  assert.equal(walk(intro,n=>n.tag==='p'&&n.textContent.startsWith('(4) 一つの学科')).length,1);
+  byText(root,'button','次ページ').fire('click');
+  assert.ok(walk(intro,n=>n.tag==='h4'&&n.textContent.includes('デジタルコンテンツ')).length);
+  assert.ok(walk(intro,n=>n.tag==='p'&&n.textContent.includes('補助教員')).length);
+  byText(root,'button','設問1 (3)').fire('click');
+  const question=walk(root,n=>n.className==='pmQuestionText')[0];
+  assert.ok(walk(question,n=>n.tag==='p'&&n.textContent.includes('一つまたは複数')).length);
+  assert.ok(walk(question,n=>n.tag==='p'&&n.textContent.includes('全文転記ではなく')).length);
+  byText(root,'button','設問2').fire('click');
+  assert.ok(walk(question,n=>n.tag==='p'&&n.textContent.includes('一つまたは複数')).length);
+ }finally{undo()}
+});
+
 test('all four subquestions automatically select their associated source figure',()=>{
  const undo=setup();
  try{
