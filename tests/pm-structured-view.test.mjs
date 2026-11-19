@@ -47,15 +47,17 @@ test('figure 1 traced positions keep original diagram structure and incomplete e
  assert.equal(trace.sourcePage,8);
  assert.deepEqual(trace.boxes.map(b=>b[0]),fig.nodes.map(n=>n.id));
  const boxes=new Map(trace.boxes.map(b=>[b[0],b]));
- assert.deepEqual(boxes.get('faculty').slice(1),[10,18,106,42]);
- assert.deepEqual(boxes.get('lecture').slice(1),[10,298,106,42]);
- assert.deepEqual(boxes.get('materialUse').slice(1),[572,524,106,42]);
- assert.deepEqual(boxes.get('testResult').slice(1),[719,650,106,42]);
- assert.deepEqual(trace.arrows[0],[[63,60],[63,82]]);
- assert.deepEqual(trace.arrows[2],[[182,60],[182,135],[83,135],[83,171]]);
- assert.deepEqual(trace.arrows[4].at(-1),[215,526]);
+ assert.deepEqual(boxes.get('faculty').slice(1),[20,18,106,42]);
+ assert.deepEqual(boxes.get('lecture').slice(1),[20,298,106,42]);
+ assert.deepEqual(boxes.get('materialUse').slice(1),[581,526,106,42]);
+ assert.deepEqual(boxes.get('testResult').slice(1),[729,649,105,42]);
+ assert.deepEqual(trace.arrows[0],[[73,60],[73,84]]);
+ assert.deepEqual(trace.arrows[2],[[192,60],[192,135],[93,135],[93,171]]);
+ assert.deepEqual(trace.arrows[4].at(-1),[225,526]);
  assert.equal(trace.arrows.length,7);
  assert.equal(trace.subtypeGroups.length,5);
+ assert.deepEqual(trace.subtypeGroups.map(g=>g.bar[0][1]),[62,422,422,460,645]);
+ assert.ok(trace.subtypeGroups.every(g=>g.children.every(c=>c[1]>g.bar[0][1])));
  for(const line of trace.arrows){
   assert.ok(line.length>=2);
   assert.ok(line.every(p=>p.length===2&&p.every(v=>Number.isFinite(v)&&v>=0&&v<=960)));
