@@ -111,3 +111,30 @@ test('failed storage writes are visible per subquestion, and unsaved drafts surv
   assert.deepEqual(failures,[['s1-1','保存されない回答']]);
  }finally{undo()}
 });
+
+test('retry unsaved answer succeeds without retyping, and only the selected answer is retried',()=>{
+ const undo=setup();
+ try{
+  let available=false;
+  const calls=[];
+  const root=createPmSubquestionView(pmVerifiedStructure['2025:pm1:1'],{
+   loadAnswers:()=>({'s1-1':'元の回答'}),
+   saveAnswer:(id,value)=>{calls.push([id,value]);return available}
+  });
+  const textarea=walk(root,n=>n.tag==='textarea')[0];
+  const retry=byText(root,'button','再保存');
+  assert.ok(retry);
+  assert.equal(retry.hidden,true);
+  textarea.fire('input','再保存対象');
+  assert.equal(retry.hidden,false);
+  byText(root,'button','設問2').fire('click');
+  assert.equal(retry.hidden,true);
+  byText(root,'button','設問1 (1)').fire('click');
+  assert.equal(retry.hidden,false);
+  available=true;
+  retry.fire('click');
+  assert.equal(retry.hidden,true);
+  assert.equal(textarea.value,'再保存対象');
+  assert.deepEqual(calls,[['s1-1','再保存対象'],['s1-1','再保存対象']]);
+ }finally{undo()}
+});
