@@ -87,12 +87,12 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
    if(mat.id==='fig2'&&mat.verifiedStructure===false&&
       mat.transcriptionStage==='TEXT_DRAFT_PARTIAL_KEY_AUDIT'&&
       mat.sourceTranscriptionVerified===false&&mat.keyNotationVerified===false){
-    box.append(make('p','作業中の関係スキーマです。原本9ページで確認済みの主キー5属性だけ実線の下線を表示します。残るキー下線は未確認のため省略します。空欄は未回答です。','muted'));
+    box.append(make('p','作業中の関係スキーマです。原本9ページで確認済みの主キー5属性は実線、外部キー1属性は破線で表示します。残るキー下線は未確認のため省略します。空欄は未回答です。','muted'));
     const table=box.appendChild(make('table'));
     table.className='pmFig2ReviewTable';
     const head=table.appendChild(make('tr'));
     head.append(make('th','関係名'));
-    head.append(make('th','属性（確認済みの主キーだけ実線）'));
+    head.append(make('th','属性（確認済みのキーだけ下線表示）'));
     for(const row of mat.entries||[]){
      const tr=table.appendChild(make('tr'));
      tr.append(make('th',row.name));
@@ -102,8 +102,12 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
       const mark=cell.appendChild(make('span',attribute));
       // Figure 2 is unfinished: only independently audited source-page-9
       // solid PK marks may be drawn. Candidate keys are never promoted.
-      if(row.keyAudit?.[i]==='PK_SOLID'&&row.auditSourcePages?.[i]===9&&
-         row.primaryKeyColumns?.includes(i))mark.classList.add('pmPrimaryKey');
+      if(row.auditSourcePages?.[i]===9){
+       if(row.keyAudit?.[i]==='PK_SOLID'&&row.primaryKeyColumns?.includes(i))
+        mark.classList.add('pmPrimaryKey');
+       if(row.keyAudit?.[i]==='FK_DASHED'&&row.foreignKeyColumns?.includes(i))
+        mark.classList.add('pmForeignKey');
+      }
      });
     }
     continue;
