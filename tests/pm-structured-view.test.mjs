@@ -18,7 +18,7 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  const schema=doc.materials.find(m=>m.id==='fig3');
  assert.equal(schema.kind,'schema');
  assert.deepEqual(schema.entries.map(e=>e.name),['レポート課題','レポート課題出題','評価結果','テスト結果','レポート評価結果']);
- assert.deepEqual(schema.entries.flatMap(e=>e.attributes).filter(a=>/^\\[ [セソタチツ] \\]$/.test(a)),['[ セ ]','[ ソ ]','[ タ ]','[ チ ]','[ ツ ]']);
+ assert.deepEqual(schema.entries.flatMap(e=>e.attributes).filter(a=>/^\[ [セソタチツ] \]$/.test(a)),['[ セ ]','[ ソ ]','[ タ ]','[ チ ]','[ ツ ]']);
 });
 test('source is a staged UI, not wired to public pages or legacy storage',()=>{
  assert.equal(typeof createPmSubquestionView,'function');
