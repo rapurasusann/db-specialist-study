@@ -32,6 +32,8 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
  const answer=answerArea.appendChild(make('textarea'));answer.rows=5;answer.setAttribute('aria-label','選択中の設問の回答');
  const warning=answerArea.appendChild(make('p',''));warning.className='muted';
  const retry=answerArea.appendChild(make('button','再保存'));retry.type='button';retry.hidden=true;
+ const copy=answerArea.appendChild(make('button','回答をコピー'));copy.type='button';
+ const copyStatus=answerArea.appendChild(make('p',''));copyStatus.className='muted';copyStatus.setAttribute('role','status');
  let page=0,selected=doc.subquestions[0]?.id||'',selectedMaterial='auto';
  let answers={...(loadAnswers()||{})};
  const unsaved=new Set();
@@ -156,6 +158,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
   prompt.textContent=sub()?.text||'設問の問題文は未整備です。';
   promptNotice.textContent=sub()?.textStatus==='VERIFIED_TRANSCRIPTION'?'':'この設問文は原文の全文転記ではなく、内容をまとめた説明です。正式な設問はIPA公式問題冊子を確認してください。';
   answer.value=answers[selected]||'';
+  copyStatus.textContent='';
   warning.textContent=unsaved.has(selected)?'この設問の最新の回答は保存できていません。画面を閉じる前に保存設定を確認してください。':'設問ごとに回答を分離します。原本未整備の内容は公式原本で確認してください。';
   retry.hidden=!unsaved.has(selected);
  }
@@ -173,6 +176,17 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
  }
  answer.addEventListener('input',()=>{if(!selected)return;answers[selected]=answer.value;persistSelected()});
  retry.addEventListener('click',persistSelected);
+ copy.addEventListener('click',async()=>{
+  const text=answers[selected]??'';
+  if(!text){copyStatus.textContent='コピーする回答がありません。';return}
+  try{
+   if(!globalThis.navigator?.clipboard?.writeText)throw Error('CLIPBOARD_UNAVAILABLE');
+   await globalThis.navigator.clipboard.writeText(text);
+   copyStatus.textContent='選択中の設問の回答をコピーしました。保存に失敗した場合の控えとして使えます。';
+  }catch{
+   copyStatus.textContent='自動コピーできませんでした。回答欄の文章を選択してコピーしてください。';
+  }
+ });
  renderIntro();renderQuestion();renderMaterials();
  return root;
 }
