@@ -31,6 +31,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
  const answerArea=root.appendChild(make('section',undefined,'pmQuestionAnswer'));answerArea.append(make('h3','回答欄'));
  const answer=answerArea.appendChild(make('textarea'));answer.rows=5;answer.setAttribute('aria-label','選択中の設問の回答');
  const warning=answerArea.appendChild(make('p',''));warning.className='muted';
+ const retry=answerArea.appendChild(make('button','再保存'));retry.type='button';retry.hidden=true;
  let page=0,selected=doc.subquestions[0]?.id||'',selectedMaterial='auto';
  let answers={...(loadAnswers()||{})};
  const unsaved=new Set();
@@ -156,16 +157,22 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
   promptNotice.textContent=sub()?.textStatus==='VERIFIED_TRANSCRIPTION'?'':'この設問文は原文の全文転記ではなく、内容をまとめた説明です。正式な設問はIPA公式問題冊子を確認してください。';
   answer.value=answers[selected]||'';
   warning.textContent=unsaved.has(selected)?'この設問の最新の回答は保存できていません。画面を閉じる前に保存設定を確認してください。':'設問ごとに回答を分離します。原本未整備の内容は公式原本で確認してください。';
+  retry.hidden=!unsaved.has(selected);
  }
  materialSelector.appendChild(new Option('自動：選択中の設問に関連する図・表','auto'));
  for(const mat of doc.materials)materialSelector.appendChild(new Option(mat.title,mat.id));
  materialSelector.addEventListener('change',()=>{selectedMaterial=materialSelector.value;renderMaterials()});
  prev.addEventListener('click',()=>{page=Math.max(0,page-1);renderIntro()});
  next.addEventListener('click',()=>{page=Math.min(doc.introductionPages.length-1,page+1);renderIntro()});
- answer.addEventListener('input',()=>{if(!selected)return;answers[selected]=answer.value;
-  try{if(saveAnswer(selected,answer.value)===true)unsaved.delete(selected);else unsaved.add(selected)}catch{unsaved.add(selected)}
-  warning.textContent=unsaved.has(selected)?'この設問の最新の回答は保存できていません。画面を閉じる前に保存設定を確認してください。':'この設問の回答を保存しました。';
- });
+ function persistSelected(){
+  if(!selected)return;
+  try{if(saveAnswer(selected,answers[selected]||'')===true)unsaved.delete(selected);else unsaved.add(selected)}
+  catch{unsaved.add(selected)}
+  warning.textContent=unsaved.has(selected)?'この設問の最新の回答は保存できていません。再保存を押すかブラウザの保存設定を確認してください。':'この設問の回答を保存しました。';
+  retry.hidden=!unsaved.has(selected);
+ }
+ answer.addEventListener('input',()=>{if(!selected)return;answers[selected]=answer.value;persistSelected()});
+ retry.addEventListener('click',persistSelected);
  renderIntro();renderQuestion();renderMaterials();
  return root;
 }
