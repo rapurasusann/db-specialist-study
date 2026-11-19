@@ -184,6 +184,28 @@ test('figure 2 review never promotes composite key candidates to verified underl
  }finally{undo()}
 });
 
+test('figure 3 review displays five unsolved relations with only the audited content identifier underlined',()=>{
+ const undo=setup();
+ try{
+  const source=pmVerifiedStructure['2025:pm1:1'];
+  const root=createPmSubquestionView(source);
+  const body=walk(root,n=>n.className==='pmMaterialBody')[0];
+  byText(root,'button','設問2').fire('click');
+  const table=walk(body,n=>n.className==='pmFig3ReviewTable')[0];
+  assert.ok(table);
+  assert.equal(walk(table,n=>n.tag==='tr').length,6);
+  const cells=walk(table,n=>n.tag==='td');
+  const attributes=cells.flatMap(cell=>walk(cell,n=>n.tag==='span'));
+  assert.equal(attributes.length,34);
+  assert.deepEqual(attributes.filter(n=>n.classList?.values?.includes('pmPrimaryKey')).map(n=>n.textContent),['コンテンツID']);
+  assert.equal(attributes.filter(n=>n.classList?.values?.includes('pmForeignKey')).length,0);
+  assert.ok(attributes.some(n=>n.textContent==='[ セ ]'));
+  assert.ok(attributes.some(n=>n.textContent==='[ ツ ]'));
+  assert.ok(walk(body,n=>n.tag==='p'&&n.textContent.includes('未確認32属性')).length);
+  assert.equal(source.materials[2].verifiedStructure,false);
+ }finally{undo()}
+});
+
 test('manual figure selection overrides auto, then next subquestion restores auto',()=>{
  const undo=setup();
  try{
