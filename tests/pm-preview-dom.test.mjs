@@ -145,7 +145,7 @@ test('figure 2 text review shows 24 relations but omits all unaudited key underl
   const table=walk(body,n=>n.tag==='table');
   assert.equal(table.length,1);
   assert.equal(walk(table[0],n=>n.tag==='tr').length,25);
-  const warning=walk(body,n=>n.tag==='p'&&n.textContent.includes('主キー・外部キーの下線は未確認'));
+  const warning=walk(body,n=>n.tag==='p'&&n.textContent.includes('確認済みの主キー5属性だけ'));
   assert.equal(warning.length,1);
   const relationNames=walk(table[0],n=>n.tag==='th');
   assert.ok(relationNames.some(n=>n.textContent==='開講科目'));
@@ -154,8 +154,29 @@ test('figure 2 text review shows 24 relations but omits all unaudited key underl
   assert.ok(text.includes('[ ア ]'));
   assert.ok(text.includes('[ ス ]'));
   assert.ok(text.includes('[コンテンツ区分]'));
-  assert.equal(walk(table[0],n=>n.tag==='span').length,0);
+  const marks=walk(table[0],n=>n.tag==='span');
+  assert.equal(marks.length,129);
+  const confirmed=marks.filter(n=>n.classList?.values?.includes('pmPrimaryKey'));
+  assert.equal(confirmed.length,5);
+  assert.deepEqual(confirmed.map(n=>n.textContent),['学部コード','学科コード','科目ID','教員番号','学籍番号']);
+  assert.equal(marks.filter(n=>n.classList?.values?.includes('pmForeignKey')).length,0);
   assert.equal(walk(body,n=>n.tag==='svg').length,0);
+ }finally{undo()}
+});
+
+test('figure 2 review never promotes composite key candidates to verified underlines',()=>{
+ const undo=setup();
+ try{
+  const draft=structuredClone(pmVerifiedStructure['2025:pm1:1']);
+  const fig2=draft.materials.find(m=>m.id==='fig2');
+  const first=fig2.entries[5];
+  first.primaryKeyColumns=[0,1,2,3]; // injected without verified audit
+  const root=createPmSubquestionView(draft);
+  byText(root,'button','設問1 (3)').fire('click');
+  const table=walk(root,n=>n.className==='pmFig2ReviewTable')[0];
+  const marks=walk(table,n=>n.tag==='span');
+  assert.equal(marks.filter(n=>n.classList?.values?.includes('pmPrimaryKey')).length,5);
+  assert.ok(fig2.entries.some(row=>row.keyAudit.includes('UNVERIFIED')));
  }finally{undo()}
 });
 
