@@ -18,6 +18,8 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
  const prev=pager.appendChild(make('button','前ページ'));prev.type='button';
  const indicator=pager.appendChild(make('span',''));
  const next=pager.appendChild(make('button','次ページ'));next.type='button';
+ const currentSourcePage=doc.source?pager.appendChild(make('a','')):null;
+ if(currentSourcePage){currentSourcePage.target='_blank';currentSourcePage.rel='noopener noreferrer'}
  const mats=root.appendChild(make('section',undefined,'pmMaterials'));mats.append(make('h3','図・表表示部'));
  const materialSelector=mats.appendChild(make('select'));materialSelector.setAttribute('aria-label','表示する図・表');
  const materialBody=mats.appendChild(make('div',undefined,'pmMaterialBody'));
@@ -43,6 +45,11 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
   }else introText.append(make('p','大問本文は未整備です。公式原本を確認してください。','muted'));
   indicator.textContent=(pages.length?String(page+1):'0')+' / '+pages.length;
   prev.disabled=page<=0;next.disabled=page>=pages.length-1;
+  if(currentSourcePage){
+   const sourcePage=item?.sourcePage;
+   currentSourcePage.textContent=Number.isInteger(sourcePage)&&sourcePage>0?'原本の'+sourcePage+'ページを開く':'IPA原本を開く';
+   currentSourcePage.href=doc.source.split('#')[0]+(Number.isInteger(sourcePage)&&sourcePage>0?'#page='+sourcePage:'');
+  }
  }
  function materialFor(question){
   const ids=question?.materialIds||[];
