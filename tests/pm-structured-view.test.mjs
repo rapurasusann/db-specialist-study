@@ -40,6 +40,29 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.deepEqual(schema.entries.map(e=>e.name),['レポート課題','レポート課題出題','評価結果','テスト結果','レポート評価結果']);
  assert.deepEqual(schema.entries.flatMap(e=>e.attributes).filter(a=>/^\[ [セソタチツ] \]$/.test(a)),['[ セ ]','[ ソ ]','[ タ ]','[ チ ]','[ ツ ]']);
 });
+test('IPA page 8 section 7 records all five conditions and page 7 continuation without completing the original',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const page7=doc.introductionPages[1],page8=doc.introductionPages[2];
+ assert.equal(page8.sourcePage,8);
+ assert.equal(page8.complete,false);
+ assert.equal(page8.sourceAudit,'SECTION_SCOPE_CHECKED');
+ assert.deepEqual(page8.sectionNumbers,['6','7']);
+ assert.deepEqual(page8.sectionItemCounts,{'6':6,'7':5});
+ assert.deepEqual(page8.continuesFromPreviousPage,{section:'6',item:'(6)',sourcePage:7});
+ assert.equal(page7.continuesOnNextPage.sourcePage,page8.sourcePage);
+ assert.equal(page7.continuesOnNextPage.section,page8.continuesFromPreviousPage.section);
+ assert.equal(page7.continuesOnNextPage.item,page8.continuesFromPreviousPage.item);
+ assert.deepEqual(page8.figureReferences,[{id:'fig1',sourcePage:8},{id:'fig2',sourcePage:9}]);
+ for(const term of ['解答期限日時','解答入力ページ','受講年月日','遅刻の有無','早退の有無',
+  '受講完了年月日','得点','評価年月日','通期又は半期','成績','図1','図2']){
+  assert.ok(page8.paragraphs.some(p=>p.includes(term)),term);
+ }
+ assert.ok(page8.paragraphs.some(p=>p.includes('要約・全文転記ではありません')));
+ assert.equal(doc.materials[0].verifiedStructure,false);
+ assert.deepEqual(doc.materials[0].edges,[]);
+ assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
+});
+
 test('IPA page 7 lecture and digital-content section counts and boundaries are audited',()=>{
  const doc=pmVerifiedStructure['2025:pm1:1'];
  const page6=doc.introductionPages[0],page7=doc.introductionPages[1];
