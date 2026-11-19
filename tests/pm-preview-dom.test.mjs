@@ -89,6 +89,51 @@ test('interactive PM preview pages, figure auto/manual mode and separate answers
  }finally{undo()}
 });
 
+test('all four subquestions automatically select their associated source figure',()=>{
+ const undo=setup();
+ try{
+  const doc=pmVerifiedStructure['2025:pm1:1'];
+  const root=createPmSubquestionView(doc);
+  const body=walk(root,n=>n.className==='pmMaterialBody')[0];
+  const selector=walk(root,n=>n.tag==='select')[0];
+  const cases=[['設問1 (1)','fig1',8],['設問1 (2)','fig1',8],
+   ['設問1 (3)','fig2',9],['設問2','fig3',10]];
+  for(const [label,figId,page] of cases){
+   byText(root,'button',label).fire('click');
+   assert.equal(selector.value,'auto');
+   const link=walk(body,n=>n.tag==='a'&&n.textContent.includes(page+'ページ'))[0];
+   assert.ok(link,label+' needs corresponding source page '+page);
+   assert.equal(link.href,doc.source+'#page='+page);
+   const figureTitles=walk(body,n=>n.tag==='h4');
+   assert.equal(figureTitles.length,1);
+   assert.equal(figureTitles[0].textContent,doc.materials.find(m=>m.id===figId).title);
+   assert.equal(walk(body,n=>n.tag==='table'||n.tag==='svg').length,0);
+  }
+ }finally{undo()}
+});
+test('manual figure selection overrides auto, then next subquestion restores auto',()=>{
+ const undo=setup();
+ try{
+  const doc=pmVerifiedStructure['2025:pm1:1'];
+  const root=createPmSubquestionView(doc);
+  const selector=walk(root,n=>n.tag==='select')[0];
+  const body=walk(root,n=>n.className==='pmMaterialBody')[0];
+  byText(root,'button','設問1 (3)').fire('click');
+  assert.ok(walk(body,n=>n.tag==='a'&&n.textContent.includes('9ページ')).length);
+  selector.fire('change','fig1');
+  assert.equal(selector.value,'fig1');
+  assert.ok(walk(body,n=>n.tag==='a'&&n.textContent.includes('8ページ')).length);
+  assert.equal(walk(body,n=>n.tag==='a'&&n.textContent.includes('9ページ')).length,0);
+  selector.fire('change','fig3');
+  assert.ok(walk(body,n=>n.tag==='a'&&n.textContent.includes('10ページ')).length);
+  selector.fire('change','auto');
+  assert.ok(walk(body,n=>n.tag==='a'&&n.textContent.includes('9ページ')).length);
+  byText(root,'button','設問2').fire('click');
+  assert.equal(selector.value,'auto');
+  assert.ok(walk(body,n=>n.tag==='a'&&n.textContent.includes('10ページ')).length);
+ }finally{undo()}
+});
+
 test('subquestion selection keeps button identity and keyboard focus target',()=>{
  const undo=setup();
  try{
