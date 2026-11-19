@@ -87,7 +87,11 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
    if(mat.id==='fig2'&&mat.verifiedStructure===false&&
       mat.transcriptionStage==='TEXT_DRAFT_PARTIAL_KEY_AUDIT'&&
       mat.sourceTranscriptionVerified===false&&mat.keyNotationVerified===false){
-    box.append(make('p','作業中の関係スキーマです。原本9ページで確認済みの主キー6属性は実線、外部キー1属性は破線で表示します。残るキー下線は未確認のため省略します。空欄は未回答です。','muted'));
+    const auditMarks=(mat.entries||[]).flatMap(row=>row.keyAudit||[]);
+    const pkCount=auditMarks.filter(k=>k==='PK_SOLID').length;
+    const fkCount=auditMarks.filter(k=>k==='FK_DASHED').length;
+    const pendingCount=auditMarks.filter(k=>k==='UNVERIFIED').length;
+    box.append(make('p',`作業中の関係スキーマです。原本9ページで確認済みの主キー${pkCount}属性は実線、外部キー${fkCount}属性は破線で表示します。未確認${pendingCount}属性のキー下線は省略します。空欄は未回答です。`,'muted'));
     const table=box.appendChild(make('table'));
     table.className='pmFig2ReviewTable';
     const head=table.appendChild(make('tr'));
@@ -95,7 +99,9 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
     head.append(make('th','属性（確認済みのキーだけ下線表示）'));
     for(const row of mat.entries||[]){
      const tr=table.appendChild(make('tr'));
-     tr.append(make('th',row.name));
+     const relation=tr.appendChild(make('th',row.name));
+     const pending=(row.keyAudit||[]).filter(k=>k==='UNVERIFIED').length;
+     relation.append(make('span',`（未確認${pending}）`,'muted'));
      const cell=tr.appendChild(make('td'));
      row.attributes.forEach((attribute,i)=>{
       if(i)cell.appendChild(document.createTextNode('、'));
