@@ -31,6 +31,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
  const answerArea=root.appendChild(make('section',undefined,'pmQuestionAnswer'));answerArea.append(make('h3','回答欄'));
  const answer=answerArea.appendChild(make('textarea'));answer.rows=5;answer.setAttribute('aria-label','選択中の設問の回答');
  const warning=answerArea.appendChild(make('p',''));warning.className='muted';
+ warning.setAttribute('role','status');warning.setAttribute('aria-live','polite');
  const retry=answerArea.appendChild(make('button','再保存'));retry.type='button';retry.hidden=true;
  let page=0,selected=doc.subquestions[0]?.id||'',selectedMaterial='auto';
  let answers={...(loadAnswers()||{})};
