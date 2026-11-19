@@ -33,13 +33,21 @@ async function preview(initial,scenario){
   createTextNode:value=>new Node('#text',String(value))
  };
  globalThis.Option=function(text,value){const option=new Node('option',text);option.value=value;return option};
- globalThis.localStorage={
+ const storage={
   getItem:key=>key==='db-study-progress-v1'?value:null,
   setItem:(key,next)=>{assert.equal(key,'db-study-progress-v1');writes.push(next);value=next}
  };
+ globalThis.localStorage=storage;
  try{
   await import('../src/pm-preview-entry.mjs?scenario='+scenario);
-  return {root,status,writes,stored:()=>value,textarea:walk(root,n=>n.tag==='textarea')};
+  const textarea=walk(root,n=>n.tag==='textarea');
+  return {root,status,writes,stored:()=>value,textarea,
+   input:text=>{
+    const previous=globalThis.localStorage;
+    globalThis.localStorage=storage;
+    try{textarea.fire('input',text)}finally{globalThis.localStorage=previous}
+   }
+  };
  }finally{
   globalThis.document=originalDocument;globalThis.localStorage=originalStorage;globalThis.Option=originalOption;
  }
@@ -48,7 +56,7 @@ test('a null legacy question record must not be silently destroyed',async()=>{
  const initial=JSON.stringify({'2025:pm1:1':null,'2025:pm1:2':{written:'safe'}});
  const ui=await preview(initial,'null-record');
  assert.ok(ui.textarea);
- ui.textarea.fire('input','新しい回答');
+ ui.input('新しい回答');
  assert.equal(ui.writes.length,0);
  assert.equal(ui.stored(),initial);
  assert.match(ui.status.textContent,/保存できませんでした/);
@@ -59,7 +67,7 @@ test('saving a new subquestion answer preserves legacy and unrelated progress',a
   '2025:pm1:2':{written:'別問題の回答'}
  };
  const ui=await preview(JSON.stringify(initial),'preserve-progress');
- ui.textarea.fire('input','保存した回答');
+ ui.input('保存した回答');
  assert.equal(ui.writes.length,1);
  const next=JSON.parse(ui.stored());
  assert.equal(next['2025:pm1:1'].written,'以前の大問回答');
@@ -70,7 +78,7 @@ test('saving a new subquestion answer preserves legacy and unrelated progress',a
 });
 test('saved answer restores on a fresh preview initialization',async()=>{
  const first=await preview('{}','save-before-reload');
- first.textarea.fire('input','再表示する回答');
+ first.input('再表示する回答');
  const second=await preview(first.stored(),'reload-and-restore');
  assert.equal(second.textarea.value,'再表示する回答');
  assert.equal(second.writes.length,0);
