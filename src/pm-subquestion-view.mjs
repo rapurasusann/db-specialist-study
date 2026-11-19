@@ -113,17 +113,13 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
      }
     }
     for(const group of data.subtypeGroups||[]){
-     const [x,y]=group.apex;
-     const bar=group.bar;
-     // Branching lines and open subtype triangle. Explicit source-traced only.
-     path([[x,y-10],[x,y]]);
-     path([[x,y],bar[0]]);
-     path([[x,y],bar[1]]);
+     const [x,y]=group.apex,bar=group.bar;
+     if(group.parent)path(group.parent);
+     // A small open specialization triangle above a common subtype bar.
+     path([[x,y],[x-8,y+14],[x+8,y+14],[x,y]]);
+     path([[x,y+14],[x,bar[0][1]]]);
      path(bar);
-     for(const p of group.children||[]){
-      const start=bar[0][0]===p[0]?bar[0]:bar[1][0]===p[0]?bar[1]:[p[0],bar[0][1]];
-      path([start,p]);
-     }
+     for(const p of group.children||[])path([[p[0],bar[0][1]],p]);
     }
     const indexed=new Map(mat.nodes.map(node=>[node.id,node]));
     for(const entry of data.boxes||[]){
