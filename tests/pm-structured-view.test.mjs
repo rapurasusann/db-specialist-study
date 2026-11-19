@@ -184,7 +184,7 @@ test('preview is opt-in, not mounted in production index, and preserves the old 
  assert.ok(preview.includes('src/pm-preview-entry.mjs'));
  assert.ok(preview.includes('src/pm-preview.css'));
  assert.ok(preview.includes('Content-Security-Policy'));
- assert.ok(preview.includes('図1～図3は再構成・照合中のため表示していません'));
+ assert.ok(preview.includes('図1は作業中のSVG再構成図として表示します'));
  assert.ok(entry.includes("const KEY='db-study-progress-v1'"));
  assert.ok(entry.includes('currentProgress()'));
  assert.ok(entry.includes('updateSubquestionAnswer('));
@@ -361,6 +361,7 @@ test('preview warning never advertises incomplete figures as usable materials',(
  const html=readFileSync(new URL('../pm-preview.html',import.meta.url),'utf8');
  const doc=pmVerifiedStructure['2025:pm1:1'];
  assert.ok(doc.materials.every(mat=>mat.verifiedStructure===false));
- assert.ok(html.includes('図1～図3は再構成・照合中のため表示していません'));
+ assert.ok(html.includes('図1は作業中のSVG再構成図として表示します'));
+ assert.ok(html.includes('図2・図3は引き続き再構成・照合中のため表示していません'));
  assert.ok(!html.includes('原本に照合できた図3のみテキストで表示します'));
 });
