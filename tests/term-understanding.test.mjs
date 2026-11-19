@@ -5,11 +5,11 @@ import {termQuestions} from '../src/term-understanding-questions.mjs';
 const ui=readFileSync(new URL('../src/term-understanding-ui.mjs',import.meta.url),'utf8');
 const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 test('one independent four-choice question per term',()=>{
- assert.equal(termQuestions.length,12);
+ assert.equal(termQuestions.length,19);
  assert.equal(new Set(termQuestions.map(q=>q.id)).size,termQuestions.length);
  assert.equal(new Set(termQuestions.map(q=>q.term)).size,termQuestions.length);
  for(const q of termQuestions){
-  assert.ok(['正規形','関係演算'].includes(q.category));
+  assert.ok(['正規形','関係演算','隔離性水準'].includes(q.category));
   assert.equal(q.choices.length,4);
   assert.equal(new Set(q.choices).size,4);
   assert.ok(Number.isInteger(q.answer)&&q.answer>=0&&q.answer<4);
@@ -18,7 +18,7 @@ test('one independent four-choice question per term',()=>{
 });
 test('normal forms and key relational operations covered individually',()=>{
  const terms=new Set(termQuestions.map(q=>q.term));
- for(const name of ['第1正規形','第2正規形','第3正規形','選択（σ）','射影（π）','和（∪）','共通（∩）','差（−）','直積（×）','結合（⋈）','商（÷）','名前変更（ρ）'])assert.ok(terms.has(name),name);
+ for(const name of ['第1正規形','第2正規形','第3正規形','選択（σ）','射影（π）','和（∪）','共通（∩）','差（−）','直積（×）','結合（⋈）','商（÷）','名前変更（ρ）','READ UNCOMMITTED','READ COMMITTED','REPEATABLE READ','SERIALIZABLE','ダーティリード','反復不能読取り','ファントムリード'])assert.ok(terms.has(name),name);
 });
 test('term practice is isolated and does not replace legacy progress or question viewer',()=>{
  assert.ok(html.includes('src/term-understanding-ui.mjs'));
