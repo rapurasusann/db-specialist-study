@@ -87,3 +87,26 @@ test('figure 3 cannot be marked verified until original PK/FK underlines are aud
  doc.materials[2].verifiedStructure=false;
  assert.equal(validatePmStructure(doc),true);
 });
+
+test('PK and FK have distinct underline styles and schema requires audited keys',()=>{
+ const css=readFileSync(new URL('../src/pm-preview.css',import.meta.url),'utf8');
+ assert.ok(source.includes("name.classList.add('pmPrimaryKey')"));
+ assert.ok(source.includes("name.classList.add('pmForeignKey')"));
+ assert.ok(source.includes("name.classList.add('pmBothKeys')"));
+ assert.ok(css.includes('.pmPrimaryKey'));
+ assert.ok(css.includes('text-decoration-style:solid'));
+ assert.ok(css.includes('.pmForeignKey'));
+ assert.ok(css.includes('text-decoration-style:dashed'));
+ const doc=structuredClone(pmVerifiedStructure['2025:pm1:1']);
+ const schema=doc.materials[2];
+ schema.verifiedStructure=true;
+ schema.keyNotationVerified=true;
+ assert.equal(validatePmStructure(doc),false,'cannot publish schema with missing key classifications');
+ for(const row of schema.entries){
+  row.primaryKeyColumns=[];
+  row.foreignKeyColumns=[];
+ }
+ assert.equal(validatePmStructure(doc),true,'valid metadata shape after a deliberate source-check gate');
+ schema.entries[0].foreignKeyColumns=[99];
+ assert.equal(validatePmStructure(doc),false,'out-of-range key column rejected');
+});
