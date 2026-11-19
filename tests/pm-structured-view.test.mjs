@@ -40,6 +40,26 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.deepEqual(schema.entries.map(e=>e.name),['レポート課題','レポート課題出題','評価結果','テスト結果','レポート評価結果']);
  assert.deepEqual(schema.entries.flatMap(e=>e.attributes).filter(a=>/^\[ [セソタチツ] \]$/.test(a)),['[ セ ]','[ ソ ]','[ タ ]','[ チ ]','[ ツ ]']);
 });
+test('IPA page 7 lecture and digital-content section counts and boundaries are audited',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const page6=doc.introductionPages[0],page7=doc.introductionPages[1];
+ assert.equal(page7.sourcePage,7);
+ assert.equal(page7.complete,false);
+ assert.equal(page7.sourceAudit,'SECTION_SCOPE_CHECKED');
+ assert.deepEqual(page7.sectionNumbers,['5','6']);
+ assert.deepEqual(page7.sectionItemCounts,{'5':9,'6':6});
+ assert.deepEqual(page7.continuesFromPreviousPage,{section:'5',item:'(1)',sourcePage:6});
+ assert.deepEqual(page7.continuesOnNextPage,{section:'6',item:'(6)',sourcePage:8});
+ assert.deepEqual(page6.continuesOnNextPage,page7.continuesFromPreviousPage);
+ for(const fact of ['90分','講義番号','オンデマンド','リアルタイム','オンライン教室ID','補助教員',
+  'コンテンツID','文書・画像・動画','公開期間','解答時間','リアルタイム型講義']){
+  assert.ok(page7.paragraphs.some(line=>line.includes(fact)),fact);
+ }
+ assert.ok(page7.paragraphs.some(line=>line.includes('要約・全文転記ではありません')));
+ assert.ok(doc.introductionPages.every(page=>page.complete===false));
+ assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
+});
+
 test('IPA page 6 section structure, details and page 7 continuation remain identifiable',()=>{
  const doc=pmVerifiedStructure['2025:pm1:1'];
  const page6=doc.introductionPages[0];
