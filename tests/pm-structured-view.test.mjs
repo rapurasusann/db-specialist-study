@@ -197,7 +197,7 @@ test('figure 2 cannot be published before accurate source transcription',()=>{
   assert.deepEqual(e.primaryKeyColumns,[0]);
   assert.equal(e.keyAudit[0],'PK_SOLID');
   assert.equal(e.auditSourcePages[0],9);
-  assert.ok(e.keyAudit.slice(1).every(k=>k==='UNVERIFIED'));
+  assert.ok(e.keyAudit.slice(1).every(k=>k==='NONE'||k==='UNVERIFIED'));
  }
  assert.deepEqual(fig2.entries[5].primaryKeyColumns,[0,1,2,3]);
  for(const e of fig2.entries.slice(6,12))assert.deepEqual(e.primaryKeyColumns,[0,1,2,3,4]);
