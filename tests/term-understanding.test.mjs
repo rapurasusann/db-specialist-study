@@ -25,6 +25,6 @@ test('term practice is isolated and does not replace legacy progress or question
  assert.ok(html.includes('id="pageImage"'));
  assert.ok(ui.includes("const recordsKey='db-study-terms-v1'"));
  assert.ok(!ui.includes('db-study-progress-v1'));
- assert.ok(ui.includes("question.term+'の説明として正しいのは次のうちどれでしょうか？'"));
+ assert.ok(ui.includes("q.term+'の説明として正しいのは次のうちどれでしょうか？'"));
  assert.ok(ui.includes("document.getElementById('study')?.insertAdjacentElement('afterend',panel)"));
 });
