@@ -56,7 +56,15 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
   for(const mat of items){
    const box=materialBody.appendChild(make('div',undefined,'pmMaterialItem'));
    box.append(make('h4',mat.title));
-   if(!mat.verifiedStructure){box.append(make('p','図・表のテキスト再構成は未整備です。公式原本の '+mat.sourcePage+' ページを確認してください。','muted'));continue}
+   if(doc.source && Number.isInteger(mat.sourcePage) && mat.sourcePage>0){
+    const originalLink=box.appendChild(make('a','IPA公式問題冊子：'+mat.sourcePage+'ページを開く'));
+    // Official booklet page and PDF page align for this source; explicit
+    // sourcePage metadata is maintained per material.
+    originalLink.href=doc.source.split('#')[0]+'#page='+mat.sourcePage;
+    originalLink.target='_blank';
+    originalLink.rel='noopener noreferrer';
+   }
+   if(!mat.verifiedStructure){box.append(make('p','図・表のテキスト再構成は未整備です。上記のIPA公式原本を確認してください。','muted'));continue}
    if(mat.kind==='schema'){
     const table=box.appendChild(make('table'));
     const head=table.appendChild(make('tr'));
