@@ -50,7 +50,10 @@ test('IPA page 7 lecture and digital-content section counts and boundaries are a
  assert.deepEqual(page7.sectionItemCounts,{'5':9,'6':6});
  assert.deepEqual(page7.continuesFromPreviousPage,{section:'5',item:'(1)',sourcePage:6});
  assert.deepEqual(page7.continuesOnNextPage,{section:'6',item:'(6)',sourcePage:8});
- assert.deepEqual(page6.continuesOnNextPage,page7.continuesFromPreviousPage);
+ assert.equal(page6.continuesOnNextPage.sourcePage,page7.sourcePage);
+ assert.equal(page7.continuesFromPreviousPage.sourcePage,page6.sourcePage);
+ assert.equal(page6.continuesOnNextPage.section,page7.continuesFromPreviousPage.section);
+ assert.equal(page6.continuesOnNextPage.item,page7.continuesFromPreviousPage.item);
  for(const fact of ['90分','講義番号','オンデマンド','リアルタイム','オンライン教室ID','補助教員',
   'コンテンツID','文書・画像・動画','公開期間','解答時間','リアルタイム型講義']){
   assert.ok(page7.paragraphs.some(line=>line.includes(fact)),fact);
