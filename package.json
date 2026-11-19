@@ -8,9 +8,10 @@
     "build:cs03-account": "esbuild src/cs03-account-entry.mjs --bundle --platform=browser --format=esm --target=es2022 --outfile=src/cs03-account.bundle.js",
     "test:terms": "node --test tests/term-understanding.test.mjs",
     "test:terms:browser": "node scripts/term-understanding-browser.mjs",
-    "test:pm:structure": "node --test tests/pm-structured-view.test.mjs tests/pm-subquestion-answer-store.test.mjs tests/pm-preview-dom.test.mjs",
+    "test:pm:structure": "node --test tests/pm-structured-view.test.mjs tests/pm-subquestion-answer-store.test.mjs tests/pm-preview-dom.test.mjs tests/pm-preview-storage.test.mjs",
     "test:pm:progress": "node --test tests/pm-subquestion-progress.test.mjs",
-    "test:glossary": "node --test tests/glossary-first-occurrence.test.mjs"
+    "test:glossary": "node --test tests/glossary-first-occurrence.test.mjs",
+    "test:pm": "node --test tests/pm-structured-view.test.mjs tests/pm-subquestion-answer-store.test.mjs tests/pm-preview-dom.test.mjs tests/pm-preview-storage.test.mjs tests/pm-subquestion-progress.test.mjs"
   },
   "dependencies": {
     "jose": "^6.0.0",
