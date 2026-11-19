@@ -8,6 +8,7 @@ class FakeNode {
  constructor(tag,text=''){
   this.tag=tag;this.textContent=text;this.children=[];this.events={};this.attrs={};
   this.style={};this.dataset={};this.value='';this.disabled=false;
+  this.classList={values:[],add(...items){for(const item of items)if(!this.values.includes(item))this.values.push(item)}};
  }
  appendChild(node){this.children.push(node);return node}
  append(...nodes){for(const node of nodes)this.appendChild(node)}
