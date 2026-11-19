@@ -138,3 +138,35 @@ test('retry unsaved answer succeeds without retyping, and only the selected answ
   assert.deepEqual(calls,[['s1-1','再保存対象'],['s1-1','再保存対象']]);
  }finally{undo()}
 });
+
+test('copy answer backs up the selected unsaved draft without changing persistence',async()=>{
+ const undo=setup();
+ const prevNavigator=globalThis.navigator;
+ const clipboard=[];
+ try{
+  Object.defineProperty(globalThis,'navigator',{configurable:true,value:{clipboard:{writeText:async value=>clipboard.push(value)}}});
+  const writes=[];
+  const root=createPmSubquestionView(pmVerifiedStructure['2025:pm1:1'],{
+   loadAnswers:()=>({}),
+   saveAnswer:(id,value)=>{writes.push([id,value]);return false}
+  });
+  const textarea=walk(root,n=>n.tag==='textarea')[0];
+  const copy=byText(root,'button','回答をコピー');
+  const copyStatus=walk(root,n=>n.attrs.role==='status'&&n.tag==='p')[0];
+  assert.ok(copy);
+  assert.ok(copyStatus);
+  textarea.fire('input','回答のバックアップ');
+  await copy.events.click();
+  assert.deepEqual(clipboard,['回答のバックアップ']);
+  assert.ok(copyStatus.textContent.includes('コピーしました'));
+  assert.deepEqual(writes,[['s1-1','回答のバックアップ']]);
+  byText(root,'button','設問2').fire('click');
+  await copy.events.click();
+  assert.equal(clipboard.length,1,'empty answer is not copied');
+  assert.ok(copyStatus.textContent.includes('コピーする回答がありません'));
+ }finally{
+  if(prevNavigator===undefined)delete globalThis.navigator;
+  else Object.defineProperty(globalThis,'navigator',{configurable:true,value:prevNavigator});
+  undo();
+ }
+});
