@@ -48,7 +48,20 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
    const box=materialBody.appendChild(make('div',undefined,'pmMaterialItem'));
    box.append(make('h4',mat.title));
    if(!mat.verifiedStructure){box.append(make('p','図・表のテキスト再構成は未整備です。公式原本の '+mat.sourcePage+' ページを確認してください。','muted'));continue}
-   if(mat.kind==='table'){
+   if(mat.kind==='schema'){
+    const table=box.appendChild(make('table'));
+    const head=table.appendChild(make('tr'));
+    head.append(make('th','関係名'));head.append(make('th','属性（［ ］は原本の空欄）'));
+    for(const entry of mat.entries||[]){
+     const row=table.appendChild(make('tr'));row.append(make('th',entry.name));
+     const cell=row.appendChild(make('td'));
+     entry.attributes.forEach((attribute,i)=>{
+      if(i)cell.append(document.createTextNode('、'));
+      const name=cell.appendChild(make('span',attribute));
+      if(entry.keyColumns?.includes(i))name.style.textDecoration='underline';
+     });
+    }
+   }else if(mat.kind==='table'){
     const table=box.appendChild(make('table'));
     if(mat.columns){const head=table.appendChild(make('tr'));for(const val of mat.columns)head.append(make('th',String(val)))}
     for(const row of mat.rows||[]){const tr=table.appendChild(make('tr'));for(const val of row)tr.append(make('td',String(val)))}
