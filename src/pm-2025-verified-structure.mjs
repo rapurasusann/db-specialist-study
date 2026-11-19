@@ -86,7 +86,7 @@ export const pmVerifiedStructure=Object.freeze({
     ],
     note:'図1は原本でも未完成です。現時点では名称の索引のみ登録済みで、接続・配置は未検証のため学習画面には表示しません。'
    },
-   {id:'fig2',title:'図2 現状の学習管理システムの関係スキーマ',sourcePage:9,kind:'table',verifiedStructure:false},
+   {id:'fig2',title:'図2 現状の学習管理システムの関係スキーマ',sourcePage:9,kind:'schema',verifiedStructure:false,keyNotationVerified:false,sourceChecked:null,entries:[]},
    {id:'fig3',title:'図3 追加及び変更する関係スキーマ（未完成）',sourcePage:10,kind:'schema',verifiedStructure:false,keyNotationVerified:false,sourceChecked:'IPA 2025 PM1 booklet page 10 (PDF page index 9)',entries:[
     {name:'レポート課題',attributes:['コンテンツID','[ セ ]'],primaryKeyColumns:[0],foreignKeyColumns:[],keyAudit:['PK_SOLID','NONE'],auditSourcePages:[10,10]},
     {name:'レポート課題出題',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','[ ソ ]'],primaryKeyColumns:[],foreignKeyColumns:[],keyAudit:['UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED'],auditSourcePages:[null,null,null,null,null,null,null]},
@@ -116,7 +116,7 @@ export function validatePmStructure(doc){
         ||e.foreignKeyColumns.some(i=>!Number.isInteger(i)||i<0||i>=e.attributes.length)
         ||!Array.isArray(e.keyAudit)||e.keyAudit.length!==e.attributes.length
         ||!Array.isArray(e.auditSourcePages)||e.auditSourcePages.length!==e.attributes.length
-        ||e.auditSourcePages.some(p=>p!==10)
+        ||e.auditSourcePages.some(p=>p!==m.sourcePage)
         ||e.keyAudit.some((value,i)=>{
           const pk=e.primaryKeyColumns.includes(i),fk=e.foreignKeyColumns.includes(i);
           const expected=pk&&fk?'BOTH':pk?'PK_SOLID':fk?'FK_DASHED':'NONE';
