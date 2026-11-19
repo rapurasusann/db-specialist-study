@@ -40,6 +40,23 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.deepEqual(schema.entries.map(e=>e.name),['レポート課題','レポート課題出題','評価結果','テスト結果','レポート評価結果']);
  assert.deepEqual(schema.entries.flatMap(e=>e.attributes).filter(a=>/^\[ [セソタチツ] \]$/.test(a)),['[ セ ]','[ ソ ]','[ タ ]','[ チ ]','[ ツ ]']);
 });
+test('IPA page 6 section structure, details and page 7 continuation remain identifiable',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const page6=doc.introductionPages[0];
+ assert.equal(page6.sourcePage,6);
+ assert.equal(page6.complete,false);
+ assert.equal(page6.sourceAudit,'SECTION_SCOPE_CHECKED');
+ assert.deepEqual(page6.sectionNumbers,['1','2','3','4','5']);
+ assert.deepEqual(page6.sectionItemCounts,{'1':3,'2':2,'3':2,'4':4,'5':1});
+ assert.deepEqual(page6.continuesOnNextPage,{section:'5',item:'(1)',sourcePage:7});
+ for(const fact of ['4年制','4～9月','10月～翌3月','教員番号','学籍番号',
+  '科目ID','単位数','担当教員1名','並行開講','インターネット','約15回','約30回']){
+  assert.ok(page6.paragraphs.some(line=>line.includes(fact)),fact);
+ }
+ assert.ok(page6.paragraphs.some(line=>line.includes('要約・全文転記ではありません')));
+ assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
+});
+
 test('IPA pages 9 and 10 have separate expansion and answer-rule summaries while remaining incomplete',()=>{
  const doc=pmVerifiedStructure['2025:pm1:1'];
  assert.deepEqual(doc.introductionPages.map(x=>x.sourcePage),[6,7,8,9,10]);
