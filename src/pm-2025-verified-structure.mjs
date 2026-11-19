@@ -125,7 +125,43 @@ export const pmVerifiedStructure=Object.freeze({
       {from:'material',to:'materialUse',type:'arrow',sourcePage:8},
       {from:'test',to:'testUse',type:'arrow',sourcePage:8}
     ],
-    note:'図1は原本でも未完成です。現時点では名称の索引のみ登録済みで、接続・配置は未検証のため学習画面には表示しません。'
+    // Visual trace of the printed Figure 1 (page 8). This is a REVIEW drawing,
+    // not a completed or official-fidelity representation. Missing exam edges remain absent.
+    // Coordinates use an independent 960x720 SVG canvas; no image is embedded.
+    partialSvgSource:{
+     sourcePage:8,status:'REVIEW_ONLY',viewBox:'0 0 960 720',
+     boxes:[
+      ['faculty',20,10,106,42],['subject',145,10,106,42],['teacher',290,10,106,42],
+      ['student',425,10,106,42],['content',550,10,106,42],
+      ['department',20,74,106,42],['material',610,69,106,42],['test',725,69,106,42],
+      ['offering',20,163,106,42],['courseReg',290,250,106,42],['lecture',20,291,106,42],
+      ['fixed',60,371,106,42],['online',460,369,106,42],
+      ['inperson',115,431,106,42],['realtime',265,431,106,42],
+      ['ondemand',410,431,106,42],['a',190,519,106,42],
+      ['use',680,369,106,42],['materialUse',610,519,106,42],
+      ['testUse',730,519,106,42],['attendance',505,581,106,42],
+      ['fixedAttendance',265,650,106,42],['ondemandAttendance',380,650,106,42],
+      ['testResult',780,665,106,42]
+     ],
+     // Reviewed visible arrows. x/y points trace connectors as seen, not inferred.
+     arrows:[
+      [[73,52],[73,74]],[[73,116],[73,163]],
+      [[198,52],[198,126],[93,126],[93,163]],
+      [[73,205],[73,291]],
+      [[168,473],[168,499],[243,499],[243,519]],
+      [[663,111],[663,519]],[[778,111],[778,519]]
+     ],
+     // Five printed subtype groups: apex, horizontal bar and downward branches.
+     subtypeGroups:[
+      {apex:[710,38],bar:[[663,64],[781,64]],children:[[663,69],[778,69]]},
+      {apex:[212,390],bar:[[168,425],[318,425]],children:[[168,431],[318,431]]},
+      {apex:[410,390],bar:[[318,425],[463,425]],children:[[318,431],[463,431]]},
+      {apex:[733,435],bar:[[663,513],[783,513]],children:[[663,519],[783,519]]},
+      {apex:[456,604],bar:[[318,645],[433,645]],children:[[318,650],[433,650]]}
+     ],
+     blankA:{outer:'a',innerLabel:'a'}
+    },
+    note:'図1の原本に見える枠・矢印・継承を示す作業中のSVGです。配置・接続の最終照合は未完了で、解答の空欄aも補完していません。'
    },
    {id:'fig2',title:'図2 現状の学習管理システムの関係スキーマ（未完成）',sourcePage:9,kind:'schema',verifiedStructure:false,keyNotationVerified:false,
     sourceChecked:'IPA 2025 PM1 booklet page 9 (PDF page index 8): relation names and attribute strings transcribed; key underlines not yet fully audited',
