@@ -25,6 +25,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
  const buttons=questionNav.appendChild(make('div',undefined,'toolbar'));
  const questionArea=root.appendChild(make('section',undefined,'pmQuestionText'));questionArea.append(make('h3','選択された設問の問題文'));
  const prompt=questionArea.appendChild(make('p',''));
+ const promptNotice=questionArea.appendChild(make('p','','muted'));
  const answerArea=root.appendChild(make('section',undefined,'pmQuestionAnswer'));answerArea.append(make('h3','回答欄'));
  const answer=answerArea.appendChild(make('textarea'));answer.rows=5;answer.setAttribute('aria-label','選択中の設問の回答');
  const warning=answerArea.appendChild(make('p',''));warning.className='muted';
@@ -132,6 +133,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
    b.addEventListener('click',()=>{selected=q.id;selectedMaterial='auto';materialSelector.value='auto';renderQuestion();renderMaterials()});
   }
   prompt.textContent=sub()?.text||'設問の問題文は未整備です。';
+  promptNotice.textContent=sub()?.textStatus==='VERIFIED_TRANSCRIPTION'?'':'この設問文は原文の全文転記ではなく、内容をまとめた説明です。正式な設問はIPA公式問題冊子を確認してください。';
   answer.value=answers[selected]||'';
   warning.textContent='設問ごとに回答を分離します。原本未整備の内容は公式原本で確認してください。';
  }
