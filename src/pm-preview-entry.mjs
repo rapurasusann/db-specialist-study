@@ -25,7 +25,10 @@ function saveAnswer(subquestionId,value){
   // Always re-read before saving to preserve updates written by the existing
   // learning app (e.g. status, legacy written, unrelated questions).
   const progress=currentProgress();
-  const next=updateSubquestionAnswer(progress[recordId]??{},subquestionId,value);
+  // A missing record can be initialized, but a malformed existing record
+  // must fail closed instead of silently overwriting legacy progress.
+  const record=Object.hasOwn(progress,recordId)?progress[recordId]:{};
+  const next=updateSubquestionAnswer(record,subquestionId,value);
   localStorage.setItem(KEY,JSON.stringify({...progress,[recordId]:next}));
   status.textContent='設問 '+subquestionId+' の回答を端末内に保存しました。';
   delete status.dataset.error;
