@@ -86,7 +86,21 @@ export const pmVerifiedStructure=Object.freeze({
     ],
     note:'図1は原本でも未完成です。現時点では名称の索引のみ登録済みで、接続・配置は未検証のため学習画面には表示しません。'
    },
-   {id:'fig2',title:'図2 現状の学習管理システムの関係スキーマ',sourcePage:9,kind:'schema',verifiedStructure:false,keyNotationVerified:false,sourceChecked:null,entries:[]},
+   {id:'fig2',title:'図2 現状の学習管理システムの関係スキーマ',sourcePage:9,kind:'schema',verifiedStructure:false,keyNotationVerified:false,
+    sourceChecked:'IPA 2025 PM1 booklet page 9 (PDF page index 8): first seven relation names and attribute sequences only',
+    transcriptionStage:'PARTIAL_FIRST_SEVEN_RELATIONS',
+    // These seven rows have source-checked labels and attribute order. Key / FK
+    // underlines remain UNVERIFIED: the complete diagram MUST stay hidden.
+    entries:[
+     {name:'学部',attributes:['学部コード','学部名']},
+     {name:'学科',attributes:['学科コード','学科名','学部コード']},
+     {name:'科目',attributes:['科目ID','科目名','科目目標','科目概要','単位数','必須選択区分','開講期間']},
+     {name:'教員',attributes:['教員番号','氏名','生年月日']},
+     {name:'学生',attributes:['学籍番号','氏名','生年月日']},
+     {name:'開講科目',attributes:['学科コード','科目ID','年度','学期','開講曜日','開講時限','[ ア ]']},
+     {name:'講義',attributes:['学科コード','科目ID','年度','学期','講義番号','講義概要','開講形態区分','オンライン講義フラグ','時間固定講義フラグ','開講年月日設定要否']}
+    ].map(row=>({...row,primaryKeyColumns:[],foreignKeyColumns:[],
+      keyAudit:row.attributes.map(()=>'UNVERIFIED'),auditSourcePages:row.attributes.map(()=>null)}))},
    {id:'fig3',title:'図3 追加及び変更する関係スキーマ（未完成）',sourcePage:10,kind:'schema',verifiedStructure:false,keyNotationVerified:false,sourceChecked:'IPA 2025 PM1 booklet page 10 (PDF page index 9)',entries:[
     {name:'レポート課題',attributes:['コンテンツID','[ セ ]'],primaryKeyColumns:[0],foreignKeyColumns:[],keyAudit:['PK_SOLID','NONE'],auditSourcePages:[10,10]},
     {name:'レポート課題出題',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','[ ソ ]'],primaryKeyColumns:[],foreignKeyColumns:[],keyAudit:['UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED'],auditSourcePages:[null,null,null,null,null,null,null]},
