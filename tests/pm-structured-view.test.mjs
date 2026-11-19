@@ -186,6 +186,19 @@ test('page 9 and 10 show ordered extension requirements and six numbered answer 
  assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
 });
 
+test('official page 10 exception to zero-cardinality notation and page 8 figure locations are explicit',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const page8=doc.introductionPages.find(p=>p.sourcePage===8);
+ const page10=doc.introductionPages.find(p=>p.sourcePage===10);
+ assert.deepEqual(page8.figureReferences,[{id:'fig1',sourcePage:8},{id:'fig2',sourcePage:9}]);
+ assert.ok(page8.paragraphs.some(x=>x.includes('図1（この8ページ）')&&x.includes('図2（次の9ページ）')));
+ assert.ok(page10.paragraphs.some(x=>x.includes('対応関係')&&x.includes('0を含むかどうか')&&x.includes('必要はない')));
+ assert.ok(page10.paragraphs.some(x=>x.startsWith('⑥ ')&&x.includes('角括弧')));
+ assert.equal(page8.complete,false);
+ assert.equal(page10.complete,false);
+ assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
+});
+
 test('IPA page 11 source audit preserves all four question scopes without claiming full transcription',()=>{
  const doc=pmVerifiedStructure['2025:pm1:1'];
  const qs=doc.subquestions;
