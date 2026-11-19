@@ -104,9 +104,22 @@ try{
   })()`);
   assert.deepEqual(restored,{first:'TEST-111',second:'TEST-222'});
  });
- check('incomplete figure is not falsely presented as verified',async()=>{
-  const v=await cdp.eval("document.querySelector('.pmMaterialBody').textContent");
-  assert.match(v,/未整備/);
+ check('figure 1 review-only SVG and unverified figure 2/3 remain gated',async()=>{
+  const v=await cdp.eval(`(()=>{
+   const buttons=[...document.querySelectorAll('.pmQuestionNav button')];
+   const area=document.querySelector('.pmMaterialBody');
+   buttons[0].click();
+   const fig1={svg:area.querySelectorAll('svg').length,text:area.textContent};
+   buttons[2].click();
+   const fig2={svg:area.querySelectorAll('svg').length,table:area.querySelectorAll('table').length,text:area.textContent};
+   buttons[3].click();
+   const fig3={svg:area.querySelectorAll('svg').length,table:area.querySelectorAll('table').length,text:area.textContent};
+   return {fig1,fig2,fig3};
+  })()`);
+  assert.equal(v.fig1.svg,1);assert.match(v.fig1.text,/作業中の再構成図/);
+  assert.match(v.fig1.text,/最終照合は未完了/);
+  assert.equal(v.fig2.svg,0);assert.equal(v.fig2.table,0);assert.match(v.fig2.text,/未整備/);
+  assert.equal(v.fig3.svg,0);assert.equal(v.fig3.table,0);assert.match(v.fig3.text,/未整備/);
  });
  let failed=0;
  for(const t of tests){try{await t.fn();console.log('PASS',t.name)}catch(e){failed++;console.error('FAIL',t.name,e.message)}}
