@@ -153,6 +153,40 @@ test('pages 6 and 7 retain their source-numbered conditions and question blanks'
  }finally{undo()}
 });
 
+test('question-specific source page shortcuts preserve selected figure, answer draft and focus target',()=>{
+ const undo=setup();
+ try{
+  const doc=pmVerifiedStructure['2025:pm1:1'];
+  const writes=[];
+  const root=createPmSubquestionView(doc,{saveAnswer:(id,v)=>{writes.push([id,v]);return true}});
+  const intro=walk(root,n=>n.className==='pmIntroText')[0];
+  const answer=walk(root,n=>n.tag==='textarea')[0];
+  const selector=walk(root,n=>n.tag==='select')[0];
+  const nav=walk(root,n=>n.className==='pmRelatedPages toolbar')[0];
+  assert.ok(nav);
+  assert.deepEqual(nav.children.map(n=>n.textContent),['8ページの大問を見る']);
+  byText(root,'button','設問1 (3)').fire('click');
+  assert.deepEqual(nav.children.map(n=>n.textContent),['8ページの大問を見る','9ページの大問を見る']);
+  answer.fire('input','解答アの下書き');
+  byText(root,'button','9ページの大問を見る').fire('click');
+  assert.ok(intro.children.some(n=>n.textContent==='原本 9 ページ'));
+  assert.equal(answer.value,'解答アの下書き');
+  assert.equal(selector.value,'auto');
+  assert.equal(walk(root,n=>n.className==='pmFig2ReviewTable').length,1);
+  const link=walk(root,n=>n.tag==='a'&&n.textContent==='原本の設問（11ページ）を開く')[0];
+  assert.equal(link.href,doc.source+'#page=11');
+  assert.equal(link.rel,'noopener noreferrer');
+  byText(root,'button','設問2').fire('click');
+  assert.deepEqual(nav.children.map(n=>n.textContent),['9ページの大問を見る','10ページの大問を見る']);
+  byText(root,'button','10ページの大問を見る').fire('click');
+  assert.ok(intro.children.some(n=>n.textContent==='原本 10 ページ'));
+  assert.equal(walk(root,n=>n.className==='pmFig3ReviewTable').length,1);
+  byText(root,'button','設問1 (3)').fire('click');
+  assert.equal(answer.value,'解答アの下書き');
+  assert.deepEqual(writes,[['s1-3','解答アの下書き']]);
+ }finally{undo()}
+});
+
 test('all four subquestions automatically select their associated source figure',()=>{
  const undo=setup();
  try{
