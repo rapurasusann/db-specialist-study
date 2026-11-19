@@ -56,6 +56,17 @@ test('figure 1 traced positions keep original diagram structure and incomplete e
  assert.deepEqual(trace.arrows[4].at(-1),[225,526]);
  assert.equal(trace.arrows.length,7);
  assert.equal(trace.subtypeGroups.length,5);
+ assert.deepEqual(trace.subtypeGroups.map(g=>[g.parentId,...g.childIds]),[
+  ['content','material','test'],
+  ['fixed','inperson','realtime'],
+  ['online','realtime','ondemand'],
+  ['use','materialUse','testUse'],
+  ['attendance','fixedAttendance','ondemandAttendance']
+ ]);
+ const known=new Set(fig.nodes.map(n=>n.id));
+ assert.ok(trace.subtypeGroups.every(g=>g.sourcePage===8&&known.has(g.parentId)&&
+  g.childIds.length===2&&g.childIds.every(id=>known.has(id))&&g.children.length===2));
+ assert.equal(trace.subtypeGroups.filter(g=>g.childIds.includes('realtime')).length,2);
  assert.deepEqual(trace.subtypeGroups.map(g=>g.bar[0][1]),[62,422,422,460,645]);
  assert.ok(trace.subtypeGroups.every(g=>g.children.every(c=>c[1]>g.bar[0][1])));
  for(const line of trace.arrows){
