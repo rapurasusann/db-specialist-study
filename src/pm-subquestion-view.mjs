@@ -1,0 +1,81 @@
+// Reusable view for VERIFIED afternoon materials. Does not modify legacy progress.
+// NOT connected to index.html until complete source transcriptions are verified.
+export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=>{}}={}){
+ if(!doc||!Array.isArray(doc.introductionPages)||!Array.isArray(doc.materials)||!Array.isArray(doc.subquestions))throw Error('INVALID_PM_DOCUMENT');
+ const root=document.createElement('section');root.className='pmStructured';root.setAttribute('aria-label','午後試験の設問別学習');
+ const make=(tag,text,cls)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el};
+ const intro=root.appendChild(make('section',undefined,'pmIntro'));intro.append(make('h3','大問表示部'));
+ const introText=intro.appendChild(make('div',undefined,'pmIntroText'));
+ const pager=intro.appendChild(make('div',undefined,'toolbar'));
+ const prev=pager.appendChild(make('button','前ページ'));prev.type='button';
+ const indicator=pager.appendChild(make('span',''));
+ const next=pager.appendChild(make('button','次ページ'));next.type='button';
+ const mats=root.appendChild(make('section',undefined,'pmMaterials'));mats.append(make('h3','図・表表示部'));
+ const materialSelector=mats.appendChild(make('select'));materialSelector.setAttribute('aria-label','表示する図・表');
+ const materialBody=mats.appendChild(make('div',undefined,'pmMaterialBody'));
+ const questionNav=root.appendChild(make('section',undefined,'pmQuestionNav'));questionNav.append(make('h3','設問選択部'));
+ const buttons=questionNav.appendChild(make('div',undefined,'toolbar'));
+ const questionArea=root.appendChild(make('section',undefined,'pmQuestionText'));questionArea.append(make('h3','選択された設問の問題文'));
+ const prompt=questionArea.appendChild(make('p',''));
+ const answerArea=root.appendChild(make('section',undefined,'pmQuestionAnswer'));answerArea.append(make('h3','回答欄'));
+ const answer=answerArea.appendChild(make('textarea'));answer.rows=5;answer.setAttribute('aria-label','選択中の設問の回答');
+ const warning=answerArea.appendChild(make('p',''));warning.className='muted';
+ let page=0,selected=doc.subquestions[0]?.id||'',selectedMaterial='auto';
+ let answers={...(loadAnswers()||{})};
+ const sub=()=>doc.subquestions.find(q=>q.id===selected);
+ function renderIntro(){
+  const pages=doc.introductionPages;
+  introText.replaceChildren();
+  const item=pages[page];
+  if(item){
+   introText.append(make('p','原本 '+item.sourcePage+' ページ'));
+   for(const text of item.paragraphs||[])introText.append(make('p',text));
+   if(!item.complete)introText.append(make('p','このページの全文は未整備です。必ず公式原本でも確認してください。','muted'));
+  }else introText.append(make('p','大問本文は未整備です。公式原本を確認してください。','muted'));
+  indicator.textContent=(pages.length?String(page+1):'0')+' / '+pages.length;
+  prev.disabled=page<=0;next.disabled=page>=pages.length-1;
+ }
+ function materialFor(question){
+  const ids=question?.materialIds||[];
+  if(selectedMaterial==='auto')return doc.materials.filter(m=>ids.includes(m.id));
+  return doc.materials.filter(m=>m.id===selectedMaterial);
+ }
+ function renderMaterials(){
+  const items=materialFor(sub());
+  materialBody.replaceChildren();
+  if(!items.length){materialBody.append(make('p','この設問に関連する図・表はありません。','muted'));return}
+  for(const mat of items){
+   const box=materialBody.appendChild(make('div',undefined,'pmMaterialItem'));
+   box.append(make('h4',mat.title));
+   if(!mat.verifiedStructure){box.append(make('p','図・表のテキスト再構成は未整備です。公式原本の '+mat.sourcePage+' ページを確認してください。','muted'));continue}
+   if(mat.kind==='table'){
+    const table=box.appendChild(make('table'));
+    if(mat.columns){const head=table.appendChild(make('tr'));for(const val of mat.columns)head.append(make('th',String(val)))}
+    for(const row of mat.rows||[]){const tr=table.appendChild(make('tr'));for(const val of row)tr.append(make('td',String(val)))}
+   }else if(mat.kind==='code'){
+    box.append(make('pre',mat.text||''));
+   }else if(mat.kind==='svg'&&typeof mat.render==='function'){
+    // SVG creation is supplied by vetted app code, never raw HTML or text imported from the source.
+    mat.render(box);
+   }else box.append(make('p','対応する図の表示形式を確認中です。','muted'));
+  }
+ }
+ function renderQuestion(){
+  buttons.replaceChildren();
+  for(const q of doc.subquestions){
+   const b=buttons.appendChild(make('button',q.label));b.type='button';b.setAttribute('aria-pressed',String(q.id===selected));
+   b.addEventListener('click',()=>{selected=q.id;selectedMaterial='auto';materialSelector.value='auto';renderQuestion();renderMaterials()});
+  }
+  prompt.textContent=sub()?.text||'設問の問題文は未整備です。';
+  answer.value=answers[selected]||'';
+  warning.textContent='設問ごとに回答を分離します。原本未整備の内容は公式原本で確認してください。';
+ }
+ materialSelector.appendChild(new Option('自動：選択中の設問に関連する図・表','auto'));
+ for(const mat of doc.materials)materialSelector.appendChild(new Option(mat.title,mat.id));
+ materialSelector.addEventListener('change',()=>{selectedMaterial=materialSelector.value;renderMaterials()});
+ prev.addEventListener('click',()=>{page=Math.max(0,page-1);renderIntro()});
+ next.addEventListener('click',()=>{page=Math.min(doc.introductionPages.length-1,page+1);renderIntro()});
+ answer.addEventListener('input',()=>{if(!selected)return;answers[selected]=answer.value;saveAnswer(selected,answer.value)});
+ renderIntro();renderQuestion();renderMaterials();
+ return root;
+}
