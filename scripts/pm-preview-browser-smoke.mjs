@@ -101,6 +101,31 @@ try{
   const heading=await cdp.eval("document.querySelector('.pmQuestionText h4').textContent");
   assert.match(heading,/設問2：拡充後の関係スキーマ/);
  });
+ check('question shortcuts change only related introduction page and keep the selected diagram',async()=>{
+  const v=await cdp.eval(`(()=>{
+   const buttons=[...document.querySelectorAll('.pmQuestionNav button')];
+   const section=document.querySelector('.pmQuestionText');
+   const go=(page)=>[...section.querySelectorAll('.pmRelatedPages button')].find(b=>b.textContent===page+'ページの大問を見る')?.click();
+   const source=section.querySelector('a[href*="#page="]');
+   buttons[2].click();
+   const firstLinks=[...section.querySelectorAll('.pmRelatedPages button')].map(b=>b.textContent);
+   go(9);
+   const page9=document.querySelector('.pmIntroText').textContent.includes('原本 9 ページ');
+   const fig2=document.querySelectorAll('.pmFig2ReviewTable').length;
+   const sourceHref=source?.getAttribute('href');
+   buttons[3].click();
+   const secondLinks=[...section.querySelectorAll('.pmRelatedPages button')].map(b=>b.textContent);
+   go(10);
+   const page10=document.querySelector('.pmIntroText').textContent.includes('原本 10 ページ');
+   const fig3=document.querySelectorAll('.pmFig3ReviewTable').length;
+   return {firstLinks,page9,fig2,sourceHref,secondLinks,page10,fig3};
+  })()`);
+  assert.deepEqual(v.firstLinks,['8ページの大問を見る','9ページの大問を見る']);
+  assert.equal(v.page9,true);assert.equal(v.fig2,1);
+  assert.match(v.sourceHref,/#page=11$/);
+  assert.deepEqual(v.secondLinks,['9ページの大問を見る','10ページの大問を見る']);
+  assert.equal(v.page10,true);assert.equal(v.fig3,1);
+ });
  check('independent answers and reload persistence',async()=>{
   const v=await cdp.eval(`(()=>{
    const buttons=[...document.querySelectorAll('.pmQuestionNav button')],ta=document.querySelector('.pmQuestionAnswer textarea');
