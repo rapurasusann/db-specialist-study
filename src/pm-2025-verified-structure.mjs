@@ -164,10 +164,14 @@ export const pmVerifiedStructure=Object.freeze({
    ]}
   ],
   subquestions:[
-   {id:'s1-1',label:'設問1 (1)',text:'図1の空欄aに当てはまるエンティティタイプ名を答える。',textStatus:'PARAPHRASE',materialIds:['fig1'],sourcePage:11},
-   {id:'s1-2',label:'設問1 (2)',text:'図1に不足しているリレーションシップを補って完成させる。',textStatus:'PARAPHRASE',materialIds:['fig1'],sourcePage:11},
-   {id:'s1-3',label:'設問1 (3)',text:'図2の空欄ア～スに属性名を補い、関係スキーマを完成させる。',textStatus:'PARAPHRASE',materialIds:['fig2'],sourcePage:11},
-   {id:'s2',label:'設問2',text:'図3の空欄セ～ツに属性名を補い、関係スキーマを完成させる。',textStatus:'PARAPHRASE',materialIds:['fig3'],sourcePage:11}
+   {id:'s1-1',label:'設問1 (1)',text:'図1の空欄aに当てはまるエンティティタイプ名を答える。',textStatus:'PARAPHRASE',materialIds:['fig1'],sourcePage:11,
+    sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',answerFormat:'ENTITY_NAME',answerBlankTokens:['a']},
+   {id:'s1-2',label:'設問1 (2)',text:'図1に不足しているリレーションシップを補って完成させる。',textStatus:'PARAPHRASE',materialIds:['fig1'],sourcePage:11,
+    sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',answerFormat:'DIAGRAM_RELATIONSHIPS',answerBlankTokens:[]},
+   {id:'s1-3',label:'設問1 (3)',text:'図2の空欄ア～スに属性名を補い、関係スキーマを完成させる。',textStatus:'PARAPHRASE',materialIds:['fig2'],sourcePage:11,
+    sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',answerFormat:'ATTRIBUTE_NAMES',answerBlankTokens:'アイウエオカキクケコサシス'.split('')},
+   {id:'s2',label:'設問2',text:'図3の空欄セ～ツに属性名を補い、関係スキーマを完成させる。',textStatus:'PARAPHRASE',materialIds:['fig3'],sourcePage:11,
+    sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',answerFormat:'ATTRIBUTE_NAMES',answerBlankTokens:'セソタチツ'.split('')}
   ]
  }
 });
