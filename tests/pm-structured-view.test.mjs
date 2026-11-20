@@ -40,6 +40,20 @@ test('verified PM I Q1 has four answer units and grounded cross references',()=>
  assert.deepEqual(schema.entries.map(e=>e.name),['レポート課題','レポート課題出題','評価結果','テスト結果','レポート評価結果']);
  assert.deepEqual(schema.entries.flatMap(e=>e.attributes).filter(a=>/^\[ [セソタチツ] \]$/.test(a)),['[ セ ]','[ ソ ]','[ タ ]','[ チ ]','[ ツ ]']);
 });
+test('IPA page 9 note links figure 2 a to the unsolved figure 1 a',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const figure1=doc.materials.find(m=>m.id==='fig1');
+ const figure2=doc.materials.find(m=>m.id==='fig2');
+ assert.deepEqual(figure2.crossFigureBlankReference,{
+  token:'a',sameAsFigureId:'fig1',sourcePage:9,
+  description:'図2のaには図1のaと同じ字句が入る。'
+ });
+ assert.ok(figure1.nodes.some(n=>n.id==='a'&&n.unfinished));
+ assert.ok(figure2.entries.some(row=>row.name==='a'));
+ assert.equal(figure1.verifiedStructure,false);
+ assert.equal(figure2.verifiedStructure,false);
+});
+
 test('figure 1 traced positions keep original diagram structure and incomplete exam edges',()=>{
  const doc=pmVerifiedStructure['2025:pm1:1'];
  const fig=doc.materials.find(x=>x.id==='fig1'),trace=fig.partialSvgSource;
