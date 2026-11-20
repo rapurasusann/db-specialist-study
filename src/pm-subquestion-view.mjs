@@ -154,12 +154,29 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
      .map(e=>e.from+'|'+e.to));
     const arrowTrace=Array.isArray(data.arrowConnections)&&
       data.arrowConnections.length===(data.arrows||[]).length?data.arrowConnections:[];
+    const boxesById=new Map((data.boxes||[]).map(box=>[box[0],box]));
+    const onBorder=(point,box)=>{
+     if(!Array.isArray(point)||point.length!==2||!box)return false;
+     const [,x,y,w,h]=box,[px,py]=point;
+     const withinX=px>=x&&px<=x+w,withinY=py>=y&&py<=y+h;
+     return (withinX&&(py===y||py===y+h))||
+       (withinY&&(px===x||px===x+w));
+    };
+    const validPath=poly=>Array.isArray(poly)&&poly.length>=2&&poly.every((pt,i)=>{
+     if(!Array.isArray(pt)||pt.length!==2||pt.some(n=>!Number.isFinite(n)||n<0||n>960))return false;
+     if(i===0)return true;
+     const prev=poly[i-1];
+     return (pt[0]===prev[0])!== (pt[1]===prev[1]); // horizontal or vertical, but not zero-length
+    });
     for(const [i,poly] of (data.arrows||[]).entries()){
      const connection=arrowTrace[i];
      if(!connection||connection.sourcePage!==mat.sourcePage||
         !approvedArrows.has(connection.from+'|'+connection.to)||
         !mat.nodes.some(n=>n.id===connection.from)||
-        !mat.nodes.some(n=>n.id===connection.to))continue;
+        !mat.nodes.some(n=>n.id===connection.to)||
+        !validPath(poly)||
+        !onBorder(poly[0],boxesById.get(connection.from))||
+        !onBorder(poly.at(-1),boxesById.get(connection.to)))continue;
      path(poly);
      const last=poly.at(-1),prev=poly.at(-2);
      if(last&&prev){
