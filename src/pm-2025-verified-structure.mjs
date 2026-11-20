@@ -213,6 +213,7 @@ export const pmVerifiedStructure=Object.freeze({
     sourceChecked:'IPA 2025 PM1 booklet page 9 (PDF page index 8): relation names and attribute strings transcribed; key underlines not yet fully audited',
     transcriptionStage:'TEXT_DRAFT_PARTIAL_KEY_AUDIT',
     sourceTranscriptionVerified:false, // Must be explicitly approved after a full source-by-source comparison.
+    crossFigureBlankReference:{token:'a',sameAsFigureId:'fig1',sourcePage:9,description:'図2のaには図1のaと同じ字句が入る。'},
     // Figure 2 REVIEW table may display unstyled names/attributes only. Never display
     // source-like PK/FK underlines or mark the schema verified before a full audit.
     // The literal [コンテンツ区分] is ordinary optional notation, not an answer blank.
