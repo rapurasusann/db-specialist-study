@@ -9,7 +9,7 @@ const clips = fs.readFileSync(path.join(root,'src/am2-figure-clips.js'),'utf8');
 const questions = fs.readFileSync(path.join(root,'src/am2-2025-questions.js'),'utf8');
 const html = fs.readFileSync(path.join(root,'index.html'),'utf8');
 
-test('AM2 Q8/9/12: original full-page images, no distorted SVG crop', () => {
+test('AM2 Q12 retains original full-page image, Q8/9 switch to native tables', () => {
   const source = new Map();
   const selections = [];
   const createNode = name => ({
@@ -28,7 +28,8 @@ test('AM2 Q8/9/12: original full-page images, no distorted SVG crop', () => {
   const context = {document, showQuestion(){}, year:2025,courseId:'am2',number:6};
   vm.createContext(context);
   vm.runInContext(clips,context,{timeout:1000});
-  const expected = new Map([[8,7],[9,8],[12,10]]);
+  const expected = new Map([[12,10]]);
+  for(const number of [8,9]) { context.number=number; context.showQuestion(); assert.equal(selections.length,0,'Q'+number+' must not render top full-page image'); }
   for(const [number,page] of expected) {
     context.number=number;
     context.showQuestion();
