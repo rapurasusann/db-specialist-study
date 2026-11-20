@@ -235,6 +235,14 @@ test('IPA pages 9 and 10 have separate expansion and answer-rule summaries while
  assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
 });
 
+test('page 9 retains the report expansion background and links to source Figure 3',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const p9=doc.introductionPages.find(p=>p.sourcePage===9);
+ assert.ok(p9.paragraphs.some(x=>x.includes('オンデマンド型講義でレポート課題を実施')&&x.includes('図3（10ページ）')));
+ assert.equal(p9.complete,false);
+ assert.equal(doc.materials.find(m=>m.id==='fig3').sourcePage,10);
+});
+
 test('page 9 report assignment is exclusive to on-demand lectures and at most one per lecture',()=>{
  const doc=pmVerifiedStructure['2025:pm1:1'];
  const page9=doc.introductionPages.find(p=>p.sourcePage===9);
