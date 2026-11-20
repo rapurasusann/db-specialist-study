@@ -88,6 +88,11 @@ try{
   assert.match(v,/一つ又は複数の教材/);
   assert.match(v,/一つ又は複数のテスト/);
   assert.match(v,/講義ごと・教材ごと/);
+  assert.match(v,/解答期限時刻/);
+  assert.match(v,/動画視聴ファイル名/);
+  assert.match(v,/開講年月日とオンライン教室ID/);
+  assert.match(v,/開講年月日と開講場所/);
+  assert.doesNotMatch(v,/解答期限日時/);
  });
  check('page 9 on-demand-only report restriction appears before answering',async()=>{
   const v=await cdp.eval(`(()=>{
