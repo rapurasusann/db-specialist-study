@@ -314,6 +314,14 @@ export function validatePmStructure(doc){
  const ids=new Set(doc.materials.map(m=>m.id));
  if(ids.size!==doc.materials.length)return false;
  if(new Set(doc.introductionPages.map(p=>p.id)).size!==doc.introductionPages.length)return false;
+ // A document-level source-verification flag alone cannot certify partial
+ // introductory pages, paraphrased question text or unverified figures.
+ if(doc.status==='FULL_SOURCE_VERIFICATION'&&(
+   doc.introductionPages.some(p=>p.complete!==true)||
+   doc.subquestions.some(q=>q.textStatus!=='VERIFIED_TRANSCRIPTION')||
+   doc.materials.some(m=>m.verifiedStructure!==true||
+     (m.kind==='schema'&&(m.keyNotationVerified!==true||m.sourceTranscriptionVerified!==true)))
+ ))return false;
  // Figure 2 must preserve the full IPA page-9 problem, not merely pass generic
  // key-notation checks with one artificial or incomplete schema entry.
  const fig2=doc.materials.find(m=>m.id==='fig2');
