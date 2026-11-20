@@ -6,7 +6,12 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
  const make=(tag,text,cls)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el};
  const intro=root.appendChild(make('section',undefined,'pmIntro'));intro.append(make('h3','大問表示部'));
  const introText=intro.appendChild(make('div',undefined,'pmIntroText'));
- if(doc.status!=='FULL_SOURCE_VERIFICATION'){
+ const fullyVerified=doc.status==='FULL_SOURCE_VERIFICATION'&&
+  doc.introductionPages.every(p=>p.complete===true)&&
+  doc.subquestions.every(q=>q.textStatus==='VERIFIED_TRANSCRIPTION')&&
+  doc.materials.every(m=>m.verifiedStructure===true&&
+   (m.kind!=='schema'||(m.keyNotationVerified===true&&m.sourceTranscriptionVerified===true)));
+ if(!fullyVerified){
   const notice=intro.appendChild(make('p','この問題は原本の転記・照合が未完了です。表示中の大問本文は要約を含み、試験問題の全文ではありません。','muted'));
   notice.setAttribute('role','status');
  }
@@ -328,7 +333,7 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
    questionSourceLink.textContent=Number.isInteger(sourcePage)?'原本の設問（'+sourcePage+'ページ）を開く':'IPA公式設問を開く';
    questionSourceLink.href=doc.source.split('#')[0]+(Number.isInteger(sourcePage)?'#page='+sourcePage:'');
   }
-  const questionIsVerified=doc.status==='FULL_SOURCE_VERIFICATION'&&sub()?.textStatus==='VERIFIED_TRANSCRIPTION'&&Boolean(sub()?.text);
+  const questionIsVerified=fullyVerified&&sub()?.textStatus==='VERIFIED_TRANSCRIPTION'&&Boolean(sub()?.text);
   promptNotice.textContent=questionIsVerified?'':'この設問文は原文の全文転記ではなく、内容をまとめた説明です。正式な設問はIPA公式問題冊子を確認してください。';
   answer.value=answers[selected]||'';
   warning.textContent=unsaved.has(selected)?'この設問の最新の回答は保存できていません。画面を閉じる前に保存設定を確認してください。':'設問ごとに回答を分離します。原本未整備の内容は公式原本で確認してください。';
