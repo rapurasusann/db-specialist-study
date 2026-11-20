@@ -317,6 +317,25 @@ test('figure 2 text review shows 24 relations but omits all unaudited key underl
  }finally{undo()}
 });
 
+test('figure 2 review visibly explains that a is the same unresolved name as in figure 1',()=>{
+ const undo=setup();
+ try{
+  const original=pmVerifiedStructure['2025:pm1:1'];
+  const root=createPmSubquestionView(original);
+  byText(root,'button','設問1 (3)').fire('click');
+  const notice=walk(root,n=>n.className==='pmFigureCrossRef');
+  assert.equal(notice.length,1);
+  assert.match(notice[0].textContent,/図2の「a」には図1の「a」と同じ字句/);
+  assert.match(notice[0].textContent,/未回答/);
+  const altered=structuredClone(original);
+  altered.materials[1].crossFigureBlankReference.sourcePage=10;
+  const changed=createPmSubquestionView(altered);
+  byText(changed,'button','設問1 (3)').fire('click');
+  assert.equal(walk(changed,n=>n.className==='pmFigureCrossRef').length,0,
+   'unverified page references must not appear as original notes');
+ }finally{undo()}
+});
+
 test('figure 2 review never promotes composite key candidates to verified underlines',()=>{
  const undo=setup();
  try{
