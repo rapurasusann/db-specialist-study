@@ -114,6 +114,28 @@ test('figure 1 review SVG contains 24 text boxes, its original blank and a visib
  }finally{undo()}
 });
 
+test('Figure 1 review hides any arrow without checked original endpoints',()=>{
+ const undo=setup();
+ try{
+  const original=pmVerifiedStructure['2025:pm1:1'];
+  const baseline=walk(createPmSubquestionView(original),n=>n.tag==='svg')[0];
+  const count=walk(baseline,n=>n.tag==='polyline').length;
+  const draft=structuredClone(original);
+  draft.materials[0].partialSvgSource.arrowConnections[0].to='student';
+  const altered=walk(createPmSubquestionView(draft),n=>n.tag==='svg')[0];
+  assert.equal(count-walk(altered,n=>n.tag==='polyline').length,2,'one arrow and its arrowhead omitted');
+  const badPage=structuredClone(original);
+  badPage.materials[0].partialSvgSource.arrowConnections[1].sourcePage=9;
+  const changed=walk(createPmSubquestionView(badPage),n=>n.tag==='svg')[0];
+  assert.equal(count-walk(changed,n=>n.tag==='polyline').length,2);
+  const missing=structuredClone(original);
+  missing.materials[0].partialSvgSource.arrowConnections.pop();
+  const removed=walk(createPmSubquestionView(missing),n=>n.tag==='svg')[0];
+  assert.equal(count-walk(removed,n=>n.tag==='polyline').length,14,'all seven are excluded when endpoint metadata is incomplete');
+  assert.equal(original.materials[0].verifiedStructure,false);
+ }finally{undo()}
+});
+
 test('Figure 1 review rejects an inheritance symbol with an unverified source page',()=>{
  const undo=setup();
  try{
