@@ -125,7 +125,7 @@ test('IPA page 7 lecture and digital-content section counts and boundaries are a
  assert.equal(page6.continuesOnNextPage.section,page7.continuesFromPreviousPage.section);
  assert.equal(page6.continuesOnNextPage.item,page7.continuesFromPreviousPage.item);
  for(const fact of ['90分','講義番号','オンデマンド','リアルタイム','オンライン教室ID','補助教員',
-  'コンテンツID','文書・画像・動画','公開開始日','解答時間','リアルタイム型']){
+  'コンテンツID','文書・画像・動画','公開期間','解答時間','リアルタイム型']){
   assert.ok(page7.paragraphs.some(line=>line.includes(fact)),fact);
  }
  assert.ok(page7.paragraphs.some(line=>line.includes('要約・全文転記ではありません')));
@@ -148,6 +148,19 @@ test('IPA page 6 section structure, details and page 7 continuation remain ident
  }
  assert.ok(page6.paragraphs.some(line=>line.includes('要約・全文転記ではありません')));
  assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
+});
+
+test('page 6 study context and page 7 one-or-more usage constraints are preserved',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const page6=doc.introductionPages.find(p=>p.sourcePage===6);
+ const page7=doc.introductionPages.find(p=>p.sourcePage===7);
+ assert.ok(page6.paragraphs.some(p=>p.includes('オンライン講義の増加')&&p.includes('概念データモデルと関係スキーマ')));
+ const material=page7.paragraphs.find(p=>p.startsWith('(4) 教材は'));
+ assert.ok(material?.includes('一つ又は複数')&&material.includes('講義ごと・教材ごと'));
+ const tests=page7.paragraphs.find(p=>p.startsWith('(6) テスト問題'));
+ assert.ok(tests?.includes('リアルタイム型講義だけ')&&tests.includes('一つ又は複数'));
+ assert.ok(tests.includes('8ページに続く'));
+ assert.ok(page6.complete===false&&page7.complete===false);
 });
 
 test('source page 6 and 7 numbered paraphrases cover every stated condition without claiming full transcription',()=>{
