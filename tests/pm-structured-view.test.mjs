@@ -54,6 +54,19 @@ test('IPA page 9 note links figure 2 a to the unsolved figure 1 a',()=>{
  assert.equal(figure2.verifiedStructure,false);
 });
 
+test('full-source status cannot override provisional problem pages, questions or diagrams',()=>{
+ const original=pmVerifiedStructure['2025:pm1:1'];
+ assert.equal(validatePmStructure(original),true);
+ const changed=structuredClone(original);
+ changed.status='FULL_SOURCE_VERIFICATION';
+ assert.equal(validatePmStructure(changed),false,'unverified pages, questions and diagrams reject status upgrade');
+ changed.introductionPages.forEach(p=>p.complete=true);
+ assert.equal(validatePmStructure(changed),false,'unverified questions and diagrams still block');
+ changed.subquestions.forEach(q=>q.textStatus='VERIFIED_TRANSCRIPTION');
+ assert.equal(validatePmStructure(changed),false,'unverified figures still block');
+ assert.equal(validatePmStructure(original),true,'the real draft stays usable for internal review');
+});
+
 test('figure 1 traced positions keep original diagram structure and incomplete exam edges',()=>{
  const doc=pmVerifiedStructure['2025:pm1:1'];
  const fig=doc.materials.find(x=>x.id==='fig1'),trace=fig.partialSvgSource;
