@@ -222,6 +222,17 @@ test('IPA pages 9 and 10 have separate expansion and answer-rule summaries while
  assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
 });
 
+test('page 9 report assignment is exclusive to on-demand lectures and at most one per lecture',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const page9=doc.introductionPages.find(p=>p.sourcePage===9);
+ const item=page9.paragraphs.find(p=>p.startsWith('(3)'));
+ assert.ok(item.includes('オンデマンド型講義だけ'));
+ assert.ok(item.includes('教員が必要と判断'));
+ assert.ok(item.includes('1回のオンデマンド型講義'));
+ assert.ok(item.includes('一つだけ'));
+ assert.equal(page9.complete,false);
+});
+
 test('official report-assignment and evaluation terminology appears without inventing blank answers',()=>{
  const doc=pmVerifiedStructure['2025:pm1:1'];
  const page9=doc.introductionPages.find(p=>p.sourcePage===9);
