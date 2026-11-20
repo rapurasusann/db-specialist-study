@@ -97,6 +97,8 @@ try{
    return document.querySelector('.pmIntroText').textContent;
   })()`);
   assert.match(v,/原本 9 ページ/);
+  assert.match(v,/オンライン講義のうちオンデマンド型講義でレポート課題を実施/);
+  assert.match(v,/図3（10ページ）/);
   assert.match(v,/レポート課題を用いるのはオンデマンド型講義だけ/);
   assert.match(v,/1回のオンデマンド型講義で課すレポート課題は一つだけ/);
  });
