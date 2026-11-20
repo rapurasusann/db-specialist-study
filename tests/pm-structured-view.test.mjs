@@ -55,6 +55,14 @@ test('figure 1 traced positions keep original diagram structure and incomplete e
  assert.deepEqual(trace.arrows[2],[[192,60],[192,135],[93,135],[93,171]]);
  assert.deepEqual(trace.arrows[4].at(-1),[225,526]);
  assert.equal(trace.arrows.length,7);
+ assert.deepEqual(trace.arrowConnections.map(c=>[c.from,c.to]),[
+  ['faculty','department'],['department','offering'],['subject','offering'],
+  ['offering','lecture'],['inperson','a'],['material','materialUse'],['test','testUse']
+ ]);
+ assert.equal(trace.arrowConnections.length,trace.arrows.length);
+ assert.ok(trace.arrowConnections.every(c=>c.sourcePage===8&&fig.nodes.some(n=>n.id===c.from)&&fig.nodes.some(n=>n.id===c.to)));
+ assert.deepEqual(trace.arrowConnections.map(c=>[c.from,c.to]),
+  fig.checkedVisibleConnectors.map(c=>[c.from,c.to]));
  assert.equal(trace.subtypeGroups.length,5);
  assert.deepEqual(trace.subtypeGroups.map(g=>[g.parentId,...g.childIds]),[
   ['content','material','test'],
