@@ -194,6 +194,15 @@ test('IPA pages 7-8 preserve deadline as clock time and exact lecture field name
  assert.equal(page8.complete,false);
 });
 
+test('page 6 student registration chooses one term scope rather than all three',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const page6=doc.introductionPages.find(p=>p.sourcePage===6);
+ const registration=page6.paragraphs.find(p=>p.startsWith('(2) 学生は'));
+ assert.ok(registration.includes('前期・後期・通期のいずれか'));
+ assert.ok(registration.includes('科目の履修登録'));
+ assert.equal(page6.complete,false);
+});
+
 test('page 6 study context and page 7 one-or-more usage constraints are preserved',()=>{
  const doc=pmVerifiedStructure['2025:pm1:1'];
  const page6=doc.introductionPages.find(p=>p.sourcePage===6);
