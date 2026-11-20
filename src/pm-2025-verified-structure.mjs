@@ -215,6 +215,14 @@ export const pmVerifiedStructure=Object.freeze({
     transcriptionStage:'TEXT_DRAFT_PARTIAL_KEY_AUDIT',
     sourceTranscriptionVerified:false, // Must be explicitly approved after a full source-by-source comparison.
     crossFigureBlankReference:{token:'a',sameAsFigureId:'fig1',sourcePage:9,description:'図2のaには図1のaと同じ字句が入る。'},
+    // Blank locations audited against printed page 9; not answer values.
+    sourceBlankPositions:[
+     ['ア','開講科目',6],['イ','時間固定講義',5],['ウ','オンライン講義',5],
+     ['エ','対面講義',5],['オ','リアルタイム型講義',5],['カ','オンデマンド型講義',5],
+     ['キ','a',0],['ク','教材使用',6],['ケ','テスト問題使用',6],
+     ['コ','科目履修登録',0],['サ','講義受講',7],
+     ['シ','時間固定講義受講',6],['ス','オンデマンド型講義受講',6]
+    ],
     // Figure 2 REVIEW table may display unstyled names/attributes only. Never display
     // source-like PK/FK underlines or mark the schema verified before a full audit.
     // The literal [コンテンツ区分] is ordinary optional notation, not an answer blank.
@@ -290,7 +298,12 @@ export const pmVerifiedStructure=Object.freeze({
       };
     })
    },
-   {id:'fig3',title:'図3 追加及び変更する関係スキーマ（未完成）',sourcePage:10,kind:'schema',verifiedStructure:false,keyNotationVerified:false,sourceChecked:'IPA 2025 PM1 booklet page 10 (PDF page index 9)',transcriptionStage:'TEXT_DRAFT_PARTIAL_KEY_AUDIT',sourceTranscriptionVerified:false,entries:[
+   {id:'fig3',title:'図3 追加及び変更する関係スキーマ（未完成）',sourcePage:10,kind:'schema',verifiedStructure:false,keyNotationVerified:false,sourceChecked:'IPA 2025 PM1 booklet page 10 (PDF page index 9)',transcriptionStage:'TEXT_DRAFT_PARTIAL_KEY_AUDIT',sourceTranscriptionVerified:false,
+   // Printed page 10: relation name and 0-based attribute-slot index.
+   sourceBlankPositions:[
+    ['セ','レポート課題',1],['ソ','レポート課題出題',6],
+    ['タ','評価結果',8],['チ','テスト結果',7],['ツ','レポート評価結果',7]
+   ],entries:[
     {name:'レポート課題',attributes:['コンテンツID','[ セ ]'],primaryKeyColumns:[0],foreignKeyColumns:[],keyAudit:['PK_SOLID','NONE'],auditSourcePages:[10,10]},
     {name:'レポート課題出題',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','[ ソ ]'],primaryKeyColumns:[],foreignKeyColumns:[],keyAudit:['UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','NONE'],auditSourcePages:[null,null,null,null,null,null,10]},
     {name:'評価結果',attributes:['学科コード','科目ID','年度','学期','講義番号','コンテンツID','学籍番号','評価結果区分','[ タ ]'],primaryKeyColumns:[],foreignKeyColumns:[],keyAudit:['UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','UNVERIFIED','NONE','NONE'],auditSourcePages:[null,null,null,null,null,null,null,10,10]},
@@ -325,6 +338,18 @@ export function validatePmStructure(doc){
  ))return false;
  // Figure 2 must preserve the full IPA page-9 problem, not merely pass generic
  // key-notation checks with one artificial or incomplete schema entry.
+ // Figure 2/3 answer blanks must stay in their exact original slots,
+ // independently of unresolved answers and unverified key underlines.
+ for(const [figureId,expected] of [['fig2','アイウエオカキクケコサシス'],['fig3','セソタチツ']]){
+  const mat=doc.materials.find(m=>m.id===figureId);
+  if(!mat||!Array.isArray(mat.entries)||!Array.isArray(mat.sourceBlankPositions))return false;
+  const tokens=mat.entries.flatMap(e=>(e.attributes||[]).flatMap((value,i)=>{
+   const token=typeof value==='string'&&value.startsWith('[ ')&&value.endsWith(' ]')?value.slice(2,-2):'';
+   return expected.includes(token)&&token.length===1?[[token,e.name,i]]:[];
+  }));
+  if(tokens.map(t=>t[0]).join('')!==expected||
+     JSON.stringify(tokens)!==JSON.stringify(mat.sourceBlankPositions))return false;
+ }
  const fig2=doc.materials.find(m=>m.id==='fig2');
  if(fig2?.verifiedStructure){
   if(fig2.sourceTranscriptionVerified!==true)return false;
