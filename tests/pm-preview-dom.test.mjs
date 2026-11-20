@@ -465,8 +465,9 @@ test('a partially verified problem always labels subquestion text as a paraphras
   const full=structuredClone(doc);
   full.status='FULL_SOURCE_VERIFICATION';
   const fullyVerified=createPmSubquestionView(full);
-  const fullNotice=walk(fullyVerified,n=>n.className==='muted'&&n.tag==='p'&&n.textContent==='')[0];
-  assert.ok(fullNotice,'fully verified question may omit the warning');
+  const fullNotice=walk(fullyVerified,n=>n.className==='muted'&&n.tag==='p'&&
+   n.textContent.includes('この設問文は原文の全文転記ではなく'))[0];
+  assert.ok(fullNotice,'incomplete pages and diagrams must retain the warning even if status is flipped');
   byText(fullyVerified,'button','設問1 (2)').fire('click');
   assert.ok(walk(fullyVerified,n=>n.tag==='p'&&n.textContent.includes('この設問文は原文の全文転記ではなく')).length);
  }finally{undo()}
