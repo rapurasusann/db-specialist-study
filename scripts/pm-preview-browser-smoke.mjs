@@ -89,6 +89,17 @@ try{
   assert.match(v,/一つ又は複数のテスト/);
   assert.match(v,/講義ごと・教材ごと/);
  });
+ check('page 9 on-demand-only report restriction appears before answering',async()=>{
+  const v=await cdp.eval(`(()=>{
+   const buttons=[...document.querySelectorAll('.pmIntro button')];
+   for(let i=0;i<10;i++)buttons[0].click();
+   for(let i=0;i<3;i++)buttons[1].click();
+   return document.querySelector('.pmIntroText').textContent;
+  })()`);
+  assert.match(v,/原本 9 ページ/);
+  assert.match(v,/レポート課題を用いるのはオンデマンド型講義だけ/);
+  assert.match(v,/1回のオンデマンド型講義で課すレポート課題は一つだけ/);
+ });
  check('page-11 question scopes retain one-or-more attribute instructions',async()=>{
   const v=await cdp.eval(`(()=>{
    const buttons=[...document.querySelectorAll('.pmQuestionNav button')];
