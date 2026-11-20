@@ -67,6 +67,32 @@ test('full-source status cannot override provisional problem pages, questions or
  assert.equal(validatePmStructure(original),true,'the real draft stays usable for internal review');
 });
 
+test('IPA printed figures 2 and 3 preserve each unanswered blank in its exact attribute slot',()=>{
+ const original=pmVerifiedStructure['2025:pm1:1'];
+ assert.ok(validatePmStructure(original));
+ const fig2=original.materials.find(m=>m.id==='fig2');
+ const fig3=original.materials.find(m=>m.id==='fig3');
+ assert.deepEqual(fig2.sourceBlankPositions,[
+  ['ア','開講科目',6],['イ','時間固定講義',5],['ウ','オンライン講義',5],
+  ['エ','対面講義',5],['オ','リアルタイム型講義',5],['カ','オンデマンド型講義',5],
+  ['キ','a',0],['ク','教材使用',6],['ケ','テスト問題使用',6],
+  ['コ','科目履修登録',0],['サ','講義受講',7],
+  ['シ','時間固定講義受講',6],['ス','オンデマンド型講義受講',6]
+ ]);
+ assert.deepEqual(fig3.sourceBlankPositions,[
+  ['セ','レポート課題',1],['ソ','レポート課題出題',6],
+  ['タ','評価結果',8],['チ','テスト結果',7],['ツ','レポート評価結果',7]
+ ]);
+ const moved=structuredClone(original);
+ moved.materials[1].entries[5].attributes.splice(6,1);
+ moved.materials[1].entries[5].attributes.splice(5,0,'[ ア ]');
+ assert.equal(validatePmStructure(moved),false,'moving figure 2 a blank within a row is not allowed');
+ const swapped=structuredClone(original);
+ [swapped.materials[2].entries[3].attributes[7],swapped.materials[2].entries[4].attributes[7]]=
+  [swapped.materials[2].entries[4].attributes[7],swapped.materials[2].entries[3].attributes[7]];
+ assert.equal(validatePmStructure(swapped),false,'swapping figure 3 blank labels must fail');
+});
+
 test('figure 1 traced positions keep original diagram structure and incomplete exam edges',()=>{
  const doc=pmVerifiedStructure['2025:pm1:1'];
  const fig=doc.materials.find(x=>x.id==='fig1'),trace=fig.partialSvgSource;
