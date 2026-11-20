@@ -185,7 +185,7 @@ test('IPA pages 9 and 10 have separate expansion and answer-rule summaries while
  assert.ok(page9.paragraphs.some(x=>x.includes('レポート課題')));
  assert.ok(page9.paragraphs.some(x=>x.includes('レポート課題')));
  assert.deepEqual(page9.sourceSections[1].itemNumbers,['(1)','(2)','(3)']);
- assert.ok(page10.paragraphs.some(x=>x.includes('提出を受け付ける開始日')));
+ assert.ok(page10.paragraphs.some(x=>x.includes('提出期間の開始・終了の年月日')));
  assert.ok(page10.paragraphs.some(x=>x.includes('評価結果')));
  assert.ok(page10.paragraphs.some(x=>x.includes('第3正規形')));
  assert.ok(page10.paragraphs.some(x=>x.includes('主キーを実線')));
@@ -193,6 +193,19 @@ test('IPA pages 9 and 10 have separate expansion and answer-rule summaries while
  assert.deepEqual(page10.continuesFromPreviousPage,{section:'学習管理システムの拡充',item:'(3)',sourcePage:9});
  assert.ok(doc.introductionPages.every(x=>x.complete===false));
  assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
+});
+
+test('official report-assignment and evaluation terminology appears without inventing blank answers',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const page9=doc.introductionPages.find(p=>p.sourcePage===9);
+ const page10=doc.introductionPages.find(p=>p.sourcePage===10);
+ assert.ok(page9.paragraphs.some(p=>p.includes('課題観点記述')));
+ assert.ok(page10.paragraphs.some(p=>p.includes('レポート提出先URL')&&p.includes('提出期間の開始・終了の年月日')));
+ assert.ok(page10.paragraphs.some(p=>p.includes('レポート評価')&&p.includes('評価年月日')&&p.includes('汎化')));
+ assert.equal(page9.complete,false);
+ assert.equal(page10.complete,false);
+ assert.equal(doc.materials[2].verifiedStructure,false);
+ assert.deepEqual(doc.materials[2].entries[0].attributes,['コンテンツID','[ セ ]']);
 });
 
 test('page 9 and 10 show ordered extension requirements and six numbered answer rules',()=>{
