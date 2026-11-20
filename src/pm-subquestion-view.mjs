@@ -100,6 +100,13 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
     const fkCount=auditMarks.filter(k=>k==='FK_DASHED').length;
     const pendingCount=auditMarks.filter(k=>k==='UNVERIFIED').length;
     box.append(make('p',`作業中の関係スキーマです。原本${mat.sourcePage}ページで確認済みの主キー${pkCount}属性は実線、外部キー${fkCount}属性は破線で表示します。未確認${pendingCount}属性のキー下線は省略します。空欄は未回答です。`,'muted'));
+    if(mat.id==='fig2'&&mat.crossFigureBlankReference?.token==='a'&&
+       mat.crossFigureBlankReference.sameAsFigureId==='fig1'&&
+       mat.crossFigureBlankReference.sourcePage===mat.sourcePage&&
+       doc.materials.some(other=>other.id==='fig1'&&other.nodes?.some(n=>n.id==='a'&&n.unfinished))&&
+       mat.entries?.some(entry=>entry.name==='a')){
+      box.append(make('p','原本9ページ注記：図2の「a」には図1の「a」と同じ字句が入ります。どちらも未回答です。','pmFigureCrossRef'));
+    }
     const table=box.appendChild(make('table'));
     table.className=mat.id==='fig2'?'pmFig2ReviewTable':'pmFig3ReviewTable';
     const head=table.appendChild(make('tr'));
