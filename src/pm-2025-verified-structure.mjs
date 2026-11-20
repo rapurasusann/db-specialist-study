@@ -84,7 +84,7 @@ export const pmVerifiedStructure=Object.freeze({
     '【学習管理システムの拡充】（原本9ページの要約）',
     '(1) レポート課題をデジタルコンテンツに追加し、種類を示す区分で識別する。',
     '(2) レポート課題には、レポートで述べるべき観点を説明する「課題観点記述」を持たせる。',
-    '(3) 教員が必要と判断したオンデマンド型講義で課し、1回の講義につきレポート課題は一つまでとする。'
+    '(3) レポート課題を用いるのはオンデマンド型講義だけである。教員が必要と判断したオンデマンド型講義の回に課し、1回のオンデマンド型講義で課すレポート課題は一つだけとする。'
    ]},
    {id:'intro-5',sourcePage:10,complete:false,sourceAudit:'SECTION_SCOPE_CHECKED',
     continuesFromPreviousPage:{section:'学習管理システムの拡充',item:'(3)',sourcePage:9},
