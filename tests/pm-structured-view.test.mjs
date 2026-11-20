@@ -67,6 +67,144 @@ test('full-source status cannot override provisional problem pages, questions or
  assert.equal(validatePmStructure(original),true,'the real draft stays usable for internal review');
 });
 
+test('all 29 Figure 2 and Figure 3 source relation rows retain exact printed names and attribute order',()=>{
+ // Independent literal expectations transcribed from IPA PM I Q1 printed pages 9–10.
+ // This does not verify PK/FK underline type, which remains separately gated.
+ const fig2Expected=[
+ [
+  "学部",
+  "学部コード|学部名"
+ ],
+ [
+  "学科",
+  "学科コード|学科名|学部コード"
+ ],
+ [
+  "科目",
+  "科目ID|科目名|科目目標|科目概要|単位数|必須選択区分|開講期間"
+ ],
+ [
+  "教員",
+  "教員番号|氏名|生年月日"
+ ],
+ [
+  "学生",
+  "学籍番号|氏名|生年月日"
+ ],
+ [
+  "開講科目",
+  "学科コード|科目ID|年度|学期|開講曜日|開講時限|[ ア ]"
+ ],
+ [
+  "講義",
+  "学科コード|科目ID|年度|学期|講義番号|講義概要|開講形態区分|オンライン講義フラグ|時間固定講義フラグ|開講年月日設定要否"
+ ],
+ [
+  "時間固定講義",
+  "学科コード|科目ID|年度|学期|講義番号|[ イ ]"
+ ],
+ [
+  "オンライン講義",
+  "学科コード|科目ID|年度|学期|講義番号|[ ウ ]"
+ ],
+ [
+  "対面講義",
+  "学科コード|科目ID|年度|学期|講義番号|[ エ ]"
+ ],
+ [
+  "リアルタイム型講義",
+  "学科コード|科目ID|年度|学期|講義番号|[ オ ]"
+ ],
+ [
+  "オンデマンド型講義",
+  "学科コード|科目ID|年度|学期|講義番号|[ カ ]"
+ ],
+ [
+  "a",
+  "[ キ ]|教員番号"
+ ],
+ [
+  "デジタルコンテンツ",
+  "コンテンツID|コンテンツ名|コンテンツ区分|コンテンツ概要|作成年月日時分"
+ ],
+ [
+  "教材",
+  "コンテンツID|ファイル形式"
+ ],
+ [
+  "テスト問題",
+  "コンテンツID|解答時間"
+ ],
+ [
+  "コンテンツ使用",
+  "学科コード|科目ID|年度|学期|講義番号|コンテンツID|[コンテンツ区分]"
+ ],
+ [
+  "教材使用",
+  "学科コード|科目ID|年度|学期|講義番号|コンテンツID|[ ク ]"
+ ],
+ [
+  "テスト問題使用",
+  "学科コード|科目ID|年度|学期|講義番号|コンテンツID|[ ケ ]"
+ ],
+ [
+  "科目履修登録",
+  "[ コ ]"
+ ],
+ [
+  "講義受講",
+  "学科コード|科目ID|年度|学期|講義番号|学籍番号|講義受講区分|[ サ ]"
+ ],
+ [
+  "時間固定講義受講",
+  "学科コード|科目ID|年度|学期|講義番号|学籍番号|[ シ ]"
+ ],
+ [
+  "オンデマンド型講義受講",
+  "学科コード|科目ID|年度|学期|講義番号|学籍番号|[ ス ]"
+ ],
+ [
+  "テスト結果",
+  "学科コード|科目ID|年度|学期|講義番号|コンテンツID|学籍番号|得点|評価年月日"
+ ]
+];
+ const fig3Expected=[
+ [
+  "レポート課題",
+  "コンテンツID|[ セ ]"
+ ],
+ [
+  "レポート課題出題",
+  "学科コード|科目ID|年度|学期|講義番号|コンテンツID|[ ソ ]"
+ ],
+ [
+  "評価結果",
+  "学科コード|科目ID|年度|学期|講義番号|コンテンツID|学籍番号|評価結果区分|[ タ ]"
+ ],
+ [
+  "テスト結果",
+  "学科コード|科目ID|年度|学期|講義番号|コンテンツID|学籍番号|[ チ ]"
+ ],
+ [
+  "レポート評価結果",
+  "学科コード|科目ID|年度|学期|講義番号|コンテンツID|学籍番号|[ ツ ]"
+ ]
+];
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ for(const [id,page,expected] of [['fig2',9,fig2Expected],['fig3',10,fig3Expected]]){
+  const fig=doc.materials.find(m=>m.id===id);
+  assert.equal(fig.sourcePage,page);
+  assert.deepEqual(fig.entries.map(row=>[row.name,row.attributes.join('|')]),expected);
+  assert.equal(fig.verifiedStructure,false);
+  assert.equal(fig.sourceTranscriptionVerified,false,'attribute-order audit alone cannot certify all source markings');
+  assert.equal(fig.keyNotationVerified,false);
+ }
+ assert.equal(fig2Expected.length,24);
+ assert.equal(fig3Expected.length,5);
+ assert.equal(doc.materials.find(m=>m.id==='fig2').entries.flatMap(e=>e.attributes).length,129);
+ assert.equal(doc.materials.find(m=>m.id==='fig3').entries.flatMap(e=>e.attributes).length,34);
+});
+
 test('IPA printed figures 2 and 3 preserve each unanswered blank in its exact attribute slot',()=>{
  const original=pmVerifiedStructure['2025:pm1:1'];
  assert.ok(validatePmStructure(original));
