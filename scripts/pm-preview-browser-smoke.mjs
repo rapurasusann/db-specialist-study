@@ -77,6 +77,18 @@ try{
   assert.match(v.last,/原本 10 ページ/);assert.match(v.last,/⑥ スーパータイプ/);assert.match(v.last,/0を含むかどうかを図に示す必要はない/);assert.match(v.last,/\(4\) レポート課題/);assert.equal(v.lastDisabled,true);
   assert.match(v.first,/原本 6 ページ/);assert.match(v.first,/【1\. 学部、学科、学期】/);assert.match(v.first,/\(4\) 一つの学科/);assert.equal(v.firstDisabled,true);
  });
+ check('official page 7 one-or-more constraints are visible',async()=>{
+  const v=await cdp.eval(`(()=>{
+   const buttons=[...document.querySelectorAll('.pmIntro button')];
+   for(let i=0;i<10;i++)buttons[0].click();
+   buttons[1].click();
+   return document.querySelector('.pmIntroText').textContent;
+  })()`);
+  assert.match(v,/原本 7 ページ/);
+  assert.match(v,/一つ又は複数の教材/);
+  assert.match(v,/一つ又は複数のテスト/);
+  assert.match(v,/講義ごと・教材ごと/);
+ });
  check('page-11 question scopes retain one-or-more attribute instructions',async()=>{
   const v=await cdp.eval(`(()=>{
    const buttons=[...document.querySelectorAll('.pmQuestionNav button')];
