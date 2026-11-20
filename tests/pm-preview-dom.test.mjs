@@ -136,6 +136,26 @@ test('Figure 1 review hides any arrow without checked original endpoints',()=>{
  }finally{undo()}
 });
 
+test('Figure 1 arrow endpoints must touch the source and target entity borders',()=>{
+ const undo=setup();
+ try{
+  const source=pmVerifiedStructure['2025:pm1:1'];
+  const count=draft=>walk(walk(createPmSubquestionView(draft),n=>n.tag==='svg')[0],
+    n=>n.tag==='polyline').length;
+  const baseline=count(source);
+  const displacedStart=structuredClone(source);
+  displacedStart.materials[0].partialSvgSource.arrows[0][0]=[73,70];
+  assert.equal(baseline-count(displacedStart),2,'bad start hides the arrow and arrowhead');
+  const displacedEnd=structuredClone(source);
+  displacedEnd.materials[0].partialSvgSource.arrows[3].at(-1)[1]=305;
+  assert.equal(baseline-count(displacedEnd),2,'bad destination hides the arrow and arrowhead');
+  const diagonal=structuredClone(source);
+  diagonal.materials[0].partialSvgSource.arrows[0][1]=[74,84];
+  assert.equal(baseline-count(diagonal),2,'unsupported diagonal segments are not drawn');
+  assert.equal(source.materials[0].verifiedStructure,false);
+ }finally{undo()}
+});
+
 test('Figure 1 review rejects an inheritance symbol with an unverified source page',()=>{
  const undo=setup();
  try{
