@@ -437,6 +437,20 @@ test('page navigation is bounded at first and last source page',()=>{
  }finally{undo()}
 });
 
+test('an incorrect full-source status still shows source-incomplete warnings',()=>{
+ const undo=setup();
+ try{
+  const original=pmVerifiedStructure['2025:pm1:1'];
+  const draft=structuredClone(original);
+  draft.status='FULL_SOURCE_VERIFICATION';
+  const root=createPmSubquestionView(draft);
+  const sourceWarnings=walk(root,n=>n.tag==='p'&&n.textContent.includes('表示中の大問本文は要約を含み'));
+  assert.equal(sourceWarnings.length,1,'global notice remains visible despite invalid status');
+  const questionNotice=walk(root,n=>n.tag==='p'&&n.textContent.includes('この設問文は原文の全文転記ではなく'));
+  assert.equal(questionNotice.length,1,'question notice remains visible despite invalid status');
+ }finally{undo()}
+});
+
 test('a partially verified problem always labels subquestion text as a paraphrase',()=>{
  const undo=setup();
  try{
