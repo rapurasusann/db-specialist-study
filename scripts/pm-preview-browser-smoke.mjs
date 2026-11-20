@@ -87,6 +87,10 @@ try{
   })()`);
   assert.match(v.fig2,/一つまたは複数/);
   assert.match(v.fig3,/一つまたは複数/);
+  for(const prompt of [v.fig2,v.fig3]){
+   assert.match(prompt,/主キー/);assert.match(prompt,/外部キー/);
+   assert.match(prompt,/実線/);assert.match(prompt,/破線/);
+  }
  });
  check('auto and manual figure selection',async()=>{
   const v=await cdp.eval(`(()=>{
