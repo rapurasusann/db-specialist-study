@@ -246,6 +246,24 @@ test('question-specific source page shortcuts preserve selected figure, answer d
  }finally{undo()}
 });
 
+test('schema question text exposes PK and FK underline instructions without changing answers',()=>{
+ const undo=setup();
+ try{
+  const root=createPmSubquestionView(pmVerifiedStructure['2025:pm1:1']);
+  const area=walk(root,n=>n.className==='pmQuestionText')[0];
+  const answer=walk(root,n=>n.tag==='textarea')[0];
+  for(const label of ['設問1 (3)','設問2']){
+   byText(root,'button',label).fire('click');
+   const prompt=walk(area,n=>n.tag==='p'&&n.textContent.includes('表記ルール⑤'));
+   assert.equal(prompt.length,1);
+   assert.ok(prompt[0].textContent.includes('主キー')&&prompt[0].textContent.includes('外部キー'));
+   assert.ok(prompt[0].textContent.includes('実線')&&prompt[0].textContent.includes('破線'));
+   assert.equal(answer.value,'');
+  }
+  assert.ok(walk(area,n=>n.tag==='p'&&n.textContent.includes('全文転記ではなく')).length);
+ }finally{undo()}
+});
+
 test('all four subquestions automatically select their associated source figure',()=>{
  const undo=setup();
  try{
