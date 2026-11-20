@@ -182,6 +182,18 @@ export const pmVerifiedStructure=Object.freeze({
       [[626,118],[626,526]],
       [[776,118],[776,526]]
      ],
+     // The seven complete arrows visibly printed on IPA page 8.
+     // Keep them separate from missing exam relationships; positions above
+     // remain review-only approximate coordinates.
+     arrowConnections:[
+      {from:'faculty',to:'department',sourcePage:8},
+      {from:'department',to:'offering',sourcePage:8},
+      {from:'subject',to:'offering',sourcePage:8},
+      {from:'offering',to:'lecture',sourcePage:8},
+      {from:'inperson',to:'a',sourcePage:8},
+      {from:'material',to:'materialUse',sourcePage:8},
+      {from:'test',to:'testUse',sourcePage:8}
+     ],
      // The diagram's five open generalization triangles: two overlap at
      // realtime lecture. Coordinates are a traced review, not a fidelity claim.
      subtypeGroups:[
