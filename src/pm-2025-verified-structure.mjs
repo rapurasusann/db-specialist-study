@@ -299,9 +299,9 @@ export const pmVerifiedStructure=Object.freeze({
     sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',relatedIntroPages:[8],answerFormat:'ENTITY_NAME',answerBlankTokens:['a']},
    {id:'s1-2',label:'設問1 (2)',text:'図1に不足しているリレーションシップを補って完成させる。',textStatus:'PARAPHRASE',materialIds:['fig1'],sourcePage:11,
     sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',relatedIntroPages:[8],answerFormat:'DIAGRAM_RELATIONSHIPS',answerBlankTokens:[]},
-   {id:'s1-3',label:'設問1 (3)',text:'図2の空欄ア～スについて、一つまたは複数の適切な属性名を記入し、関係スキーマを完成させる。',textStatus:'PARAPHRASE',materialIds:['fig2'],sourcePage:11,
+   {id:'s1-3',label:'設問1 (3)',text:'図2の空欄ア～スについて、一つまたは複数の適切な属性名を補って関係スキーマを完成させる。解答する属性が主キーまたは外部キーを表す場合は、原本10ページの表記ルール⑤に従い、実線または破線の下線も示す。',textStatus:'PARAPHRASE',materialIds:['fig2'],sourcePage:11,
     sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',relatedIntroPages:[8,9],answerFormat:'ATTRIBUTE_NAMES',answerBlankTokens:'アイウエオカキクケコサシス'.split('')},
-   {id:'s2',label:'設問2',text:'図3の空欄セ～ツについて、一つまたは複数の適切な属性名を記入し、関係スキーマを完成させる。',textStatus:'PARAPHRASE',materialIds:['fig3'],sourcePage:11,
+   {id:'s2',label:'設問2',text:'図3の空欄セ～ツについて、一つまたは複数の適切な属性名を補って関係スキーマを完成させる。解答する属性が主キーまたは外部キーを表す場合は、原本10ページの表記ルール⑤に従い、実線または破線の下線も示す。',textStatus:'PARAPHRASE',materialIds:['fig3'],sourcePage:11,
     sourceQuestionAudit:'QUESTION_SCOPE_CHECKED',relatedIntroPages:[9,10],answerFormat:'ATTRIBUTE_NAMES',answerBlankTokens:'セソタチツ'.split('')}
   ]
  }
