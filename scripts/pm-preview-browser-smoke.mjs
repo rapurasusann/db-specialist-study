@@ -183,15 +183,15 @@ try{
    buttons[0].click();
    const fig1={svg:area.querySelectorAll('svg').length,arrowsAndInheritance:area.querySelectorAll('svg polyline').length,text:area.textContent};
    buttons[2].click();
-   const fig2={svg:area.querySelectorAll('svg').length,table:area.querySelectorAll('table').length,text:area.textContent,verifiedPk:area.querySelectorAll('table .pmPrimaryKey').length,foreignKeys:area.querySelectorAll('table .pmForeignKey').length};
+   const fig2={svg:area.querySelectorAll('svg').length,table:area.querySelectorAll('table').length,rows:area.querySelectorAll('table tr').length,text:area.textContent,verifiedPk:area.querySelectorAll('table .pmPrimaryKey').length,foreignKeys:area.querySelectorAll('table .pmForeignKey').length};
    buttons[3].click();
-   const fig3={svg:area.querySelectorAll('svg').length,table:area.querySelectorAll('table').length,text:area.textContent,pk:area.querySelectorAll('table .pmPrimaryKey').length,fk:area.querySelectorAll('table .pmForeignKey').length};
+   const fig3={svg:area.querySelectorAll('svg').length,table:area.querySelectorAll('table').length,rows:area.querySelectorAll('table tr').length,text:area.textContent,pk:area.querySelectorAll('table .pmPrimaryKey').length,fk:area.querySelectorAll('table .pmForeignKey').length};
    return {fig1,fig2,fig3};
   })()`);
   assert.equal(v.fig1.svg,1);assert.equal(v.fig1.arrowsAndInheritance,44);assert.match(v.fig1.text,/作業中の再構成図/);
   assert.match(v.fig1.text,/最終照合は未完了/);
-  assert.equal(v.fig2.svg,0);assert.equal(v.fig2.table,1);assert.match(v.fig2.text,/図2の「a」には図1の「a」と同じ字句/);assert.equal(v.fig2.verifiedPk,6);assert.equal(v.fig2.foreignKeys,1);assert.match(v.fig2.text,/未確認93属性のキー下線は省略/);assert.match(v.fig2.text,/\[ ア \]/);
-  assert.equal(v.fig3.svg,0);assert.equal(v.fig3.table,1);assert.equal(v.fig3.pk,1);assert.equal(v.fig3.fk,0);assert.match(v.fig3.text,/未確認27属性/);assert.match(v.fig3.text,/\[ ツ \]/);
+  assert.equal(v.fig2.svg,0);assert.equal(v.fig2.table,1);assert.equal(v.fig2.rows,25);assert.match(v.fig2.text,/図2の「a」には図1の「a」と同じ字句/);assert.equal(v.fig2.verifiedPk,6);assert.equal(v.fig2.foreignKeys,1);assert.match(v.fig2.text,/未確認93属性のキー下線は省略/);assert.match(v.fig2.text,/\[ ア \]/);
+  assert.equal(v.fig3.svg,0);assert.equal(v.fig3.table,1);assert.equal(v.fig3.rows,6);assert.equal(v.fig3.pk,1);assert.equal(v.fig3.fk,0);assert.match(v.fig3.text,/未確認27属性/);assert.match(v.fig3.text,/\[ ツ \]/);
  });
  let failed=0;
  for(const t of tests){try{await t.fn();console.log('PASS',t.name)}catch(e){failed++;console.error('FAIL',t.name,e.message)}}
