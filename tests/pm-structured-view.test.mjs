@@ -231,6 +231,18 @@ test('official page 10 exception to zero-cardinality notation and page 8 figure 
  assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
 });
 
+test('both relation-schema questions include page 10 requirements for PK and FK underline notation',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ for(const id of ['s1-3','s2']){
+  const q=doc.subquestions.find(x=>x.id===id);
+  assert.ok(q.text.includes('主キー')&&q.text.includes('外部キー'));
+  assert.ok(q.text.includes('実線')&&q.text.includes('破線'));
+  assert.ok(q.text.includes('表記ルール⑤'));
+  assert.equal(q.textStatus,'PARAPHRASE');
+ }
+ assert.equal(doc.subquestions.find(x=>x.id==='s1-2').answerFormat,'DIAGRAM_RELATIONSHIPS');
+});
+
 test('IPA page 11 source audit preserves all four question scopes without claiming full transcription',()=>{
  const doc=pmVerifiedStructure['2025:pm1:1'];
  const qs=doc.subquestions;
