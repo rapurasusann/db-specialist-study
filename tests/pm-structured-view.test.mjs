@@ -127,7 +127,7 @@ test('IPA page 8 section 7 records all five conditions and page 7 continuation w
  assert.equal(page7.continuesOnNextPage.section,page8.continuesFromPreviousPage.section);
  assert.equal(page7.continuesOnNextPage.item,page8.continuesFromPreviousPage.item);
  assert.deepEqual(page8.figureReferences,[{id:'fig1',sourcePage:8},{id:'fig2',sourcePage:9}]);
- for(const term of ['解答期限日時','解答入力ページ','受講年月日','遅刻の有無','早退の有無',
+ for(const term of ['解答期限時刻','解答入力ページ','受講年月日','遅刻の有無','早退の有無',
   '受講完了年月日','得点','評価年月日','通期又は半期','成績','図1','図2']){
   assert.ok(page8.paragraphs.some(p=>p.includes(term)),term);
  }
@@ -175,6 +175,23 @@ test('IPA page 6 section structure, details and page 7 continuation remain ident
  }
  assert.ok(page6.paragraphs.some(line=>line.includes('要約・全文転記ではありません')));
  assert.equal(doc.status,'PARTIAL_SOURCE_VERIFICATION');
+});
+
+test('IPA pages 7-8 preserve deadline as clock time and exact lecture field names',()=>{
+ const doc=pmVerifiedStructure['2025:pm1:1'];
+ const page7=doc.introductionPages.find(p=>p.sourcePage===7);
+ const page8=doc.introductionPages.find(p=>p.sourcePage===8);
+ const section=p=>p.paragraphs.join('\n');
+ assert.ok(section(page7).includes('動画視聴ファイル名'));
+ assert.ok(section(page7).includes('年月日時分'));
+ assert.ok(section(page7).includes('開講年月日とオンライン教室ID'));
+ assert.ok(section(page7).includes('開講年月日と開講場所'));
+ assert.ok(section(page7).includes('解答期限時刻'));
+ assert.ok(section(page8).includes('解答期限時刻'));
+ assert.equal(section(page7).includes('解答期限日時'),false);
+ assert.equal(section(page8).includes('解答期限日時'),false);
+ assert.equal(page7.complete,false);
+ assert.equal(page8.complete,false);
 });
 
 test('page 6 study context and page 7 one-or-more usage constraints are preserved',()=>{
