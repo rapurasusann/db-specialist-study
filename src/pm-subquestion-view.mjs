@@ -147,7 +147,19 @@ export function createPmSubquestionView(doc,{loadAnswers=()=>({}),saveAnswer=()=
      points:points.map(p=>p.join(',')).join(' '),
      fill:'none',stroke:'currentColor','stroke-width':1.7
     });
-    for(const poly of data.arrows||[]){
+    // The review trace may draw only the seven arrow pairs explicitly
+    // checked against page 8, never arbitrary extra connector coordinates.
+    const approvedArrows=new Set((mat.checkedVisibleConnectors||[])
+     .filter(e=>e.sourcePage===mat.sourcePage&&e.type==='arrow')
+     .map(e=>e.from+'|'+e.to));
+    const arrowTrace=Array.isArray(data.arrowConnections)&&
+      data.arrowConnections.length===(data.arrows||[]).length?data.arrowConnections:[];
+    for(const [i,poly] of (data.arrows||[]).entries()){
+     const connection=arrowTrace[i];
+     if(!connection||connection.sourcePage!==mat.sourcePage||
+        !approvedArrows.has(connection.from+'|'+connection.to)||
+        !mat.nodes.some(n=>n.id===connection.from)||
+        !mat.nodes.some(n=>n.id===connection.to))continue;
      path(poly);
      const last=poly.at(-1),prev=poly.at(-2);
      if(last&&prev){
