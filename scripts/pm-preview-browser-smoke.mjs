@@ -75,7 +75,7 @@ try{
    return {last,lastDisabled,first:document.querySelector('.pmIntroText').textContent,firstDisabled:buttons[0].disabled}
   })()`);
   assert.match(v.last,/原本 10 ページ/);assert.match(v.last,/⑥ スーパータイプ/);assert.match(v.last,/0を含むかどうかを図に示す必要はない/);assert.match(v.last,/\(4\) レポート課題/);assert.equal(v.lastDisabled,true);
-  assert.match(v.first,/原本 6 ページ/);assert.match(v.first,/【1\. 学部、学科、学期】/);assert.match(v.first,/\(4\) 一つの学科/);assert.equal(v.firstDisabled,true);
+  assert.match(v.first,/原本 6 ページ/);assert.match(v.first,/前期・後期・通期のいずれか/);assert.match(v.first,/【1\. 学部、学科、学期】/);assert.match(v.first,/\(4\) 一つの学科/);assert.equal(v.firstDisabled,true);
  });
  check('official page 7 one-or-more constraints are visible',async()=>{
   const v=await cdp.eval(`(()=>{
