@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 310" role="img" aria-labelledby="q2fig4title q2fig4desc">
+<title id="q2fig4title">図4 修正後の概念データモデル（未完成）</title>
+<desc id="q2fig4desc">得意先納品要求、納期調整、出荷の3つのエンティティタイプが、破線枠の中に横並びで配置される。原本の未完成図に接続線はない。</desc>
+<rect width="1000" height="310" fill="#fff"/>
+<rect x="60" y="38" width="880" height="230" rx="7" fill="none" stroke="#222" stroke-width="2.5" stroke-dasharray="11 7"/>
+<g fill="#fff" stroke="#222" stroke-width="2.2">
+<rect x="95" y="100" width="156" height="64"/>
+<rect x="407" y="100" width="156" height="64"/>
+<rect x="719" y="100" width="156" height="64"/>
+</g>
+<g fill="#111" font-family="'Noto Sans CJK JP','Yu Gothic',Meiryo,sans-serif" font-size="26" text-anchor="middle">
+<text x="173" y="126"><tspan x="173">得意先</tspan><tspan x="173" dy="27">納品要求</tspan></text>
+<text x="485" y="140">納期調整</text>
+<text x="797" y="140">出荷</text>
+<text x="500" y="235" font-size="22">得意先納品要求に関するトランザクションの領域</text>
+<text x="500" y="297" font-size="23">図4　修正後の概念データモデル（未完成）</text>
+</g>
+</svg>
