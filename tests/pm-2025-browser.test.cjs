@@ -27,7 +27,7 @@ const fs = require('node:fs');
     const images=await page.locator('#questionText figure.pm-original-diagram image').evaluateAll(els=>els.map(e=>e.getAttribute('href')));
     for(const url of images)assert.ok(url&&url.startsWith('pages/'),device+' '+title+' bad image URL');
     if(figs>0){
-     const fig=page.locator('#questionText figure.pm-original-diagram').first();
+     const fig=page.locator('#questionText figure.pm-original-diagram:visible').first();
      const zoom=fig.locator('button.pm-diagram-zoom');
      assert.equal(await zoom.count(),1,device+' '+title+' zoom control missing');
      assert.equal(await zoom.getAttribute('aria-expanded'),'false');
