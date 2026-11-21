@@ -20,7 +20,8 @@ showQuestion=function(){
   const prev=mk('button','','前の本文ページ'),next=mk('button','','次の本文ページ');
   prev.type=next.type='button';
   const status=mk('span','pm2-study-page-status');status.setAttribute('aria-live','polite');
-  nav.append(prev,status,next);main.append(copy,nav);
+  const openOriginal=mk('button','pm2-source-page-button','原本12ページを表示');openOriginal.type='button';
+  nav.append(prev,status,next,openOriginal);main.append(copy,nav);
   // The 17 source-data sections are topic summaries, not an exact transcript.
   // Group them by related booklet pages; spanning sections may continue onto the next page.
   const pageGroups=[
@@ -35,9 +36,17 @@ showQuestion=function(){
   function renderChapter(){
     const group=pageGroups[position];
     copy.textContent=group.indices.map(i=>d.sections[i].title+'\n'+d.sections[i].body).join('\n\n');
-    status.textContent=`${position+1} / ${pageGroups.length}：原本${group.page}ページに関係する要約`;
+    status.textContent=`${position+1} / ${pageGroups.length}：原本${group.page}ページに関係する要約（逐語転記ではありません）`;
+    openOriginal.textContent=`原本${group.page}ページを下の問題冊子で表示`;
     prev.disabled=position===0;next.disabled=position===pageGroups.length-1;
   }
+  openOriginal.onclick=()=>{
+    const pg=pageGroups[position].page;
+    if(typeof activePage!=='number'||typeof loadPage!=='function')return;
+    activePage=pg;loadPage();
+    const viewer=document.getElementById('localViewer');
+    if(viewer){viewer.scrollIntoView({block:'start'});}
+  };
   prev.onclick=()=>{if(position>0){position--;renderChapter();}};
   next.onclick=()=>{if(position<pageGroups.length-1){position++;renderChapter();}};
   renderChapter();
