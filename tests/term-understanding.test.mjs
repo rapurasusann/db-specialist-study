@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {termQuestions} from '../src/term-understanding-questions.mjs';
-const ui=readFileSync(new URL('../src/term-understanding-ui.mjs',import.meta.url),'utf8');
+const ui=readFileSync(new URL('../src/term-understanding-ui.js',import.meta.url),'utf8');
 const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
 test('one independent four-choice question per term',()=>{
  assert.equal(termQuestions.length,42);
@@ -21,7 +21,7 @@ test('normal forms and key relational operations covered individually',()=>{
  for(const name of ['第1正規形','第2正規形','第3正規形','選択（σ）','射影（π）','和（∪）','共通（∩）','差（−）','直積（×）','結合（⋈）','商（÷）','名前変更（ρ）','READ UNCOMMITTED','READ COMMITTED','REPEATABLE READ','SERIALIZABLE','ダーティリード','反復不能読取り','ファントムリード'])assert.ok(terms.has(name),name);
 });
 test('term practice is isolated and does not replace legacy progress or question viewer',()=>{
- assert.ok(html.includes('src/term-understanding-ui.mjs'));
+ assert.ok(html.includes('src/term-understanding-ui.js'));
  assert.ok(html.includes('id="pageImage"'));
  assert.ok(ui.includes("const recordsKey='db-study-terms-v1'"));
  assert.ok(!ui.includes('db-study-progress-v1'));
@@ -52,4 +52,13 @@ test('XP practices and cryptography contain independent concept checks',()=>{
  assert.equal(byCategory('暗号技術').length,13);
  for(const term of ['ペアプログラミング','テスト駆動開発（TDD）','継続的インテグレーション（CI）','リファクタリング','共同所有（集団コード所有）','シンプルデザイン','小さなリリース','オンサイト顧客','持続可能なペース','コーディング規約','共通鍵暗号方式','公開鍵暗号方式','AES','RSA','暗号学的ハッシュ関数','デジタル署名','HMAC','ハイブリッド暗号方式','ECDH鍵共有','前方秘匿性（Forward Secrecy）','nonce','ソルト（salt）','認証付き暗号（AEAD）'])assert.ok(termQuestions.some(q=>q.term===term),term);
  assert.ok(ui.includes("'XPのプラクティス','暗号技術'"),'topic selector must expose both');
+});
+
+test('browser module sources are .js and local server can deliver JavaScript MIME',()=>{
+ const runtimeQuestions=readFileSync(new URL('../src/term-understanding-questions.js',import.meta.url),'utf8');
+ const canonicalQuestions=readFileSync(new URL('../src/term-understanding-questions.mjs',import.meta.url),'utf8');
+ assert.equal(runtimeQuestions,canonicalQuestions,'browser question data must match Node-tested 42 questions');
+ assert.ok(ui.includes("import {termQuestions} from './term-understanding-questions.js'"));
+ assert.ok(html.includes('type="module" src="src/term-understanding-ui.js?v=20261121b"'));
+ assert.ok(!html.includes('src/term-understanding-ui.mjs'));
 });
