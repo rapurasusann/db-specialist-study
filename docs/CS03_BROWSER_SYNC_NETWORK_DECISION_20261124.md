@@ -94,3 +94,12 @@
 - **ローカルNodeテスト未実行**。ブラウザー/Worker/Neon実通信、Cloudflare作成・公開・CSP変更・secret設定・GitHub Actions・main統合は行っていない。NO-GO継続。
 
 **次**：GET/PUT本体のOrigin/CORSエラー応答、JWT/DO失敗時の上流未送信とレスポンス制限を点検し、開発PC復帰時に一括テストを実施。午前II問題追加は主作業が残るため保留。
+
+## 2026-11-24 08:00 リモート作業：Neon上流レスポンスのストリーム上限
+
+- 最新のCloudflare配備判断文書とWorker/Gatewayコードを再取得。`server/cs03-trusted-edge-gateway.mjs` のNeon応答処理が `response.text()` で全量を読み込んでから65,536バイトを判定しており、上流が大容量/無期限ストリームを返すとWorkerのメモリ/処理時間を浪費し得ることを確認。
+- 既存の上限付きUTF-8ストリームリーダーをNeon応答にも適用。65,536バイトを超える応答または不正UTF-8は503を返し、上流本文をブラウザーへ漏らさない。既存のJWT、Origin、DO共有Quota、上流secret、運営者用Access入口は変更なし。
+- `tests/cs03-gateway-upstream-response-bound.test.mjs` に、大容量ストリームの早期停止・不正UTF-8拒否・正常JSON維持の3テストを追加。コミット `d8ee7bf`（コード）、`a00e708`（テスト）。**開発PCのNodeテストは未実行**。旧14/14 PASSを新修正のPASSとみなさない。
+- Cloudflare/Neonリソース、公開URL/CSP、GitHub Actions、秘密、課金、mainは変更していない。**実端末間同期・公開はNO-GO**。
+
+**次**：GET/PUT本体のCORS/JWT/DO異常応答境界を点検し、開発PC復帰後に新テストと `npm run test:cs03-worker-security` を一括実行する。主作業が残るため午前II問題追加は保留。
