@@ -39,8 +39,20 @@ try{
   return route.abort();
  });
  const page=await context.newPage();
- const errors=[];
- page.on('pageerror',error=>errors.push(error.message));
+ const errors=[],blocked=[],missing=[];
+ page.on('pageerror',error=>{
+  const message=String(error?.message||'');
+  const stack=String(error?.stack||'');
+  const where=stack.match(/(?:index\\.html|[a-zA-Z0-9._-]+\\.(?:js|mjs)):\\d+:\\d+/)?.[0]||'UNKNOWN';
+  const hint=/transcribed must load first/.test(message)?'TRANSCRIBED_LOAD_ORDER':
+   /is not defined/.test(message)?'UNDEFINED_VARIABLE':
+   /Cannot access .* before initialization/.test(message)?'TEMPORAL_DEAD_ZONE':
+   /Cannot read properties/.test(message)?'MISSING_OBJECT':
+   /is not a function/.test(message)?'INVALID_FUNCTION':'OTHER';
+  errors.push({name:String(error?.name||'Error'),where,hint});
+ });
+ page.on('console',event=>{if(event.type()==='error'&&/Content Security Policy|Refused to/.test(event.text()))blocked.push('CSP_BLOCKED');});
+ page.on('response',response=>{if(response.status()===404 && new URL(response.url()).origin===base)missing.push(new URL(response.url()).pathname);});
  await page.goto(base+'/',{waitUntil:'domcontentloaded'});
  await page.waitForTimeout(250);
  report('PAGE_TITLE',(await page.title()).includes('DB合格ノート'));
@@ -48,6 +60,26 @@ try{
  report('LEGACY_BACKUP_VISIBLE',await page.locator('#backup').isVisible());
  report('ACCOUNT_PANEL_DEFAULT_HIDDEN',!(await page.locator('#cs03AccountPanel').isVisible()));
  report('PREVIEW_DISABLED',await page.evaluate(()=>window.DB_STUDY_CS03?.previewEnabled===false));
+ // Diagnostics reveal categories and script locations only, never credentials or source contents.
+ console.log('BROWSER_PAGEERROR_COUNT='+errors.length);
+ for(const [i,error] of errors.slice(0,5).entries()){
+  console.log('BROWSER_PAGEERROR_'+i+'_TYPE='+error.name);
+  console.log('BROWSER_PAGEERROR_'+i+'_HINT='+error.hint);
+  console.log('BROWSER_PAGEERROR_'+i+'_AT='+error.where);
+ }
+ console.log('BROWSER_CSP_BLOCK_COUNT='+blocked.length);
+ console.log('BROWSER_MISSING_LOCAL_COUNT='+missing.length);
+ for(const [i,path] of missing.slice(0,4).entries())console.log('BROWSER_MISSING_LOCAL_'+i+'='+path);
+ const init=await page.evaluate(()=>({
+  handler:typeof document.getElementById('viewStudy')?.onclick==='function',
+  coursebars:document.getElementById('coursebars')?.children.length||0,
+  selected:typeof window.CS03_SELECTED_QUESTION?.read==='function',
+  page:typeof window.CS03_STUDY_PAGE?.inAccountMode==='function'
+ }));
+ console.log('BROWSER_STUDY_HANDLER='+(init.handler?'PASS':'FAIL'));
+ console.log('BROWSER_DASHBOARD_ROWS='+init.coursebars);
+ console.log('BROWSER_SELECTED_BRIDGE='+(init.selected?'PASS':'FAIL'));
+ console.log('BROWSER_ACCOUNT_BRIDGE='+(init.page?'PASS':'FAIL'));
  report('NO_PAGE_SCRIPT_ERRORS',errors.length===0);
  console.log('CS03_BROWSER_SMOKE=PASS');
 }catch(error){
