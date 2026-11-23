@@ -35,7 +35,7 @@ test('Node24 ESM bundle contains the CommonJS progress handler and remains fail-
   const endpoint='https://isolated-function.invalid';
   const base={origin,authorization:'Bearer local-test-only-token'};
   const rootReply=await handler.fetch(new Request(endpoint+'/',{headers:base}));
-  assert.equal(rootReply.status,404,'root URL is not currently a /progress API');
+  assert.equal(rootReply.status,401,'Neon canonical root requires the same gateway secret');
   const denied=await handler.fetch(new Request(endpoint+'/progress?examCode=db',{headers:base}));
   assert.equal(denied.status,401,'missing x-secret must never access database');
   assert.equal(denied.headers.get('cache-control'),'no-store');
