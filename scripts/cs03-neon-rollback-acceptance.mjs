@@ -42,6 +42,7 @@ async function run(){
   assert(priv.can_delete===false&&priv.can_select&&priv.can_insert&&priv.can_update,'LIVE_PRIVILEGES_MISMATCH');
   mark('CHECK_CATALOG');const exam=await client.query("SELECT 1 FROM public.study_exam_catalog WHERE exam_code='db'");
   assert(exam.rowCount===1,'EXAM_NOT_FOUND');
+  if(process.argv.includes('--diagnose')){console.log('CS03_READONLY_CONNECTION_AND_PRIVILEGES_PASS');return;}
   mark('BEGIN_TRANSACTION');await client.query('BEGIN');started=true;
   await client.query("SET LOCAL statement_timeout = '8s'");
   await client.query("SET LOCAL idle_in_transaction_session_timeout = '15s'");
@@ -75,6 +76,7 @@ async function run(){
   }
   if(connected){
    try{
+    if(!process.argv.includes('--diagnose')){
     mark('CHECK_ROLLBACK_RESIDUE');for(const user of [userA,userB]){
      await client.query('BEGIN READ ONLY');
      try{
@@ -84,6 +86,7 @@ async function run(){
      }finally{await client.query('ROLLBACK');}
     }
     console.log('CS03_TEST_ROWS_ABSENT_AFTER_ROLLBACK_PASS');
+    }
    }finally{await client.end();}
   }
  }
