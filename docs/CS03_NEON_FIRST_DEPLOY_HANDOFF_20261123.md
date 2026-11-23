@@ -73,3 +73,17 @@ Neon公式 `https://neon.com/docs/compute/functions/deploy` と `https://neon.co
 さらに接続Neonから`get_function`と`list_functions`を**読み取り専用で再照合**。対象プロジェクト/隔離branchの`cs03progress`は**1件**、`current_deployment`と`active_deployment`ともにID 1、`completed`、`nodejs24`。Neon公式のinvocation URLは取得済み（HTTPS、Singapore）、URLをソースや公開画面に埋め込まない。**Function直URLは外部から到達可能**であり、共有secretなしのアクセスが実際に401を返すかはこれから別途HTTP受入する。ログのOAuth state/redirect URL等は記録しない。
 
 **次の試験**：ユーザーデータに書き込まず、Neon公式URLに対し`Origin`が不許可→403、許可済Originでも共有secret欠落→401、実URL root/`/progress`それぞれを確認。期待外（2xx、500系、リダイレクト等）が出たら停止し、結果を精査。失敗時も勝手にsecret設定、Function削除、Cloudflare配備、URL公開/CSP変更を行わない。Cloudflare Worker/DO/Accessポリシーは依然未作成。**一般公開NO-GO**。
+
+## 10. Neon実HTTP未認証拒否テスト 3/3 PASS（2026-11-23）
+
+開発PCから配備済み隔離Function（`cs03progress`）のHTTPS URLへ、PowerShell `Invoke-WebRequest`でGETのみの3ケースを送信。ユーザー提出ログにより次を確認：
+
+| ケース | 期待HTTP | 実際HTTP | 判定 |
+|---|---:|---:|---|
+| `NO_ORIGIN`（`/`、Originなし） | 403 | 403 | PASS |
+| `NO_SECRET_ROOT`（`/`、許可済みOrigin、共有secretなし） | 401 | 401 | PASS |
+| `NO_SECRET_PROGRESS`（`/progress`、許可済みOrigin、共有secretなし） | 401 | 401 | PASS |
+
+最終ログ：`CS03_NEON_AUTH_REJECTION_PASS`。これらは**実クラウドへの読み取り専用通信で、DBの読み書きは行っていない**。Neon Functionの初回配備ID1／completedは前段で確認済み。上記は特定3条件の拒否のみを実証し、全経路/全メソッドの拒否、JWT検証、共有秘密つきの正常アクセス、データベース同期、攻撃耐性、利用料金を保証しない。
+
+**次工程**：Cloudflare Worker/DOの候補について、Accessを設定して保護する手順、共有秘密の非露出登録、全体Quota/fail-closed、停止と請求観測をまとめて最終受入仕様にした上で、**Cloudflareの実リソース作成は別途明示承認を得る**。変更対象はCertification-Studyのみで、他プロジェクト、既存ドメイン、GitHub Pages/CSP、main、支払い方法・プラン変更は対象外。一般公開**NO-GO**維持。
