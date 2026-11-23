@@ -14,7 +14,7 @@ export function createCs03DurableObjectQuotaTransport({namespace,objectName='cs0
    if(typeof stub?.fetch!=='function')throw Error('INVALID_DO_STUB');
    const result=await stub.fetch('https://cs03-quota.internal/consume',{
     method:'POST',headers:{'content-type':'application/json'},
-    body:JSON.stringify(request),redirect:'error'
+    body:JSON.stringify(request),redirect:'manual'
    });
    if(result.status!==200)throw Error('DO_UNAVAILABLE');
    const json=await result.json();
