@@ -11,12 +11,13 @@
  };
  const readLegacy=id=>{
   if(id!==read())throw Error('SELECTED_QUESTION_CHANGED');
-  const record=progress[id];
+  const record=window.CS03_STUDY_PAGE?.readDeviceRecord?window.CS03_STUDY_PAGE.readDeviceRecord(id):progress[id];
   return record&&typeof record==='object'&&!Array.isArray(record)?structuredClone(record):null;
  };
  const readLegacySnapshot=()=>{
   const result=Object.create(null);
-  for(const [id,row] of Object.entries(progress)){
+  const records=window.CS03_STUDY_PAGE?.readDeviceSnapshot?window.CS03_STUDY_PAGE.readDeviceSnapshot():progress;
+  for(const [id,row] of Object.entries(records)){
    if(!pattern.test(id)||!row||typeof row!=='object'||Array.isArray(row))continue;
    result[id]=structuredClone(row);
   }
