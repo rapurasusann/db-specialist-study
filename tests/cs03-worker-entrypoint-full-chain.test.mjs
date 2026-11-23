@@ -10,6 +10,7 @@ import {createCs03SharedQuota} from '../server/cs03-shared-quota.mjs';
 import {createCs03DurableObjectQuotaTransport} from '../server/cs03-cloudflare-do-transport.mjs';
 import {createCs03QuotaObjectHandler} from '../server/cs03-cloudflare-do-handler.mjs';
 import {handleBrowserRequest} from '../functions/cs03-progress.mjs';
+import {createCs03AccountClient} from '../src/cs03-account-client.mjs';
 
 const ORIGIN='https://rapurasusann.github.io';
 const USER='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
@@ -19,9 +20,9 @@ const {privateKey,publicKey}=await generateKeyPair('EdDSA');
 const jwk=await exportJWK(publicKey);
 const verifyToken=createNeonJwtVerifier({issuer:ISS,audience:AUD,
  jwks:createLocalJWKSet({keys:[{...jwk,kid:'entry-local',alg:'EdDSA'}]})});
-async function signedToken(key=privateKey){
+async function signedToken(key=privateKey,subject=USER){
  return new SignJWT({}).setProtectedHeader({alg:'EdDSA',kid:'entry-local'})
-  .setSubject(USER).setIssuer(ISS).setAudience(AUD).setIssuedAt().setExpirationTime('5m').sign(key);
+  .setSubject(subject).setIssuer(ISS).setAudience(AUD).setIssuedAt().setExpirationTime('5m').sign(key);
 }
 function storage(){
  const rows=new Map();
@@ -34,18 +35,24 @@ function storage(){
   throw Error('UNEXPECTED_SQL');
  }}};
 }
-function setup(){
+function setup({perUserLimit=2}={}){
  const seen={neon:0,do:0,records:new Map()};
  const internal=createCs03QuotaObjectHandler({storage:storage(),
-  limits:{global:60,perIp:20,perUser:2}});
+  limits:{global:60,perIp:20,perUser:perUserLimit}});
  const namespace={idFromName:name=>{assert.equal(name,'cs03-global-v1');return name;},
   get:()=>({fetch:(url,init)=>{seen.do++;return internal(new Request(url,init));}})};
  const quota=createCs03SharedQuota({atomicConsume:createCs03DurableObjectQuotaTransport({namespace}),
-  limits:{global:60,perIp:20,perUser:2}});
+  limits:{global:60,perIp:20,perUser:perUserLimit}});
  const runtime={handle:async r=>{
   const identity=await verifyToken(r.headers.get('authorization')?.slice(7));
   const key=identity.userId;
-  if(r.method==='PUT'){seen.records.set(key,await r.json());return Response.json({data:{saved:true}});}
+  if(r.method==='PUT'){
+   const body=await r.json(),prior=seen.records.get(key);
+   if(body.revision!==(prior?.revision??0)+1)return Response.json({error:'Conflict'},{status:409});
+   const saved={data:body.data,revision:body.revision,updated_at:'2026-11-23T00:00:00Z'};
+   seen.records.set(key,saved);
+   return Response.json({data:saved});
+  }
   return Response.json({data:seen.records.get(key)??null});
  }};
  const entry=createCs03Entrypoint({createGateway:()=>createCs03TrustedEdgeGateway({
@@ -97,4 +104,39 @@ test('entrypoint denies quota excess before Neon and still fails closed when mod
  assert.equal(h.seen.do,3);
  assert.equal((await h.entry.fetch(h.request(token),{})).status,503);
  assert.equal(h.seen.neon,2);
+});
+
+test('real browser account client reaches Worker entrypoint, shared DO, native Function; accounts remain isolated',async()=>{
+ const h=setup({perUserLimit:10});
+ const userB='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
+ async function account(userId){
+  const token=await signedToken(privateKey,userId);
+  const local=new Map();
+  const authClient={
+   signUp:{email:async()=>({data:{}})},signIn:{email:async()=>({data:{}})},
+   getSession:async()=>({data:{user:{id:userId,email:'test@example.invalid'}}}),
+   signOut:async()=>({data:{}}),token:async()=>({data:{token}})
+  };
+  return createCs03AccountClient({authClient,apiUrl:'https://candidate.invalid/',
+   storage:{getItem:key=>local.get(key)??null,setItem:(key,val)=>local.set(key,val)},
+   fetcher:(url,init)=>{
+    const headers=new Headers(init.headers);
+    assert.equal(headers.has('x-secret'),false,'the browser must not know gateway secret');
+    assert.equal(init.credentials,'omit');
+    headers.set('origin',ORIGIN);headers.set('cf-connecting-ip','192.0.2.55');
+    const r=new Request(url,{method:init.method,headers,body:init.body});
+    Object.defineProperty(r,'cf',{value:{colo:'NRT'}});
+    return h.entry.fetch(r,h.env);
+   }});
+ }
+ const a=await account(USER),b=await account(userB),question='2026:am2:100';
+ assert.equal(await a.pull(question),null);
+ assert.equal((await a.save(question,{level:'mastered'})).revision,1);
+ assert.equal(await b.pull(question),null);
+ assert.equal((await b.save(question,{level:'review'})).revision,1);
+ assert.equal((await a.pull(question)).data.level,'mastered');
+ assert.equal((await b.pull(question)).data.level,'review');
+ assert.equal(h.seen.records.size,2);
+ assert.equal(h.seen.neon,6);
+ assert.equal(h.seen.do,6);
 });
