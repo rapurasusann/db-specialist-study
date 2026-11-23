@@ -15,6 +15,8 @@ export function mountCs03AccountPanel(root,account,options={}) {
  const compare=root.querySelector('[data-cs03="compare-progress"]');
  const transfer=root.querySelector('[data-cs03="transfer-progress"]');
  const exportUnsaved=root.querySelector('[data-cs03="export-unsaved"]');
+ const restoreFile=root.querySelector('[data-cs03="restore-unsaved-file"]');
+ const restoreUnsaved=root.querySelector('[data-cs03="restore-unsaved"]');
  const recordStatus=root.querySelector('[data-cs03="record-status"]');
  let busy=false,signedIn=false;
  function updateButtons(){
@@ -29,6 +31,8 @@ export function mountCs03AccountPanel(root,account,options={}) {
   if(compare)compare.disabled=busy||!signedIn;
   if(transfer)transfer.disabled=busy||!signedIn;
   if(exportUnsaved)exportUnsaved.disabled=busy||!signedIn;
+  if(restoreFile)restoreFile.disabled=busy||!signedIn;
+  if(restoreUnsaved)restoreUnsaved.disabled=busy||!signedIn;
  }
  function message(text){status.textContent=text;}
  function showUser(user){
@@ -95,6 +99,20 @@ export function mountCs03AccountPanel(root,account,options={}) {
   const summary=await options.onExportUnsaved();
   if(recordStatus)recordStatus.textContent=summary;
  }));
+ if(restoreFile && restoreUnsaved && typeof options.onRestoreUnsaved==='function')
+  restoreUnsaved.addEventListener('click',()=>run(async()=>{
+   const file=restoreFile.files?.[0];
+   try{
+    if(!file)throw Error('BACKUP_FILE_REQUIRED');
+    if(file.size>1200000)throw Error('BACKUP_FILE_INVALID');
+    // File selection is explicit; do not persist raw JSON or auto-upload.
+    const result=await options.onRestoreUnsaved(await file.text());
+    if(recordStatus)recordStatus.textContent=result;
+   }catch(error){
+    if(recordStatus)recordStatus.textContent='復元できませんでした。アカウントとファイルを確認してください。';
+    throw error;
+   }finally{restoreFile.value='';}
+  }));
  if(load && typeof options.onLoadProgress==='function')load.addEventListener('click',()=>run(async()=>{
   if(recordStatus)recordStatus.textContent='アカウントの履歴を取得中…';
   const result=await options.onLoadProgress();
