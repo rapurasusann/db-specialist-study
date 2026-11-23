@@ -56,7 +56,14 @@
       answer.value=saved&&typeof saved==='object'&&typeof saved[String(selected)]==='string'?saved[String(selected)]:'';
       answerLabel.textContent=`設問${selected}の回答`;answer.setAttribute('aria-label',`設問${selected}の回答`);
       Array.from(choices.children).forEach((b,i)=>b.setAttribute('aria-pressed',String(i+1===selected)));
-      // Keep selected figure if user manually changed it; choose a useful initial figure only.
+      // Each selected question opens its most relevant original figure. Users can still change the selection.
+      const recommendedFigures = {
+        '2025:pm1:3':[2,3,4], // Q1 SQL table, Q2 allocation flow, Q3 stock-reflection flow
+        '2025:pm2:1':[5,6,10], // Q1 P2/P3 SQL, Q2 settlement sequence, Q3 revised sequence
+        '2025:pm2:2':[2,7] // Q1 existing model, Q2 revised model
+      };
+      const recommendedIndex=recommendedFigures[key]?.[selected-1];
+      if(Number.isInteger(recommendedIndex)&&recommendedIndex<figures.length)selectFigure(recommendedIndex);
     }
     answer.oninput=()=>{const old=rec().subAnswers;const current=old&&typeof old==='object'&&!Array.isArray(old)?old:{};put({subAnswers:{...current,[String(selected)]:answer.value}});};
     for(let i=1;i<=expected;i++){const b=el('button','',`設問${i}`);b.type='button';b.onclick=()=>{selected=i;renderQuestion();};choices.append(b);}
