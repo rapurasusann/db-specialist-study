@@ -31,3 +31,13 @@
 - リソース削除、secret変更、Accessポリシー書込み、URL公開、CSP変更、GitHub Actions、main統合、有料化は新規の明示承認がない限り実施しない。
 
 **この文書自体は実クラウドの書込みや配置を意味しない。** 次はソース側の統合・短期の受入準備を完了させ、初回Cloudflareリソース作成の範囲をひとまとめにして承認依頼する。
+
+## 実装進捗：Worker入口の一致修正（2026-11-23）
+
+- `docs/cs03-worker-config-review-only.json.example` の `main` がdefault exportを持たない `cs03-worker-candidate.mjs` を指す誤りを修正し、実際の fail-closed wrapper `server/cs03-gateway-production-adapter.mjs` を指定。
+- `scripts/cs03-worker-review-config.mjs` にentrypointとreview-only nameの検査を追加し、候補モジュールを誤ってpublic entrypointに指定した構成を拒否する。
+- `tests/cs03-worker-review-config.test.mjs` に上記の負試験1件を追加。**開発PCで未実行**なのでPASSとは報告しない。
+- review-only設定は `workers_dev:false`・`preview_urls:false`・routesなし、Secretsなし、`CS03_QUOTA` SQLite migration を維持。**この設定は意図的に公開路がなく、配置許可や完成を意味しない**。
+- 実際のWorkerアダプターはまだ `CS03_ISOLATED_GATEWAY_MODE` と`request.cf`で503 fail-closedする試験用で、**Cloudflare Accessの実検証、Neon JWT設定・secret、DOの実運用確認は未了**。残る本番安全性の問題を隠してNO-GOを解除しない。
+
+**次**：開発PCで `node --test tests/cs03-worker-review-config.test.mjs tests/cs03-worker-entrypoint.test.mjs tests/cs03-worker-candidate.test.mjs` を1回まとめて実行する。合格後もWorker/DO/Access配備の独立承認まではクラウド変更しない。
