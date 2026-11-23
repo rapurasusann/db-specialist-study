@@ -54,3 +54,9 @@
 `tests/cs03-failure-stop-draft-preservation.test.mjs` を追加（**5件、未実行**）。対象は(1)DOが例外となるとNeonを呼ばず503、(2)Neon上流が例外となると503で内部エラーを漏らさない、(3)Workerの設定欠落で503を返しゲートウェイを通さない、(4)APIが503の場合に本人の未送信下書きを保持し、正常保存やアカウントキャッシュ更新を偽装しない、(5)ローカル保存が失敗したら明示的エラーを返す、という**未検証の組み合わせ**。すべてローカルの模擬環境で、Cloudflare/Neonの実資源や秘密を使わない。正常系・既存のfail-closed試験の無用な再実行はしない。
 
 この5件が合格しても、実CloudflareのDO障害・Neon Functions障害・Free枠超過・実利用者データの安全性を直接証明したことにはならない。配置・本番公開 **NO-GO** を維持する。
+
+## 7. 障害時の停止・下書き保護の開発PC試験結果（5/5 PASS）
+
+開発PCで commit `3d2171b5a8e2eccead9546d40811e82c2d3571a5` をチェックアウトし、`node --test tests/cs03-failure-stop-draft-preservation.test.mjs` を実行した。操作者が提示した結果は **5 tests / 5 pass / 0 fail**、`CS03_FAILURE_STOP_TEST_PASS`。内訳：(1) DO停止時にNeon上流を呼ばず503、(2) Neon上流の例外時に503で内部エラーを漏らさない、(3) Worker設定欠落時に503で通信させない、(4) API 503時に本人の未送信下書きを保持し成功扱い・キャッシュ更新を行わない、(5) ローカル保存失敗時に明示エラー。5件のコード・記録に変更がない限り再実行不要。
+
+**受入範囲はローカル模擬環境**。実CloudflareのDurable Objects、実Neon Functions、実Free枠超過、公開経路のfail-closedは未確認。Cloudflare・Neonの実配置／秘密書込み／課金変更／GitHub Actionsは行わず、**デプロイと本番公開はNO-GO**を維持。
