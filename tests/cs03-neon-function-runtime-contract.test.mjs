@@ -23,7 +23,7 @@ test('Function module closure declares its external packages as runtime dependen
  assert.ok(pkg.dependencies?.jose);
  assert.equal(pkg.devDependencies?.pg,undefined);
  assert.equal(pkg.devDependencies?.jose,undefined);
- assert.match(runtime,/createRequire\(import\.meta\.url\)/);
+ assert.match(runtime,/import progressApi from '\.\.\/src\/progress-api\.js'/);
  assert.match(api,/require\('\.\/progress-access'\)/);
  assert.match(read('src/progress-access.js'),/module\.exports/);
 });
