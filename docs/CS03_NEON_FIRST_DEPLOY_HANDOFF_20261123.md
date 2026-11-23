@@ -53,3 +53,15 @@ Neon公式 `https://neon.com/docs/compute/functions/deploy` と `https://neon.co
 **未完了の証拠**：開発PCで生成した`index.mjs`はユーザーPCのTempにあり、こちらのツールはそのファイルの実バイトを取得していない。**ログに示されたSHAと実際に配備するZIPの一致・署名なし成果物の真正性は配置直前に照合する必要がある**。秘密の開発PC側への安全投入・Function API権限、初回デプロイ費用・実プラン上限と直接公開URLの扱い、緊急停止/削除操作の権限を確認するまでは**実配置NO-GO**。
 
 **次の決定**：この2段階のうち、**秘密なし・DBに接続できない初回Functionを隔離branchに作成することだけ**を、利用量・直URLの発生・停止方法・成果物一致の確認後に運営者へ明示して承認確認する。承認してもCloudflare Worker/DOの作成、秘密登録、公開、本番main操作の承認にはならない。
+
+## 8. 初回Function作成のユーザー承認・再確認（2026-11-23）
+
+ユーザーは**Neonプロジェクト `quiet-mouse-39990305`／隔離branch `br-snowy-truth-a162pmdt`／slug `cs03progress` に、秘密情報を一切登録せずFunction 1件を作成すること**を明示承認。Cloudflare Worker/DO、Access Policy、secret投入、公開プレビュー/CSP、GitHub Actions、課金・支払い方法変更、main統合は未承認。今回の権限は既存の本番`default`ブランチや他プロジェクトへ拡張しない。
+
+**承認後の読み取り再確認**：Neon接続の `list_organizations`で **Certification-Study plan=free**、`list_projects`で対象projectとSingapore、`get_branch`で対象branch`ready/default:false`、`list_functions`で0件を確認（2026-11-23）。利用枠の残数は計測していないため超過請求ゼロを断定しない。
+
+**この場での配置について**：対象コード`index.mjs`の生成は操作者開発PCで完了し、SHA256 `ada949602f4c8673ac0118a526616b3cacd8f13e400c9865908485b458906619` がログにある。ChatGPTのNeon`deploy_function`ツールは初回のコードZIP base64が必須であり、開発PCのファイル内容に直接アクセスできない。元コードを別途再ビルドして異なる成果物を無断配置することはしない。
+
+**実行方式（承認済みスコープのみ）**：Neon公式CLIの`neon login --keyring`で開発PCのブラウザ認証、`neon functions deploy cs03progress --src <validated index.mjs> --no-bundle --runtime nodejs24 --branch br-snowy-truth-a162pmdt --project-id quiet-mouse-39990305 --wait`。**`--env`なし**。実行直前にファイルハッシュが上記一致し、同名Functionが無いことを読み取りで確かめる。ログにsecretやAPIキーを貼り付けない。CLI実行が失敗したら再試行・別branchへの変更・秘密登録を自動で行わず停止。Function生成時に公衆から到達可能なURLが発生し、secret未設定でもリクエスト枠消費はあり得る点を留意。
+
+**現時点の事実**：Neon Functionは作成コマンド実行前で**まだ0件**。上記は実行指示の記録であって、デプロイ成功を意味しない。完了後に`list_functions`/`get_function`を読み取ってstatusを確認。Functionの共有secret欠落はHTTP 401となり、ユーザーデータ処理は実施しない。
