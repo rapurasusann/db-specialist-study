@@ -11,7 +11,9 @@ export function inspectCs03WorkerReviewConfig(config){
  if('routes' in config||'route' in config)blockers.push('ROUTES_MUST_BE_ABSENT');
  if('account_id' in config||'zone_id' in config)blockers.push('ACCOUNT_AND_ZONE_MUST_NOT_BE_EMBEDDED');
  if('vars' in config||'secrets' in config)blockers.push('SECRETS_AND_VARS_MUST_NOT_BE_EMBEDDED');
- if(config.limits?.cpu_ms!==10)blockers.push('FREE_CPU_BUDGET_MUST_BE_DECLARED');
+ // Free Workers have a platform CPU cap. Wrangler limits are for Standard Usage only;
+ // a config CPU override must not be mistaken for a Free-tier spending control.
+ if('limits' in config)blockers.push('FREE_TIER_CPU_OVERRIDE_NOT_A_SPENDING_CONTROL');
  const bindings=config.durable_objects?.bindings;
  if(!Array.isArray(bindings)||bindings.length!==1||bindings[0]?.name!=='CS03_QUOTA'||
     bindings[0]?.class_name!=='Cs03QuotaNotDeployed')
