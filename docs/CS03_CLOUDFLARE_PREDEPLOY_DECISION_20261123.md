@@ -53,3 +53,25 @@ node --test tests/cs03-worker-review-config.test.mjs tests/cs03-worker-entrypoin
 **今後の作業条件**：ユーザーは**次の19時（日本時間2026-11-24 19:00）まで、ローカルリポジトリがないPCからできる作業を進める**よう依頼。GitHubへのコード・ドキュメント更新、公式仕様/セキュリティ検討、必要に応じNeon読み取りのみが対象。開発PCに依存するコマンドの実行や同じテストの再提出は要求しない。**GitHub Actionsは勝手に使わない**。クラウドへのWorker/DO/Access/Neon秘密配備、Neon既存Function変更、本番公開、CSP、GitHub main、課金、支払方法、削除は引き続き別承認。次の開発PC復帰に備えて未実行テストと作業差分を一括報告する。
 
 **現状：Neon隔離Functionの初回実配備とGET拒否 3/3 PASS。Worker候補コードのローカル結合 14/14 PASS。Cloudflare上のWorker/DO/Access Policy未作成。実同期未実施・一般公開NO-GO。**
+
+
+## 2026-11-24 リポジトリ不在PCからの安全対策（追加開発）
+
+**目的**：現時点で一般公開可能とは判断しないまま、実クラウドに接続する手前のWorker防御をGitHub側で強化する。
+
+### 本チャットで追加・変更した内容（実行未確認）
+1. `server/cs03-gateway-production-adapter.mjs`：`fetch(request, env, ctx)`の先頭で **Cloudflare Accessが認証した`ctx.access.aud`と実設定`CS03_ACCESS_AUD`の一致**を要求。不一致・未設定・`ctx.access`なしでは503かつGateway/DO/Neonを呼ばない。以前の`request.cf`とmode flagだけではクラウド側Access認証を証明できない問題を軽減。Cloudflare公式 https://developers.cloudflare.com/workers/configuration/cloudflare-access/ は`ctx.access`がAccessで認証した直接Worker呼出時のみ存在すると説明。**実Accessアプリの有効化・ポリシー確認を省略していいことにはならない**。Static Assetsの内部ルーター/Service Bindingの迂回ではctx.accessが伝播しないため、当該構成は本候補に使わない。
+2. `tests/cs03-worker-entrypoint.test.mjs`：Access不在・誤aud・空audでGatewayを生成せず503、正しいテスト用audのみ呼出可をテストする1件追加。
+3. `tests/cs03-worker-entrypoint-full-chain.test.mjs`：既存の仮想Accessコンテキストを統合テストの入出力に通すよう修正。未認証・aud不一致時のDO/Neon未呼出の負試験1件を追加。テスト用audをクラウド本番値に流用しない。
+4. `docs/cs03-worker-entrypoint-contract-review-only.json`：`CS03_ACCESS_AUD`の**実Cloudflare Accessアプリ発行値が必要**と明記（現時点ではプレースホルダー）。
+5. `server/cs03-cloudflare-do-handler.mjs`：内部DOのPOST bodyをstream読取し、`Content-Length`がない場合でも**1024 bytesを超えた時点で読み込み中止**、異常UTF-8やJSON破損は400で拒否。元の`await request.text()`による全量バッファを撤廃。
+6. `tests/cs03-cloudflare-do-handler.test.mjs`：大きなストリーム/不正UTF-8を保存前に拒否する2件追加。
+7. `package.json`：従来の`test:cs03`にAccess契約検査を追加し、`npm run test:cs03-worker-security`でAccess/Worker/DOの対象試験を一括実行できるようにした。
+
+**重要**：ユーザー開発PCでの旧コミット`2a315c5`の14/14 PASSは維持。ただし上記のコード変更後は**未実行**で、14/14 PASSと混同しない。追加テストが通るまではCloudflare配置NO-GO。Cloudflare Workers/DO/Access、Neon既存Function、秘密、課金、公開は未変更。
+
+### 継続作業スケジュール
+ユーザーが依頼した2026-11-24 19:00 JSTまでの短期間について、**03:00、07:00、11:00、15:00、19:00（JST）の5回**の継続チェック・GitHub側の安全な修正タスクを設定。各回GitHubの最新版を再取得し、レビュー済みの範囲のみ変更。重複変更・GitHub Actions・本番/クラウドの書込みは禁止。これは常時実行ではなく**決めた時刻に作業を再開する方式**。
+
+### 次の開発PC復帰時に1回だけ確認
+`npm run test:cs03-worker-security`。コマンド実行前にGitHubのリモートHEADと開発PCの未コミット変更を確認する。実行ログを受領してPASS確認するまで「クラウド作成可」としない。Neonの実HTTP拒否3/3 PASSは再実施不要。
