@@ -21,7 +21,7 @@ export function extractCs03CloudflareClientIp(request){
    if(!hostname.startsWith('[')||!hostname.endsWith(']'))return '';
    return hostname.slice(1,-1).toLowerCase();
   }
-  if(!/^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$/.test(raw))return '';
+  if(!/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(raw))return '';
   const octets=raw.split('.');
   if(octets.some(n=>Number(n)>255||(n.length>1&&n.startsWith('0'))))return '';
   return octets.join('.');
