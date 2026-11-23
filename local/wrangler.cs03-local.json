@@ -1,0 +1,14 @@
+{
+  "name": "cs03-local-do-smoke-only",
+  "main": "./cs03-do-smoke-worker.mjs",
+  "compatibility_date": "2026-11-01",
+  "durable_objects": {
+    "bindings": [
+      {"name":"CS03_LOCAL_QUOTA","class_name":"Cs03LocalQuota"}
+    ]
+  },
+  "migrations": [
+    {"tag":"cs03-local-v1","new_sqlite_classes":["Cs03LocalQuota"]}
+  ],
+  "dev": {"ip":"127.0.0.1","port":8789,"local_protocol":"http"}
+}
