@@ -59,3 +59,24 @@ test('session restores identity',async()=>{
  await panel.refresh();
  assert.equal(f.elements.logout.disabled,false);
 });
+
+test('pending account edits refuse sign-out before contacting auth provider',async()=>{
+ const f=fixture();
+ mountCs03AccountPanel({querySelector:selector=>f.elements[selector.slice(12,-2)]??null},f.account,{
+  onBeforeSignOut:()=>{throw Error('UNSAVED_ACCOUNT_PROGRESS');}
+ });
+ f.elements.login.click();await ticks();
+ f.elements.logout.click();await ticks();
+ assert.equal(f.events.filter(e=>e.type==='logout').length,0);
+ assert.equal(f.elements.logout.disabled,false);
+ assert.equal(f.elements.login.disabled,true);
+});
+test('sign-out checks account write guard before invoking auth provider',async()=>{
+ const f=fixture(),calls=[];
+ mountCs03AccountPanel({querySelector:selector=>f.elements[selector.slice(12,-2)]??null},{
+  ...f.account,signOut:async()=>{calls.push('auth');}
+ },{onBeforeSignOut:async()=>calls.push('guard')});
+ f.elements.login.click();await ticks();
+ f.elements.logout.click();await ticks();
+ assert.deepEqual(calls,['guard','auth']);
+});
