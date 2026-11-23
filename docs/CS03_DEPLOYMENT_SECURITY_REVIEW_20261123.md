@@ -86,3 +86,12 @@
 開発PCでcommit `3528874a0c40cf978ff35084fcbf88de7972818f` をチェックアウトし、`node --check src/cs03-account-entry.mjs`、`node --check src/cs03-study-auto-sync.mjs`、`node --test tests/cs03-tab-ownership.test.mjs` を実行した。操作者のログにより **4 tests / 4 pass / 0 fail**、`CS03_MULTI_TAB_TEST_PASS` を確認。
 
 検証範囲はWeb Locks模擬実装での同一アカウント二重編集拒否、未保存下書きの保護、別アカウントの独立動作、Web Locks未対応時の停止、失敗後のロック解放。**Chrome等の実ブラウザでの2タブ動作は未検証**。異なるブラウザ・プロファイル・端末間はサーバー側revision競合検出の範囲。実クラウド接続・デプロイは未実施、**NO-GO継続**。合格済み4件の再実行は関連変更時のみ。
+
+
+## 2026-11-23 実Chromium複数タブ試験のローカル起動条件
+
+**試験コード追加済み・実行結果待ち。** `scripts/cs03-real-browser-two-tabs.mjs` は独立したloopback-only（127.0.0.1、OS割当ポート）HTTPサーバーから最低限のHTMLと検証対象ESモジュールのみを配信する。アプリの `cs03-config.js` を変更せず、外部通信を拒否し、実クラウドAPIや本番データには接続しない。
+
+同一Playwright BrowserContextの2ページで、ネイティブ `navigator.locks` を利用して同一UUIDの多重アカウント編集拒否、タブAの保存失敗時の下書き保持、タブAの終了後にタブBがロック取得可能であること、復旧した下書きを自動送信しないことを確認する。Web Locks非対応、外部リクエスト、ページエラー、検査失敗はPASSにしない。
+
+開発PCに以前存在を確認した `Wordbook/node_modules/playwright` を `PLAYWRIGHT_MODULE_PATH` に指定する。新規インストール・GitHub Actions・クラウド配備は禁止。**実ChromiumでPASSが得られるまでは未受入、NO-GO。**
