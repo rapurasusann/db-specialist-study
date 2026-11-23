@@ -8,7 +8,25 @@ import {createCs03DurableObjectQuotaTransport} from './cs03-cloudflare-do-transp
 import {createCs03QuotaObjectHandler} from './cs03-cloudflare-do-handler.mjs';
 
 const ERROR=()=>Response.json({error:'Service Unavailable'},{status:503,headers:{'cache-control':'no-store'}});
-const ipPattern=/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$|^[0-9a-fA-F:]{2,64}$/;
+// Header-only client IP values are not accepted without Cloudflare request context.
+// Note: request.cf is a defensive signal, not a cryptographic trust proof;
+// live ingress isolation is still a release blocker.
+export function extractCs03CloudflareClientIp(request){
+ if(!request?.cf||typeof request.cf!=='object')return '';
+ const raw=request.headers?.get('cf-connecting-ip');
+ if(typeof raw!=='string'||raw.length<2||raw.length>64||raw!==raw.trim())return '';
+ try{
+  if(raw.includes(':')){
+   const hostname=new URL('http://['+raw+']/').hostname;
+   if(!hostname.startsWith('[')||!hostname.endsWith(']'))return '';
+   return hostname.slice(1,-1).toLowerCase();
+  }
+  if(!/^(?:[0-9]{1,3}\\.){3}[0-9]{1,3}$/.test(raw))return '';
+  const octets=raw.split('.');
+  if(octets.some(n=>Number(n)>255||(n.length>1&&n.startsWith('0'))))return '';
+  return octets.join('.');
+ }catch{return '';}
+}
 
 // Call only from a Cloudflare-authenticated incoming request context.
 // An arbitrary reverse proxy or directly callable local wrapper must NOT be trusted
@@ -29,16 +47,7 @@ export function createCs03WorkerCandidate({env,fetcher=fetch}={}){
  });
  const gateway=createCs03TrustedEdgeGateway({
   verifyToken,sharedQuota,fetcher,upstreamUrl,upstreamSecret,
-  getClientIp:request=>{
-   // Reject missing/malformed IP rather than accepting X-Forwarded-For supplied by clients.
-   const ip=request.headers.get('cf-connecting-ip');
-   if(!ip||ip.length>64||!ipPattern.test(ip))return '';
-   if(ip.includes('.')){
-    const octets=ip.split('.').map(Number);
-    if(octets.some(n=>!Number.isInteger(n)||n>255))return '';
-   }
-   return ip.toLowerCase();
-  }
+  getClientIp:extractCs03CloudflareClientIp
  });
  return async request=>{
   try{return await gateway(request);}catch{return ERROR();}
