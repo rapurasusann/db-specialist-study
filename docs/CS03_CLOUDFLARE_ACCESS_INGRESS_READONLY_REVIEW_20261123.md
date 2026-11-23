@@ -50,3 +50,11 @@
 **C01の進捗**：専用アカウント、Workersの当日リクエスト数、当日観測イベント、Worker/Pages 0件の証拠は収集済み。**Billing / 支払い設定とDO / AccessはOPEN**。
 
 **次の確認**：対象Certification-StudyのBilling画面でプラン・請求・支払方法の有無を確認し、Zero Trust/Accessについては設定開始せずプランや利用可否を調査する。カード番号やメールなどの秘匿情報は共有不要。Cloudflare/Neonへ書込・公開切替・課金変更なし、**NO-GO維持**。
+
+## 7. Certification-Studyの請求画面確認（ユーザー提出：2026-11-23）
+
+ユーザー提出のCloudflareアカウントBilling画面（アカウント名Certification-Study）を目視確認。契約済み製品一覧に**Workers Free（アクティブ）**が表示され、右側の支払い方法には **No payment method on file** と表示。上位Workersプランは「アップグレード」の案内のみで、有料契約済みとは表示されていない。前回のWorkers & Pages画面ではプロジェクト0件、本日のWorkersリクエスト0/100,000、観測可能性イベント0/200,000だった。
+
+**判定**：C01の「対象アカウント」「Workers Freeプラン」「未登録の支払い方法」「Workers当日使用量」は画像証拠で確認済み。**Cloudflare Access / Zero Trustの有効化・料金・利用可否、Durable Objectsの使用量・機能プラン、具体的なWorker実Ingressとfail-closedは未確認**。請求書や課金対象使用量の全件をこの画像から確認したわけではないので、既発行請求の有無・総額の断定はしない。支払い方法未登録を将来の無料保証とは扱わない。画面に含まれるメールアドレス等の個人情報は記録に転記しない。
+
+**次の工程**：Zero Trust/Accessが専用アカウントで利用可能かを設定変更なしで確認。その後Durable Objectsの利用量と無料枠を確認。**Accessの有効化／プラン変更／支払方法登録／Worker/DOの配置／秘密登録はしない**。実クラウド配置・公開NO-GO維持。
