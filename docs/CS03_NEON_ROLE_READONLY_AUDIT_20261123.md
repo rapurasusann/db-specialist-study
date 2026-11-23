@@ -58,3 +58,28 @@ GRANT DELETE ON TABLE public.study_progress TO cs03_progress_api;
 
 ### Additional read-only cross-database catalog check
 In the **same isolated branch** `certification_study` database (connected as catalog-inspection owner, not the API role): `has_database_privilege(...,'CONNECT')` was true for `cs03_progress_api`; one non-system schema was USAGE-accessible; **zero non-system tables/views/materialized views/sequences** had SELECT, INSERT, UPDATE or DELETE via `has_table_privilege` at inspection time. This reduces direct table-data exposure but does not demonstrate that the API role cannot connect, nor audit every executable function or future grant. No data rows were read or changed.
+
+## Approved privilege correction — executed 2026-11-23
+
+The operator explicitly approved revoking **only** DELETE on isolated branch `br-snowy-truth-a162pmdt`, database `cs03_auth_sandbox`, table `public.study_progress`, role `cs03_progress_api`.
+
+Executed exactly:
+```sql
+REVOKE DELETE ON TABLE public.study_progress FROM cs03_progress_api;
+```
+
+Neon returned success (no result rows). Immediate **read-only** postcheck in the same isolated database, using catalog-inspection owner `certification_study_owner`:
+
+| Check | Result |
+|---|---|
+| API-role DELETE on `public.study_progress` | **false** |
+| API-role SELECT | **true** |
+| API-role INSERT | **true** |
+| API-role UPDATE | **true** |
+| `relrowsecurity` enabled | **true** |
+| `relforcerowsecurity` forced | **true** |
+| `cs03_verified_owner` policy present | **1** |
+
+No table data was read or deleted, no other table privileges were edited, and main/default branch was untouched. Earlier sections document **pre-change observations and proposal**; this section records the executed correction and supersedes the earlier "not executed" status for the DELETE grant.
+
+**Still open:** role-authenticated functional GET/PUT and cross-user denial tests against the isolated database, other-database PUBLIC CONNECT scope, Cloudflare fail-closed real route verification, and production deployment approval. Maintain NO-GO.
