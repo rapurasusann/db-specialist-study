@@ -65,3 +65,11 @@ Neon公式 `https://neon.com/docs/compute/functions/deploy` と `https://neon.co
 **実行方式（承認済みスコープのみ）**：Neon公式CLIの`neon login --keyring`で開発PCのブラウザ認証、`neon functions deploy cs03progress --src <validated index.mjs> --no-bundle --runtime nodejs24 --branch br-snowy-truth-a162pmdt --project-id quiet-mouse-39990305 --wait`。**`--env`なし**。実行直前にファイルハッシュが上記一致し、同名Functionが無いことを読み取りで確かめる。ログにsecretやAPIキーを貼り付けない。CLI実行が失敗したら再試行・別branchへの変更・秘密登録を自動で行わず停止。Function生成時に公衆から到達可能なURLが発生し、secret未設定でもリクエスト枠消費はあり得る点を留意。
 
 **現時点の事実**：Neon Functionは作成コマンド実行前で**まだ0件**。上記は実行指示の記録であって、デプロイ成功を意味しない。完了後に`list_functions`/`get_function`を読み取ってstatusを確認。Functionの共有secret欠落はHTTP 401となり、ユーザーデータ処理は実施しない。
+
+## 9. Neon隔離Functionの初回実配備完了（2026-11-23）
+
+運営者が開発PCのPowerShellから`npx.cmd neon@latest login --keyring`でNeonに認証し、事前SHA-256一致が確認されたTempの`index.mjs`を`neon functions deploy cs03progress --src ... --no-bundle --runtime nodejs24 --branch br-snowy-truth-a162pmdt --project-id quiet-mouse-39990305 --wait`で初回配備。**ユーザー提出ログではDeployment ID 1、Status completed、Node.js24、Memory 2048MiB、`CS03_NEON_FIRST_DEPLOY_COMMAND_SUCCESS`**。作成時刻2026-11-23T12:23:18.938263Z。指定コマンドには`--env`が無く、ユーザーによる秘密情報の追加登録なし。Neonのプラットフォームによるデフォルト環境変数の有無をこのログから断定しない。
+
+さらに接続Neonから`get_function`と`list_functions`を**読み取り専用で再照合**。対象プロジェクト/隔離branchの`cs03progress`は**1件**、`current_deployment`と`active_deployment`ともにID 1、`completed`、`nodejs24`。Neon公式のinvocation URLは取得済み（HTTPS、Singapore）、URLをソースや公開画面に埋め込まない。**Function直URLは外部から到達可能**であり、共有secretなしのアクセスが実際に401を返すかはこれから別途HTTP受入する。ログのOAuth state/redirect URL等は記録しない。
+
+**次の試験**：ユーザーデータに書き込まず、Neon公式URLに対し`Origin`が不許可→403、許可済Originでも共有secret欠落→401、実URL root/`/progress`それぞれを確認。期待外（2xx、500系、リダイレクト等）が出たら停止し、結果を精査。失敗時も勝手にsecret設定、Function削除、Cloudflare配備、URL公開/CSP変更を行わない。Cloudflare Worker/DO/Accessポリシーは依然未作成。**一般公開NO-GO**。
