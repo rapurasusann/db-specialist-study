@@ -85,3 +85,12 @@
 - Cloudflare/Neonの設定・リソース、公開URL、CSP、GitHub Actions、main、課金、秘密情報は未変更。実ブラウザー同期・本番公開は引き続きNO-GO。
 
 **次**：開発PC復帰後に `node --test tests/cs03-browser-preflight-authorization.test.mjs` と既存 `npm run test:cs03-worker-security` を一括検証する。以降はWorkerのGET/PUTのCORS・認証・Quota境界を継続点検。主作業が残るため午前Ⅱ問題追加はまだ行わない。
+
+## 2026-11-24 07:00 リモート作業：メソッド別CORS preflight契約の固定
+
+- 最新のCloudflare配備判断文書とGateway/ブラウザー入口/既存テストを再取得。ブラウザークライアントはGETで`Authorization`のみ、PUTで`Authorization`と`Content-Type: application/json`を送るのに、従来OPTIONSはGETの`content-type`要求やPUTの`content-type`欠落も204許可していた。
+- `server/cs03-trusted-edge-gateway.mjs`でGETは`authorization`のみ、PUTは`authorization, content-type`を要求するよう厳格化。OPTIONSはJWT自体を要求せず、実GET/PUTのJWT署名検証とDO quotaは維持する。
+- `tests/cs03-browser-preflight-authorization.test.mjs`に拒否2条件を追加。`package.json`の`test:cs03`と`test:cs03-worker-security`にこの回帰テストを登録。コミット `4a42ac3`、`d6674dd`、`80bf3ae`。
+- **ローカルNodeテスト未実行**。ブラウザー/Worker/Neon実通信、Cloudflare作成・公開・CSP変更・secret設定・GitHub Actions・main統合は行っていない。NO-GO継続。
+
+**次**：GET/PUT本体のOrigin/CORSエラー応答、JWT/DO失敗時の上流未送信とレスポンス制限を点検し、開発PC復帰時に一括テストを実施。午前II問題追加は主作業が残るため保留。
