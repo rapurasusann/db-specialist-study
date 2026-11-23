@@ -64,6 +64,10 @@ async function run(){
   const arows=await see(userA);
   assert(arows.length===1&&arows[0].user_id===userA&&Number(arows[0].revision)===1,'CROSS_USER_B_VISIBLE_TO_A');
   console.log('CS03_TRANSIENT_INSERT_READ_UPDATE_RLS_PASS');
+ }catch(error){
+  // Preserve the original failing stage even if rollback checks run in finally.
+  error.cs03Stage=stage;
+  throw error;
  }finally{
   if(started){
    try{mark('ROLLBACK');await client.query('ROLLBACK');console.log('CS03_TEST_TRANSACTION_ROLLBACK_SENT');}
@@ -84,4 +88,4 @@ async function run(){
   }
  }
 }
-run().catch(error=>{const message=typeof error?.message==='string'?error.message:'';const label=/^CS03_ACCEPTANCE_[A-Z0-9_]+$/.test(message)?message:'CHECK_FAILED_WITHOUT_DETAILS';const code=typeof error?.code==='string'&&SAFE_CODES.has(error.code)?error.code:'UNCLASSIFIED';console.error('CS03_ISOLATED_ACCEPTANCE_STAGE='+stage);console.error('CS03_ISOLATED_ACCEPTANCE_ERROR_CODE='+code);console.error('CS03_ISOLATED_ACCEPTANCE_FAILED:'+label);process.exitCode=1;});
+run().catch(error=>{const message=typeof error?.message==='string'?error.message:'';const label=/^CS03_ACCEPTANCE_[A-Z0-9_]+$/.test(message)?message:'CHECK_FAILED_WITHOUT_DETAILS';const code=typeof error?.code==='string'&&SAFE_CODES.has(error.code)?error.code:'UNCLASSIFIED';console.error('CS03_ISOLATED_ACCEPTANCE_STAGE='+(error?.cs03Stage??stage));console.error('CS03_ISOLATED_ACCEPTANCE_ERROR_CODE='+code);console.error('CS03_ISOLATED_ACCEPTANCE_FAILED:'+label);process.exitCode=1;});
