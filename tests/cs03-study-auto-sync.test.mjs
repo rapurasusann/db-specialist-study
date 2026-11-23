@@ -86,3 +86,35 @@ test('backup export is denied without a failed write',async()=>{
  await f.ui.login();
  assert.throws(()=>f.ui.exportPending(),/NO_UNSAVED_ACCOUNT_PROGRESS/);
 });
+
+test('backup is restored as blocked review-only drafts without any remote saves',async()=>{
+ const f=setup();await f.ui.login();
+ const backup={format:'cs03-unsaved-account-progress-v1',userId:A,records:{[Q]:{level:'mastered'}}};
+ const result=f.ui.restorePending(backup);
+ assert.deepEqual(result,{restored:1,accountId:A,requiresReview:true});
+ assert.deepEqual(f.ui.state().pending,[Q]);
+ assert.deepEqual(f.ui.state().blocked,[Q]);
+ assert.equal(f.calls.length,0);
+ assert.equal(f.remote.size,0);
+ await assert.rejects(f.ui.open(Q),/LOCAL_ACCOUNT_DRAFT_UNSYNCED/);
+ assert.throws(()=>f.ui.edit(Q,{level:'review'}),/REMOTE_READ_REQUIRED|CONFLICT_REVIEW_REQUIRED/);
+ assert.throws(()=>f.ui.logout(),/UNSAVED_ACCOUNT_PROGRESS/);
+ assert.deepEqual(f.ui.exportPending().records[Q],{level:'mastered'});
+});
+test('mismatched account or invalid multi-row backup cannot modify pending drafts',async()=>{
+ const f=setup();await f.ui.login();
+ const backup={format:'cs03-unsaved-account-progress-v1',userId:'other',records:{[Q]:{level:'mastered'}}};
+ assert.throws(()=>f.ui.restorePending(backup),/BACKUP_ACCOUNT_MISMATCH/);
+ backup.userId=A;backup.records['2025:am2:0']={level:'review'};
+ assert.throws(()=>f.ui.restorePending(backup),/INVALID_RECORD/);
+ assert.deepEqual(f.ui.state().pending,[]);
+ assert.deepEqual(f.ui.state().blocked,[]);
+ assert.equal(f.calls.length,0);
+});
+test('restoration never overwrites already-pending account progress',async()=>{
+ const f=setup();await f.ui.login();await f.ui.open(Q);f.reject();
+ await assert.rejects(f.ui.edit(Q,{level:'mastered'}),/REVISION_CONFLICT_REFRESHED/);
+ const backup={format:'cs03-unsaved-account-progress-v1',userId:A,records:{[Q]:{level:'review'}}};
+ assert.throws(()=>f.ui.restorePending(backup),/UNSAVED_ACCOUNT_PROGRESS/);
+ assert.deepEqual(f.ui.exportPending().records[Q],{level:'mastered'});
+});
