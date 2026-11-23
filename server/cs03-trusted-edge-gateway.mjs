@@ -56,7 +56,12 @@ export function createCs03TrustedEdgeGateway({verifyToken,fetcher,upstreamUrl,up
   if(request.method==='OPTIONS'){
    const method=request.headers.get('access-control-request-method');
    const heads=request.headers.get('access-control-request-headers')??'';
-   if(!['GET','PUT'].includes(method)||heads.split(',').some(x=>!['authorization','content-type',''].includes(x.trim().toLowerCase())))
+   const requested=heads.split(',').map(x=>x.trim().toLowerCase());
+   // Browser JWT requests always send Authorization. Reject malformed or
+   // unauthenticated preflight shapes instead of advertising a permissive API.
+   if(!['GET','PUT'].includes(method)||!requested.includes('authorization')||
+      requested.some(x=>!['authorization','content-type'].includes(x))||
+      new Set(requested).size!==requested.length)
     return result(405,'Method Not Allowed');
    return new Response(null,{status:204,headers:cors});
   }
