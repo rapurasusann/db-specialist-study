@@ -32,7 +32,7 @@ test('every executable inline script retains an exact CSP SHA-256 allowlist entr
   .map(x=>x[1]).filter(Boolean);
  assert.ok(blocks.length>=1);
  for(const block of blocks){
-  const hash=createHash('sha256').update(block,'utf8').digest('base64');
+  const hash=createHash('sha256').update(block.replace(/\r\n?/g,'\n'),'utf8').digest('base64');
   assert.ok(csp.includes("'sha256-"+hash+"'"),'MISSING_CSP_INLINE_HASH');
  }
 });
