@@ -88,3 +88,7 @@ node --test tests/cs03-worker-review-config.test.mjs tests/cs03-worker-entrypoin
 **暫定結論**：Worker-level Access + `ctx.access.aud` gateは、**限定した隔離HTTP・認証拒否試験の防御策**として維持する。一方、現状のGitHub Pagesブラウザー→別ドメインAccess Worker経由での「実際の複数端末同期」は**未成立、公開不可**。次のクラウド初回配備を承認する前に、**ブラウザー同一オリジンのプレビュー入口を別に用意する案**（本番GitHub Pagesを変更せずCloudflareの試験用アセットを公開、ただしAssetsルーターの`ctx.access`非伝播に注意）または**ブラウザー向けAPIをNeon Auth JWT/DO quotaで保護し、Accessは運営専用の検査経路だけに使う別案**を比較して選択する。秘密のブラウザー埋込み不可、無条件の公開不可。`ctx.access`がブラウザーテストのCORS preflightに伝播するとは推定しない。
 
 **次のGitHub側作業**：両案の構成、CORS、Access/WARP等の制限、追加料金リスク、受入方法を具体化し、安全な構成選択に必要な情報をまとめる。現在の設計が端末間同期を実現できると虚偽に報告しない。
+
+## ブラウザー通信経路の比較結果
+
+2026-11-24作成の`docs/CS03_BROWSER_SYNC_NETWORK_DECISION_20261124.md`を参照。現行GitHub PagesからAccess Workerへ`credentials:'omit'`でアクセスするとCookie・CORS preflight問題があるため、Accessは運営用隔離検査入口に限定し、**ブラウザーのアカウントJWT＋DO共有Quota＋上流secretを使う別入口**を第一候補として比較した。ただしブラウザー向けの認証付きURLを実際に公開するか、既存構成を変更するかは**独立承認前に決めない**。代替として同一オリジンの試験用プレビューも比較済み。現時点NO-GO。
