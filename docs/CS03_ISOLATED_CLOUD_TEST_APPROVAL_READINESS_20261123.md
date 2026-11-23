@@ -67,3 +67,9 @@
 - **課金**：両Freeプラン・Cloudflare支払未登録は画像で確認済みだが、ゼロコスト永久保証は不可。利用量を試験前後に確認し、超過リスク時は停止。勝手に有料化しない。
 
 **実装手順の詳細を不必要に分割しない。** 次の意思決定は、対象を絞った「Neon隔離Functionの初回実配備」の承認可否。ただしコードbundle・秘密の安全な投入方法・事故時の具体的停止操作が揃うまではその承認を実行に移さない。Cloudflare Worker/DOと本番公開について、この承認が自動的に広がることはない。**現在NO-GO**。
+
+## 8. 最新状況とCloudflareの未解決条件（2026-11-23）
+
+**この追記は上部の過去時点のOPEN/未配置を更新するもの**。Neon隔離branchへ`cs03progress`を初回配置済（Deployment 1 completed/Node24）、実GET拒否試験3/3 PASS（Originなし403、Origin一致・共有secretなしrootと/progressは401）。過去節の「Neon Function 0件」「初回配置未承認」は**過去の状態**であり、現在は適用しない。Cloudflare初期画面確認も完了済み。現時点のCloudflare側はWorker/DO/Access policy未作成、一般公開NO-GO。
+
+次段階は`docs/CS03_CLOUDFLARE_PREDEPLOY_DECISION_20261123.md`を正本として扱う。現行Workerコードは`NOT SAFE TO DEPLOY`というプロトタイプを含み、review-only Wrangler例の`main`はdefault exportのないモジュールを指すため、そのままクラウドに配置しない。SQLite-backed DOがFreeで利用できることは公式仕様で確認済み。実装の統合・既存安全ゲート解消・1回のまとめたローカル受入後、**Worker/DO初回作成の明示承認**を別途確認する。新規URL公開・Access・secret・課金操作・本番main統合は各々独立承認。利用者への初期画面再確認は求めない。
