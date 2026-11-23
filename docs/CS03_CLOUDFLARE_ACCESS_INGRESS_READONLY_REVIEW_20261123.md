@@ -72,3 +72,9 @@ Cloudflare Zero Trustのプラン選択画面のユーザー提出スクリー�
 **状態**：Zero Trust Freeの有効化が完了したことは画像証拠で確認。Cloudflare Accessのアプリ作成、対象Worker保護ポリシー、許可ユーザーの登録、拒否試験、Durable Objects利用状況の確認は**未実施**。この画面は契約完了画面であり、AccessがWorkerを保護中という意味ではない。既存のCloudflare Worker/DO・Neon Function配置、公開URL変更は行っていない。
 
 **次の操作**：表示された **Continue to Zero Trust** を押し、Accessの概要/設定状態を読む。**有料機能選択、支払方法登録、Accessアプリ・ポリシー作成、Worker公開は次の独立承認まで行わない**。実クラウド配置・一般公開NO-GO維持。
+
+## 10. Cloudflare One初期画面（ユーザー提出：2026-11-23）
+
+Zero Trust Free有効化後に表示されたCloudflare OneのDashboard（Discover）をユーザーのスクリーンショットで確認。アカウントは**Certification-Study**、右側Account detailsに**Plan: Zero Trust Free**、**User permissions: Super Administrator - All Privileges**、Team nameは生成済みと表示される。Recommendationsには**Protect an application with Access**が未完了項目として表示され、画面にはAccessで保護したアプリの設定完了・許可ルールの証拠は見えない。**Accessが設定済みとは判定しない**。アカウント固有team nameの文字列は記録しない。
+
+**次に行うこと**：Recommendationsの**Protect an application with Access**を開いて画面内容・アプリ種別を読み取る（設定保存・ポリシー有効化なし）。Cloudflare WorkerへのAccess統合はWorker本体・課金・入口が承認されるまで実際には作らない。他の推薦項目（VPN、WARP、DNSフィルタ、トンネルなど）は本工程対象外。**Zero Trust Free契約完了、Accessポリシー未確認、実クラウド配置・一般公開NO-GO**。
