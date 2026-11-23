@@ -38,3 +38,9 @@
 - **さらに別承認**：ブラウザCSP/API URL・公開プレビュー変更、本番サービス公開。
 
 **前段の合格済み5件＋11件を無条件に再試験しない。実装が変更された関連部分だけ再受入する。判定NO-GOを維持。**
+
+## 4. 非配置用の実行入口・bindings契約追加（2026-11-23）
+
+`docs/cs03-worker-entrypoint-contract-review-only.json` は **Wrangler設定ではない** review-onlyなJSON契約。既存のdefault fetchを持つ `server/cs03-gateway-production-adapter.mjs` を将来の入口候補として指し、SQLite Durable Objectクラス `Cs03QuotaNotDeployed` と `CS03_QUOTA` の対応、`CS03_JWKS_URL` / `CS03_JWT_ISSUER` / `CS03_JWT_AUDIENCE` / `CS03_NEON_FUNCTION_URL` / `CS03_GATEWAY_SECRET`、Neon側の秘密名と隔離branch/DBの扱い、公開route/worker.dev/previewの無効、異常時503を明記。実secret値、Functionの推測URL、アカウントのトークン、配備コマンドは含まない。
+
+`scripts/cs03-entrypoint-contract-review.mjs` は上記の構成とコード断片の一致をオフライン検査し、`tests/cs03-entrypoint-contract-review.test.mjs` では正常なレビュー構成、誤entrypoint/DO、別DB・公開ルート・秘密名不一致、承認前NO-GO維持、ソース改変検出の **新規5件を追加（実行待ち）**。従来の候補Worker、デプロイ停止ガード、公開プレビュー設定は変更していない。**仕様合意やテスト合格はデプロイ承認ではない**。実クラウドWorkerへの接続・無料枠超過時のfail-closed・Neon Functions実配置は未確認であり、配置・公開はNO-GO。
