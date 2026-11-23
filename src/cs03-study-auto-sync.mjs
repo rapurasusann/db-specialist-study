@@ -78,6 +78,15 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
   }
   return queue.get(id);
  }
+ function exportPending(){
+  current(epoch);
+  // Export only fully failed writes. In-flight data is not yet stable.
+  if(queue.size)throw Error('ACCOUNT_WRITE_IN_PROGRESS');
+  if(!pending.size)throw Error('NO_UNSAVED_ACCOUNT_PROGRESS');
+  const records=Object.create(null);
+  for(const [id,row] of pending)records[id]=copy(row);
+  return copy({format:'cs03-unsaved-account-progress-v1',userId:owner,records});
+ }
  function logout(){
   // Never discard an unacknowledged write. The UI must resolve or explicitly
   // export account drafts before signing out.
@@ -87,5 +96,5 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
   session.stop();onStatus('signed-out');
  }
  function state(){return Object.freeze({active,userId:owner,pending:[...pending.keys()],blocked:[...blocked],inFlight:[...queue.keys()]});}
- return Object.freeze({login,open,edit,logout,state});
+ return Object.freeze({login,open,edit,exportPending,logout,state});
 }
