@@ -17,6 +17,7 @@ export function mountCs03AccountPanel(root,account,options={}) {
  const exportUnsaved=root.querySelector('[data-cs03="export-unsaved"]');
  const restoreFile=root.querySelector('[data-cs03="restore-unsaved-file"]');
  const restoreUnsaved=root.querySelector('[data-cs03="restore-unsaved"]');
+ const discardUnsaved=root.querySelector('[data-cs03="discard-unsaved"]');
  const recordStatus=root.querySelector('[data-cs03="record-status"]');
  let busy=false,signedIn=false;
  function updateButtons(){
@@ -33,6 +34,7 @@ export function mountCs03AccountPanel(root,account,options={}) {
   if(exportUnsaved)exportUnsaved.disabled=busy||!signedIn;
   if(restoreFile)restoreFile.disabled=busy||!signedIn;
   if(restoreUnsaved)restoreUnsaved.disabled=busy||!signedIn;
+  if(discardUnsaved)discardUnsaved.disabled=busy||!signedIn;
  }
  function message(text){status.textContent=text;}
  function showUser(user){
@@ -112,6 +114,11 @@ export function mountCs03AccountPanel(root,account,options={}) {
     if(recordStatus)recordStatus.textContent='復元できませんでした。アカウントとファイルを確認してください。';
     throw error;
    }finally{restoreFile.value='';}
+  }));
+ if(discardUnsaved && typeof options.onDiscardUnsaved==='function')
+  discardUnsaved.addEventListener('click',()=>run(async()=>{
+   const summary=await options.onDiscardUnsaved();
+   if(recordStatus)recordStatus.textContent=summary;
   }));
  if(load && typeof options.onLoadProgress==='function')load.addEventListener('click',()=>run(async()=>{
   if(recordStatus)recordStatus.textContent='アカウントの履歴を取得中…';
