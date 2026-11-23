@@ -91,3 +91,26 @@ test('invalid UTF-8 PUT is rejected without consuming durable quota',async()=>{
  assert.equal(calls.quota,0);
  assert.equal(calls.upstream,0);
 });
+
+
+test('JSON-looking media types are rejected before durable quota and Neon',async()=>{
+ const calls={upstream:0,quota:0};
+ const gateway=makeGateway({consume:async()=>{calls.quota++;return true;}},calls);
+ const url='https://gateway.invalid/progress';
+ const headers={origin:ORIGIN,authorization:'Bearer valid-a-test-token'};
+ for(const type of ['application/json-malicious','application/jsonp','application/json; charset=iso-8859-1',
+  'application/json; boundary=unsafe','text/plain; application/json']){
+  const response=await gateway(new Request(url,{method:'PUT',
+   headers:{...headers,'content-type':type},body:'{}'}));
+  assert.equal(response.status,415,type);
+ }
+ assert.equal(calls.quota,0);
+ assert.equal(calls.upstream,0);
+ for(const type of ['application/json','application/json; charset=UTF-8']){
+  const response=await gateway(new Request(url,{method:'PUT',
+   headers:{...headers,'content-type':type},body:'{}'}));
+  assert.equal(response.status,200,type);
+ }
+ assert.equal(calls.quota,2);
+ assert.equal(calls.upstream,2);
+});
