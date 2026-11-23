@@ -95,3 +95,20 @@ After the operator-approved DELETE revocation, Neon SQL was executed using **`ro
 - A direct `has_table_privilege(...,'neon_auth.user','SELECT')` name-lookup attempt failed with SQLSTATE **42501 permission denied for schema neon_auth**, corroborating the schema boundary; a follow-up query avoided that name resolution and completed.
 
 **Limits of evidence:** zero visible rows with no user context does not test cross-user denial with two real identities or successful INSERT/UPDATE. No JWT was minted, no user data was written or read, and no privilege was changed during these checks. Retain NO-GO pending scoped write/read acceptance, real edge configuration, and cost guard verification.
+
+## API-role isolated live transaction acceptance — 2026-11-23
+
+**PASS — operator-provided local test output, scoped to isolated Neon database only.** Local worktree HEAD was `8908524fc87b22798f17fff22b8aeba2beabb9ea`; test script: `scripts/cs03-neon-rollback-acceptance.mjs`. The operator ran the script against branch `br-snowy-truth-a162pmdt`, database `cs03_auth_sandbox`, role `cs03_progress_api`, using private credentials; credentials were not included in the output.
+
+Reported exact success markers:
+
+```text
+CS03_TEST_TRANSACTION_ROLLBACK_SENT
+CS03_TEST_ROWS_ABSENT_AFTER_ROLLBACK_PASS
+CS03_TRANSIENT_INSERT_READ_UPDATE_RLS_PASS
+CS03_LIVE_ACCEPTANCE_PASS
+```
+
+The test checked live identity and role privileges, inserted transient random-UUID user A and B rows, read each user's own row under the transaction-local verified-user setting, checked that the other user's row was not visible, updated B's row from revision 1 to 2, and rolled back. The script subsequently checked both random test-row keys were absent in read-only transactions. These markers establish **live database-layer INSERT/SELECT/UPDATE/RLS isolation and rollback acceptance** for this isolated target; there is no need to repeat this accepted check absent relevant code/schema/credential changes. Note that the explicit absence check is scoped to the two generated test identifiers; this is not a global audit of every existing row.
+
+**Still NO-GO:** no actual remote browser → Cloudflare Worker → Neon Functions end-to-end acceptance, actual route/secret deployment verification, or full production readiness/cost sign-off. Do not deploy or create resources on the strength of this isolated test.
