@@ -90,3 +90,7 @@ Zero Trust Free有効化後に表示されたCloudflare OneのDashboard（Discov
 ユーザー提出の「Add an application」ダイアログを確認。上部で**Self-hosted and private**が選択され、下位項目に**Private destinations / Workers / Public DNS / Service auth**が表示。現時点の選択は**Public DNS**であり、Workers向けの設定詳細は**未確認**。ダイアログの表示のみでアプリケーション作成・Access Policyの保存は行われていない。
 
 次は**Workers**タブを選択して表示内容を読み取る。Workerが存在しない現段階では保護対象を設定したと見なさない。**公開・実クラウド配置NO-GO**を維持。
+
+## 13. Access Workersタブ選択確認（ユーザー提出：2026-11-23）
+
+ユーザーの次のスクリーンショットでは「Add an application」ダイアログの**Self-hosted and private > Workers**が選択状態。モーダルの表示領域が途中で切れており、Workersタブ固有の詳細・適用条件・入力欄や設定保存ボタンは見えない。Worker全体の保護やAccess Policyが設定されたと判断しない。次はダイアログ内をスクロールして**読み取りのみ**を続ける。**実クラウド配置・公開NO-GO**を維持。
