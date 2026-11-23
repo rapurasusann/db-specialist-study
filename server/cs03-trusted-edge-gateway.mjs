@@ -117,8 +117,11 @@ export function createCs03TrustedEdgeGateway({verifyToken,fetcher,upstreamUrl,up
    if(![200,400,401,404,405,409,413,415,429,503].includes(response.status))
     return result(503,'Service Unavailable');
    // Do not relay arbitrary upstream headers or redirects to the browser.
-   const upstreamBody=await response.text();
-   if(new TextEncoder().encode(upstreamBody).length>65536)return result(503,'Service Unavailable');
+   // A malicious or misconfigured upstream may stream indefinitely without
+   // Content-Length. Stop reading at the byte limit rather than buffering all.
+   let upstreamBody;
+   try{upstreamBody=await readBoundedUtf8(response,65536);}
+   catch{return result(503,'Service Unavailable');}
    return new Response(upstreamBody,{status:response.status,headers:{...cors,'content-type':'application/json'}});
   }catch{return result(503,'Service Unavailable');}
   finally{inflight--;}
