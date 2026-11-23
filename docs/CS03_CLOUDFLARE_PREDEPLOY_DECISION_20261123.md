@@ -1,0 +1,33 @@
+# CS-03 Cloudflare隔離試験 — 初回配置可否の最終整理（2026-11-23）
+
+## 結論
+**Cloudflare Worker/DOの作成は現時点NO-GO**。前段で承認を得て実行したNeon隔離Functionの作成とは別操作であり、Cloudflareの作成・ルート公開・Access Policy書込み・secret登録・課金設定変更の承認はまだ得ていない。Cloudflareの初期画面確認・Neonの未認証拒否試験を再実施して時間を使わない。
+
+## 確定済み
+- Neon専用project `quiet-mouse-39990305` / 非default branch `br-snowy-truth-a162pmdt` / Function `cs03progress`：deployment ID 1 completed, Node24。共有secretを追加登録しない状態で実HTTPS GET 3件（Originなし403、秘密なしroot401、秘密なし/progress401）PASS。これは特定3条件の拒否試験であり正常通信・JWT・DB操作の実証ではない。
+- Cloudflare専用Certification-Studyアカウント：ユーザー提供画面でWorkers Free有効、Zero Trust Free有効、支払方法なし、Worker/DO 0件、当時の利用量0。**この時点での状態確認はC01の初期点検として完了**。将来の請求ゼロや利用量0を保証するものではない。
+- 公式（2026-11-23閲覧）：https://developers.cloudflare.com/durable-objects/platform/pricing/ によればWorkers FreeはSQLite-backed DOが利用可能。https://developers.cloudflare.com/workers/configuration/cloudflare-access/ はWorkerのproduction+previewを一括で保護するAccessを説明。https://developers.cloudflare.com/workers/platform/limits/ によればFreeの1日10万リクエスト上限、route設定のFail openはWorker迂回・Fail closedは1027返却。従って制限超過時に認証を迂回できない構成が必要。
+
+## 現行コード照合
+| ソース | 実装済みの事実 | 実配置に残る危険・対処 |
+|---|---|---|
+| `server/cs03-worker-candidate.mjs` | JWT検証器・共有Quota/DO transport・Neon上流接続を構成する候補 | 明示的にreview/test-onlyで、単独Workerのdefault exportがない。Origin, IP及び上流信頼境界の実環境検証が未了 |
+| `server/cs03-gateway-production-adapter.mjs` | Worker default.fetch・SQLite DO exportがあり、初期設定不備は503 | `CS03_ISOLATED_GATEWAY_MODE=isolated-review-only`と`request.cf`だけで実環境Ingressが保護済みと判定してはならない。このフラグはテスト用で認証境界ではない |
+| `server/cs03-trusted-edge-gateway.mjs` | JWT確認・リクエスト検査・共有Quotaの試験経路・上流にsecret付与 | **ファイル冒頭にNOT SAFE TO DEPLOY**。プロセス内上限は複数インスタンスの強制上限ではない。DOの全体Quotaの動作、上流未呼出の確証、障害時503、HTTP細部の実環境試験が要る |
+| `server/cs03-cloudflare-do-handler.mjs` / `server/cs03-cloudflare-do-transport.mjs` | SQLite DOのquotaを呼ぶ試験用部品あり | 共有DOの原子的処理とbinding/migrationの実配置確認がない |
+| `docs/cs03-worker-config-review-only.json.example` | `workers_dev:false`, `preview_urls:false`, routeなし、SQLite DO migration | `main`がdefault export無しの候補を指しているため**そのまま配置できない**。公開HTTP入口が無いので実ブラウザ試験もまだ不可。設定を勝手に公開対応に変更しない |
+| `scripts/cs03-predeploy-guard.mjs` | 既定NO-GOの確認ゲート | **TRUSTED_GATEWAY_NOT_IMPLEMENTED / GATEWAY_RATE_LIMIT_ACCEPTANCE_MISSING / ISOLATED_DEPLOYMENT_APPROVAL_MISSING**が残る。これを無効化しない |
+
+## 過度な確認を増やさずに残作業を進める順序
+1. **ローカルのみで統合実装**：試験コードを基に、本当にWorker全体で分散Quotaが必須となり、DO障害で上流Neonを呼ばない経路を完成。デプロイ用entrypointとSQLite migrationを矛盾なく一致させる。`request.cf`自体や単なるmode変数を認証済みの証拠にしない。
+2. **最小の受入を一括実行**：JWTの正常/不正、Quota 429/DO停止503と上流未送信、Origin/CORS、上限・経路不能時fail-closed、秘密の非露出をローカルで検証。個別の重複試験を増やさない。
+3. **Cloudflare隔離初回作成の別承認**：Worker 1件+SQLite DO class 1件、Certification-Studyのみ、Workers Free/Zero Trust Free継続、支払い追加なし、他サービス影響なし。候補作成は無公開route/preview disabledとし、**この段階ではHTTPS試験口がなくAccessによる未認証拒否は確認できない**。
+4. **限定Access + 試験用入口は別承認**：対象Workerのproduction/preview両方、試験者1名のみ許可。Accessの実設定と未認証拒否・route/alternate URL迂回不可を検証後、許可した通信だけを上流Neonに通す。Workerの配置と同時に知らないままworkers.dev等の公開口を有効にしない。
+5. **Neon secretの追加と実同期はさらに別承認**：実secretはChatGPT/GitHub/コマンド履歴に出さず開発PCの安全な方法で投入。Neonは必要条件を満たすまでは401拒否を維持。正常なJWTでPC→別端末の保存・読取を実証したら本番公開は別審査。
+
+## 停止、費用、切戻し
+- 初回WorkerはHTTP入口なし、previewなし、外部経路なし、Neon secret無しで作成する案。アプリ未公開でもアカウント上で計測・課金条件を監視する。**Workers Free/DO Freeの超過時の請求ゼロを保証しない**。
+- 以降の試験で予想外2xx、認証回避、Quota失効時の上流送信、他のCloudflare/Neon projectへのアクセス、追加請求が疑われれば停止。Accessを閉じるだけではNeon直URLを消せない。Neon側secretの失効/Function削除など個別対応を行う。
+- リソース削除、secret変更、Accessポリシー書込み、URL公開、CSP変更、GitHub Actions、main統合、有料化は新規の明示承認がない限り実施しない。
+
+**この文書自体は実クラウドの書込みや配置を意味しない。** 次はソース側の統合・短期の受入準備を完了させ、初回Cloudflareリソース作成の範囲をひとまとめにして承認依頼する。
