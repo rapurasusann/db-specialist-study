@@ -84,3 +84,9 @@ Zero Trust Free有効化後に表示されたCloudflare OneのDashboard（Discov
 ユーザー提出画面を確認。対象アカウントはCertification-Study。左のZero Trust > Access controls > Applicationsが選択され、画面上部には**Create new application**、本文には**Add an application**がある。Self-hosted / SaaS / Private network / Infrastructureの必要条件の案内が表示され、下部には**Add an identity provider (IdP)**、**Create an Access rule group**の推奨表示がある。**既存アプリの一覧は見えず、Accessアプリ未作成と思われるが、単一画面だけでは別管理画面に構成が無いことまでは断定できない**。Worker全体を保護する設定が可能かどうかも、この画面では未検証。
 
 **次の手順**：Create new applicationをクリックして種類選択画面を**確認するだけ**。Applicationを作成・保存しない。Identity providerの追加、Access policy変更、Worker公開、支払い方法追加、Neonの実配置は個別承認が必要。現時点の公開判定**NO-GO**。
+
+## 12. Accessアプリ作成種別の画面確認（ユーザー提出：2026-11-23）
+
+ユーザー提出の「Add an application」ダイアログを確認。上部で**Self-hosted and private**が選択され、下位項目に**Private destinations / Workers / Public DNS / Service auth**が表示。現時点の選択は**Public DNS**であり、Workers向けの設定詳細は**未確認**。ダイアログの表示のみでアプリケーション作成・Access Policyの保存は行われていない。
+
+次は**Workers**タブを選択して表示内容を読み取る。Workerが存在しない現段階では保護対象を設定したと見なさない。**公開・実クラウド配置NO-GO**を維持。
