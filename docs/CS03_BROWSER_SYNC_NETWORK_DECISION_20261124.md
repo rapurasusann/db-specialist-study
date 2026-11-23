@@ -38,3 +38,13 @@
 - 次回は、ブラウザー専用入口におけるOPTIONS preflightの通過、JWTなしGET/PUTの401、署名偽造の401、DO故障503、Quota超過429、上流Neon未送信の**一括オフライン結合テスト**を実装する。ブラウザー用Worker URLを公開する前に、入口ごとのアクセス範囲・コスト・Fail closed・停止手順を別途承認する。
 
 **状態：第一候補Aの入口を実装し始めたが、ローカルテスト未実行・実同期未成立・NO-GO。**
+
+## 2026-11-24 02:00 リモート作業：ブラウザーJWT入口の結合受入テスト
+
+- `tests/cs03-worker-entrypoint-full-chain.test.mjs` に新しいブラウザー専用入口 `createCs03BrowserJwtEntrypoint` を既存の署名JWT・共有DO・隔離Neon模擬実装につなぐテスト3件を追加。
+- テスト内容：①正規JWTのPUT/GETが共有DOとNeon模擬処理に届く ②OPTIONS preflightは限定CORSで204、無効/偽造JWTは401、異Originは403、CF metadataなしは503、拒否時DO/Neon未呼出 ③DO quota超過で429、DO故障で503かつ上流Neon未呼出。
+- 既存の運営者専用Access入口の試験はそのまま維持し、ブラウザー専用入口でAccess CookieやAccess service tokenを使わない。これは「認証不要」という意味ではなく、**Neon JWTを必須**にする分離構成。
+- **未実行**：GitHubへのソース変更のみであり、NodeテストのPASSや実Cloudflare/Neon通信の成功は主張しない。Cloudflareリソース/URL/Secrets/CSP/Access Policy、GitHub Actions、mainは変更していない。
+- 次の開発PCで `npm run test:cs03-worker-security` と `npm run test:cs03` をまとめて実行し、失敗時に原因を絞り込む。Cloudflare公開は引き続き独立承認と実経路/料金の安全審査が必要。
+
+**公開判定：NO-GO、端末間実同期：未実施。**
