@@ -26,6 +26,7 @@ test('browser JWT preflight only allows explicit Authorization and known headers
  const denied=[
   ['GET',''],['GET','content-type'],['PUT','content-type'],
   ['GET','authorization, x-secret'],['PUT','authorization, authorization'],
+  ['GET','authorization, content-type'],['PUT','authorization'],
   ['GET','authorization, '],['DELETE','authorization']
  ];
  for(const [method,headers] of allowed){
