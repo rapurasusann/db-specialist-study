@@ -39,3 +39,31 @@ test('clock skew and storage failure are fail closed',async()=>{
  assert.equal(response.status,503);
  assert.deepEqual(await response.json(),{error:'Service Unavailable'});
 });
+
+
+test('streaming oversized internal payload rejects before reading all data or touching storage',async()=>{
+ let used=0,produced=0;
+ const handler=createCs03QuotaObjectHandler({storage:{},clock:()=>10000,
+  consume:()=>{used++;return true;}});
+ const stream=new ReadableStream({pull(controller){
+  produced++;
+  controller.enqueue(new Uint8Array(300).fill(65));
+  if(produced===20)controller.close();
+ }});
+ const input=new Request('https://cs03-quota.internal/consume',{method:'POST',
+  headers:{'content-type':'application/json'},body:stream,duplex:'half'});
+ assert.equal(input.headers.get('content-length'),null);
+ const reply=await handler(input);
+ assert.equal(reply.status,400);
+ assert.equal(used,0);
+ assert.ok(produced<20,'must not buffer entire payload without Content-Length');
+});
+test('malformed UTF-8 internal payload rejects without quota access',async()=>{
+ let used=0;
+ const handler=createCs03QuotaObjectHandler({storage:{},clock:()=>10000,
+  consume:()=>{used++;return true;}});
+ const input=new Request('https://cs03-quota.internal/consume',{method:'POST',
+  headers:{'content-type':'application/json'},body:new Uint8Array([0xc3,0x28])});
+ assert.equal((await handler(input)).status,400);
+ assert.equal(used,0);
+});
