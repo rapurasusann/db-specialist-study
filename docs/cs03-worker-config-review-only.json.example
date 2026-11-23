@@ -6,11 +6,18 @@
   "preview_urls": false,
   "durable_objects": {
     "bindings": [
-      {"name": "CS03_QUOTA", "class_name": "Cs03QuotaNotDeployed"}
+      {
+        "name": "CS03_QUOTA",
+        "class_name": "Cs03QuotaNotDeployed"
+      }
     ]
   },
   "migrations": [
-    {"tag": "cs03-candidate-sqlite-v1", "new_sqlite_classes": ["Cs03QuotaNotDeployed"]}
-  ],
-  "limits": {"cpu_ms": 10}
+    {
+      "tag": "cs03-candidate-sqlite-v1",
+      "new_sqlite_classes": [
+        "Cs03QuotaNotDeployed"
+      ]
+    }
+  ]
 }
