@@ -55,3 +55,6 @@ GRANT DELETE ON TABLE public.study_progress TO cs03_progress_api;
 **Do not change CONNECT on `certification_study` in this step**. Instead, keep cross-database CONNECT as an explicit residual privilege and review whether all current users and services can tolerate revoking PUBLIC CONNECT in a separate change window. In the meantime confirm the API role has no USAGE on sensitive schemas or table privileges in that database; merely testing CONNECT is insufficient.
 
 **Status:** written proposal only. No privilege changes, secret access, new resources or deployment.
+
+### Additional read-only cross-database catalog check
+In the **same isolated branch** `certification_study` database (connected as catalog-inspection owner, not the API role): `has_database_privilege(...,'CONNECT')` was true for `cs03_progress_api`; one non-system schema was USAGE-accessible; **zero non-system tables/views/materialized views/sequences** had SELECT, INSERT, UPDATE or DELETE via `has_table_privilege` at inspection time. This reduces direct table-data exposure but does not demonstrate that the API role cannot connect, nor audit every executable function or future grant. No data rows were read or changed.
