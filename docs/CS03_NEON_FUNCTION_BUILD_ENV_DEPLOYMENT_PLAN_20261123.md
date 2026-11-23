@@ -67,3 +67,9 @@ Neon公式`docs/compute/functions/deploy`のesbuild方式に合わせ、Node24 /
 - 追加テストは**まだ実行していないためPASS宣言禁止**。既存の31/31 PASSは旧版の合格実績であり、関係コード変更後の未再検証部分を区別する。
 
 **実配置前に残る問題**：Neonの実`invocation_url`はFunction slugのルート。現在のコードはFunctionの`/progress`を要求し、Workerは同じpathに転送する設計。**実NeonのFunction URLに`/progress`を付与してHTTP handlerへ届くか、公式仕様だけで断定せず、実クラウドでの隔離受入までOPEN**。公開URLを推測して作成しない。NO-GO維持。
+
+## 7. 開発PCビルド受入：6/6 PASS（2026-11-23）
+
+操作者が開発PCでコミット `b243970b56d61cb72b3a9af7d9d0158a4d77cb24` をチェックアウトし、`node --test tests/cs03-neon-function-runtime-contract.test.mjs tests/cs03-neon-function-offline-bundle.test.mjs` を実行した。提出されたログは **6 tests / 6 pass / 0 fail**、`CS03_NEON_BUNDLE_TEST_PASS`。esbuildによるNode24ターゲットESM単一bundleとCommonJSのprogress handler取込、バンドル後のdefault fetch読込、秘密欠落時401、実行環境・隔離DB設定の静的ガード、非公開状態を確認。今回変更した実装に関連する既存5件も再試験済み。同一のソース状態では繰り返し不要。
+
+**未完了**：Neon実ランタイムでのbundle起動、依存解決、隔離branchへの配置とenv注入、Function呼び出しURLのルート `/` と現行handler `/progress` の実ルーティング整合、秘密登録、実DB接続、上限超過時fail-closed。ローカル試験でのルート `/` 404は現行コードの挙動であり、実Neonのルーティング受入ではない。クラウド変更・課金変更・GitHub Actionsは一切行わず、**実配置・本番公開NO-GO**を維持する。
