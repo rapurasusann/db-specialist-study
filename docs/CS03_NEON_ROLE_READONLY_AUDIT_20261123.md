@@ -112,3 +112,11 @@ CS03_LIVE_ACCEPTANCE_PASS
 The test checked live identity and role privileges, inserted transient random-UUID user A and B rows, read each user's own row under the transaction-local verified-user setting, checked that the other user's row was not visible, updated B's row from revision 1 to 2, and rolled back. The script subsequently checked both random test-row keys were absent in read-only transactions. These markers establish **live database-layer INSERT/SELECT/UPDATE/RLS isolation and rollback acceptance** for this isolated target; there is no need to repeat this accepted check absent relevant code/schema/credential changes. Note that the explicit absence check is scoped to the two generated test identifiers; this is not a global audit of every existing row.
 
 **Still NO-GO:** no actual remote browser → Cloudflare Worker → Neon Functions end-to-end acceptance, actual route/secret deployment verification, or full production readiness/cost sign-off. Do not deploy or create resources on the strength of this isolated test.
+
+## Browser → Worker → Durable Objects → native Function offline chain — 2026-11-23
+
+**PASS (operator-provided local output).** At commit `fb9b8fbb3d3a1c88bf13b9cb3ed56afc4789dff5`, the operator ran `node --test tests/cs03-worker-entrypoint-full-chain.test.mjs` on the development PC. Node reported **4 tests / 4 pass / 0 fail** and printed `CS03_BROWSER_TO_FUNCTION_TEST_PASS`.
+
+The tests verified the offline simulated end-to-end request path through JWT verification, Worker entrypoint, SQLite Durable Object quota handler, and the native Neon Function adapter; fail-closed behavior for invalid tokens, browser origins and missing Cloudflare request context; quota overflow; and the real browser account client interacting with the simulated chain for two separately keyed user accounts. The test upstream, credentials, auth keys, storage, and Cloudflare context were all local fakes; **no real remote Cloudflare or Neon Functions requests were made**.
+
+This accepted offline integration test does not need to be rerun unless the relevant path changes. Retain **NO-GO** for cloud deployment, public routing, remote gateway security verification, and cost acceptance.
