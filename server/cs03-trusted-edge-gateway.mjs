@@ -72,7 +72,7 @@ export function createCs03TrustedEdgeGateway({verifyToken,fetcher,upstreamUrl,up
   try{
    const dest=new URL(upstream);
    if(request.method==='GET')dest.search=url.search;
-   const headers={authorization:auth,'x-secret':upstreamSecret};
+   const headers={authorization:auth,'x-secret':upstreamSecret,origin:ORIGIN};
    if(request.method==='PUT')headers['content-type']='application/json';
    const response=await fetcher(dest,{method:request.method,headers,body,redirect:'error',cache:'no-store',
     signal:AbortSignal.timeout(8000)});
