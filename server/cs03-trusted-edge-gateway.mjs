@@ -32,7 +32,7 @@ export function createCs03TrustedEdgeGateway({verifyToken,fetcher,upstreamUrl,up
  let upstream;
  try{upstream=new URL(upstreamUrl);}catch{throw Error('GATEWAY_UPSTREAM_INVALID');}
  if(upstream.protocol!=='https:'||!upstream.hostname||upstream.username||upstream.password||
-    upstream.search||upstream.hash||upstream.pathname!=='/progress')throw Error('GATEWAY_UPSTREAM_INVALID');
+    upstream.search||upstream.hash||!['/','/progress'].includes(upstream.pathname))throw Error('GATEWAY_UPSTREAM_INVALID');
  if(typeof upstreamSecret!=='string'||new TextEncoder().encode(upstreamSecret).length<32)
   throw Error('GATEWAY_SECRET_REQUIRED');
  if(!Number.isInteger(windowMs)||windowMs<1000||!Number.isInteger(maxInflight)||maxInflight<1||
