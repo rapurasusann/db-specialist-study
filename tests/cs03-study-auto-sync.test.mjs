@@ -66,3 +66,23 @@ test('opening failed request does not permit account writes',async()=>{
  await assert.rejects(f.ui.open(Q),/NETWORK_FAIL/);
  assert.throws(()=>f.ui.edit(Q,{level:'mastered'}),/REMOTE_READ_REQUIRED/);
 });
+
+test('failed account write can be exported without mutating server or device progress',async()=>{
+ const f=setup();
+ await f.ui.login();await f.ui.open(Q);f.reject();
+ await assert.rejects(f.ui.edit(Q,{level:'mastered',notes:'test draft'}),/REVISION_CONFLICT_REFRESHED/);
+ const backup=f.ui.exportPending();
+ assert.equal(backup.format,'cs03-unsaved-account-progress-v1');
+ assert.equal(backup.userId,A);
+ assert.deepEqual(backup.records[Q],{level:'mastered',notes:'test draft'});
+ backup.records[Q].notes='mutated exported data';
+ assert.deepEqual(f.ui.exportPending().records[Q],{level:'mastered',notes:'test draft'});
+ assert.equal(f.remote.size,0);
+ assert.throws(()=>f.ui.logout(),/UNSAVED_ACCOUNT_PROGRESS/);
+});
+test('backup export is denied without a failed write',async()=>{
+ const f=setup();
+ assert.throws(()=>f.ui.exportPending(),/ACCOUNT_SESSION_CHANGED/);
+ await f.ui.login();
+ assert.throws(()=>f.ui.exportPending(),/NO_UNSAVED_ACCOUNT_PROGRESS/);
+});
