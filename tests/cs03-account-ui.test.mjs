@@ -80,3 +80,34 @@ test('sign-out checks account write guard before invoking auth provider',async()
  f.elements.logout.click();await ticks();
  assert.deepEqual(calls,['guard','auth']);
 });
+
+test('restore button imports selected JSON only after explicit interaction and clears file selection',async()=>{
+ const f=fixture(),seen=[];
+ const pick=element(),button=element(),recordStatus=element();
+ pick.files=[{size:90,text:async()=>'{"format":"cs03-unsaved-account-progress-v1"}'}];
+ f.elements['restore-unsaved-file']=pick;
+ f.elements['restore-unsaved']=button;
+ f.elements['record-status']=recordStatus;
+ mountCs03AccountPanel({querySelector:selector=>f.elements[selector.slice(12,-2)]??null},f.account,{
+  onRestoreUnsaved:async text=>{seen.push(text);return '確認待ちとして読み込みました。';}
+ });
+ assert.equal(button.disabled,true);
+ f.elements.login.click();await ticks();
+ assert.equal(button.disabled,false);
+ button.click();await ticks();
+ assert.deepEqual(seen,['{"format":"cs03-unsaved-account-progress-v1"}']);
+ assert.equal(recordStatus.textContent,'確認待ちとして読み込みました。');
+ assert.equal(pick.value,'');
+});
+test('oversize backup file is rejected without reading or submitting',async()=>{
+ const f=fixture(),seen=[],pick=element(),button=element(),recordStatus=element();
+ pick.files=[{size:1200001,text:async()=>{throw Error('SHOULD_NOT_READ')}}];
+ f.elements['restore-unsaved-file']=pick;f.elements['restore-unsaved']=button;f.elements['record-status']=recordStatus;
+ mountCs03AccountPanel({querySelector:selector=>f.elements[selector.slice(12,-2)]??null},f.account,{
+  onRestoreUnsaved:async text=>{seen.push(text);return 'unexpected';}
+ });
+ f.elements.login.click();await ticks();button.click();await ticks();
+ assert.deepEqual(seen,[]);
+ assert.match(recordStatus.textContent,/復元できませんでした/);
+ assert.equal(pick.value,'');
+});
