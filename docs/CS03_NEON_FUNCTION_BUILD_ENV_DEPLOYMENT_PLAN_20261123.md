@@ -31,3 +31,24 @@
 4. **D4（承認後のみ）**：隔離Functionのビルド・配備、実環境env・依存解決、直接呼出拒否、Worker/DOの隔離上限、実API通信を検証。Cloudflare本番公開/CSP変更はさらに別承認。
 
 **状態**：現行のレビュー/監査文書とテストは保持。Cloudflare／Neonリソース・課金・GitHub Actions・本番mainは変更していない。**NO-GO**。
+
+## 5. Neon実アカウントと公式API仕様の直接照合（2026-11-23）
+
+**実Neon connectorの読み取り結果**（Project `quiet-mouse-39990305`, branch `br-snowy-truth-a162pmdt`）：対象branchは`ready`、`default:false`、Neon Functionsの`list_functions`は空配列（0件）。実Functionや環境変数は登録していない。
+
+**Neon公式ドキュメントの直接読取**（Functions environment variables / Deploy and manage、2026-11-09更新）：
+- Functionsは**Node.js 24**。Neon Functions CLI `neon functions deploy <slug> --src <path>` は既定でesbuildによりbundleし、ソースをZIP化してアップロードする。 `--branch` と `--project-id` があり、**常に対象非default branchを明示**して実行する設計が可能。CLI設定の既定branchに頼らない。
+- `neon functions deploy` の`--env KEY=VALUE` は**CLIの引数として値を渡す方式**で、`neon deploy --env path`とは異なる。秘密をシェル履歴／プロセス引数に露出させないため、具体的な登録手段は承認時に別途選ぶ。秘密の実値をこの文書・GitHub・チャット・CIログへ書かない。
+- 新しい**各Functionデプロイに環境変数のスナップショット**が付属する。CLIではenvの変更もコードを再bundleする。API経由なら既存Functionに対して`zip`なしでenv/runtimesのみを更新可能。**Function未登録の初回デプロイにはZIPが必須**。値の削除はCLI `--env KEY=`で可能と公式記載があるが、事故時の実際の失効と反映タイミングは検証していない。
+- Neonが注入する `DATABASE_URL` はbranch-scoped。ただしCS-03は最小権限`CS03_TEST_DATABASE_URL`の専用接続とTLS検証を要求。Neon自動`DATABASE_URL`を代替として使わない。
+- `neon.ts`方式は`neon deploy`が**関数以外のbranch policy全体**を適用するため、Function以外の変更リスクもある。CS-03の最小配置では**既存DB/Auth等を意図せず変更しない方式**の採用を優先し、`neon deploy`を無承認で実行しない。
+- FunctionソースのエントリとbundleはCLI側で管理でき、事前にソース`functions/cs03-progress.mjs`と`pg`/`jose`/CommonJS相対依存をローカルでビルドできるかは**まだ未実証**。
+- 環境変数の制限は**最大1000件、合計32KiB**（Neon注入分も実行時の上限に関わる）。必要最小限のみ登録する。
+- **残る具体的な互換性懸念**：Neon Functionの`invocation_url`はFunction識別子のルートで、現行CS-03のFunction/Workerとも`/progress`を要求する。実URLと`/progress`の経路が成立することは未確認であり、勝手にURLを捏造・公開しない。
+
+公式参照：
+- https://neon.com/docs/compute/functions/environment-variables
+- https://neon.com/docs/compute/functions/deploy
+- https://neon.com/docs/cli/functions
+
+**判定**：『カスタムenv設定方式が存在するか』『非default branchを明示できるか』は仕様上確認済み。『実環境でのsecret保管と更新』『bundle/Node互換』『Function URLと`/progress`』『実非default branchへの動作確認』はOPEN。ユーザーの個別承認までは**Neon Functions deploy、config apply、env pull、秘密登録、Cloudflare配置、課金変更を行わない**。CS-03公開・実クラウド配置**NO-GO**。
