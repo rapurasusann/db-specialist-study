@@ -2,6 +2,27 @@
 // This is NOT a public Worker route and NOT a deployment entrypoint.
 import {consumeCs03SqliteQuota} from './cs03-cloudflare-do-quota.mjs';
 const ERROR=(status)=>Response.json({error:status===400?'Bad Request':'Service Unavailable'},{status,headers:{'cache-control':'no-store'}});
+// Durable Object stubs should only receive tiny internal requests. Enforce the
+// byte limit even when Content-Length is missing or forged, before JSON.parse.
+async function readTinyPayload(request,maxBytes=1024){
+ if(!request.body)throw Error('EMPTY_BODY');
+ const reader=request.body.getReader();
+ const decoder=new TextDecoder('utf-8',{fatal:true});
+ let text='',bytes=0;
+ try{
+  while(true){
+   const part=await reader.read();
+   if(part.done)break;
+   bytes+=part.value.byteLength;
+   if(bytes>maxBytes){
+    void reader.cancel().catch(()=>{});
+    throw Error('DO_PAYLOAD_TOO_LARGE');
+   }
+   text+=decoder.decode(part.value,{stream:true});
+  }
+  return JSON.parse(text+decoder.decode());
+ }finally{reader.releaseLock();}
+}
 export function createCs03QuotaObjectHandler({storage,clock=Date.now,consume=consumeCs03SqliteQuota,
  limits={global:60,perIp:20,perUser:10},windowMs=60000}={}){
  if(!storage||typeof clock!=='function'||typeof consume!=='function'||
@@ -16,9 +37,7 @@ export function createCs03QuotaObjectHandler({storage,clock=Date.now,consume=con
   if(advertised!==null&&(!/^\d+$/.test(advertised)||Number(advertised)>1024))return ERROR(400);
   let payload;
   try{
-   const raw=await request.text();
-   if(new TextEncoder().encode(raw).length>1024)return ERROR(400);
-   payload=JSON.parse(raw);
+   payload=await readTinyPayload(request);
   }catch{return ERROR(400);}
   const keys=payload?.keys;
   if(!Array.isArray(keys)||keys.length!==3||
