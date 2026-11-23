@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import {generateKeyPair,exportJWK,createLocalJWKSet,SignJWT} from 'jose';
 import {createNeonJwtVerifier} from '../src/neon-jwt-verifier.mjs';
 import {createCs03Entrypoint} from '../server/cs03-gateway-production-adapter.mjs';
+import {createCs03BrowserJwtEntrypoint} from '../server/cs03-browser-jwt-entrypoint.mjs';
 import {createCs03TrustedEdgeGateway} from '../server/cs03-trusted-edge-gateway.mjs';
 import {createCs03SharedQuota} from '../server/cs03-shared-quota.mjs';
 import {createCs03DurableObjectQuotaTransport} from '../server/cs03-cloudflare-do-transport.mjs';
@@ -55,7 +56,7 @@ function setup({perUserLimit=2}={}){
   }
   return Response.json({data:seen.records.get(key)??null});
  }};
- const entry=createCs03Entrypoint({createGateway:()=>createCs03TrustedEdgeGateway({
+ const gatewayFactory=()=>createCs03TrustedEdgeGateway({
   verifyToken,sharedQuota:quota,getClientIp:()=> '192.0.2.55',
   upstreamUrl:'https://isolated-neon.invalid/progress',
   upstreamSecret:SECRET,limits:{global:100,perIp:100,perUser:100},
@@ -64,8 +65,10 @@ function setup({perUserLimit=2}={}){
    return handleBrowserRequest(new Request(url,{method:init.method,headers:init.headers,body:init.body}),
     ()=>runtime,SECRET);
   }
- })});
- const env={CS03_ISOLATED_GATEWAY_MODE:'isolated-review-only',CS03_ACCESS_AUD:'cs03-test-access-audience'};
+ });
+ const entry=createCs03Entrypoint({createGateway:gatewayFactory});
+ const browserEntry=createCs03BrowserJwtEntrypoint({createGateway:gatewayFactory});
+ const env={CS03_ISOLATED_GATEWAY_MODE:'isolated-review-only',CS03_BROWSER_JWT_MODE:'isolated-review-only',CS03_ACCESS_AUD:'cs03-test-access-audience'};
  const accessContext={access:{aud:'cs03-test-access-audience'}};
  function request(token,{method='GET',origin=ORIGIN,cf=true}={}){
   const url='https://candidate.invalid/progress'+(method==='GET'?'?examCode=db':'');
@@ -76,7 +79,7 @@ function setup({perUserLimit=2}={}){
   if(cf)Object.defineProperty(r,'cf',{value:{colo:'NRT'}});
   return r;
  }
- return {entry,env,seen,request,accessContext};
+ return {entry,browserEntry,env,seen,request,accessContext};
 }
 test('entrypoint routes signed JWT through shared DO and native Neon read/write',async()=>{
  const h=setup(),token=await signedToken();
@@ -150,4 +153,48 @@ test('entrypoint refuses absent or mismatched Cloudflare Access context before D
  assert.equal((await h.entry.fetch(req,{...h.env,CS03_ACCESS_AUD:''},h.accessContext)).status,503);
  assert.equal(h.seen.neon,0);
  assert.equal(h.seen.do,0);
+});
+
+test('browser JWT entrypoint: signed JWT PUT/GET uses DO and isolated Neon without Access cookies',async()=>{
+ const h=setup({perUserLimit:10}),token=await signedToken();
+ const put=await h.browserEntry.fetch(h.request(token,{method:'PUT'}),h.env);
+ assert.equal(put.status,200);
+ const get=await h.browserEntry.fetch(h.request(token),h.env);
+ assert.equal(get.status,200);
+ assert.equal((await get.json()).data.data.level,'review');
+ assert.equal(h.seen.do,2);
+ assert.equal(h.seen.neon,2);
+});
+test('browser JWT entrypoint: preflight is strict, unauthenticated and forged JWT never reach DO or Neon',async()=>{
+ const h=setup(),token=await signedToken(),forged=await generateKeyPair('EdDSA');
+ const preflight=new Request('https://candidate.invalid/progress',{method:'OPTIONS',headers:{
+  origin:ORIGIN,'access-control-request-method':'GET',
+  'access-control-request-headers':'authorization, content-type'
+ }});
+ Object.defineProperty(preflight,'cf',{value:{colo:'NRT'}});
+ const options=await h.browserEntry.fetch(preflight,h.env);
+ assert.equal(options.status,204);
+ assert.equal(options.headers.get('access-control-allow-origin'),ORIGIN);
+ assert.equal((await h.browserEntry.fetch(h.request('not-a-valid-token'),h.env)).status,401);
+ assert.equal((await h.browserEntry.fetch(h.request(await signedToken(forged.privateKey)),h.env)).status,401);
+ assert.equal((await h.browserEntry.fetch(h.request(token,{origin:'https://evil.invalid'}),h.env)).status,403);
+ assert.equal((await h.browserEntry.fetch(h.request(token,{cf:false}),h.env)).status,503);
+ assert.equal(h.seen.do,0);
+ assert.equal(h.seen.neon,0);
+});
+test('browser JWT entrypoint: quota excess and DO storage failure fail closed before Neon',async()=>{
+ const h=setup({perUserLimit:2}),token=await signedToken();
+ const statuses=[];
+ for(let i=0;i<3;i++)statuses.push((await h.browserEntry.fetch(h.request(token),h.env)).status);
+ assert.deepEqual(statuses,[200,200,429]);
+ assert.equal(h.seen.neon,2);
+ assert.equal(h.seen.do,3);
+ const failing=createCs03BrowserJwtEntrypoint({createGateway:()=>createCs03TrustedEdgeGateway({
+  verifyToken,upstreamUrl:'https://isolated-neon.invalid/progress',upstreamSecret:SECRET,
+  getClientIp:()=> '192.0.2.55',
+  sharedQuota:{consume:async()=>{throw Error('DO_UNAVAILABLE');}},
+  fetcher:async()=>{throw Error('UPSTREAM_MUST_NOT_BE_CALLED');}
+ })});
+ const reply=await failing.fetch(h.request(token),h.env);
+ assert.equal(reply.status,503);
 });
