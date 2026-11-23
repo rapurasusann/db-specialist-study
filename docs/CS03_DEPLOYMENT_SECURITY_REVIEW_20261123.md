@@ -101,3 +101,14 @@
 操作者はコミット `c9862149b2e748630d95e8203855a0f9b7111274` の `scripts/cs03-real-browser-two-tabs.mjs` を開発PCで実行。`REAL_WEB_LOCKS_AVAILABLE=PASS`、`TAB_A_LOGGED_IN=PASS`、`TAB_B_SAME_ACCOUNT_REJECTED=PASS`、`TAB_B_CANNOT_CLEAR_A_DRAFT=PASS` を確認。続くタブA終了・タブBのロック再取得の区間で `CS03_REAL_BROWSER_TWO_TABS=FAIL`、`FAIL_CLASS=BROWSER_OR_ENVIRONMENT_ERROR`。後続の `TAB_B_REACQUIRES_AFTER_A_CLOSE` と `RECOVERED_DRAFT_IS_REVIEW_ONLY` は **未評価**、実ブラウザの全件合格を宣言しない。
 
 調査用に試験スクリプトのみ変更し、失敗段階 `FAIL_PHASE`、匿名化した例外分類 `FAIL_REASON`、タブAのclose完了表示を追加（コミット `f58bc1c`）。本番設定・クラウド・DB操作はなく、再実行対象は本実ブラウザ試験のみ。
+
+
+## 2026-11-23 実Chromium複数タブ試験の全項目PASS
+
+操作者が commit `37aa5ff6589b9310b36fd34d9da3e61bc5c48a5e` を開発PCでチェックアウトし、ローカル専用 `scripts/cs03-real-browser-two-tabs.mjs` を実際の Chromium / Playwright で実行した。
+
+**実行結果：`CS03_REAL_BROWSER_TWO_TABS=PASS`**。出力により `REAL_WEB_LOCKS_AVAILABLE`、`TAB_A_LOGGED_IN`、`TAB_B_SAME_ACCOUNT_REJECTED`、`TAB_B_CANNOT_CLEAR_A_DRAFT`、`TAB_A_CLOSED`、`TAB_B_REACQUIRES_AFTER_A_CLOSE`、`RECOVERED_DRAFT_IS_REVIEW_ONLY`、`NO_EXTERNAL_REQUESTS`、`NO_PAGE_ERRORS` のすべてが PASS した。
+
+前回の `BROWSER_OR_ENVIRONMENT_ERROR` は再現していない。ただし、当該失敗の根本原因が確定したことを意味しない。同じプログラムのコード修正なしでの全件PASSとして受入証跡を記録する。
+
+**受入範囲**：同一 Chromium BrowserContext の2タブ、同一オリジン・同一アカウントの Web Locks 排他、タブ終了後の取得、共有 localStorage に残った下書きの確認待ち復元。**未受入**：異なるブラウザ/プロファイル/端末間の排他、実Neon Functions/Cloudflareのネットワーク経路、公開用CSP/CORS、アカウント課金・無料枠、実クラウドへのデプロイ。公開判定は引き続き **NO-GO**。合格済み試験の再実行は関係コード変更時や独立受入が必要な場合のみ。
