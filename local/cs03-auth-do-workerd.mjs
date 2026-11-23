@@ -7,6 +7,7 @@ import {createCs03TrustedEdgeGateway} from '../server/cs03-trusted-edge-gateway.
 import {createCs03SharedQuota} from '../server/cs03-shared-quota.mjs';
 import {createCs03DurableObjectQuotaTransport} from '../server/cs03-cloudflare-do-transport.mjs';
 import {createCs03QuotaObjectHandler} from '../server/cs03-cloudflare-do-handler.mjs';
+import {consumeCs03SqliteQuota} from '../server/cs03-cloudflare-do-quota.mjs';
 
 const ORIGIN='https://rapurasusann.github.io', SECRET='LOCAL-ONLY-CS03-NOT-FOR-DEPLOYMENT-123456789';
 const ISS='https://cs03-local.example.test/issuer', AUD='cs03-local-only';
@@ -14,7 +15,12 @@ const verify=createNeonJwtVerifier({issuer:ISS,audience:AUD,jwks:createLocalJWKS
  {kty:'OKP',crv:'Ed25519',x:'K33r0I4uW5FcuJoMKDxiyMcFKGoNaMBqNB_4O9bJLuo',alg:'EdDSA',kid:'local-cs03-only'}
 ]})});
 export class Cs03LocalFullQuota{
- constructor(ctx){this.handler=createCs03QuotaObjectHandler({storage:ctx.storage});}
+ constructor(ctx){this.handler=createCs03QuotaObjectHandler({storage:ctx.storage,
+  consume:(storage,input)=>{
+   try{return consumeCs03SqliteQuota(storage,input);}
+   catch(error){console.error('CS03_LOCAL_SQLITE_ERROR='+String(error?.message??'unknown'));throw error;}
+  }
+ });}
  fetch(request){return this.handler(request);}
 }
 const fakeProgress=new Map();
