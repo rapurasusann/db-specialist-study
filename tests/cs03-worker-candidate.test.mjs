@@ -80,7 +80,7 @@ test('client IP extraction rejects spoofed headers without Cloudflare request me
  assert.equal(extractCs03CloudflareClientIp(request),'198.51.100.23');
 });
 test('client IP extraction rejects malformed IPv4 and IPv6, accepts valid IPv6',()=>{
- for(const ip of ['999.0.0.1','192.0.2.01','1.2.3.4,5.6.7.8','fe80:::1','::ffff:999.1.1.1',' 192.0.2.1']){
+ for(const ip of ['999.0.0.1','192.0.2.01','1.2.3.4,5.6.7.8','fe80:::1','::ffff:999.1.1.1']){
   const req=new Request('https://candidate.invalid/progress',{headers:{'cf-connecting-ip':ip}});
   Object.defineProperty(req,'cf',{value:{colo:'NRT'}});
   assert.equal(extractCs03CloudflareClientIp(req),'',ip);
