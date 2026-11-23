@@ -28,3 +28,13 @@
 4. ローカルリポジトリなしPCではGitHub上の実装・テストコード・仕様の改善を進めるが、未実行テストをPASS扱いしない。2026-11-24のRemote限定作業に組み入れた。
 
 **最短経路の候補はA**。Accessは最初からすべてのユーザーのログイン認証として使うのではなく、運営者限定のCloudflare隔離試験で使う。ユーザーの資格勉強アカウントの認証はNeon Auth JWTを使う。この構成選択・クラウド作成・公開は**まだ承認されていない**。
+
+## 2026-11-24 01:00 リモート実装：JWTブラウザー入口の隔離候補
+
+- `server/cs03-browser-jwt-entrypoint.mjs`を新規追加。既存の運営者向け`cs03-gateway-production-adapter.mjs`（Access必須）を変更せず、ブラウザー向けに`credentials:'omit'` + Neon Auth JWTで利用できる**別のWorker default export**を作成。両入口は`createCs03WorkerCandidate`を共有するためJWT署名検証、固定Origin、DO分散Quota、上流Neon secretの要件を維持。
+- 新入口は`CS03_BROWSER_JWT_MODE=isolated-review-only`とCloudflareの`request.cf`がなければ503。これは認証の代替ではなく、JWT認証と実環境の入口保護は別途必須。`request.cf`だけで安全な外部公開が証明されたわけではない。
+- `tests/cs03-browser-jwt-entrypoint.test.mjs`を追加し、モード不一致・bindings欠落・Cloudflare metadata欠落・誤ったfactoryを検査。`package.json`の既存一括試験にも追加。**開発PC未実行**。
+- **新しい公開URL、Cloudflare Worker、DO、Access Policy、Secrets、CSP、GitHub Pagesは一切変更していない。** Workerのreview-only Wrangler設定は既存の運営者専用のまま。ブラウザー入口用の公開設定を勝手に追加しない。
+- 次回は、ブラウザー専用入口におけるOPTIONS preflightの通過、JWTなしGET/PUTの401、署名偽造の401、DO故障503、Quota超過429、上流Neon未送信の**一括オフライン結合テスト**を実装する。ブラウザー用Worker URLを公開する前に、入口ごとのアクセス範囲・コスト・Fail closed・停止手順を別途承認する。
+
+**状態：第一候補Aの入口を実装し始めたが、ローカルテスト未実行・実同期未成立・NO-GO。**
