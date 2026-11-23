@@ -61,7 +61,9 @@ export function createCs03TrustedEdgeGateway({verifyToken,fetcher,upstreamUrl,up
    // unauthenticated preflight shapes instead of advertising a permissive API.
    if(!['GET','PUT'].includes(method)||!requested.includes('authorization')||
       requested.some(x=>!['authorization','content-type'].includes(x))||
-      new Set(requested).size!==requested.length)
+      new Set(requested).size!==requested.length||
+      (method==='GET'&&requested.includes('content-type'))||
+      (method==='PUT'&&!requested.includes('content-type')))
     return result(405,'Method Not Allowed');
    return new Response(null,{status:204,headers:cors});
   }
