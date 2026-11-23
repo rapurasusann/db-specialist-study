@@ -4,7 +4,7 @@ import {inspectCs03CloudflareAccount,CS03_CLOUDFLARE_ACCOUNT_ID as EXPECTED}
  from '../scripts/cs03-cloudflare-account-guard.mjs';
 import {inspectCs03Deployment} from '../scripts/cs03-predeploy-guard.mjs';
 
-const OTHER='f677da3674421730171a1cfba48c2a04';
+const OTHER='00000000000000000000000000000000';
 test('the separate Certification-Study account ID is the only permitted account',()=>{
  assert.equal(EXPECTED,'9829f590b4afea346993621ca3a0c13f');
  assert.deepEqual(inspectCs03CloudflareAccount({env:{CLOUDFLARE_ACCOUNT_ID:EXPECTED}}),[]);
