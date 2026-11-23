@@ -48,3 +48,12 @@
 - 次の開発PCで `npm run test:cs03-worker-security` と `npm run test:cs03` をまとめて実行し、失敗時に原因を絞り込む。Cloudflare公開は引き続き独立承認と実経路/料金の安全審査が必要。
 
 **公開判定：NO-GO、端末間実同期：未実施。**
+
+## 2026-11-24 03:00 リモート作業：実アカウントクライアントのJWT入口接続試験
+
+- 既存の `tests/cs03-worker-entrypoint-full-chain.test.mjs` にあった「実ブラウザーのアカウントクライアント → Worker → 共有DO → Neon模擬Function」の統合テストは、従来の**運営者用Access入口**を呼んでおり、利用者向けの実経路を検証できていなかった。これを**`h.browserEntry.fetch(r,h.env)`** に変更した。
+- 2アカウントで同一ブラウザーStorageを共有する試験に変更し、保存・読取結果に加え、アカウント別Storageキーの分離とそれぞれのキャッシュ内容を確認するアサーションを追加。既存の署名済みJWT・Neon模擬保存・DO共有Quotaを使用し、ブラウザーから`cookie`や`cf-access-client-secret`が送られないことを確認する。
+- **この修正はテスト経路の取り違えを解消するものであり、本番実装の完成やCloudflareの実配置を意味しない。** ローカルNodeテストは未実行。次回開発PCで`npm run test:cs03-worker-security`および`npm run test:cs03`を実行して初めてPASS/FAILを判定する。
+- GitHub Actions、Cloudflare/Neon変更、URL/CSP、課金、main統合は実施していない。未承認の公開はNO-GO。
+
+**次**：ブラウザーJWT入口のCORS preflightと本リクエストでCookieに依存しない動作、アカウント切替の途中で通信が完了した場合のローカルキャッシュ保護、Quotaの境界を引き続き点検する。
