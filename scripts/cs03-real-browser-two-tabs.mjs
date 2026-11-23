@@ -10,6 +10,7 @@ const require=createRequire(import.meta.url);
 const root=resolve(fileURLToPath(new URL('../',import.meta.url)));
 const USER='a1111111-1111-4111-8111-111111111111';
 let server,browser;
+let phase='BOOT';
 const errors=[],external=[];
 function check(label,success){
  console.log(label+'='+(success?'PASS':'FAIL'));
@@ -76,13 +77,25 @@ try{
   active:window.cs03LocalOnlyAuto.state().active
  }));
  check('TAB_B_CANNOT_CLEAR_A_DRAFT',bCannotClear.saved==='mastered'&&!bCannotClear.active);
+ phase='CLOSE_FIRST_TAB';
  await a.close();
- await b.evaluate(()=>window.cs03LocalOnlyAuto.login());
+ console.log('TAB_A_CLOSED=PASS');
+ phase='REACQUIRE_SECOND_TAB';
+ await b.evaluate(async()=>{
+  try{await window.cs03LocalOnlyAuto.login();}
+  catch(error){
+   const message=String(error?.message||'');
+   if(/^(?:CS03_|DRAFT_|ACCOUNT_|INVALID_)/.test(message))throw Error(message);
+   throw Error('REACQUIRE_UNKNOWN_ERROR');
+  }
+ });
  check('TAB_B_REACQUIRES_AFTER_A_CLOSE',await b.evaluate(()=>{
   const state=window.cs03LocalOnlyAuto.state();
   return state.active&&state.blocked.includes('2025:am2:4');
  }));
+ phase='CHECK_RECOVERED_DRAFT';
  check('RECOVERED_DRAFT_IS_REVIEW_ONLY',await b.evaluate(()=>window.cs03LocalOnlyAuto.exportPending().records['2025:am2:4'].level==='mastered'));
+ phase='FINAL_CHECKS';
  check('NO_EXTERNAL_REQUESTS',external.length===0);
  check('NO_PAGE_ERRORS',errors.length===0);
  await context.close();
@@ -93,6 +106,9 @@ try{
   error?.message?.startsWith('ASSERT_FAILED:')?error.message:
   'BROWSER_OR_ENVIRONMENT_ERROR';
  console.log('FAIL_CLASS='+code);
+ console.log('FAIL_PHASE='+phase);
+ const reason=String(error?.message||'');
+ console.log('FAIL_REASON='+(/^(?:CS03_|DRAFT_|ACCOUNT_|INVALID_|REACQUIRE_UNKNOWN_ERROR)/.test(reason)?reason:'UNCLASSIFIED'));
  process.exitCode=1;
 }finally{
  if(browser)await browser.close().catch(()=>{});
