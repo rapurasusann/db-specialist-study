@@ -23,3 +23,11 @@ test('review validation rejects missing or changed SQLite DO isolation binding',
   assert.notDeepEqual(inspectCs03WorkerReviewConfig(config),[]);
  }
 });
+
+test('review-only Worker template targets the guarded default export, not the bare candidate',()=>{
+ assert.equal(template.main,'./server/cs03-gateway-production-adapter.mjs');
+ for(const main of ['./server/cs03-worker-candidate.mjs','./server/cs03-trusted-edge-gateway.mjs','./other.mjs','']){
+  assert.ok(inspectCs03WorkerReviewConfig({...template,main}).includes('GUARDED_WORKER_ENTRYPOINT_REQUIRED'));
+ }
+ assert.ok(inspectCs03WorkerReviewConfig({...template,name:'cs03-public'}).includes('REVIEW_ONLY_WORKER_NAME_REQUIRED'));
+});
