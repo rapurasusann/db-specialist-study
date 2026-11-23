@@ -39,7 +39,7 @@ test('malformed Function targets are denied and never treated as deployable',()=
   assert.ok(issues.includes('NEON_FUNCTION_URL_INVALID'),value);
  }
 });
-test('code inspection catches missing fixed origin or secret header independently',()=>{
+test('code inspection catches missing fixed origin or secret header independently',async()=>{
  const fs=await import('node:fs');
  const {fileURLToPath}=await import('node:url');
  const source=path=>fs.readFileSync(fileURLToPath(new URL('../'+path,import.meta.url)),'utf8');
