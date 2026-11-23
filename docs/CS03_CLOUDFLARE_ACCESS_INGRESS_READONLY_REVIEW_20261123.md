@@ -108,3 +108,9 @@ Cloudflare Workers Accessの公式文書（2026年11月2日更新、https://deve
 - `tests/cs03-access-ingress-review.test.mjs`：6件のオフライン負試験。**実行待ち**。この検査はCloudflareで認証を有効にせず、現物のAccess制御や無料枠を証明しない。
 
 **残る工程**： (1) この6件を開発PCで実行し、(2) 運用者が承認対象のWorker ID・限定Access policy・実HTTP入口・環境secret投入/失効・受入失敗時の停止操作を確定、(3) 独立承認後に隔離試験を実施する。Neon Function/Worker/DO新規配備、Access登録、公開URL/CSP変更、課金変更、GitHub Actions、main統合は**未実施**。公開判定**NO-GO**。
+
+## 15. 開発PC Access静的検査：6/6 PASS（2026-11-23）
+
+操作者が開発PCでコミット `49bded4f6e619a4f1fd7c472080174a92fda23b3` をチェックアウトして `node --test tests/cs03-access-ingress-review.test.mjs` を実行。提出ログは **6 tests / 6 pass / 0 fail** と `CS03_ACCESS_REVIEW_TEST_PASS`。レビュー専用NO-GO維持、不特定多数・広域ドメイン許可拒否、Worker全体以外のAccess契約拒否、公開URL・Fail open拒否、実検証済みと偽るフラグ拒否、対象アカウント不一致拒否をローカルで確認。関連コード変更まで再実行不要。
+
+**ここで実証していないこと**：実Cloudflare Accessルールの稼働、Worker/DOの配備や実通信、Neon秘密・DB接続、無料枠超過時の実挙動。本番公開・実配置は引き続き **NO-GO**。ユーザーは確認の繰り返しによる長期化を懸念。今後はローカル仕様監査をこれ以上細分化せず、承認が必要な最小クラウド試験の条件を束ねて示し、実同期に到達することを優先する。
