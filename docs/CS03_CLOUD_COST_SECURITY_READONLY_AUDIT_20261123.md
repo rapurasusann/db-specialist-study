@@ -93,3 +93,10 @@ Cloudflare公式資料：
 
 **確認済み：** 現在の専用アカウントにDurable Objectsが存在せず、各表示使用量はゼロ。前工程でWorkers Free Active、Payment methodなしを確認済み。
 **残る条件：** Billable usage/Spend limitsの設定詳細、Durable Objectsを導入した際のFree対象条件、Workers route fail-closed、隔離Neon Functionsへの実接続、ユーザーの個別配置承認。別アカウント／既存サービスには触れない。**NO-GO維持**。
+
+## 10. 専用CloudflareアカウントのSpend limits画面確認（2026-11-23）
+
+運営者が提示した **Certification-Study → Billing → Spend limits (Beta)** 画面では、Product family の **Workers / Free tier** と **Durable Objects / Free tier** を確認した。History には `No activity yet` と表示され、課金制限ポリシーの変更／上限到達の記録は表示されなかった。
+
+**確認済み**：両サービスとも画面上のステータスはFree tier。前画面ではWorkers Free Active、支払い方法登録なし、Workers Requests 0/100,000、Durable Objects各利用量0を確認。
+**確認できない**：この画面は明示的な `$0` の支出上限設定・全サービスの請求額ゼロ・将来の非課金を保証する証拠ではない。現行Free枠に収まるよう専用アカウントのWorker/DOだけを利用し、未承認の有料機能や従量課金を有効化しない。WorkersのFree上限超過時fail-closedとNeon Functions実配置前の隔離条件は別途受入。公開／実配置判定 **NO-GO**。
