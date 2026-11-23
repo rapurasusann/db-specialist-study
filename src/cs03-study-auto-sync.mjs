@@ -1,10 +1,11 @@
 // Connects study UI events with an authenticated account session.
 // A caller must explicitly enter account mode and open a remote question before edits.
 // No references to legacy localStorage or unowned device progress.
-export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{},draftStore=null}){
+export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{},draftStore=null,tabOwnership=null}){
  if(!session||!['start','open','save','stop','status'].every(k=>typeof session[k]==='function') ||
  typeof onRemote!=='function'||typeof onStatus!=='function'||
- (draftStore!==null&&(!draftStore||typeof draftStore.load!=='function'||typeof draftStore.replace!=='function')))
+ (draftStore!==null&&(!draftStore||typeof draftStore.load!=='function'||typeof draftStore.replace!=='function'))||
+ (tabOwnership!==null&&(!tabOwnership||typeof tabOwnership.acquire!=='function'||typeof tabOwnership.relinquish!=='function')))
  throw Error('AUTO_SYNC_DEPENDENCIES_REQUIRED');
  const ID=/^20\d{2}:(am1|am2|pm1|pm2):(?:[1-9]|[1-9]\d|100)$/;
  let epoch=0,active=false,owner=null;
@@ -30,6 +31,8 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
    if(mark!==epoch){session.stop();throw Error('ACCOUNT_SESSION_CHANGED');}
    if(!listing||typeof listing.userId!=='string'||!listing.records||typeof listing.records!=='object')
     throw Error('INVALID_ACCOUNT_SNAPSHOT');
+   if(tabOwnership)await tabOwnership.acquire(listing.userId);
+   if(mark!==epoch){tabOwnership?.relinquish();throw Error('ACCOUNT_SESSION_CHANGED');}
    owner=listing.userId;active=true;
    // Restored drafts are blocked: NEVER replay them automatically after a reload.
    const recovered=draftStore?.load(owner);
@@ -43,7 +46,7 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
    onStatus('ready');
    return copy(listing);
   }catch(e){
-   if(mark===epoch){active=false;owner=null;pending.clear();blocked.clear();journal.clear();session.stop();}
+   if(mark===epoch){tabOwnership?.relinquish();active=false;owner=null;pending.clear();blocked.clear();journal.clear();session.stop();}
    throw e;
   }
  }
@@ -161,6 +164,7 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
   if(pending.size||blocked.size||queue.size||journal.size)throw Error('UNSAVED_ACCOUNT_PROGRESS');
   ++epoch;active=false;owner=null;
   opened.clear();pending.clear();blocked.clear();queue.clear();journal.clear();
+  tabOwnership?.relinquish();
   session.stop();onStatus('signed-out');
  }
  function state(){return Object.freeze({active,userId:owner,pending:[...pending.keys()],blocked:[...blocked],inFlight:[...queue.keys()]});}
