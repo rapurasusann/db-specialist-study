@@ -44,3 +44,7 @@
 `docs/cs03-worker-entrypoint-contract-review-only.json` は **Wrangler設定ではない** review-onlyなJSON契約。既存のdefault fetchを持つ `server/cs03-gateway-production-adapter.mjs` を将来の入口候補として指し、SQLite Durable Objectクラス `Cs03QuotaNotDeployed` と `CS03_QUOTA` の対応、`CS03_JWKS_URL` / `CS03_JWT_ISSUER` / `CS03_JWT_AUDIENCE` / `CS03_NEON_FUNCTION_URL` / `CS03_GATEWAY_SECRET`、Neon側の秘密名と隔離branch/DBの扱い、公開route/worker.dev/previewの無効、異常時503を明記。実secret値、Functionの推測URL、アカウントのトークン、配備コマンドは含まない。
 
 `scripts/cs03-entrypoint-contract-review.mjs` は上記の構成とコード断片の一致をオフライン検査し、`tests/cs03-entrypoint-contract-review.test.mjs` では正常なレビュー構成、誤entrypoint/DO、別DB・公開ルート・秘密名不一致、承認前NO-GO維持、ソース改変検出の **新規5件を追加（実行待ち）**。従来の候補Worker、デプロイ停止ガード、公開プレビュー設定は変更していない。**仕様合意やテスト合格はデプロイ承認ではない**。実クラウドWorkerへの接続・無料枠超過時のfail-closed・Neon Functions実配置は未確認であり、配置・公開はNO-GO。
+
+## 5. 実行入口・bindings契約の開発PC試験結果（5/5 PASS）
+
+開発PCでcommit `4098400db0be44a5b996a47009b6e9ecc46aa1c8` をチェックアウトし、`node --test tests/cs03-entrypoint-contract-review.test.mjs` を実行。提出ログで **5 tests / 5 pass / 0 fail** および `CS03_ENTRYPOINT_CONTRACT_TEST_PASS` を確認した。確認内容は、レビュー構成の入口／DO binding／隔離環境の整合、不正な入口・DO指定の拒否、秘密名・Neon隔離情報・公開ルートの不一致拒否、NO-GO維持、ソース改変検出。**合格範囲はローカル静的レビューのみ**。Cloudflare Worker/DOやNeon Functionsは未配置、実際の秘密の登録・照合、実Ingressの遮断、無料枠超過時の挙動は未検証。関連ソース／契約の変更がない限り同じ5件を再実行しない。公開・デプロイ **NO-GO** 継続。
