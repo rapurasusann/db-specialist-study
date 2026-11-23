@@ -117,6 +117,20 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
   for(const [id] of snapshot)onStatus('blocked',id);
   return Object.freeze({restored:snapshot.length,accountId:owner,requiresReview:true});
  }
+ function discardPending({userId,questionIds}={}){
+  current(epoch);
+  // This is a deliberate local-only discard, never a server delete.
+  // The UI must first ask the operator to keep an independent backup.
+  if(queue.size)throw Error('ACCOUNT_WRITE_IN_PROGRESS');
+  if(userId!==owner||!Array.isArray(questionIds))throw Error('BACKUP_ACCOUNT_MISMATCH');
+  const ids=[...pending.keys()].sort();
+  if(!ids.length||ids.length!==questionIds.length||
+     ids.some((id,i)=>id!==questionIds[i])||blocked.size!==ids.length||
+     ids.some(id=>!blocked.has(id)))throw Error('PENDING_DRAFTS_CHANGED');
+  for(const id of ids){pending.delete(id);blocked.delete(id);opened.delete(id);}
+  for(const id of ids)onStatus('discarded',id);
+  return Object.freeze({discarded:ids.length});
+ }
  function logout(){
   // Never discard an unacknowledged write. The UI must resolve or explicitly
   // export account drafts before signing out.
@@ -126,5 +140,5 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
   session.stop();onStatus('signed-out');
  }
  function state(){return Object.freeze({active,userId:owner,pending:[...pending.keys()],blocked:[...blocked],inFlight:[...queue.keys()]});}
- return Object.freeze({login,open,edit,exportPending,restorePending,logout,state});
+ return Object.freeze({login,open,edit,exportPending,restorePending,discardPending,logout,state});
 }
