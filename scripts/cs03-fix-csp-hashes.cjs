@@ -13,7 +13,7 @@ const csp=meta[2];
 const scriptSrc=csp.match(/script-src [^;]+/);
 if(!scriptSrc)throw Error('SCRIPT_SRC_MISSING');
 const oldHashes=[...scriptSrc[0].matchAll(/'sha256-([^']+)'/g)].map(m=>m[1]);
-const inline=[...original.matchAll(/<script(?:\\s+[^>]*)?>([\\s\\S]*?)<\\/script>/g)].map(m=>m[1]).filter(Boolean);
+const inline=[...original.matchAll(/<script(?:\s+[^>]*)?>([\s\S]*?)<\/script>/g)].map(m=>m[1]).filter(Boolean);
 if(inline.length!==2||oldHashes.length!==2)throw Error('UNEXPECTED_INLINE_OR_HASH_COUNT');
 const hashes=inline.map(s=>createHash('sha256').update(s,'utf8').digest('base64'));
 const updatedScriptSrc="script-src 'self' "+hashes.map(h=>"'sha256-"+h+"'").join(' ');
