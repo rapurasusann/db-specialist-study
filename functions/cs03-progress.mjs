@@ -38,18 +38,13 @@ export async function handleBrowserRequest(request, runtimeFactory=getRuntime, s
  if(request.headers.get('origin')!==ORIGIN)
   return response(403,'Forbidden');
  if(url.pathname!=='/progress') return response(404,'Not Found',headers);
- if(request.method==='OPTIONS') {
-  if(request.headers.get('access-control-request-method') && !['GET','PUT'].includes(request.headers.get('access-control-request-method').toUpperCase())) {
-   return response(405,'Method Not Allowed',headers);
-  }
-  return new Response(null,{status:204,headers:{...headers,'cache-control':'no-store'}});
- }
- if(!['GET','PUT'].includes(request.method))
-  return response(405,'Method Not Allowed',headers);
- // A native Neon invocation URL is public. Reject any request not sent by
- // the trusted edge gateway, even if it carries a valid user JWT and Origin.
+ // The browser preflight terminates at the Cloudflare gateway. Native Neon
+ // invocation must never serve an unauthenticated public preflight endpoint.
+ // Check the gateway secret before any method-specific work.
  if(!verifyGatewaySecret(request,secret))
   return response(401,'Unauthorized',headers);
+ if(!['GET','PUT'].includes(request.method))
+  return response(405,'Method Not Allowed',headers);
  if(!request.headers.get('authorization')?.startsWith('Bearer '))
   return response(401,'Unauthorized',headers);
  if(request.method==='PUT'){
