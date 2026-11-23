@@ -52,3 +52,16 @@
 設定値の不一致、偽のFunction URL、秘密ヘッダーの欠落を拒否する**追加6件は未実行**。実Function URLはまだないため `NEON_FUNCTION_URL_UNAVAILABLE` を残す。URLの見た目が正しくても、隔離Neonブランチに属する証拠がなければ `NEON_FUNCTION_URL_OWNERSHIP_UNVERIFIED`。共有秘密の値一致、Cloudflareからの信頼できるIngress、独立した隔離デプロイ承認は**静的チェックで合格させない**。
 
 この追加検査は**構成レビュー**であり、セキュリティ全体の証明や実接続の代替ではない。レビュー用ファイルの作成だけでデプロイ停止ガードを解除しない。実アカウントのCloudflare使用量の確認も別工程のまま。判定は **NO-GO**。
+
+## 6. 接続契約チェックの開発PC試験結果（6/6 PASS）
+
+操作者の開発PCで commit `87aca7b7e949839f9813f2cfafa21875985ea0d7` をチェックアウトし、`node --check scripts/cs03-isolated-contract-review.mjs` と `node --test tests/cs03-isolated-contract-review.test.mjs` を実行。**6 tests / 6 pass / 0 fail**、`CS03_CONTRACT_TEST_PASS` を確認した。
+
+対象は固定Origin・隔離環境のissuer/audience/JWKS、Function URLの妥当性と所有先未検証の継続、秘密ヘッダー欠落と秘密バインディング名不一致の検出、メタデータ不足時のfail-closed。**設定メタデータのローカルチェックであり、実際の資格情報の一致、Neon Functionsの配置、Cloudflareの実ルート、クラウド費用保証を実証したものではない。**
+
+次工程の仕分け：
+- **ローカルで継続可**：安全な停止/切戻し手順とクラウドに依存しない否定系の棚卸し、Worker/Neon間の実通信に必要な設定手順の明文化。
+- **読み取り確認待ち**：Cloudflareの現時点のWorkers Free / Durable Objects使用量・課金/超過時の設定、Neon側のFunctionホスト/URLと秘密値設定の実在。
+- **個別承認まで禁止**：隔離Neon Function / Worker / DOの新規配置、公開ルート作成、秘密書込み、本番CSP変更、実通信テストでの課金リスクを伴う操作。
+
+**公開判定NO-GOを継続**し、既存のデプロイ停止ガードと公開プレビューOFFを維持する。
