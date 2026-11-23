@@ -52,3 +52,18 @@
 - https://neon.com/docs/cli/functions
 
 **判定**：『カスタムenv設定方式が存在するか』『非default branchを明示できるか』は仕様上確認済み。『実環境でのsecret保管と更新』『bundle/Node互換』『Function URLと`/progress`』『実非default branchへの動作確認』はOPEN。ユーザーの個別承認までは**Neon Functions deploy、config apply、env pull、秘密登録、Cloudflare配置、課金変更を行わない**。CS-03公開・実クラウド配置**NO-GO**。
+
+## 6. Neon Functionのローカル単一ファイルビルド・経路検証（追加試験待ち）
+
+Neon公式`docs/compute/functions/deploy`のesbuild方式に合わせ、Node24 / ESM / node-platformの**一時ディレクトリへのビルドのみ**を試みる`tests/cs03-neon-function-offline-bundle.test.mjs`を追加。ソースを単一`index.mjs`へ束ね、`pg`、`jose`、`src/progress-api.js`、`src/progress-access.js`がメタファイルに含まれることを検査し、生成したモジュールの`default.fetch`をローカルで呼ぶ。
+
+**ローカルソース改修**：`server/cs03-runtime.mjs`の相対`require('../src/progress-api.js')`（`createRequire(import.meta.url)`）を**静的なCommonJS default import**に変更。相対パスの動的`require`がbundle時に外部依存として残る可能性を避けるため。既存`tests/cs03-neon-function-runtime-contract.test.mjs`の該当ソース検査も新方式に合わせて変更。これら2ファイルに変更があるため、今回の追加ビルド試験と**既存Neon runtime contractの該当5件**の再実行が必要である。
+
+**新しい試験が確認すること**：
+- ローカルNode 24ターゲットbundleへのPG/JWT/認可API取り込み、生成された`index.mjs`のimport
+- 関数URLの`/`は現行コードでは404、`/progress`へ秘密なしで呼ぶと401。**これがNeon実環境のURLルーティング互換性の証明ではない**。
+- Node24ターゲットは実行ホストのNodeバージョンを24へ変更しない。試験環境で動けば正式Node24上で動く保証はない。
+- esbuildは既存`devDependencies`から使い、ネットワーク／Neon CLI／秘密／実DB接続なし。一時`index.mjs`は試験終了時に削除。
+- 追加テストは**まだ実行していないためPASS宣言禁止**。既存の31/31 PASSは旧版の合格実績であり、関係コード変更後の未再検証部分を区別する。
+
+**実配置前に残る問題**：Neonの実`invocation_url`はFunction slugのルート。現在のコードはFunctionの`/progress`を要求し、Workerは同じpathに転送する設計。**実NeonのFunction URLに`/progress`を付与してHTTP handlerへ届くか、公式仕様だけで断定せず、実クラウドでの隔離受入までOPEN**。公開URLを推測して作成しない。NO-GO維持。
