@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1660 510" role="img" aria-label="図3 追加及び変更する関係スキーマ（未完成・校正中）">
+<rect x="3" y="3" width="1654" height="504" fill="white" stroke="#222" stroke-width="2"/>
+<g font-family="Noto Sans CJK JP, Yu Gothic, sans-serif" font-size="25" fill="#111">
+<text x="25.0" y="66.0">レポート課題</text>
+<text x="192.0" y="66.0">（</text>
+<text x="217.0" y="66.0">コンテンツID</text>
+<line class="key-mark" x1="217.0" y1="71.0" x2="366.5" y2="71.0" stroke="#111" stroke-width="2"/>
+<text x="366.5" y="66.0">、</text>
+<rect class="blank" x="391.5" y="35.0" width="92" height="39" fill="white" stroke="#111" stroke-width="2.4"/>
+<text x="425.0" y="65.0">セ</text>
+<text x="483.5" y="66.0">）</text>
+<text x="25.0" y="162.0">レポート課題出題</text>
+<text x="242.0" y="162.0">（</text>
+<text x="267.0" y="162.0">学科コード</text>
+<line class="key-mark" x1="267.0" y1="167.0" x2="392.0" y2="167.0" stroke="#111" stroke-width="2"/>
+<text x="392.0" y="162.0">、</text>
+<text x="417.0" y="162.0">科目ID</text>
+<line class="key-mark" x1="417.0" y1="167.0" x2="491.5" y2="167.0" stroke="#111" stroke-width="2"/>
+<text x="491.5" y="162.0">、</text>
+<text x="516.5" y="162.0">年度</text>
+<line class="key-mark" x1="516.5" y1="167.0" x2="566.5" y2="167.0" stroke="#111" stroke-width="2"/>
+<text x="566.5" y="162.0">、</text>
+<text x="591.5" y="162.0">学期</text>
+<line class="key-mark" x1="591.5" y1="167.0" x2="641.5" y2="167.0" stroke="#111" stroke-width="2"/>
+<text x="641.5" y="162.0">、</text>
+<text x="666.5" y="162.0">講義番号</text>
+<line class="key-mark" x1="666.5" y1="167.0" x2="766.5" y2="167.0" stroke="#111" stroke-width="2"/>
+<text x="766.5" y="162.0">、</text>
+<text x="791.5" y="162.0">コンテンツID</text>
+<line class="key-mark" x1="791.5" y1="167.0" x2="941.1" y2="167.0" stroke="#111" stroke-width="2"/>
+<text x="941.1" y="162.0">、</text>
+<rect class="blank" x="966.1" y="131.0" width="92" height="39" fill="white" stroke="#111" stroke-width="2.4"/>
+<text x="999.6" y="161.0">ソ</text>
+<text x="1058.1" y="162.0">）</text>
+<text x="25.0" y="258.0">評価結果</text>
+<text x="142.0" y="258.0">（</text>
+<text x="167.0" y="258.0">学科コード</text>
+<line class="key-mark" x1="167.0" y1="263.0" x2="292.0" y2="263.0" stroke="#111" stroke-width="2"/>
+<text x="292.0" y="258.0">、</text>
+<text x="317.0" y="258.0">科目ID</text>
+<line class="key-mark" x1="317.0" y1="263.0" x2="391.5" y2="263.0" stroke="#111" stroke-width="2"/>
+<text x="391.5" y="258.0">、</text>
+<text x="416.5" y="258.0">年度</text>
+<line class="key-mark" x1="416.5" y1="263.0" x2="466.5" y2="263.0" stroke="#111" stroke-width="2"/>
+<text x="466.5" y="258.0">、</text>
+<text x="491.5" y="258.0">学期</text>
+<line class="key-mark" x1="491.5" y1="263.0" x2="541.5" y2="263.0" stroke="#111" stroke-width="2"/>
+<text x="541.5" y="258.0">、</text>
+<text x="566.5" y="258.0">講義番号</text>
+<line class="key-mark" x1="566.5" y1="263.0" x2="666.5" y2="263.0" stroke="#111" stroke-width="2"/>
+<text x="666.5" y="258.0">、</text>
+<text x="691.5" y="258.0">コンテンツID</text>
+<line class="key-mark" x1="691.5" y1="263.0" x2="841.1" y2="263.0" stroke="#111" stroke-width="2"/>
+<text x="841.1" y="258.0">、</text>
+<text x="866.1" y="258.0">学籍番号</text>
+<line class="key-mark" x1="866.1" y1="263.0" x2="966.1" y2="263.0" stroke="#111" stroke-width="2"/>
+<text x="966.1" y="258.0">、</text>
+<text x="991.1" y="258.0">評価結果区分</text>
+<text x="1141.1" y="258.0">、</text>
+<rect class="blank" x="1166.1" y="227.0" width="92" height="39" fill="white" stroke="#111" stroke-width="2.4"/>
+<text x="1199.6" y="257.0">タ</text>
+<text x="1258.1" y="258.0">）</text>
+<text x="25.0" y="354.0">テスト結果</text>
+<text x="167.0" y="354.0">（</text>
+<text x="192.0" y="354.0">学科コード</text>
+<line class="key-mark" x1="192.0" y1="359.0" x2="317.0" y2="359.0" stroke="#111" stroke-width="2"/>
+<text x="317.0" y="354.0">、</text>
+<text x="342.0" y="354.0">科目ID</text>
+<line class="key-mark" x1="342.0" y1="359.0" x2="416.5" y2="359.0" stroke="#111" stroke-width="2"/>
+<text x="416.5" y="354.0">、</text>
+<text x="441.5" y="354.0">年度</text>
+<line class="key-mark" x1="441.5" y1="359.0" x2="491.5" y2="359.0" stroke="#111" stroke-width="2"/>
+<text x="491.5" y="354.0">、</text>
+<text x="516.5" y="354.0">学期</text>
+<line class="key-mark" x1="516.5" y1="359.0" x2="566.5" y2="359.0" stroke="#111" stroke-width="2"/>
+<text x="566.5" y="354.0">、</text>
+<text x="591.5" y="354.0">講義番号</text>
+<line class="key-mark" x1="591.5" y1="359.0" x2="691.5" y2="359.0" stroke="#111" stroke-width="2"/>
+<text x="691.5" y="354.0">、</text>
+<text x="716.5" y="354.0">コンテンツID</text>
+<line class="key-mark" x1="716.5" y1="359.0" x2="866.1" y2="359.0" stroke="#111" stroke-width="2"/>
+<text x="866.1" y="354.0">、</text>
+<text x="891.1" y="354.0">学籍番号</text>
+<line class="key-mark" x1="891.1" y1="359.0" x2="991.1" y2="359.0" stroke="#111" stroke-width="2"/>
+<text x="991.1" y="354.0">、</text>
+<rect class="blank" x="1016.1" y="323.0" width="92" height="39" fill="white" stroke="#111" stroke-width="2.4"/>
+<text x="1049.6" y="353.0">チ</text>
+<text x="1108.1" y="354.0">）</text>
+<text x="25.0" y="450.0">レポート評価結果</text>
+<text x="242.0" y="450.0">（</text>
+<text x="267.0" y="450.0">学科コード</text>
+<line class="key-mark" x1="267.0" y1="455.0" x2="392.0" y2="455.0" stroke="#111" stroke-width="2"/>
+<text x="392.0" y="450.0">、</text>
+<text x="417.0" y="450.0">科目ID</text>
+<line class="key-mark" x1="417.0" y1="455.0" x2="491.5" y2="455.0" stroke="#111" stroke-width="2"/>
+<text x="491.5" y="450.0">、</text>
+<text x="516.5" y="450.0">年度</text>
+<line class="key-mark" x1="516.5" y1="455.0" x2="566.5" y2="455.0" stroke="#111" stroke-width="2"/>
+<text x="566.5" y="450.0">、</text>
+<text x="591.5" y="450.0">学期</text>
+<line class="key-mark" x1="591.5" y1="455.0" x2="641.5" y2="455.0" stroke="#111" stroke-width="2"/>
+<text x="641.5" y="450.0">、</text>
+<text x="666.5" y="450.0">講義番号</text>
+<line class="key-mark" x1="666.5" y1="455.0" x2="766.5" y2="455.0" stroke="#111" stroke-width="2"/>
+<text x="766.5" y="450.0">、</text>
+<text x="791.5" y="450.0">コンテンツID</text>
+<line class="key-mark" x1="791.5" y1="455.0" x2="941.1" y2="455.0" stroke="#111" stroke-width="2"/>
+<text x="941.1" y="450.0">、</text>
+<text x="966.1" y="450.0">学籍番号</text>
+<line class="key-mark" x1="966.1" y1="455.0" x2="1066.1" y2="455.0" stroke="#111" stroke-width="2"/>
+<text x="1066.1" y="450.0">、</text>
+<rect class="blank" x="1091.1" y="419.0" width="92" height="39" fill="white" stroke="#111" stroke-width="2.4"/>
+<text x="1124.6" y="449.0">ツ</text>
+<text x="1183.1" y="450.0">）</text>
+</g></svg>

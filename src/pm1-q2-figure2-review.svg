@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1700 700" role="img" aria-labelledby="q2fig2title q2fig2desc">
+<title id="q2fig2title">図2 現状業務の関係スキーマ（未完成） SVG試作</title>
+<desc id="q2fig2desc">IPA公式問題冊子14ページを参照した校正中の試作図。設問の空欄aからdと未記入の関係を維持。下線の実線・破線は最終照合待ち。</desc>
+<rect width="1700" height="700" fill="white"/>
+<rect x="15" y="20" width="1670" height="565" fill="none" stroke="#111" stroke-width="2"/>
+<g font-family="Yu Gothic, Meiryo, sans-serif" font-size="22" fill="#111">
+<text x="42.0" y="70.0">得意先</text>
+<text x="122.0" y="70.0">（</text>
+<text x="144.0" y="70.0">得意先コード</text>
+<line class="key-mark source-checked" x1="144.0" y1="75.0" x2="276.0" y2="75.0" stroke="#111" stroke-width="1.5"/>
+<text x="276.0" y="70.0">、</text>
+<text x="298.0" y="70.0">得意先名</text>
+<text x="386.0" y="70.0">、</text>
+<text x="408.0" y="70.0">所在地情報</text>
+<text x="518.0" y="70.0">）</text>
+<text x="42.0" y="121.0">得意先担当者</text>
+<text x="188.0" y="121.0">（</text>
+<text x="210.0" y="121.0">得意先コード</text>
+<line class="key-mark unverified" x1="210.0" y1="126.0" x2="342.0" y2="126.0" stroke="#111" stroke-width="1.5"/>
+<text x="342.0" y="121.0">、</text>
+<text x="364.0" y="121.0">担当者コード</text>
+<line class="key-mark unverified" x1="364.0" y1="126.0" x2="496.0" y2="126.0" stroke="#111" stroke-width="1.5"/>
+<text x="496.0" y="121.0">、</text>
+<text x="518.0" y="121.0">担当者氏名</text>
+<text x="628.0" y="121.0">、</text>
+<text x="650.0" y="121.0">所属先組織名</text>
+<text x="782.0" y="121.0">、</text>
+<text x="804.0" y="121.0">役職名</text>
+<text x="870.0" y="121.0">）</text>
+<text x="42.0" y="172.0">製品</text>
+<text x="100.0" y="172.0">（</text>
+<text x="122.0" y="172.0">製品型番</text>
+<line class="key-mark unverified" x1="122.0" y1="177.0" x2="210.0" y2="177.0" stroke="#111" stroke-width="1.5"/>
+<text x="210.0" y="172.0">、</text>
+<text x="232.0" y="172.0">製品名</text>
+<text x="298.0" y="172.0">、</text>
+<rect class="answer-blank" x="320.0" y="145.0" width="75" height="33" fill="white" stroke="#111" stroke-width="2"/>
+<text x="352.0" y="172.0">a</text>
+<text x="395.0" y="172.0">）</text>
+<text x="42.0" y="223.0">案件</text>
+<text x="100.0" y="223.0">（</text>
+<text x="122.0" y="223.0">案件コード</text>
+<line class="key-mark unverified" x1="122.0" y1="228.0" x2="232.0" y2="228.0" stroke="#111" stroke-width="1.5"/>
+<text x="232.0" y="223.0">、</text>
+<text x="254.0" y="223.0">案件名</text>
+<text x="320.0" y="223.0">、</text>
+<text x="342.0" y="223.0">年間見込売上金額</text>
+<text x="518.0" y="223.0">、</text>
+<text x="540.0" y="223.0">受注フラグ</text>
+<text x="650.0" y="223.0">、</text>
+<text x="672.0" y="223.0">案件開始年月日</text>
+<text x="826.0" y="223.0">、</text>
+<text x="848.0" y="223.0">案件終了年月日</text>
+<text x="1002.0" y="223.0">、</text>
+<rect class="answer-blank" x="1024.0" y="196.0" width="75" height="33" fill="white" stroke="#111" stroke-width="2"/>
+<text x="1056.0" y="223.0">b</text>
+<text x="1099.0" y="223.0">）</text>
+<text x="42.0" y="274.0">商談</text>
+<text x="100.0" y="274.0">（</text>
+<text x="122.0" y="274.0">商談終了年月日時分</text>
+<text x="320.0" y="274.0">、</text>
+<text x="342.0" y="274.0">商談場所</text>
+<text x="430.0" y="274.0">、</text>
+<text x="452.0" y="274.0">議事内容</text>
+<text x="540.0" y="274.0">、</text>
+<rect class="answer-blank" x="562.0" y="247.0" width="75" height="33" fill="white" stroke="#111" stroke-width="2"/>
+<text x="594.0" y="274.0">c</text>
+<text x="637.0" y="274.0">）</text>
+<text x="42.0" y="325.0">商談参加従業員</text>
+<text x="210.0" y="325.0">（</text>
+<text x="232.0" y="325.0">案件コード</text>
+<text x="342.0" y="325.0">、</text>
+<text x="364.0" y="325.0">従業員コード</text>
+<text x="496.0" y="325.0">、</text>
+<text x="518.0" y="325.0">従業員氏名</text>
+<text x="628.0" y="325.0">、</text>
+<text x="650.0" y="325.0">商談開始年月日時分</text>
+<text x="848.0" y="325.0">、</text>
+<text x="870.0" y="325.0">案件担当開始年月日</text>
+<text x="1068.0" y="325.0">、</text>
+<text x="1090.0" y="325.0">案件担当終了年月日</text>
+<text x="1288.0" y="325.0">、</text>
+<text x="1310.0" y="325.0">担当業務内容</text>
+<text x="1442.0" y="325.0">）</text>
+<text x="42.0" y="376.0">商談参加得意先担当者</text>
+<text x="276.0" y="376.0">（</text>
+<rect class="answer-blank" x="298.0" y="348.0" width="170" height="34" fill="white" stroke="#111" stroke-width="2"/>
+<text x="468.0" y="376.0">）</text>
+<text x="42.0" y="427.0">見積り</text>
+<text x="122.0" y="427.0">（</text>
+<text x="144.0" y="427.0">見積番号</text>
+<line class="key-mark unverified" x1="144.0" y1="432.0" x2="232.0" y2="432.0" stroke="#111" stroke-width="1.5"/>
+<text x="232.0" y="427.0">、</text>
+<text x="254.0" y="427.0">納品条件</text>
+<text x="342.0" y="427.0">、</text>
+<text x="364.0" y="427.0">販売単価</text>
+<text x="452.0" y="427.0">、</text>
+<text x="474.0" y="427.0">諸経費</text>
+<text x="540.0" y="427.0">、</text>
+<text x="562.0" y="427.0">見積年月日</text>
+<text x="672.0" y="427.0">、</text>
+<text x="694.0" y="427.0">見積対象期間</text>
+<text x="826.0" y="427.0">、</text>
+<rect class="answer-blank" x="848.0" y="400.0" width="75" height="33" fill="white" stroke="#111" stroke-width="2"/>
+<text x="880.0" y="427.0">d</text>
+<text x="923.0" y="427.0">）</text>
+<text x="42.0" y="478.0">契約</text>
+<text x="100.0" y="478.0">（</text>
+<text x="122.0" y="478.0">契約番号</text>
+<line class="key-mark unverified" x1="122.0" y1="483.0" x2="210.0" y2="483.0" stroke="#111" stroke-width="1.5"/>
+<text x="210.0" y="478.0">、</text>
+<text x="232.0" y="478.0">見積番号</text>
+<text x="320.0" y="478.0">、</text>
+<text x="342.0" y="478.0">納品荷姿</text>
+<text x="430.0" y="478.0">、</text>
+<text x="452.0" y="478.0">納品先の所在地情報</text>
+<text x="650.0" y="478.0">、</text>
+<text x="672.0" y="478.0">納品期間</text>
+<text x="760.0" y="478.0">、</text>
+<text x="782.0" y="478.0">月間納品数量</text>
+<text x="914.0" y="478.0">、</text>
+<text x="936.0" y="478.0">納品頻度</text>
+<text x="1024.0" y="478.0">、</text>
+<text x="1046.0" y="478.0">初回納品年月日時分</text>
+<text x="1244.0" y="478.0">、</text>
+<text x="1266.0" y="478.0">初回納品数量</text>
+<text x="1398.0" y="478.0">、</text>
+<text x="1420.0" y="478.0">契約年月日</text>
+<text x="1530.0" y="478.0">）</text>
+<text x="42.0" y="529.0">得意先納品要求</text>
+<text x="210.0" y="529.0">（</text>
+<text x="232.0" y="529.0">契約番号</text>
+<line class="key-mark unverified" x1="232.0" y1="534.0" x2="320.0" y2="534.0" stroke="#111" stroke-width="1.5"/>
+<text x="320.0" y="529.0">、</text>
+<text x="342.0" y="529.0">要求番号</text>
+<line class="key-mark unverified" x1="342.0" y1="534.0" x2="430.0" y2="534.0" stroke="#111" stroke-width="1.5"/>
+<text x="430.0" y="529.0">、</text>
+<text x="452.0" y="529.0">要求納期年月日時分</text>
+<text x="650.0" y="529.0">、</text>
+<text x="672.0" y="529.0">要求数量</text>
+<text x="760.0" y="529.0">、</text>
+<text x="782.0" y="529.0">納品完了フラグ</text>
+<text x="936.0" y="529.0">）</text>
+</g>
+<text x="45" y="595" font-family="Yu Gothic, Meiryo, sans-serif" font-size="20">注記　設問の都合上、網掛け部分は表示していない。</text>
+<text x="850" y="660" text-anchor="middle" font-family="Yu Gothic, Meiryo, sans-serif" font-size="23">図2　現状業務の関係スキーマ（未完成）</text>
+</svg>
