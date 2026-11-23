@@ -79,10 +79,13 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
   return queue.get(id);
  }
  function logout(){
+  // Never discard an unacknowledged write. The UI must resolve or explicitly
+  // export account drafts before signing out.
+  if(pending.size||blocked.size||queue.size)throw Error('UNSAVED_ACCOUNT_PROGRESS');
   ++epoch;active=false;owner=null;
   opened.clear();pending.clear();blocked.clear();queue.clear();
   session.stop();onStatus('signed-out');
  }
- function state(){return Object.freeze({active,userId:owner,pending:[...pending.keys()],blocked:[...blocked]});}
+ function state(){return Object.freeze({active,userId:owner,pending:[...pending.keys()],blocked:[...blocked],inFlight:[...queue.keys()]});}
  return Object.freeze({login,open,edit,logout,state});
 }
