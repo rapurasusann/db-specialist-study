@@ -86,3 +86,10 @@ Cloudflare公式資料：
 
 **完了**：資格勉強アプリ専用Cloudflareアカウントの存在と、Workers Freeの有効なサブスクリプション、支払い方法の未登録を確認。
 **未確認**：Durable Objectsの利用実績・無料枠、Billable usage、Spend limits、他の有料サービスが有効でないこと、将来の各機能の課金条件、Worker routeのfail-closed。これらをWorkers Freeの画面だけで合格としない。設定変更、新規Worker作成、課金操作、本番配備はしていない。公開判定は **NO-GO**。
+
+## 9. 専用CloudflareアカウントのDurable Objects未使用確認（2026-11-23）
+
+運営者の提示した専用アカウント「Certification-Study」の **Compute → Durable Objects** ダッシュボード（画面上の日付 November 23）で **No Durable Objects found** を確認。Usage欄は **Duration 0 GB-sec、Requests 0、Total SQL storage 0 B、Total KV storage 0 B、SQL rows read 0、SQL rows written 0、KV storage operations 0**。この時点の画面観測であり、将来の利用量や料金発生がない保証ではない。
+
+**確認済み：** 現在の専用アカウントにDurable Objectsが存在せず、各表示使用量はゼロ。前工程でWorkers Free Active、Payment methodなしを確認済み。
+**残る条件：** Billable usage/Spend limitsの設定詳細、Durable Objectsを導入した際のFree対象条件、Workers route fail-closed、隔離Neon Functionsへの実接続、ユーザーの個別配置承認。別アカウント／既存サービスには触れない。**NO-GO維持**。
