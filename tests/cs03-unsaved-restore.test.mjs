@@ -7,7 +7,7 @@ const A='a1111111-1111-4111-8111-111111111111',B='b1111111-1111-4111-8111-111111
 const Q='2025:am2:4';
 function setup(){
  let userId=A,saves=0;
- const session={start:async()=>({userId,records:{}}),open:async()=>null,save:async()=>{saves++},stop:()=>{}};
+ const session={start:async()=>({userId,records:{}}),open:async()=>null,save:async()=>{saves++},stop:()=>{},status:()=>({active:true})};
  const auto=createCs03StudyAutoSync({session});
  return {auto,changeUser:id=>userId=id,get saves(){return saves}};
 }
