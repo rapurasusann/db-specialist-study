@@ -48,3 +48,9 @@
 ## 5. 実行入口・bindings契約の開発PC試験結果（5/5 PASS）
 
 開発PCでcommit `4098400db0be44a5b996a47009b6e9ecc46aa1c8` をチェックアウトし、`node --test tests/cs03-entrypoint-contract-review.test.mjs` を実行。提出ログで **5 tests / 5 pass / 0 fail** および `CS03_ENTRYPOINT_CONTRACT_TEST_PASS` を確認した。確認内容は、レビュー構成の入口／DO binding／隔離環境の整合、不正な入口・DO指定の拒否、秘密名・Neon隔離情報・公開ルートの不一致拒否、NO-GO維持、ソース改変検出。**合格範囲はローカル静的レビューのみ**。Cloudflare Worker/DOやNeon Functionsは未配置、実際の秘密の登録・照合、実Ingressの遮断、無料枠超過時の挙動は未検証。関連ソース／契約の変更がない限り同じ5件を再実行しない。公開・デプロイ **NO-GO** 継続。
+
+## 6. 未確認だった障害時の停止・下書き保護（追加5件、開発PC試験待ち）
+
+`tests/cs03-failure-stop-draft-preservation.test.mjs` を追加（**5件、未実行**）。対象は(1)DOが例外となるとNeonを呼ばず503、(2)Neon上流が例外となると503で内部エラーを漏らさない、(3)Workerの設定欠落で503を返しゲートウェイを通さない、(4)APIが503の場合に本人の未送信下書きを保持し、正常保存やアカウントキャッシュ更新を偽装しない、(5)ローカル保存が失敗したら明示的エラーを返す、という**未検証の組み合わせ**。すべてローカルの模擬環境で、Cloudflare/Neonの実資源や秘密を使わない。正常系・既存のfail-closed試験の無用な再実行はしない。
+
+この5件が合格しても、実CloudflareのDO障害・Neon Functions障害・Free枠超過・実利用者データの安全性を直接証明したことにはならない。配置・本番公開 **NO-GO** を維持する。
