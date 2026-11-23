@@ -111,3 +111,17 @@ test('oversize backup file is rejected without reading or submitting',async()=>{
  assert.match(recordStatus.textContent,/復元できませんでした/);
  assert.equal(pick.value,'');
 });
+
+test('discard control is disabled when signed out and invokes explicit review action when signed in',async()=>{
+ const f=fixture(),calls=[],button=element(),recordStatus=element();
+ f.elements['discard-unsaved']=button;f.elements['record-status']=recordStatus;
+ mountCs03AccountPanel({querySelector:selector=>f.elements[selector.slice(12,-2)]??null},f.account,{
+  onDiscardUnsaved:async()=>{calls.push('explicit-discard');return '確認待ち記録を破棄しました。';}
+ });
+ assert.equal(button.disabled,true);
+ f.elements.login.click();await ticks();
+ assert.equal(button.disabled,false);
+ button.click();await ticks();
+ assert.deepEqual(calls,['explicit-discard']);
+ assert.equal(recordStatus.textContent,'確認待ち記録を破棄しました。');
+});
