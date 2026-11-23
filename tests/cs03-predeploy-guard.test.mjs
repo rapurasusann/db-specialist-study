@@ -9,6 +9,12 @@ test('undeployed edge gateway is a mandatory blocker',()=>{
  assert.equal(status.ready,false);
  assert.ok(status.blockers.includes('TRUSTED_GATEWAY_NOT_IMPLEMENTED'));
 });
+test('local prototype must not be mistaken for a deployable gateway',()=>{
+ const result=inspectCs03Deployment();
+ assert.ok(result.blockers.includes('TRUSTED_GATEWAY_NOT_IMPLEMENTED'));
+ assert.ok(result.blockers.includes('GATEWAY_RATE_LIMIT_ACCEPTANCE_MISSING'));
+ assert.equal(result.scope,'development-only');
+});
 test('deployment guard never silently returns successful exit status',()=>{
  const result=spawnSync(process.execPath,[script],{encoding:'utf8'});
  assert.notEqual(result.status,0);
