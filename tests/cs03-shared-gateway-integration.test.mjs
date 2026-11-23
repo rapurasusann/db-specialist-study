@@ -44,3 +44,20 @@ test('invalid shared quota adapter never reaches upstream',async()=>{
  assert.equal((await gateway(request())).status,503);
  assert.equal(calls.upstream,0);
 });
+
+test('invalid PUT payload is rejected before durable quota and upstream are billed',async()=>{
+ const calls={upstream:0,quota:0};
+ const gateway=makeGateway({consume:async()=>{calls.quota++;return true;}},calls);
+ const base='https://gateway.invalid/progress';
+ const headers={origin:ORIGIN,authorization:'Bearer valid-a-test-token'};
+ const wrongType=new Request(base,{method:'PUT',headers:{...headers,'content-type':'text/plain'},body:'{}'});
+ assert.equal((await gateway(wrongType)).status,415);
+ const oversized=new Request(base,{method:'PUT',headers:{...headers,'content-type':'application/json'},body:'x'.repeat(20001)});
+ assert.equal((await gateway(oversized)).status,413);
+ assert.equal(calls.quota,0);
+ assert.equal(calls.upstream,0);
+ const allowed=new Request(base,{method:'PUT',headers:{...headers,'content-type':'application/json'},body:'{}'});
+ assert.equal((await gateway(allowed)).status,200);
+ assert.equal(calls.quota,1);
+ assert.equal(calls.upstream,1);
+});
