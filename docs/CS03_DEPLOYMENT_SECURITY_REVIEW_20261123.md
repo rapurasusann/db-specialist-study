@@ -118,3 +118,9 @@
 既存のworkerd-localのJWT署名検証、GET/PUT、DOクォータ、無効JWT、Origin不一致、429については合格済み。重複を避けるため `local/cs03-workerd-negative-check.mjs` を追加した。**11個の新しい確認**：認証ヘッダー欠落、JWT issuer不一致、audience不一致、期限切れJWT、Origin欠落、未対応HTTP method、未対応path、PUTの不正content-type、20KB超過PUT、未許可OPTIONS、許可OPTIONS。すべて `127.0.0.1:8790` のローカル専用workerd向け。テスト専用署名鍵と模擬ストアだけを使用し、Neon/Cloudflareへの外部接続なし。**開発PC実行待ちのためPASSは未宣言。**
 
 実行時は `local/wrangler.cs03-auth-do.json` で `wrangler dev --local --port 8790` を使用し、**必ず `--local` を明示**する。Wrangler初回ログインや新規パッケージ取得を促す方法を採用しない。先にローカルサーバーの起動を確認し、別ウィンドウから上記否定系のみ実行する。共有Cloudflareアカウントと専用Cloudflareアカウントのどちらにもデプロイしない。公開判定 **NO-GO** 維持。
+
+## 2026-11-23 workerd追加否定系11/11 PASS
+
+操作者は開発PCでコミット `d57deec1ae24d9c254c36ead795b9238ac7344ce` をチェックアウトし、npmキャッシュに残存する **Wrangler 4.166.0** を再利用してローカルworkerdを起動。別PowerShellで `node local/cs03-workerd-negative-check.mjs` を実行した。提出ログから、**NEG_MISSING_AUTH、NEG_WRONG_ISSUER、NEG_WRONG_AUDIENCE、NEG_EXPIRED_JWT、NEG_MISSING_ORIGIN、NEG_WRONG_HTTP_METHOD、NEG_WRONG_PATH、NEG_BAD_PUT_CONTENT_TYPE、NEG_LARGE_PUT_BODY、NEG_INVALID_PREFLIGHT_METHOD、NEG_VALID_PREFLIGHT の11件すべてPASS**、`CS03_WORKERD_NEGATIVE_ONLY_PASS`、`CS03_WORKERD_NEGATIVE_TEST_PASS` を確認した。
+
+**受入範囲**：127.0.0.1:8790 のローカルworkerdテストハーネス、テスト用EdDSA署名鍵、模擬上流、SQLite DO。これらの結果は実CloudflareアカウントでのWorker配置・実Neon Function通信・実本番トラフィック制限を意味しない。Cloudflareアカウント分離と無料枠確認済みであっても、隔離Worker/Functionの配置承認、実route fail-closed、秘密値一致、DOのクラウド使用量受入、公開用CSP/CORSは未完了。**NO-GO継続**。同一コードの11件は変更なしなら再試験不要。
