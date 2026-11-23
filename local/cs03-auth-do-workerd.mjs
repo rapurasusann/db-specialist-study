@@ -24,8 +24,36 @@ export default {
   if(!['127.0.0.1','localhost'].includes(url.hostname))
    return new Response('Not Found',{status:404});
   if(!env.CS03_LOCAL_FULL_QUOTA)return new Response('Service Unavailable',{status:503});
+  // Local diagnostic instrumentation only: statuses/stages, never tokens or identities.
+  // Keep the production gateway's generic 503 response unchanged.
+  const traceNamespace={
+   idFromName:name=>env.CS03_LOCAL_FULL_QUOTA.idFromName(name),
+   get:id=>{
+    const stub=env.CS03_LOCAL_FULL_QUOTA.get(id);
+    return {fetch:async (...args)=>{
+     try{
+      const response=await stub.fetch(...args);
+      console.log('CS03_LOCAL_DO_HTTP_STATUS='+response.status);
+      return response;
+     }catch(error){
+      console.error('CS03_LOCAL_DO_FETCH_FAILED='+String(error?.name??'Error'));
+      throw error;
+     }
+    }};
+   }
+  };
+  const atomicConsume=createCs03DurableObjectQuotaTransport({namespace:traceNamespace});
   const sharedQuota=createCs03SharedQuota({
-   atomicConsume:createCs03DurableObjectQuotaTransport({namespace:env.CS03_LOCAL_FULL_QUOTA})
+   atomicConsume:async request=>{
+    try{
+     const accepted=await atomicConsume(request);
+     console.log('CS03_LOCAL_QUOTA_DECISION='+(accepted?'ALLOW':'DENY'));
+     return accepted;
+    }catch(error){
+     console.error('CS03_LOCAL_QUOTA_FAILED='+String(error?.code??'UNAVAILABLE'));
+     throw error;
+    }
+   }
   });
   const gateway=createCs03TrustedEdgeGateway({
    verifyToken:verify,sharedQuota,
