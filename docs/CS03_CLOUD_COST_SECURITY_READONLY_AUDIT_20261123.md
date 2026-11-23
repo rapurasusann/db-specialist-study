@@ -79,3 +79,10 @@ Cloudflare公式資料：
 - https://developers.cloudflare.com/fundamentals/account/create-account/
 - https://developers.cloudflare.com/fundamentals/concepts/accounts-and-zones/
 - https://developers.cloudflare.com/workers/platform/limits/
+
+## 8. 専用CloudflareアカウントのWorkers Free請求画面確認（2026-11-23）
+
+運営者が提示したCertification-Study専用Cloudflareアカウントの **Billing → Subscriptions（Subscribed）** の画面から、**Workers Free / Active**、**Workers PaidはUpgradeの案内のみ**、**Payment method: No payment method on file** を視認した。直前の同じアカウントのWorkers & Pages画面には本日リクエスト0/100,000、観測可能性イベント0/20,000、アプリケーション0件が表示されていた。これらは**2026-11-23の画面観測**であり、今後の残枠を保証しない。
+
+**完了**：資格勉強アプリ専用Cloudflareアカウントの存在と、Workers Freeの有効なサブスクリプション、支払い方法の未登録を確認。
+**未確認**：Durable Objectsの利用実績・無料枠、Billable usage、Spend limits、他の有料サービスが有効でないこと、将来の各機能の課金条件、Worker routeのfail-closed。これらをWorkers Freeの画面だけで合格としない。設定変更、新規Worker作成、課金操作、本番配備はしていない。公開判定は **NO-GO**。
