@@ -18,6 +18,7 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    const {exportCs03UnsavedBackup}=await import('./cs03-unsaved-export.mjs');
    const {restoreCs03UnsavedBackup}=await import('./cs03-unsaved-restore.mjs');
    const {attachCs03UnsavedNavigationGuard}=await import('./cs03-unsaved-navigation-guard.mjs');
+   const {createCs03DraftStore}=await import('./cs03-draft-store.mjs');
    // Only allow the exact isolated Managed Auth instance.
    if(cfg.authUrl!=='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech/cs03_auth_sandbox/auth')
     throw Error('AUTH_TARGET_MISMATCH');
@@ -27,7 +28,8 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    });
    root.hidden=false;
    const scoped=createCs03ScopedProgress({account:client});
-   const auto=createCs03StudyAutoSync({session:createCs03CrossBrowserSession({account:client})});
+   const auto=createCs03StudyAutoSync({session:createCs03CrossBrowserSession({account:client}),
+    draftStore:createCs03DraftStore({storage:window.localStorage})});
    attachCs03UnsavedNavigationGuard({auto,windowRef:window});
    const page=window.CS03_STUDY_PAGE;
    if(!page)throw Error('STUDY_PAGE_BRIDGE_REQUIRED');
@@ -47,8 +49,12 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
      studyHint.clear();clearCs03HistoryView(historyRoot);
      await scoped.bind();
      const listing=await auto.login();
-     try{page.activate(listing,auto);}
-     catch(error){auto.logout();throw error;}
+     try{
+      page.activate(listing,auto);
+      const restored=auto.state().blocked.length;
+      if(restored)window.alert(restored+'件の未保存記録をこの端末から再発見しました。自動送信せず確認待ちにしました。必要に応じてJSONを書き出してください。');
+     }
+     catch(error){if(!auto.state().pending.length)auto.logout();throw error;}
     },
     onBeforeSignOut:async()=>{
      const state=auto.state();
