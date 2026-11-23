@@ -83,3 +83,15 @@ Neon returned success (no result rows). Immediate **read-only** postcheck in the
 No table data was read or deleted, no other table privileges were edited, and main/default branch was untouched. Earlier sections document **pre-change observations and proposal**; this section records the executed correction and supersedes the earlier "not executed" status for the DELETE grant.
 
 **Still open:** role-authenticated functional GET/PUT and cross-user denial tests against the isolated database, other-database PUBLIC CONNECT scope, Cloudflare fail-closed real route verification, and production deployment approval. Maintain NO-GO.
+
+## API-role live read-only verification — 2026-11-23
+
+After the operator-approved DELETE revocation, Neon SQL was executed using **`role_name=cs03_progress_api`** in the exact non-default branch `br-snowy-truth-a162pmdt`.
+
+- On `cs03_auth_sandbox`: `current_user` and `session_user` both confirmed `cs03_progress_api`; `app.verified_user_id` was NULL.
+- Role-level privileges: SELECT=true, INSERT=true, UPDATE=true, **DELETE=false** on `public.study_progress`.
+- `SELECT count(*) FROM public.study_progress` returned **0 visible rows** without verified user GUC. Only a count was requested; no study records were returned or modified.
+- On the separate `certification_study` database **within the same isolated branch**, connecting **as `cs03_progress_api` succeeded**, confirming residual PUBLIC CONNECT. The role can USAGE the `public` schema, **cannot USAGE `neon_auth`**, and `information_schema.tables` exposed **0 tables** for `public` or `neon_auth` to this role.
+- A direct `has_table_privilege(...,'neon_auth.user','SELECT')` name-lookup attempt failed with SQLSTATE **42501 permission denied for schema neon_auth**, corroborating the schema boundary; a follow-up query avoided that name resolution and completed.
+
+**Limits of evidence:** zero visible rows with no user context does not test cross-user denial with two real identities or successful INSERT/UPDATE. No JWT was minted, no user data was written or read, and no privilege was changed during these checks. Retain NO-GO pending scoped write/read acceptance, real edge configuration, and cost guard verification.
