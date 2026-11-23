@@ -65,7 +65,8 @@ function setup({perUserLimit=2}={}){
     ()=>runtime,SECRET);
   }
  })});
- const env={CS03_ISOLATED_GATEWAY_MODE:'isolated-review-only'};
+ const env={CS03_ISOLATED_GATEWAY_MODE:'isolated-review-only',CS03_ACCESS_AUD:'cs03-test-access-audience'};
+ const accessContext={access:{aud:'cs03-test-access-audience'}};
  function request(token,{method='GET',origin=ORIGIN,cf=true}={}){
   const url='https://candidate.invalid/progress'+(method==='GET'?'?examCode=db':'');
   const headers={origin,authorization:'Bearer '+token,'cf-connecting-ip':'192.0.2.55'};
@@ -75,13 +76,13 @@ function setup({perUserLimit=2}={}){
   if(cf)Object.defineProperty(r,'cf',{value:{colo:'NRT'}});
   return r;
  }
- return {entry,env,seen,request};
+ return {entry,env,seen,request,accessContext};
 }
 test('entrypoint routes signed JWT through shared DO and native Neon read/write',async()=>{
  const h=setup(),token=await signedToken();
- const put=await h.entry.fetch(h.request(token,{method:'PUT'}),h.env);
+ const put=await h.entry.fetch(h.request(token,{method:'PUT'}),h.env,h.accessContext);
  assert.equal(put.status,200);
- const get=await h.entry.fetch(h.request(token),h.env);
+ const get=await h.entry.fetch(h.request(token),h.env,h.accessContext);
  assert.equal(get.status,200);
  assert.equal((await get.json()).data.data.level,'review');
  assert.equal(h.seen.neon,2);
@@ -89,16 +90,16 @@ test('entrypoint routes signed JWT through shared DO and native Neon read/write'
 });
 test('entrypoint blocks forged tokens, bad origins, missing CF metadata without DO or Neon calls',async()=>{
  const h=setup(),token=await signedToken(),forged=await generateKeyPair('EdDSA');
- assert.equal((await h.entry.fetch(h.request(await signedToken(forged.privateKey)),h.env)).status,401);
- assert.equal((await h.entry.fetch(h.request(token,{origin:'https://evil.invalid'}),h.env)).status,403);
- assert.equal((await h.entry.fetch(h.request(token,{cf:false}),h.env)).status,503);
+ assert.equal((await h.entry.fetch(h.request(await signedToken(forged.privateKey)),h.env,h.accessContext)).status,401);
+ assert.equal((await h.entry.fetch(h.request(token,{origin:'https://evil.invalid'}),h.env,h.accessContext)).status,403);
+ assert.equal((await h.entry.fetch(h.request(token,{cf:false}),h.env,h.accessContext)).status,503);
  assert.equal(h.seen.do,0);
  assert.equal(h.seen.neon,0);
 });
 test('entrypoint denies quota excess before Neon and still fails closed when mode absent',async()=>{
  const h=setup(),token=await signedToken();
  const statuses=[];
- for(let i=0;i<3;i++)statuses.push((await h.entry.fetch(h.request(token),h.env)).status);
+ for(let i=0;i<3;i++)statuses.push((await h.entry.fetch(h.request(token),h.env,h.accessContext)).status);
  assert.deepEqual(statuses,[200,200,429]);
  assert.equal(h.seen.neon,2);
  assert.equal(h.seen.do,3);
@@ -126,7 +127,7 @@ test('real browser account client reaches Worker entrypoint, shared DO, native F
     headers.set('origin',ORIGIN);headers.set('cf-connecting-ip','192.0.2.55');
     const r=new Request(url,{method:init.method,headers,body:init.body});
     Object.defineProperty(r,'cf',{value:{colo:'NRT'}});
-    return h.entry.fetch(r,h.env);
+    return h.entry.fetch(r,h.env,h.accessContext);
    }});
  }
  const a=await account(USER),b=await account(userB),question='2026:am2:100';
@@ -139,4 +140,14 @@ test('real browser account client reaches Worker entrypoint, shared DO, native F
  assert.equal(h.seen.records.size,2);
  assert.equal(h.seen.neon,6);
  assert.equal(h.seen.do,6);
+});
+
+test('entrypoint refuses absent or mismatched Cloudflare Access context before DO or Neon',async()=>{
+ const h=setup(),token=await signedToken(),req=h.request(token);
+ assert.equal((await h.entry.fetch(req,h.env)).status,503);
+ assert.equal((await h.entry.fetch(req,h.env,{access:{aud:'wrong-app-audience'}})).status,503);
+ assert.equal((await h.entry.fetch(req,{...h.env,CS03_ACCESS_AUD:'wrong-app-audience'},h.accessContext)).status,503);
+ assert.equal((await h.entry.fetch(req,{...h.env,CS03_ACCESS_AUD:''},h.accessContext)).status,503);
+ assert.equal(h.seen.neon,0);
+ assert.equal(h.seen.do,0);
 });
