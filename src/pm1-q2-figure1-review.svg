@@ -9,13 +9,13 @@
 <rect x="115" y="308" width="140" height="72"/><rect x="770" y="308" width="140" height="72"/>
 <path d="M185 98 V172" marker-end="url(#arrow)"/><path d="M185 230 V308" marker-end="url(#arrow)"/>
 <path d="M400 230 V268 H230 V308" marker-end="url(#arrow)"/><path d="M685 201 H770"/><path d="M840 230 V308"/>
-<rect x="728" y="281" width="229" height="137" rx="15" stroke-dasharray="10 8"/>
+<rect x="700" y="281" width="320" height="137" rx="15" stroke-dasharray="10 8"/>
 </g>
 <g fill="#111" font-family="Yu Gothic,Meiryo,Noto Sans CJK JP,sans-serif" font-size="23" text-anchor="middle">
 <text x="185" y="77">得意先</text><text x="400" y="77">案件</text><text x="615" y="77">製品</text>
 <text x="185" y="207">得意先担当者</text><text x="400" y="207">商談</text><text x="615" y="207">見積り</text><text x="840" y="207">契約</text>
 <text x="185" y="339" font-size="19">商談参加</text><text x="185" y="364" font-size="19">得意先担当者</text>
 <text x="840" y="338" font-size="20">得意先</text><text x="840" y="364" font-size="20">納品要求</text>
-<text x="842" y="444" font-size="18">得意先納品要求に関する</text><text x="842" y="465" font-size="18">トランザクションの領域</text>
+<text x="860" y="396" font-size="15">得意先納品要求に関する</text><text x="860" y="413" font-size="15">トランザクションの領域</text>
 </g>
 </svg>

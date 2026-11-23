@@ -7,6 +7,7 @@
 <text x="42.0" y="70.0">得意先</text>
 <text x="122.0" y="70.0">（</text>
 <text x="144.0" y="70.0">得意先コード</text>
+<line class="key-mark source-checked" x1="144.0" y1="75.0" x2="276.0" y2="75.0" stroke="#111" stroke-width="1.5"/>
 <text x="276.0" y="70.0">、</text>
 <text x="298.0" y="70.0">得意先名</text>
 <text x="386.0" y="70.0">、</text>
