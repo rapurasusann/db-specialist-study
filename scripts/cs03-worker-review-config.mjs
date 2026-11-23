@@ -6,6 +6,8 @@ const template=fileURLToPath(new URL('../docs/cs03-worker-config-review-only.jso
 export function inspectCs03WorkerReviewConfig(config){
  const blockers=[];
  if(!config||typeof config!=='object'||Array.isArray(config))return ['INVALID_CONFIG'];
+ if(config.main!=='./server/cs03-gateway-production-adapter.mjs')blockers.push('GUARDED_WORKER_ENTRYPOINT_REQUIRED');
+ if(config.name!=='cs03-isolated-candidate-not-approved')blockers.push('REVIEW_ONLY_WORKER_NAME_REQUIRED');
  if(config.workers_dev!==false)blockers.push('WORKERS_DEV_MUST_BE_DISABLED');
  if(config.preview_urls!==false)blockers.push('PREVIEW_URLS_MUST_BE_DISABLED');
  if('routes' in config||'route' in config)blockers.push('ROUTES_MUST_BE_ABSENT');
