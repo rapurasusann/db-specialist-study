@@ -56,6 +56,7 @@ export function mountCs03AccountPanel(root,account,options={}) {
   message('ログインしました。既存の端末内履歴は自動で統合しません。');
  }));
  logout.addEventListener('click',()=>run(async()=>{
+  if(options.onBeforeSignOut)await options.onBeforeSignOut();
   await account.signOut();
   if(options.onSignedOut)await options.onSignedOut();
   showUser(null);if(recordStatus)recordStatus.textContent='ログアウトしました。';
