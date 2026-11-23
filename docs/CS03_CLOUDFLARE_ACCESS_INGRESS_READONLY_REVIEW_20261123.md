@@ -94,3 +94,17 @@ Zero Trust Free有効化後に表示されたCloudflare OneのDashboard（Discov
 ## 13. Access Workersタブ選択確認（ユーザー提出：2026-11-23）
 
 ユーザーの次のスクリーンショットでは「Add an application」ダイアログの**Self-hosted and private > Workers**が選択状態。モーダルの表示領域が途中で切れており、Workersタブ固有の詳細・適用条件・入力欄や設定保存ボタンは見えない。Worker全体の保護やAccess Policyが設定されたと判断しない。次はダイアログ内をスクロールして**読み取りのみ**を続ける。**実クラウド配置・公開NO-GO**を維持。
+
+
+## 14. Cloudflare初期状態の確認終了・Accessの非配備ガード（2026-11-23）
+
+ユーザー提出済みスクリーンショット（Certification-Study）で**Workers Free有効／支払方法未登録／Worker・Pages 0件／Workers当日0/100,000／Zero Trust Free有効化済み／Access管理画面表示可能／Durable Objects一覧0件、当日リクエスト0、SQL/KV利用0**を確認。初期状態のスクリーンショット再提出は求めない。これは**画面を確認した時点の事実**であり、将来の料金ゼロやAccess保護済みを証明しない。クラウド管理画面には今回書き込まない。
+
+Cloudflare Workers Accessの公式文書（2026年11月2日更新、https://developers.cloudflare.com/workers/configuration/cloudflare-access/ ）には、**単一Workerのproduction+preview全体を保護するWorker-level Access**（destination type `worker`）があり、単一のhostnameやpreview-onlyよりこの用途に適する。Worker作成前は実Worker IDもないため、**現段階ではAccess app/policyを作成しない**。HTTP入口を後で一時的に作る場合も、事前に当該Worker全体への認証が生きていることを実拒否検証し、Worker経路のFree上限でfail openを許さず、別のhostnameの優先Access policyが無いことを確認する。Neon Functionは別URLなのでNeon直のsecret/JWT検証は不可欠。
+
+**オフライン検査を追加**：
+- `docs/cs03-access-ingress-review-only.json`：Worker/Access未作成、レビュー専用、NO-GO、`workersDev:false`・`previewUrls:false`・ルート無し、認可担当者1名、広域許可無し、`single-worker-all-traffic`、直アクセス・failClosed・DO実証未完という状態のみを記録。
+- `scripts/cs03-access-ingress-review.mjs`：上記の状態を静的検査。意図しない公開経路、`Fail open`、preview-only/hostname-only、全員許可、承認済み・実証済みと偽った値を拒否。
+- `tests/cs03-access-ingress-review.test.mjs`：6件のオフライン負試験。**実行待ち**。この検査はCloudflareで認証を有効にせず、現物のAccess制御や無料枠を証明しない。
+
+**残る工程**： (1) この6件を開発PCで実行し、(2) 運用者が承認対象のWorker ID・限定Access policy・実HTTP入口・環境secret投入/失効・受入失敗時の停止操作を確定、(3) 独立承認後に隔離試験を実施する。Neon Function/Worker/DO新規配備、Access登録、公開URL/CSP変更、課金変更、GitHub Actions、main統合は**未実施**。公開判定**NO-GO**。
