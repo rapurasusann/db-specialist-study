@@ -41,3 +41,15 @@
 - 実際のWorkerアダプターはまだ `CS03_ISOLATED_GATEWAY_MODE` と`request.cf`で503 fail-closedする試験用で、**Cloudflare Accessの実検証、Neon JWT設定・secret、DOの実運用確認は未了**。残る本番安全性の問題を隠してNO-GOを解除しない。
 
 **次**：開発PCで `node --test tests/cs03-worker-review-config.test.mjs tests/cs03-worker-entrypoint.test.mjs tests/cs03-worker-candidate.test.mjs` を1回まとめて実行する。合格後もWorker/DO/Access配備の独立承認まではクラウド変更しない。
+
+## 開発PCでのWorker統合テスト合格（2026-11-24受領）
+
+ユーザーから開発PC実行の結果を受領。対象HEADは `2a315c59af39dfac0ea3cab2e9d73f7f5cbc0b93`、テストは以下を一括実行：
+```
+node --test tests/cs03-worker-review-config.test.mjs tests/cs03-worker-entrypoint.test.mjs tests/cs03-worker-candidate.test.mjs
+```
+**実行結果：14 tests / 14 pass / 0 fail、`CS03_WORKER_INTEGRATION_TEST_PASS`。** 機能別の内訳は、候補構成の環境変数欠落時503・不正JWT拒否・Origin拒否・DO異常停止・IPヘッダー不正・review-only Worker設定の公開経路禁止・default export入口の正当性・predeploy guardによる独立NO-GOなど。実CloudflareでのAccess・Durable Object・課金・認証/同期試験の合格を意味しない。
+
+**今後の作業条件**：ユーザーは**次の19時（日本時間2026-11-24 19:00）まで、ローカルリポジトリがないPCからできる作業を進める**よう依頼。GitHubへのコード・ドキュメント更新、公式仕様/セキュリティ検討、必要に応じNeon読み取りのみが対象。開発PCに依存するコマンドの実行や同じテストの再提出は要求しない。**GitHub Actionsは勝手に使わない**。クラウドへのWorker/DO/Access/Neon秘密配備、Neon既存Function変更、本番公開、CSP、GitHub main、課金、支払方法、削除は引き続き別承認。次の開発PC復帰に備えて未実行テストと作業差分を一括報告する。
+
+**現状：Neon隔離Functionの初回実配備とGET拒否 3/3 PASS。Worker候補コードのローカル結合 14/14 PASS。Cloudflare上のWorker/DO/Access Policy未作成。実同期未実施・一般公開NO-GO。**
