@@ -189,12 +189,14 @@ test('browser JWT entrypoint: quota excess and DO storage failure fail closed be
  assert.deepEqual(statuses,[200,200,429]);
  assert.equal(h.seen.neon,2);
  assert.equal(h.seen.do,3);
+ let forbiddenUpstream=0;
  const failing=createCs03BrowserJwtEntrypoint({createGateway:()=>createCs03TrustedEdgeGateway({
   verifyToken,upstreamUrl:'https://isolated-neon.invalid/progress',upstreamSecret:SECRET,
   getClientIp:()=> '192.0.2.55',
   sharedQuota:{consume:async()=>{throw Error('DO_UNAVAILABLE');}},
-  fetcher:async()=>{throw Error('UPSTREAM_MUST_NOT_BE_CALLED');}
+  fetcher:async()=>{forbiddenUpstream++;throw Error('UPSTREAM_MUST_NOT_BE_CALLED');}
  })});
  const reply=await failing.fetch(h.request(token),h.env);
  assert.equal(reply.status,503);
+ assert.equal(forbiddenUpstream,0);
 });
