@@ -48,3 +48,7 @@
 4. **D4: 別途承認** — ブラウザの実接続を有効化し、最終的な規約・プライバシー・公開判断を行う。
 
 **現時点で一切実行しない**：`wrangler deploy`、Cloudflare/Neon Functionsの作成・削除・secret書込み、route/DNS/CSPの変更、課金変更、GitHub Actions、本番 `main` 更新。
+
+## E. A1 共有秘密の手順書確定（2026-11-23）
+
+`docs/CS03_SECRET_LIFECYCLE_PLAN_20261123.md` に、Worker側 `CS03_GATEWAY_SECRET`／Neon側 `CS03_ORIGIN_SECRET` と `x-secret` の対応、32 UTF-8 bytes以上の同一秘密の安全な生成・保管・登録、実値を出さない照合、緊急停止、更新時の切替手順を記載した。**現行Neon Functionは単一秘密のみ照合するため、切替時は同期処理を停止して新旧が混在する時間の失敗を安全に扱う**。クラウド側のsecret管理の実在、登録、旧秘密失効、サービス間の値一致は引き続き未検証。**A1は文書作成のみ完了、実受入OPEN**。秘密値生成・クラウド書込み・公開変更・課金変更は未実施。**NO-GO継続**。
