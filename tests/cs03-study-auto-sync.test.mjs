@@ -118,3 +118,23 @@ test('restoration never overwrites already-pending account progress',async()=>{
  assert.throws(()=>f.ui.restorePending(backup),/UNSAVED_ACCOUNT_PROGRESS/);
  assert.deepEqual(f.ui.exportPending().records[Q],{level:'mastered'});
 });
+
+test('explicit local discard clears restored review drafts and permits sign-out without remote writes',async()=>{
+ const f=setup();await f.ui.login();
+ f.ui.restorePending({format:'cs03-unsaved-account-progress-v1',userId:A,records:{[Q]:{level:'review'}}});
+ const ids=[...f.ui.state().pending].sort();
+ assert.deepEqual(f.ui.discardPending({userId:A,questionIds:ids}),{discarded:1});
+ assert.deepEqual(f.ui.state().pending,[]);
+ assert.deepEqual(f.ui.state().blocked,[]);
+ assert.equal(f.remote.size,0);
+ f.ui.logout();
+ assert.equal(f.calls.some(x=>x.startsWith('save:')),false);
+});
+test('local discard refuses wrong account, changed draft set, or pending in-flight work',async()=>{
+ const f=setup();await f.ui.login();
+ f.ui.restorePending({format:'cs03-unsaved-account-progress-v1',userId:A,records:{[Q]:{level:'review'}}});
+ assert.throws(()=>f.ui.discardPending({userId:'another-account',questionIds:[Q]}),/BACKUP_ACCOUNT_MISMATCH/);
+ assert.throws(()=>f.ui.discardPending({userId:A,questionIds:[]}),/PENDING_DRAFTS_CHANGED/);
+ assert.deepEqual(f.ui.state().pending,[Q]);
+ assert.equal(f.remote.size,0);
+});
