@@ -2,6 +2,7 @@
 import {readFileSync,existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {resolve} from 'node:path';
+import {inspectCs03CloudflareAccount} from './cs03-cloudflare-account-guard.mjs';
 const root=resolve(fileURLToPath(new URL('../',import.meta.url)));
 const read=path=>readFileSync(resolve(root,path),'utf8');
 export function inspectCs03Deployment(){
@@ -9,6 +10,7 @@ export function inspectCs03Deployment(){
  const clientCode=read('src/cs03-account-client.mjs');
  const cfg=read('cs03-config.js');
  const blockers=[];
+ blockers.push(...inspectCs03CloudflareAccount({env:process.env}));
  // This is a wiring gate, not a security proof or a gateway deployment.
  if(!/verifyGatewaySecret\(request,secret\)/.test(functionCode)||!/x-secret/.test(functionCode))
   blockers.push('NATIVE_FUNCTION_GATEWAY_GUARD_UNVERIFIED');
