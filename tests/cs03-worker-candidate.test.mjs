@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {createCs03WorkerCandidate} from '../server/cs03-worker-candidate.mjs';
+import {createCs03WorkerCandidate,Cs03QuotaNotDeployed} from '../server/cs03-worker-candidate.mjs';
 
 const ORIGIN='https://rapurasusann.github.io';
 function bindings(){
@@ -47,4 +47,26 @@ test('unauthenticated and wrong-origin requests never call quota or upstream',as
  }});
  assert.equal((await candidate(badOrigin)).status,403);
  assert.equal(count,0);
+});
+
+test('review DO class matches binding and rejects invalid internal request without storage access',async()=>{
+ assert.throws(()=>new Cs03QuotaNotDeployed({}),/CS03_QUOTA_STORAGE_REQUIRED/);
+ let calls=0;
+ const ctx={storage:{transactionSync:()=>{calls++;throw Error('UNEXPECTED_STORAGE');},sql:{exec:()=>{calls++;throw Error('UNEXPECTED_SQL');}}}};
+ const quota=new Cs03QuotaNotDeployed(ctx);
+ const reply=await quota.fetch(new Request('https://cs03-quota.internal/wrong',{method:'POST',
+  headers:{'content-type':'application/json'},body:'{}'}));
+ assert.equal(reply.status,400);
+ assert.equal(calls,0);
+});
+test('review DO class fails closed for unavailable SQLite storage',async()=>{
+ const quota=new Cs03QuotaNotDeployed({storage:{transactionSync:()=>{throw Error('DB_DOWN')},sql:{exec:()=>{throw Error('DB_DOWN')}}}});
+ const now=Date.now();
+ const reply=await quota.fetch(new Request('https://cs03-quota.internal/consume',{method:'POST',
+  headers:{'content-type':'application/json'},body:JSON.stringify({now,windowMs:60000,keys:[
+   {key:'cs03:global',limit:60},{key:'cs03:ip:192.0.2.1',limit:20},
+   {key:'cs03:user:aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',limit:10}
+  ]})}));
+ assert.equal(reply.status,503);
+ assert.deepEqual(await reply.json(),{error:'Service Unavailable'});
 });
