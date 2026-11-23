@@ -76,3 +76,12 @@
 - Worker/DO/Access、Neon、公開URL/CSP、Secrets、課金、GitHub Actions、mainは変更していない。**実端末間同期・クラウド公開はNO-GO**。
 
 **次**：ブラウザーJWT入口のOPTIONS/CORS拒否境界とJWT/DO quotaのテストを点検し、開発PC復帰時に一括実行する。まだ主作業が残っているため午前Ⅱの過去問追加は行わない。
+
+## 2026-11-24 06:00 リモート作業：CORS preflightのJWT必須形を明示
+
+- `server/cs03-trusted-edge-gateway.mjs` のOPTIONSを厳格化。`Access-Control-Request-Headers`に `authorization` が含まれない場合、未知ヘッダー・空要素・重複要素・未許可メソッドの場合は405で拒否する。正常なGET（authorization）とPUT（authorization, content-type）は204を維持する。**OPTIONSにJWTを付ける設計ではなく、実GET/PUTのJWT検証を維持する**。CORSは認証の代替ではない。
+- `tests/cs03-browser-preflight-authorization.test.mjs`を追加。正常2条件・拒否7条件・異Origin拒否と、OPTIONSでJWT検証/DO quota/Neonを呼ばないことを検証するコードを記述。
+- GitHubコードコミット `2187620`、テストコミット `2f420cd`。**ローカルNodeテスト未実行**、旧14/14 PASSは今回の修正の合格証拠ではない。
+- Cloudflare/Neonの設定・リソース、公開URL、CSP、GitHub Actions、main、課金、秘密情報は未変更。実ブラウザー同期・本番公開は引き続きNO-GO。
+
+**次**：開発PC復帰後に `node --test tests/cs03-browser-preflight-authorization.test.mjs` と既存 `npm run test:cs03-worker-security` を一括検証する。以降はWorkerのGET/PUTのCORS・認証・Quota境界を継続点検。主作業が残るため午前Ⅱ問題追加はまだ行わない。
