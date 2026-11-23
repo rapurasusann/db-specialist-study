@@ -83,3 +83,9 @@ Neon公式（https://neon.com/docs/compute/functions/get-started）はFunction�
 **追加したローカルテスト**：`tests/cs03-neon-root-route.test.mjs`の新規5件で(1) root GET→内部progressへqueryを保持して転送、(2) root PUT→bodyを保持、(3) rootへの秘密なし/誤秘密は401でDB未接続、(4)旧`/progress`維持・未知pathは404、(5)Worker上流がroot/旧path両方を利用でき不正上流pathは拒否、を確認する。既存の`tests/cs03-neon-function-offline-bundle.test.mjs`のroot期待値も404→401に変更した。関係コード変更のため**この新規5件＋旧バンドル1件＋関連関数ハンドラ既存試験を再実行する必要がある**。すべてまだ実行待ちでPASS扱いしない。
 
 Neon登録Functionの正式`invocation_url`は`list_functions`が0件のため未取得。将来そのURLを読み取った上で、Workerの上流URLを正確に設定する必要がある。実Node24/Neon ingress、Function秘密の登録、cloud実通信・無料枠はなお**OPEN**。公開／配置**NO-GO**、GitHub Actions／有料化／実secret発行・登録は未実施。
+
+## 9. 開発PCでのルート整合・関連回帰試験：29/29 PASS
+
+操作者が開発PCでcommit `5fbcb10e74c3d29a25a9fca39590b8cf76ebd3c0` をチェックアウトし、`node --test tests/cs03-neon-root-route.test.mjs tests/cs03-neon-function-offline-bundle.test.mjs tests/cs03-browser-function.test.mjs tests/cs03-shared-gateway-integration.test.mjs` を実行した。提出された原文ログを確認：**29 tests / 29 pass / 0 fail**、最終マーカー `CS03_NEON_ROUTE_TEST_PASS`。内訳は新規Neon root経路5件、オフラインbundle1件、Functionハンドラ17件、共有gateway6件で計29件。Neon Functionのroot GET/PUT→内部`/progress`、秘密なし/誤秘密の401、未知経路の404、旧`/progress`の維持、Worker上流`/`・`/progress`許容、不正URL拒否、DO共有quotaと不正リクエスト遮断をローカルで確認。関連ソースが変更されない限り同じ29件を再実行する必要はない。
+
+**受入範囲の限界**：実Neon FunctionsのURL受信、Functionのbranch固有実URL、Functionへのenv/secret登録、Cloudflare Worker/DOとの実通信、実Cloudflare ingress fail-closed、料金・無料枠の実証は未実施。現在のNeon Functionsは0件（最後の読み取り時点）。本番公開・実配置**NO-GO**を維持し、個別承認前にNeon/Cloudflareを作成・変更しない。
