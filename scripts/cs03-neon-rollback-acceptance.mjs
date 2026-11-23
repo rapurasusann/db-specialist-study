@@ -12,6 +12,30 @@ let stage='VALIDATE_TARGET';
 // Only fixed stage and standardized error codes are printed; never database error messages.
 const SAFE_CODES=new Set(['ENOTFOUND','EAI_AGAIN','ECONNREFUSED','ECONNRESET','ETIMEDOUT','ERR_TLS_CERT_ALTNAME_INVALID','SELF_SIGNED_CERT_IN_CHAIN','UNABLE_TO_VERIFY_LEAF_SIGNATURE','DEPTH_ZERO_SELF_SIGNED_CERT','28P01','28000','3D000','42501','23503','23505','23514','57014']);
 function mark(name){stage=name;}
+// Report only fixed diagnostic categories. Never echo error.message, URL, password,
+// certificate details, stack traces, or untrusted server-provided strings.
+function failureCategory(error){
+ const code=typeof error?.code==='string'?error.code:'';
+ const causeCode=typeof error?.cause?.code==='string'?error.cause.code:'';
+ if(code==='28P01')return 'PASSWORD_AUTH_REJECTED';
+ if(code==='28000')return 'ROLE_AUTH_REJECTED';
+ if(['ENOTFOUND','EAI_AGAIN'].includes(code)||['ENOTFOUND','EAI_AGAIN'].includes(causeCode))return 'DNS_FAILURE';
+ if(['ECONNREFUSED','ECONNRESET','ETIMEDOUT','EHOSTUNREACH','ENETUNREACH','EPIPE'].includes(code)||
+    ['ECONNREFUSED','ECONNRESET','ETIMEDOUT','EHOSTUNREACH','ENETUNREACH','EPIPE'].includes(causeCode))return 'NETWORK_FAILURE';
+ if(['ERR_TLS_CERT_ALTNAME_INVALID','SELF_SIGNED_CERT_IN_CHAIN','UNABLE_TO_VERIFY_LEAF_SIGNATURE','DEPTH_ZERO_SELF_SIGNED_CERT','CERT_HAS_EXPIRED','UNABLE_TO_GET_ISSUER_CERT_LOCALLY'].includes(code)||
+    ['ERR_TLS_CERT_ALTNAME_INVALID','SELF_SIGNED_CERT_IN_CHAIN','UNABLE_TO_VERIFY_LEAF_SIGNATURE','DEPTH_ZERO_SELF_SIGNED_CERT','CERT_HAS_EXPIRED','UNABLE_TO_GET_ISSUER_CERT_LOCALLY'].includes(causeCode))return 'TLS_CERTIFICATE_FAILURE';
+ if(code==='57014')return 'QUERY_TIMEOUT';
+ if(code==='42501')return 'SQL_PERMISSION_FAILURE';
+ if(/^23[0-9A-Z]{3}$/.test(code))return 'SQL_CONSTRAINT_FAILURE';
+ const message=typeof error?.message==='string'?error.message:'';
+ if(/password authentication failed/i.test(message))return 'PASSWORD_AUTH_REJECTED';
+ if(/channel.binding/i.test(message))return 'CHANNEL_BINDING_FAILURE';
+ if(/certificate|self.signed|verify|tls|ssl/i.test(message))return 'TLS_NEGOTIATION_FAILURE';
+ if(/timeout|timed out/i.test(message))return 'TIMEOUT';
+ if(/SASL|SCRAM|password must be a string/i.test(message))return 'SCRAM_HANDSHAKE_FAILURE';
+ if(/getaddrinfo|socket|connect|network|ECONN/i.test(message))return 'CONNECTION_FAILURE';
+ return 'OTHER_CONNECTION_FAILURE';
+}
 
 function assert(condition,message){if(!condition)throw Error('CS03_ACCEPTANCE_'+message);}
 function validateTarget(env){
@@ -91,4 +115,4 @@ async function run(){
   }
  }
 }
-run().catch(error=>{const message=typeof error?.message==='string'?error.message:'';const label=/^CS03_ACCEPTANCE_[A-Z0-9_]+$/.test(message)?message:'CHECK_FAILED_WITHOUT_DETAILS';const code=typeof error?.code==='string'&&SAFE_CODES.has(error.code)?error.code:'UNCLASSIFIED';console.error('CS03_ISOLATED_ACCEPTANCE_STAGE='+(error?.cs03Stage??stage));console.error('CS03_ISOLATED_ACCEPTANCE_ERROR_CODE='+code);console.error('CS03_ISOLATED_ACCEPTANCE_FAILED:'+label);process.exitCode=1;});
+run().catch(error=>{const message=typeof error?.message==='string'?error.message:'';const label=/^CS03_ACCEPTANCE_[A-Z0-9_]+$/.test(message)?message:'CHECK_FAILED_WITHOUT_DETAILS';const code=typeof error?.code==='string'&&SAFE_CODES.has(error.code)?error.code:'UNCLASSIFIED';console.error('CS03_ISOLATED_ACCEPTANCE_STAGE='+(error?.cs03Stage??stage));console.error('CS03_ISOLATED_ACCEPTANCE_ERROR_CODE='+code);console.error('CS03_ISOLATED_ACCEPTANCE_CATEGORY='+failureCategory(error));console.error('CS03_ISOLATED_ACCEPTANCE_FAILED:'+label);process.exitCode=1;});
