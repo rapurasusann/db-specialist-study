@@ -113,9 +113,9 @@ test('entrypoint denies quota excess before Neon and still fails closed when mod
 test('browser account client reaches JWT-only Worker, shared DO, native Function; accounts remain isolated',async()=>{
  const h=setup({perUserLimit:10});
  const userB='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
+ const local=new Map(); // Same browser storage shared across both signed-in accounts.
  async function account(userId){
   const token=await signedToken(privateKey,userId);
-  const local=new Map();
   const authClient={
    signUp:{email:async()=>({data:{}})},signIn:{email:async()=>({data:{}})},
    getSession:async()=>({data:{user:{id:userId,email:'test@example.invalid'}}}),
@@ -143,6 +143,9 @@ test('browser account client reaches JWT-only Worker, shared DO, native Function
  assert.equal((await a.pull(question)).data.level,'mastered');
  assert.equal((await b.pull(question)).data.level,'review');
  assert.equal(h.seen.records.size,2);
+ assert.notEqual(a.storageKey(USER),b.storageKey(userB));
+ assert.equal(JSON.parse(local.get(a.storageKey(USER)))[question].data.level,'mastered');
+ assert.equal(JSON.parse(local.get(b.storageKey(userB)))[question].data.level,'review');
  assert.equal(h.seen.neon,6);
  assert.equal(h.seen.do,6);
 });
