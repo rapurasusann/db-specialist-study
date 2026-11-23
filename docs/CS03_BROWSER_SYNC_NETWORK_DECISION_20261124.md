@@ -57,3 +57,11 @@
 - GitHub Actions、Cloudflare/Neon変更、URL/CSP、課金、main統合は実施していない。未承認の公開はNO-GO。
 
 **次**：ブラウザーJWT入口のCORS preflightと本リクエストでCookieに依存しない動作、アカウント切替の途中で通信が完了した場合のローカルキャッシュ保護、Quotaの境界を引き続き点検する。
+
+## 2026-11-24 アカウント切替中の非同期応答ガード
+
+- `src/cs03-account-client.mjs` のJWT取得後、HTTP応答後、JSON解析後、pull/saveのローカル保存直前に認証ユーザーIDを再確認する。途中で別ユーザーに切り替わったら `ACCOUNT_CHANGED` を返し、旧ユーザーの遅延結果を画面・ローカル保存に反映しない。Cookie送信設定 `credentials:'omit'`、JWT署名検証、分散DO quota、Neon上流secretには変更なし。
+- `tests/cs03-account-client.test.mjs` に、token待機中のアカウント切替でHTTP未送信、GET/PUT応答待機中の切替でローカル保存0件となる負試験3件を追加。
+- 変更コミット `438913d`、テスト追加 `4b2db07`。**開発PC・ローカルリポジトリを使用していないため追加テストは未実行**。先行コミットの14/14 PASSを今回の修正結果と混同しない。
+- 注意：すでに上流へ送信済みのPUTはサーバー側で保存される可能性がある。ここで保証するのは切替後の旧ユーザー応答の採用・ローカルキャッシュ書込み拒否であり、送信済みリクエストの取消しではない。
+- 次回はブラウザー用Worker入口のCORS preflight・Quota境界と、ローカルテスト一括実行条件を検討。Cloudflare実配置・Neon秘密登録・公開は引き続きNO-GO。
