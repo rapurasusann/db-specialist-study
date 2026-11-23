@@ -42,7 +42,7 @@ test('Function missing secret rejects before a DB runtime is constructed',async(
  const r=new Request('https://isolated.invalid/progress?examCode=db',{
   headers:{origin:'https://rapurasusann.github.io',authorization:'Bearer local-fake-token'}
  });
- const response=await handleBrowserRequest(r,()=>{created++;throw Error('DB_MUST_NOT_BE_TOUCHED');},undefined);
+ const response=await handleBrowserRequest(r,()=>{created++;throw Error('DB_MUST_NOT_BE_TOUCHED');},'');
  assert.equal(response.status,401);
  assert.equal(created,0);
  assert.equal(response.headers.get('cache-control'),'no-store');
