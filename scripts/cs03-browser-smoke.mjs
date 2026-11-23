@@ -43,7 +43,7 @@ try{
  page.on('pageerror',error=>{
   const message=String(error?.message||'');
   const stack=String(error?.stack||'');
-  const where=stack.match(/(?:index\\.html|[a-zA-Z0-9._-]+\\.(?:js|mjs)):\\d+:\\d+/)?.[0]||'UNKNOWN';
+  const where=stack.match(/(?:index\.html|[a-zA-Z0-9._-]+\.(?:js|mjs)):\d+:\d+/)?.[0]||'UNKNOWN';
   const hint=/transcribed must load first/.test(message)?'TRANSCRIBED_LOAD_ORDER':
    /is not defined/.test(message)?'UNDEFINED_VARIABLE':
    /Cannot access .* before initialization/.test(message)?'TEMPORAL_DEAD_ZONE':
