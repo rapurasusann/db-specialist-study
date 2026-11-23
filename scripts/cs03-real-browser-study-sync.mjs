@@ -87,6 +87,30 @@ try{
  check('FAILED_SAVE_ACCOUNT_DRAFT_RETAINED',await c.page.evaluate(()=>document.querySelector('#history')?.textContent.includes('要復習')));
  check('FAILED_SAVE_BLOCKS_LOGOUT',await c.page.evaluate(()=>{try{window.CS03_STUDY_PAGE.deactivate();return false;}catch(e){return e.message==='UNSAVED_ACCOUNT_PROGRESS';}}));
  check('FAILED_SAVE_LEGACY_DEVICE_PRESERVED',await c.page.evaluate(([key,original])=>localStorage.getItem(key)===JSON.stringify(original),[KEY,initialC]));
+ // Browser C: exercise the real account-panel export button and download helper.
+ c.page.on('dialog',dialog=>dialog.accept());
+ await c.page.evaluate(async()=>{
+  const [{mountCs03AccountPanel},{exportCs03UnsavedBackup}]=await Promise.all([
+   import('/src/cs03-account-ui.mjs'),import('/src/cs03-unsaved-export.mjs')
+  ]);
+  const root=document.getElementById('cs03AccountPanel');
+  mountCs03AccountPanel(root,{
+   signUp:async()=>({}),signIn:async()=>({id:'mock-account-1',email:'test@example.invalid'}),
+   signOut:async()=>{},session:async()=>{throw Error('SIGN_IN_REQUIRED');}
+  },{onExportUnsaved:()=>exportCs03UnsavedBackup({auto:window.__cs03MockAuto})});
+  root.hidden=false;
+ });
+ await c.page.locator('[data-cs03="login"]').click();
+ await c.page.waitForFunction(()=>!document.querySelector('[data-cs03="export-unsaved"]').disabled);
+ const [download]=await Promise.all([
+  c.page.waitForEvent('download'),c.page.locator('[data-cs03="export-unsaved"]').click()
+ ]);
+ const backup=JSON.parse(await readFile(await download.path(),'utf8'));
+ check('UNSAVED_DOWNLOAD_FILENAME',download.suggestedFilename().startsWith('cs03-unsaved-account-'));
+ check('UNSAVED_DOWNLOAD_ACCOUNT_BOUND',backup.format==='cs03-unsaved-account-progress-v1'&&backup.userId===userId);
+ check('UNSAVED_DOWNLOAD_DRAFT_PRESERVED',backup.records[Q]?.level==='review');
+ check('UNSAVED_DOWNLOAD_EXCLUDES_LEGACY',Object.keys(backup.records).length===1&&!backup.records['2025:am2:3']);
+ check('UNSAVED_DOWNLOAD_NO_REMOTE_WRITE',store.get(Q)?.level==='mastered');
  check('NO_EXTERNAL_REQUESTS',external.length===0);
  check('NO_PAGE_ERRORS',errors.length===0);
  console.log('CS03_REAL_BROWSER_STUDY_SYNC=PASS');
