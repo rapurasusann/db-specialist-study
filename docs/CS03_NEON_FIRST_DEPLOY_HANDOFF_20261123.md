@@ -26,3 +26,11 @@
 
 ## 5. 次の1手
 開発PCで`node scripts/cs03-stage-neon-function.mjs`を実行し、`CS03_NEON_STAGE_ONLY=YES`を確認する。これは安全な**ローカル成果物作成のみ**。その成功後、Neon Functions**初回配置の対象範囲と安全なsecret投入方式**をまとめた承認段階に進む。公開は引き続き**NO-GO**。
+
+## 6. 開発PCでの配置候補生成結果（2026-11-23）
+
+開発PCで HEAD `7b89e7edcfc3f7ec3cb7a84302de666e202d4675` を確認後、`node scripts/cs03-stage-neon-function.mjs` を実行。ユーザー提出ログより `CS03_NEON_STAGE_ONLY=YES`、`CS03_NEON_DEPLOYMENT_APPROVED=NO`、`CS03_NEON_SECRET_EMBEDDED=NO_RUNTIME_ENV_REQUIRED`、`CS03_NEON_RELEASE=NO-GO` を確認した。
+
+ローカル生成物：`C:\\Users\\kouki\\AppData\\Local\\Temp\\cs03-function-candidate-L3zQgb\\index.mjs`。SHA-256：`ada949602f4c8673ac0118a526616b3cacd8f13e400c9865908485b458906619`。パスは開発PCの一時ファイルであり、GitHub/Neonへの成果物アップロードは**未実施**。出力フラグはスクリプトの設計意図・環境変数注入待ちを表し、生成バイナリに秘密が絶対に存在しないことの独立監査ではない。CLIの終了は正常で、関係依存・サイズチェックを通過している。
+
+**次の判断**：Neon隔離Functionの実配備を希望する場合、対象branch・コードSHA・上限・秘密の投入方法（コンソールや履歴に平文を残さない）・緊急停止方法を確認し、実作成操作だけを明示承認する。Cloudflare Worker/DO配備や公開を同時に認可しない。実クラウド配置はNO-GO維持。
