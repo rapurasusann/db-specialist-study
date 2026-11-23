@@ -95,3 +95,9 @@
 同一Playwright BrowserContextの2ページで、ネイティブ `navigator.locks` を利用して同一UUIDの多重アカウント編集拒否、タブAの保存失敗時の下書き保持、タブAの終了後にタブBがロック取得可能であること、復旧した下書きを自動送信しないことを確認する。Web Locks非対応、外部リクエスト、ページエラー、検査失敗はPASSにしない。
 
 開発PCに以前存在を確認した `Wordbook/node_modules/playwright` を `PLAYWRIGHT_MODULE_PATH` に指定する。新規インストール・GitHub Actions・クラウド配備は禁止。**実ChromiumでPASSが得られるまでは未受入、NO-GO。**
+
+## 2026-11-23 実Chromium複数タブ初回試験の部分合格・停止
+
+操作者はコミット `c9862149b2e748630d95e8203855a0f9b7111274` の `scripts/cs03-real-browser-two-tabs.mjs` を開発PCで実行。`REAL_WEB_LOCKS_AVAILABLE=PASS`、`TAB_A_LOGGED_IN=PASS`、`TAB_B_SAME_ACCOUNT_REJECTED=PASS`、`TAB_B_CANNOT_CLEAR_A_DRAFT=PASS` を確認。続くタブA終了・タブBのロック再取得の区間で `CS03_REAL_BROWSER_TWO_TABS=FAIL`、`FAIL_CLASS=BROWSER_OR_ENVIRONMENT_ERROR`。後続の `TAB_B_REACQUIRES_AFTER_A_CLOSE` と `RECOVERED_DRAFT_IS_REVIEW_ONLY` は **未評価**、実ブラウザの全件合格を宣言しない。
+
+調査用に試験スクリプトのみ変更し、失敗段階 `FAIL_PHASE`、匿名化した例外分類 `FAIL_REASON`、タブAのclose完了表示を追加（コミット `f58bc1c`）。本番設定・クラウド・DB操作はなく、再実行対象は本実ブラウザ試験のみ。
