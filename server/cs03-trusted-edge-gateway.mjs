@@ -5,7 +5,7 @@ const ORIGIN='https://rapurasusann.github.io';
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const ERROR=(status,error)=>Response.json({error},{status,headers:{'cache-control':'no-store'}});
 export function createCs03TrustedEdgeGateway({verifyToken,fetcher,upstreamUrl,upstreamSecret,getClientIp,clock=Date.now,
- limits={global:60,perIp:20,perUser:10},windowMs=60000,maxInflight=3}={}){
+ limits={global:60,perIp:20,perUser:10},windowMs=60000,maxInflight=3,sharedQuota}={}){
  if(typeof verifyToken!=='function'||typeof fetcher!=='function'||
     typeof getClientIp!=='function'||typeof clock!=='function')throw Error('GATEWAY_TRUSTED_RUNTIME_REQUIRED');
  let upstream;
@@ -55,6 +55,16 @@ export function createCs03TrustedEdgeGateway({verifyToken,fetcher,upstreamUrl,up
   const ip=getClientIp(request);
   if(typeof ip!=='string'||!ip||ip.length>64)return result(503,'Service Unavailable');
   const now=clock(), user=identity.userId.toLowerCase();
+  // Optional shared-quota integration for isolated verification only.
+  // Production is still blocked: no trusted distributed backend is configured here.
+  if(sharedQuota!==undefined){
+   if(typeof sharedQuota?.consume!=='function')return result(503,'Service Unavailable');
+   let granted;
+   try{granted=await sharedQuota.consume({userId:user,ip});}
+   catch{return result(503,'Service Unavailable');}
+   if(granted===false)return result(429,'Too Many Requests');
+   if(granted!==true)return result(503,'Service Unavailable');
+  }
   // In-process controls are only defense-in-depth, not a billing guarantee.
   if(!allowed('g',limits.global,now)||!allowed('i:'+ip,limits.perIp,now)||
      !allowed('u:'+user,limits.perUser,now))return result(429,'Too Many Requests');
