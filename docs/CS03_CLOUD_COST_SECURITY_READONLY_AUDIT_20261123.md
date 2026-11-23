@@ -43,3 +43,12 @@
 4. **本番公開判断**：上記が受入済みとなり、ブラウザCSP/API URL設定、プライバシー・利用規約その他公開条件を個別確認するまで**NO-GO**。
 
 この監査記録は**配置承認票でも `CS03_GATEWAY_RATE_LIMIT_ACCEPTANCE.md` でもない**。GitHub Actionsは実行しない。本番 `main`、Neon DB、Cloudflareのリソース、課金設定は変更しない。
+
+
+## 5. Worker–Function契約の追加検査（未検証コード）
+
+追加コード（feature branchのみ）：`scripts/cs03-isolated-contract-review.mjs` と `tests/cs03-isolated-contract-review.test.mjs`。実際のWorker/Function接続値、トークン、共有秘密は一切取得・記録しない。既存ソースを読み取り、**Origin / JWT issuer・audience / JWKS固定値 / DB隔離ブランチ / x-secretの受け渡し / 公開プレビューOFF** の差分を検出する。Worker環境変数名 `CS03_GATEWAY_SECRET` とNeon環境変数名 `CS03_ORIGIN_SECRET` を区別し、接続時に値が一致する必要があることを明文化した。
+
+設定値の不一致、偽のFunction URL、秘密ヘッダーの欠落を拒否する**追加6件は未実行**。実Function URLはまだないため `NEON_FUNCTION_URL_UNAVAILABLE` を残す。URLの見た目が正しくても、隔離Neonブランチに属する証拠がなければ `NEON_FUNCTION_URL_OWNERSHIP_UNVERIFIED`。共有秘密の値一致、Cloudflareからの信頼できるIngress、独立した隔離デプロイ承認は**静的チェックで合格させない**。
+
+この追加検査は**構成レビュー**であり、セキュリティ全体の証明や実接続の代替ではない。レビュー用ファイルの作成だけでデプロイ停止ガードを解除しない。実アカウントのCloudflare使用量の確認も別工程のまま。判定は **NO-GO**。
