@@ -73,3 +73,13 @@ Neon公式`docs/compute/functions/deploy`のesbuild方式に合わせ、Node24 /
 操作者が開発PCでコミット `b243970b56d61cb72b3a9af7d9d0158a4d77cb24` をチェックアウトし、`node --test tests/cs03-neon-function-runtime-contract.test.mjs tests/cs03-neon-function-offline-bundle.test.mjs` を実行した。提出されたログは **6 tests / 6 pass / 0 fail**、`CS03_NEON_BUNDLE_TEST_PASS`。esbuildによるNode24ターゲットESM単一bundleとCommonJSのprogress handler取込、バンドル後のdefault fetch読込、秘密欠落時401、実行環境・隔離DB設定の静的ガード、非公開状態を確認。今回変更した実装に関連する既存5件も再試験済み。同一のソース状態では繰り返し不要。
 
 **未完了**：Neon実ランタイムでのbundle起動、依存解決、隔離branchへの配置とenv注入、Function呼び出しURLのルート `/` と現行handler `/progress` の実ルーティング整合、秘密登録、実DB接続、上限超過時fail-closed。ローカル試験でのルート `/` 404は現行コードの挙動であり、実Neonのルーティング受入ではない。クラウド変更・課金変更・GitHub Actionsは一切行わず、**実配置・本番公開NO-GO**を維持する。
+
+## 8. FunctionルートURLと /progress 経路の安全な整合（追加試験待ち）
+
+Neon公式（https://neon.com/docs/compute/functions/get-started）はFunctionの`invocation_url`を末尾`/`で案内する。またNeon CLIのrouterテンプレートはURLのpathによる処理分岐を前提としている（https://neon.com/docs/cli/functions）。ただし、**CS-03未配置のため実際のNeon経路受信は未実証**。
+
+**変更した開発コード**：`functions/cs03-progress.mjs`はFunctionのルート`/`と既存`/progress`の2経路だけを許可し、既存のOrigin一致、`x-secret`照合、GET/PUTおよびJWT必須のチェックを維持。入口が`/`の場合は、認証前提のチェック後、内部progress APIにのみ`/progress`として渡す。未知pathは404（直接別操作に通さない）。`server/cs03-trusted-edge-gateway.mjs`も上流のHTTPS URLが`/`又は`/progress`の場合のみ受理し、後続の秘密・JWT・共有DO quotaなどのチェックを維持。これは正式Worker ingressの承認ではない。
+
+**追加したローカルテスト**：`tests/cs03-neon-root-route.test.mjs`の新規5件で(1) root GET→内部progressへqueryを保持して転送、(2) root PUT→bodyを保持、(3) rootへの秘密なし/誤秘密は401でDB未接続、(4)旧`/progress`維持・未知pathは404、(5)Worker上流がroot/旧path両方を利用でき不正上流pathは拒否、を確認する。既存の`tests/cs03-neon-function-offline-bundle.test.mjs`のroot期待値も404→401に変更した。関係コード変更のため**この新規5件＋旧バンドル1件＋関連関数ハンドラ既存試験を再実行する必要がある**。すべてまだ実行待ちでPASS扱いしない。
+
+Neon登録Functionの正式`invocation_url`は`list_functions`が0件のため未取得。将来そのURLを読み取った上で、Workerの上流URLを正確に設定する必要がある。実Node24/Neon ingress、Function秘密の登録、cloud実通信・無料枠はなお**OPEN**。公開／配置**NO-GO**、GitHub Actions／有料化／実secret発行・登録は未実施。
