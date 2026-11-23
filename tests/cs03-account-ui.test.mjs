@@ -1,0 +1,61 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mountCs03AccountPanel} from '../src/cs03-account-ui.mjs';
+function element(){
+ const handlers={};
+ return {value:'',textContent:'',disabled:false,addEventListener:(event,handler)=>handlers[event]=handler,click:()=>handlers.click?.()};
+}
+function fixture(){
+ const ids=['signup','login','logout','email','password','name','status','identity'];
+ const elements=Object.fromEntries(ids.map(k=>[k,element()]));
+ const events=[];
+ const account={
+  signUp:async fields=>{events.push({type:'signup',fields});return {user:{id:'some'}};},
+  signIn:async fields=>{events.push({type:'login',fields});return {id:'a',email:fields.email};},
+  signOut:async()=>{events.push({type:'logout'});},
+  session:async()=>({id:'a',email:'a@example.com'})
+ };
+ const root={querySelector:selector=>elements[selector.slice(12,-2)]??null};
+ // Selector is [data-cs03="signup"] (length prefix 12)
+ const mount=()=>mountCs03AccountPanel(root,account);
+ return {elements,events,account,mount};
+}
+async function ticks(){await new Promise(resolve=>setImmediate(resolve));}
+test('configuration missing fails closed',()=>{
+ assert.throws(()=>mountCs03AccountPanel(null,{}),/ACCOUNT_UI_CONFIG_REQUIRED/);
+});
+test('panel initializes logged out and prevents logout',()=>{
+ const f=fixture();f.mount();
+ assert.equal(f.elements.logout.disabled,true);
+ assert.equal(f.elements.login.disabled,false);
+});
+test('signup sends only values to auth client and clears password',async()=>{
+ const f=fixture();f.mount();
+ f.elements.email.value='  a@example.com ';f.elements.password.value='secret';f.elements.name.value='Student';
+ f.elements.signup.click();await ticks();
+ assert.equal(f.events[0].type,'signup');
+ assert.deepEqual(f.events[0].fields,{email:'a@example.com',password:'secret',name:'Student'});
+ assert.equal(f.elements.password.value,'');
+});
+test('login updates identity without touching legacy progress',async()=>{
+ const f=fixture();f.mount();
+ f.elements.email.value='a@example.com';f.elements.password.value='secret';
+ f.elements.login.click();await ticks();
+ assert.equal(f.events[0].type,'login');
+ assert.equal(f.elements.login.disabled,true);
+ assert.equal(f.elements.logout.disabled,false);
+ assert.match(f.elements.identity.textContent,/a@example.com/);
+});
+test('logout clears identity and restores input',async()=>{
+ const f=fixture();f.mount();
+ f.elements.login.click();await ticks();f.elements.logout.click();await ticks();
+ assert.equal(f.events.at(-1).type,'logout');
+ assert.equal(f.elements.login.disabled,false);
+ assert.equal(f.elements.logout.disabled,true);
+ assert.equal(f.elements.identity.textContent,'未ログイン');
+});
+test('session restores identity',async()=>{
+ const f=fixture();const panel=f.mount();
+ await panel.refresh();
+ assert.equal(f.elements.logout.disabled,false);
+});
