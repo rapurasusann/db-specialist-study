@@ -9,13 +9,22 @@ const unavailable=()=>Response.json({error:'Service Unavailable'},{status:503,
 
 // This adapter deliberately fails closed until explicitly configured for an
 // approved isolated environment. This flag does not constitute deployment approval.
+// ctx.access exists only when an incoming Cloudflare request was authenticated
+// by Access. It is not propagated through Worker service bindings. The Access
+// policy itself must still be inspected and live-denial-tested before deployment.
 // Test seam accepts a local-only gateway factory; the exported Worker default
 // always uses the real candidate factory. Never read a factory from env/request.
 export function createCs03Entrypoint({createGateway=createCs03WorkerCandidate}={}){
  if(typeof createGateway!=='function')throw Error('CS03_ENTRYPOINT_FACTORY_INVALID');
  return Object.freeze({
-  async fetch(request,env){
+  async fetch(request,env,ctx){
    if(env?.CS03_ISOLATED_GATEWAY_MODE!=='isolated-review-only')return unavailable();
+   // Access context is created by Cloudflare after its policy authenticates
+   // the invocation. An Origin header, request.cf or a config flag is NOT proof.
+   // The audience binds this handler to the intended Access application.
+   const audience=env?.CS03_ACCESS_AUD;
+   if(typeof audience!=='string'||audience.length<8||audience.length>256||
+      ctx?.access?.aud!==audience)return unavailable();
    if(!request?.cf||typeof request.cf!=='object')return unavailable();
    try{
     const handle=createGateway({env});
