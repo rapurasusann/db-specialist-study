@@ -14,6 +14,7 @@ export function mountCs03AccountPanel(root,account,options={}) {
  const listAll=root.querySelector('[data-cs03="list-progress"]');
  const compare=root.querySelector('[data-cs03="compare-progress"]');
  const transfer=root.querySelector('[data-cs03="transfer-progress"]');
+ const exportUnsaved=root.querySelector('[data-cs03="export-unsaved"]');
  const recordStatus=root.querySelector('[data-cs03="record-status"]');
  let busy=false,signedIn=false;
  function updateButtons(){
@@ -27,6 +28,7 @@ export function mountCs03AccountPanel(root,account,options={}) {
   if(listAll)listAll.disabled=busy||!signedIn;
   if(compare)compare.disabled=busy||!signedIn;
   if(transfer)transfer.disabled=busy||!signedIn;
+  if(exportUnsaved)exportUnsaved.disabled=busy||!signedIn;
  }
  function message(text){status.textContent=text;}
  function showUser(user){
@@ -87,6 +89,10 @@ export function mountCs03AccountPanel(root,account,options={}) {
  if(compare && typeof options.onCompareProgress==='function')compare.addEventListener('click',()=>run(async()=>{
   if(recordStatus)recordStatus.textContent='端末内とアカウントの履歴を比較中…';
   const summary=await options.onCompareProgress();
+  if(recordStatus)recordStatus.textContent=summary;
+ }));
+ if(exportUnsaved && typeof options.onExportUnsaved==='function')exportUnsaved.addEventListener('click',()=>run(async()=>{
+  const summary=await options.onExportUnsaved();
   if(recordStatus)recordStatus.textContent=summary;
  }));
  if(load && typeof options.onLoadProgress==='function')load.addEventListener('click',()=>run(async()=>{
