@@ -14,7 +14,8 @@
     "CS03_JWT_ISSUER": "metadata-verified-required",
     "CS03_JWT_AUDIENCE": "metadata-verified-required",
     "CS03_NEON_FUNCTION_URL": "isolated-ownership-unverified",
-    "CS03_GATEWAY_SECRET": "server-secret-only"
+    "CS03_GATEWAY_SECRET": "server-secret-only",
+    "CS03_ACCESS_AUD": "verified-worker-access-audience-required"
   },
   "neonFunction": {
     "CS03_ORIGIN_SECRET": "server-secret-only",
