@@ -4,6 +4,27 @@
 const ORIGIN='https://rapurasusann.github.io';
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const ERROR=(status,error)=>Response.json({error},{status,headers:{'cache-control':'no-store'}});
+// Read as a stream so a missing/forged Content-Length cannot force an unbounded buffer.
+async function readBoundedUtf8(request,maxBytes){
+ if(!request.body)return '';
+ const reader=request.body.getReader();
+ const decoder=new TextDecoder('utf-8',{fatal:true});
+ let bytes=0,text='';
+ try{
+  while(true){
+   const part=await reader.read();
+   if(part.done)break;
+   bytes+=part.value.byteLength;
+   if(bytes>maxBytes){
+    // Cancellation is best-effort and must not stall the rejection.
+    void reader.cancel().catch(()=>{});
+    throw Object.assign(new Error('PAYLOAD_TOO_LARGE'),{code:'PAYLOAD_TOO_LARGE'});
+   }
+   text+=decoder.decode(part.value,{stream:true});
+  }
+  return text+decoder.decode();
+ }finally{reader.releaseLock();}
+}
 export function createCs03TrustedEdgeGateway({verifyToken,fetcher,upstreamUrl,upstreamSecret,getClientIp,clock=Date.now,
  limits={global:60,perIp:20,perUser:10},windowMs=60000,maxInflight=3,sharedQuota}={}){
  if(typeof verifyToken!=='function'||typeof fetcher!=='function'||
@@ -60,8 +81,8 @@ export function createCs03TrustedEdgeGateway({verifyToken,fetcher,upstreamUrl,up
     return result(415,'Unsupported Media Type');
    const length=request.headers.get('content-length');
    if(length!==null&&(!/^\d+$/.test(length)||Number(length)>20000))return result(413,'Payload Too Large');
-   try{body=await request.text();}catch{return result(400,'Bad Request');}
-   if(new TextEncoder().encode(body).length>20000)return result(413,'Payload Too Large');
+   try{body=await readBoundedUtf8(request,20000);}
+   catch(error){return error?.code==='PAYLOAD_TOO_LARGE'?result(413,'Payload Too Large'):result(400,'Bad Request');}
   }
   if(inflight>=maxInflight)return result(429,'Too Many Requests');
   const now=clock(), user=identity.userId.toLowerCase();
