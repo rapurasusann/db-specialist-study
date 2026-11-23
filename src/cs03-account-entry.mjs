@@ -15,6 +15,7 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    const {createCs03StudyHint}=await import('./cs03-study-hint.mjs');
    const {createCs03CrossBrowserSession}=await import('./cs03-cross-browser-session.mjs');
    const {createCs03StudyAutoSync}=await import('./cs03-study-auto-sync.mjs');
+   const {exportCs03UnsavedBackup}=await import('./cs03-unsaved-export.mjs');
    // Only allow the exact isolated Managed Auth instance.
    if(cfg.authUrl!=='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech/cs03_auth_sandbox/auth')
     throw Error('AUTH_TARGET_MISMATCH');
@@ -55,18 +56,7 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
      page.deactivate();auto.logout();
      studyHint.clear();scoped.unbind();clearCs03HistoryView(historyRoot);
     },
-    onExportUnsaved:async()=>{
-     const backup=auto.exportPending();
-     if(!window.confirm('未保存のアカウント履歴 '+Object.keys(backup.records).length+'件を書き出しますか？ 学習内容が含まれるため、ファイルは安全な場所に保管してください。'))return '書き出しをキャンセルしました。';
-     const blob=new Blob([JSON.stringify(backup,null,2)],{type:'application/json'});
-     const url=URL.createObjectURL(blob);
-     try{
-      const link=document.createElement('a');
-      link.href=url;link.download='cs03-unsaved-account-'+new Date().toISOString().slice(0,10)+'.json';
-      document.body.append(link);link.click();link.remove();
-     }finally{setTimeout(()=>URL.revokeObjectURL(url),1000);}
-     return '未保存のアカウント記録をファイルに書き出しました。サーバーへ再送信・自動復元はしていません。';
-    },
+    onExportUnsaved:async()=>exportCs03UnsavedBackup({auto}),
     onListProgress:async()=>{
      clearCs03HistoryView(historyRoot);
      const listing=await scoped.list();
