@@ -109,7 +109,7 @@ showQuestion=function(){
   const choiceBlock=mk('section','pm2-study-block');
   choiceBlock.append(mk('h3','','設問選択部'));
   const choices=mk('div','pm2-study-choices');
-  const questionBlock=mk('section','pm2-study-block');questionBlock.append(mk('h3','','選択された設問の問題文（要約）'));
+  const questionBlock=mk('section','pm2-study-block');questionBlock.append(mk('h3','','選択された設問の問題文（原本条件に沿う要約・未逐語校正）'));
   const qcopy=mk('div','pm2-study-copy');questionBlock.append(qcopy);
   const answerBlock=mk('section','pm2-study-block');answerBlock.append(mk('h3','','選択された設問の回答欄'));
   const label=mk('label','',''),ans=mk('textarea','pm2-subanswer-input');
@@ -120,7 +120,7 @@ showQuestion=function(){
   const questionSections=d.sections.slice(-3);
   const figureMap={1:1,2:0,3:3};
   function renderQuestion(){
-    qcopy.textContent=questionSections[selected-1].body;
+    qcopy.textContent=window.PM1Q2QuestionAudit?.[String(selected)]||questionSections[selected-1].body;
     const saved=rec().subAnswers;
     ans.value=saved&&typeof saved==='object'&&typeof saved[String(selected)]==='string'?saved[String(selected)]:'';
     label.textContent=`設問${selected}の回答`;ans.setAttribute('aria-label',`設問${selected}の回答`);
