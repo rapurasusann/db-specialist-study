@@ -61,3 +61,33 @@ test('invalid PUT payload is rejected before durable quota and upstream are bill
  assert.equal(calls.quota,1);
  assert.equal(calls.upstream,1);
 });
+
+test('streamed oversized PUT stops before durable quota even without Content-Length',async()=>{
+ const calls={upstream:0,quota:0};
+ const gateway=makeGateway({consume:async()=>{calls.quota++;return true;}},calls);
+ let produced=0;
+ const body=new ReadableStream({pull(controller){
+  produced++;
+  controller.enqueue(new Uint8Array(4096).fill(65));
+  if(produced===20)controller.close();
+ }});
+ const request=new Request('https://gateway.invalid/progress',{method:'PUT',
+  headers:{origin:ORIGIN,authorization:'Bearer valid-a-test-token','content-type':'application/json'},
+  body,duplex:'half'});
+ assert.equal(request.headers.get('content-length'),null);
+ const response=await gateway(request);
+ assert.equal(response.status,413);
+ assert.equal(calls.quota,0);
+ assert.equal(calls.upstream,0);
+ assert.ok(produced<20,'should stop reading before all chunks are buffered');
+});
+test('invalid UTF-8 PUT is rejected without consuming durable quota',async()=>{
+ const calls={upstream:0,quota:0};
+ const gateway=makeGateway({consume:async()=>{calls.quota++;return true;}},calls);
+ const request=new Request('https://gateway.invalid/progress',{method:'PUT',
+  headers:{origin:ORIGIN,authorization:'Bearer valid-a-test-token','content-type':'application/json'},
+  body:new Uint8Array([0xc3,0x28])});
+ assert.equal((await gateway(request)).status,400);
+ assert.equal(calls.quota,0);
+ assert.equal(calls.upstream,0);
+});
