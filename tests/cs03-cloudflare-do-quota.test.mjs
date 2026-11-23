@@ -7,6 +7,7 @@ function fakeStorage(){
  const sql={exec(query,...args){
   if(query.startsWith('CREATE TABLE'))return {toArray:()=>[]};
   const [key,bucket]=args, id=JSON.stringify([key,bucket]);
+  if(query.startsWith('DELETE')){const cutoff=args[0];for(const id of data.keys())if(JSON.parse(id)[1]<cutoff)data.delete(id);return {toArray:()=>[]};}
   if(query.startsWith('SELECT'))return {toArray:()=>data.has(id)?[{count:data.get(id)}]:[]};
   if(query.startsWith('INSERT')){data.set(id,(data.get(id)??0)+1);return {toArray:()=>[]};}
   throw Error('UNEXPECTED_SQL');
@@ -38,4 +39,22 @@ test('missing transaction or malformed quota request rejects',()=>{
 test('storage failure is thrown and must be caught by the outer gateway as 503',()=>{
  const s=fakeStorage();s.sql.exec=()=>{throw Error('STORAGE_UNAVAILABLE')};
  assert.throws(()=>consumeCs03SqliteQuota(s,input()),/STORAGE_UNAVAILABLE/);
+});
+
+test('older quota windows are pruned after a successful request',()=>{
+ const storage=fakeStorage();
+ assert.equal(consumeCs03SqliteQuota(storage,input(10000)),true);
+ assert.equal(consumeCs03SqliteQuota(storage,input(70000)),true);
+ assert.equal(storage.data.size,6);
+ assert.equal(consumeCs03SqliteQuota(storage,input(130000)),true);
+ assert.equal(storage.data.size,6);
+ assert.ok([...storage.data.keys()].every(id=>JSON.parse(id)[1]>=1));
+});
+test('quota keys must match exact trusted key formats',()=>{
+ const storage=fakeStorage();
+ for(const invalid of ['cs03:global:extra','cs03:user:spoof','cs03:ip:','cs03:ip:a b']){
+  const forged=keys.map((k,i)=>i===0?{...k,key:invalid}:k);
+  assert.throws(()=>consumeCs03SqliteQuota(storage,{...input(),keys:forged}),/QUOTA_INVALID/);
+ }
+ assert.equal(storage.transactions,0);
 });
