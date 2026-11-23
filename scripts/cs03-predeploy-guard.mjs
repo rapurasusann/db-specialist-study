@@ -14,7 +14,12 @@ export function inspectCs03Deployment(){
   blockers.push('NATIVE_FUNCTION_GATEWAY_GUARD_UNVERIFIED');
  if(!/authorization:'Bearer '/.test(clientCode))
   blockers.push('CLIENT_JWT_HEADER_UNVERIFIED');
- if(!existsSync(resolve(root,'server/cs03-trusted-edge-gateway.mjs')))
+ // Existence of a local prototype never proves a trusted, deployable gateway.
+ // The prototype explicitly declares its per-process limits unsafe for deployment.
+ const gatewayPath='server/cs03-trusted-edge-gateway.mjs';
+ if(!existsSync(resolve(root,gatewayPath)) ||
+    /NOT SAFE TO DEPLOY/.test(read(gatewayPath)) ||
+    !existsSync(resolve(root,'server/cs03-gateway-production-adapter.mjs')))
   blockers.push('TRUSTED_GATEWAY_NOT_IMPLEMENTED');
  if(!existsSync(resolve(root,'docs/CS03_GATEWAY_RATE_LIMIT_ACCEPTANCE.md')))
   blockers.push('GATEWAY_RATE_LIMIT_ACCEPTANCE_MISSING');
