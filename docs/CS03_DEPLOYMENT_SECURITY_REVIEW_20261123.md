@@ -71,3 +71,12 @@
 操作者はコミット `fc632c07372f8892757cecb9da0cb2c1464a4a2d` を開発PCでチェックアウトし、`node --check src/cs03-account-entry.mjs` および `node --test tests/cs03-draft-store-reload.test.mjs tests/cs03-study-auto-sync.test.mjs` を実行した。報告された結果は **22 tests / 22 pass / 0 fail**、`CS03_DRAFT_PERSISTENCE_TEST_PASS`。失敗時の端末内チェックポイント、再読込後の確認待ち復元、アカウント分離、破損データ拒否、端末内保存失敗時の送信停止、明示破棄を含む。
 
 この範囲は**受入済み**とし、関係する実装変更がない限り同じテストを繰り返さない。**残課題**は同一アカウントを開いた複数タブでの同時更新と端末ストレージの意図せぬ消去・容量制限への対処。端末内チェックポイントはlocalStorageに平文で保存されるため、端末共有や同一オリジンの他のスクリプトに対する秘匿を保証しない。独立したJSONバックアップが必要。Cloudflare/Neon実経路と公開可否は引き続き **NO-GO**。
+
+
+## 2026-11-23 同一アカウント複数タブの単一編集者制御
+
+**候補実装・未受入（ローカルテスト待ち）**：Web Locks API（exclusive, ifAvailable）で同一オリジン・同一アカウントUUIDの編集者を**同時に1タブだけ**に制限する。2つ目のタブは `CS03_ACCOUNT_OPEN_IN_ANOTHER_TAB` でアカウント編集モードに入れない。別アカウントには別ロックを使用。ログアウト時やタブ終了時にはブラウザ管理のロックが解放される。Web Locks非対応環境では危険なlocalStorage自作リースで代用せず、プレビューを安全側で停止。
+
+変更：`src/cs03-tab-ownership.mjs` のロック管理、`src/cs03-study-auto-sync.mjs` のログイン時獲得・失敗時/ログアウト時解放、`src/cs03-account-entry.mjs` の既定OFFプレビュー配線。専用検証：`tests/cs03-tab-ownership.test.mjs`（同一アカウントの多重ログイン拒否・既存下書き保持、別アカウントの独立動作、API未対応で停止、認証後失敗時の解放）。
+
+この仕組みは**2タブ同時編集を許可する方式ではない**。同一ブラウザ同一オリジンの更新済みコードを対象とするもので、異なるブラウザ/端末、旧バージョンのページ、ブラウザプロファイルをまたぐ単一編集者制御ではない。異なる端末間はサーバーのrevision競合検出が必要。Web Locksの実ブラウザ試験と全般的な公開受入は未完了。Cloudflare/Neon実デプロイ禁止とNO-GOを維持する。
