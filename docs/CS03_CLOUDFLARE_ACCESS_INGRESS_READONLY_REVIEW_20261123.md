@@ -78,3 +78,9 @@ Cloudflare Zero Trustのプラン選択画面のユーザー提出スクリー�
 Zero Trust Free有効化後に表示されたCloudflare OneのDashboard（Discover）をユーザーのスクリーンショットで確認。アカウントは**Certification-Study**、右側Account detailsに**Plan: Zero Trust Free**、**User permissions: Super Administrator - All Privileges**、Team nameは生成済みと表示される。Recommendationsには**Protect an application with Access**が未完了項目として表示され、画面にはAccessで保護したアプリの設定完了・許可ルールの証拠は見えない。**Accessが設定済みとは判定しない**。アカウント固有team nameの文字列は記録しない。
 
 **次に行うこと**：Recommendationsの**Protect an application with Access**を開いて画面内容・アプリ種別を読み取る（設定保存・ポリシー有効化なし）。Cloudflare WorkerへのAccess統合はWorker本体・課金・入口が承認されるまで実際には作らない。他の推薦項目（VPN、WARP、DNSフィルタ、トンネルなど）は本工程対象外。**Zero Trust Free契約完了、Accessポリシー未確認、実クラウド配置・一般公開NO-GO**。
+
+## 11. Cloudflare Access Applications画面（ユーザー提出：2026-11-23）
+
+ユーザー提出画面を確認。対象アカウントはCertification-Study。左のZero Trust > Access controls > Applicationsが選択され、画面上部には**Create new application**、本文には**Add an application**がある。Self-hosted / SaaS / Private network / Infrastructureの必要条件の案内が表示され、下部には**Add an identity provider (IdP)**、**Create an Access rule group**の推奨表示がある。**既存アプリの一覧は見えず、Accessアプリ未作成と思われるが、単一画面だけでは別管理画面に構成が無いことまでは断定できない**。Worker全体を保護する設定が可能かどうかも、この画面では未検証。
+
+**次の手順**：Create new applicationをクリックして種類選択画面を**確認するだけ**。Applicationを作成・保存しない。Identity providerの追加、Access policy変更、Worker公開、支払い方法追加、Neonの実配置は個別承認が必要。現時点の公開判定**NO-GO**。
