@@ -75,3 +75,9 @@
 
 ## 7. 完了条件
 この運用案が確定する条件は、記述の整合と**ローカル否定系テスト**が合格し、実際のCloudflareとNeonの設定変更箇所を独立に監査したこと。現時点では「運用案を作成した」だけで**実運用の停止・切戻し訓練は未実施**。本番公開NO-GOを維持する。
+
+## 8. 開発PCによるローカル安全停止テスト結果（4/4 PASS）
+
+2026-11-23、開発PCで commit `8e4991bfd0293f222382167092851cb57ff8f909` をチェックアウトし、`node --test tests/cs03-incident-runbook.test.mjs` を実行。操作者が提示したログは **4 tests / 4 pass / 0 fail**、`CS03_INCIDENT_RUNBOOK_TEST_PASS`。確認範囲は手順書中のNO-GO／データ保護・安全停止条件の存在、公開プレビューOFFとデプロイ禁止条件、候補Workerが隔離モード未設定またはCloudflare request contextなしの場合に503で拒否すること。
+
+**未検証**：Cloudflare実ルートのfail-closed設定と上限超過、実Worker/DO/Neon Functionsの停止・復旧、利用量・課金モードの現時点の証拠。これらの外部ゲートが未完了であるため、公開・実クラウド配置は引き続き **NO-GO**。この4件は関連コード・手順書に変更がない限り再実行不要。
