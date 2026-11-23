@@ -1,13 +1,21 @@
 // Connects study UI events with an authenticated account session.
 // A caller must explicitly enter account mode and open a remote question before edits.
 // No references to legacy localStorage or unowned device progress.
-export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}}){
+export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{},draftStore=null}){
  if(!session||!['start','open','save','stop','status'].every(k=>typeof session[k]==='function') ||
- typeof onRemote!=='function'||typeof onStatus!=='function')throw Error('AUTO_SYNC_DEPENDENCIES_REQUIRED');
+ typeof onRemote!=='function'||typeof onStatus!=='function'||
+ (draftStore!==null&&(!draftStore||typeof draftStore.load!=='function'||typeof draftStore.replace!=='function')))
+ throw Error('AUTO_SYNC_DEPENDENCIES_REQUIRED');
  const ID=/^20\d{2}:(am1|am2|pm1|pm2):(?:[1-9]|[1-9]\d|100)$/;
  let epoch=0,active=false,owner=null;
- const opened=new Set(),pending=new Map(),queue=new Map(),blocked=new Set();
+ const opened=new Set(),pending=new Map(),queue=new Map(),blocked=new Set(),journal=new Map();
  const copy=value=>structuredClone(value);
+ const entries=map=>Object.fromEntries(map);
+ // Persist a candidate copy BEFORE accepting an edit or deleting an acknowledged draft.
+ function updateJournal(next){
+  if(draftStore)draftStore.replace(owner,entries(next));
+  journal.clear();for(const [id,row] of next)journal.set(id,row);
+ }
  function validate(id,data){
   if(!ID.test(id))throw Error('INVALID_RECORD');
   if(data!==undefined&&(!data||typeof data!=='object'||Array.isArray(data)))throw Error('INVALID_RECORD');
@@ -23,10 +31,19 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
    if(!listing||typeof listing.userId!=='string'||!listing.records||typeof listing.records!=='object')
     throw Error('INVALID_ACCOUNT_SNAPSHOT');
    owner=listing.userId;active=true;
+   // Restored drafts are blocked: NEVER replay them automatically after a reload.
+   const recovered=draftStore?.load(owner);
+   if(recovered){
+    const records=Object.entries(recovered.records);
+    for(const [id,row] of records)validate(id,row);
+    updateJournal(new Map(records));
+    for(const [id,row] of records){pending.set(id,copy(row));blocked.add(id);}
+    onStatus('recovered',records.length);
+   }
    onStatus('ready');
    return copy(listing);
   }catch(e){
-   if(mark===epoch){active=false;owner=null;session.stop();}
+   if(mark===epoch){active=false;owner=null;pending.clear();blocked.clear();journal.clear();session.stop();}
    throw e;
   }
  }
@@ -48,8 +65,11 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
   const mark=epoch;current(mark);
   if(!opened.has(id))throw Error('REMOTE_READ_REQUIRED');
   if(blocked.has(id))throw Error('CONFLICT_REVIEW_REQUIRED');
-  // Snapshot at the time of editing; callbacks must not mutate queued values.
-  pending.set(id,copy(data));
+  // Checkpoint before the first network attempt. Fail closed on storage errors.
+  const row=copy(data),candidate=new Map(journal);
+  candidate.set(id,row);
+  updateJournal(candidate);
+  pending.set(id,row);
   onStatus('pending',id);
   if(!queue.has(id)){
    const running=(async()=>{
@@ -62,11 +82,14 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
      try{
       await session.save(id,copy(next));
       current(mark);
+      if(journal.get(id)===next){
+       const remaining=new Map(journal);remaining.delete(id);updateJournal(remaining);
+      }
       onStatus('saved',id);
      }catch(e){
       if(mark===epoch){
        blocked.add(id);
-       pending.set(id,next);
+       if(!pending.has(id))pending.set(id,next);
        onStatus('blocked',id);
       }
       throw e;
@@ -111,8 +134,8 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
    if(totalBytes>1024*1024)throw Error('BACKUP_TOO_LARGE');
    snapshot.push([id,safe]);
   }
-  // No asynchronous step between validation and atomic in-memory installation.
-  // Block writes/remote refresh until the operator reviews these drafts.
+  // Atomically checkpoint before accepting imported drafts, never auto-submit.
+  updateJournal(new Map(snapshot));
   for(const [id,data] of snapshot){pending.set(id,data);blocked.add(id);}
   for(const [id] of snapshot)onStatus('blocked',id);
   return Object.freeze({restored:snapshot.length,accountId:owner,requiresReview:true});
@@ -127,6 +150,7 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
   if(!ids.length||ids.length!==questionIds.length||
      ids.some((id,i)=>id!==questionIds[i])||blocked.size!==ids.length||
      ids.some(id=>!blocked.has(id)))throw Error('PENDING_DRAFTS_CHANGED');
+  updateJournal(new Map());
   for(const id of ids){pending.delete(id);blocked.delete(id);opened.delete(id);}
   for(const id of ids)onStatus('discarded',id);
   return Object.freeze({discarded:ids.length});
@@ -134,9 +158,9 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
  function logout(){
   // Never discard an unacknowledged write. The UI must resolve or explicitly
   // export account drafts before signing out.
-  if(pending.size||blocked.size||queue.size)throw Error('UNSAVED_ACCOUNT_PROGRESS');
+  if(pending.size||blocked.size||queue.size||journal.size)throw Error('UNSAVED_ACCOUNT_PROGRESS');
   ++epoch;active=false;owner=null;
-  opened.clear();pending.clear();blocked.clear();queue.clear();
+  opened.clear();pending.clear();blocked.clear();queue.clear();journal.clear();
   session.stop();onStatus('signed-out');
  }
  function state(){return Object.freeze({active,userId:owner,pending:[...pending.keys()],blocked:[...blocked],inFlight:[...queue.keys()]});}
