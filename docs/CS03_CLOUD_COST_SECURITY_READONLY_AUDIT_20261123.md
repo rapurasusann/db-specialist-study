@@ -108,3 +108,9 @@ Cloudflare公式資料：
 **テスト追加・開発PCでの実行待ち**：`tests/cs03-cloudflare-account-guard.test.mjs` の5件。合格した場合でも独立の`ISOLATED_DEPLOYMENT_APPROVAL_MISSING`、`GATEWAY_RATE_LIMIT_ACCEPTANCE_MISSING` を維持し、デプロイを許可しない。**注意**：このガードは本リポジトリの検証経路のみを対象とし、直接`wrangler deploy`や別リポジトリの操作、ブラウザでの手動配置を技術的に禁止できるわけではない。将来の配置時は明示承認・対象アカウント確認・権限最小化が別途必要。
 
 作業中にCloudflare/Neon APIへの書込み、本番設定変更、有料契約、GitHub Actionsは実施していない。公開判定は引き続き**NO-GO**。
+
+## 12. 専用Cloudflareアカウント固定ガードの開発PC試験結果（5/5 PASS）
+
+操作者が開発PCで commit `632a4fa18ff2164b305b0d31313c0ff7dae88ea3` をチェックアウトし、`node --test tests/cs03-cloudflare-account-guard.test.mjs` を実行。出力は **5 tests / 5 pass / 0 fail** および `CS03_CLOUDFLARE_ACCOUNT_TEST_PASS`。専用CloudflareアカウントIDのみ受理すること、ID欠落／別ID／形式不正／競合を拒否すること、Wranglerレビュー構成で異なるアカウントや公開routeを拒否すること、正しいIDでもデプロイ承認・レート制限受入不足がNO-GOとして残ることを確認した。
+
+合格範囲は**GitHubのCS-03開発コードによるローカルチェック**。Cloudflare管理画面での手動操作、直接のWrangler実行、他リポジトリからの配置まで技術的に排除するものではない。Cloudflareの実クラウド経路／Neon Functions配置は未実施、Free枠上限超過時の実経路fail-closed受入も未完了。**NO-GOを維持**する。関連コードが変更されない限り同じ5件を繰り返さない。
