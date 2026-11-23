@@ -37,7 +37,7 @@ showQuestion=function(){
     const group=pageGroups[position];
     const exact=window.PM1Q2SourcePages?.[String(group.page)];
     copy.textContent=exact||group.indices.map(i=>d.sections[i].title+'\n'+d.sections[i].body).join('\n\n');
-    status.textContent=`${position+1} / ${pageGroups.length}：原本${group.page}ページ${exact?"の転記候補（未校正）":"に関係する要約"}`;
+    status.textContent=`${position+1} / ${pageGroups.length}：原本${group.page}ページ（${window.PM1Q2SourcePageKinds?.[String(group.page)]||(exact?"転記候補・未校正":"関連する要約")}）`;
     openOriginal.textContent=`原本${group.page}ページを下の問題冊子で表示`;
     prev.disabled=position===0;next.disabled=position===pageGroups.length-1;
   }
