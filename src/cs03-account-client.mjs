@@ -39,6 +39,8 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
   if(latest.id!==userId)throw appError('ACCOUNT_CHANGED');
   const data=checkResult(await authClient.token());
   if(typeof data?.token!=='string'||!data.token)throw appError('TOKEN_UNAVAILABLE');
+  // Auth can switch accounts while token() is in flight.
+  if((await session()).id!==userId)throw appError('ACCOUNT_CHANGED');
   return data.token;
  }
  async function request(userId,method,path,body){
@@ -49,12 +51,15 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
    method,headers,cache:'no-store',credentials:'omit',redirect:'error',
    ...(body!==undefined?{body:JSON.stringify(body)}:{})
   });
+  // Never process an old account's response after an account switch.
+  if((await session()).id!==userId)throw appError('ACCOUNT_CHANGED');
   if(!response.ok) {
    if(response.status===401)throw appError('SIGN_IN_REQUIRED');
    if(response.status===409)throw appError('REVISION_CONFLICT');
    throw appError('PROGRESS_API_FAILED');
   }
   const parsed=await response.json();
+  if((await session()).id!==userId)throw appError('ACCOUNT_CHANGED');
   return parsed?.data;
  }
  function readLocal(userId){
@@ -86,6 +91,7 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
   if(!RECORD_ID.test(questionId))throw appError('INVALID_RECORD');
   const examCode='db';
   const value=await request(user.id,'GET','progress?examCode='+examCode+'&questionId='+encodeURIComponent(questionId));
+  if((await session()).id!==user.id)throw appError('ACCOUNT_CHANGED');
   if(value){
    const local=readLocal(user.id);
    local[questionId]={data:value.data,revision:value.revision,updatedAt:value.updated_at};
@@ -137,6 +143,7 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
    await pull(questionId);
    throw appError('REVISION_CONFLICT_REFRESHED');
   }
+  if((await session()).id!==user.id)throw appError('ACCOUNT_CHANGED');
   local[questionId]={data:result.data,revision:result.revision,updatedAt:result.updated_at};
   writeLocal(user.id,local);
   return result;
