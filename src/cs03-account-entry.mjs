@@ -17,6 +17,7 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    const {createCs03StudyAutoSync}=await import('./cs03-study-auto-sync.mjs');
    const {exportCs03UnsavedBackup}=await import('./cs03-unsaved-export.mjs');
    const {restoreCs03UnsavedBackup}=await import('./cs03-unsaved-restore.mjs');
+   const {attachCs03UnsavedNavigationGuard}=await import('./cs03-unsaved-navigation-guard.mjs');
    // Only allow the exact isolated Managed Auth instance.
    if(cfg.authUrl!=='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech/cs03_auth_sandbox/auth')
     throw Error('AUTH_TARGET_MISMATCH');
@@ -27,6 +28,7 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    root.hidden=false;
    const scoped=createCs03ScopedProgress({account:client});
    const auto=createCs03StudyAutoSync({session:createCs03CrossBrowserSession({account:client})});
+   attachCs03UnsavedNavigationGuard({auto,windowRef:window});
    const page=window.CS03_STUDY_PAGE;
    if(!page)throw Error('STUDY_PAGE_BRIDGE_REQUIRED');
    const historyRoot=root.querySelector('[data-cs03="history-list"]');
