@@ -68,6 +68,21 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
      return result.cancelled?'復元をキャンセルしました。':
       'バックアップ '+result.restored+'件を確認待ちとして読み込みました。サーバーには送信していません。';
     },
+    onDiscardUnsaved:async()=>{
+     const current=auto.state();
+     if(!current.active||current.inFlight.length||!current.pending.length)
+      throw Error('NO_REVIEW_DRAFTS');
+     const ids=[...current.pending].sort();
+     // Explicitly warn that drafts only exist in memory. No automatic upload.
+     const accepted=window.confirm(
+      ids.length+'件の未保存記録を、この画面から破棄しますか？\\n'+
+      '元のJSONバックアップを安全に保管したことを確認してください。'+
+      'バックアップがない場合、記録は失われます。'+
+      'Neonの保存済みデータと端末内学習履歴は削除されません。');
+     if(!accepted)return '確認待ち記録の破棄をキャンセルしました。';
+     const result=auto.discardPending({userId:current.userId,questionIds:ids});
+     return result.discarded+'件の確認待ち記録をこの画面から破棄しました。サーバーの記録は変更していません。';
+    },
     onListProgress:async()=>{
      clearCs03HistoryView(historyRoot);
      const listing=await scoped.list();
