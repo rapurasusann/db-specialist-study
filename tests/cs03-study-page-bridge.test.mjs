@@ -66,3 +66,21 @@ test('main study put routes account mode without calling legacy save and restore
  assert.match(html,/src="src\/cs03-study-page-bridge\.js"/);
  assert.match(html,/アカウント表示中は端末内履歴を復元できません/);
 });
+
+test('manual transfer continues to read only device history while account mode is active',()=>{
+ const f=fixture();
+ const selected=readFileSync(new URL('../src/cs03-selected-question.js',import.meta.url),'utf8');
+ runInNewContext(selected,f.context);
+ f.bridge.activate({userId:'a',records:{'2025:am2:4':{data:{level:'mastered'}}}},f.auto);
+ assert.equal(f.context.window.CS03_SELECTED_QUESTION.readLegacy('2025:am2:4'),null);
+ assert.equal(f.context.window.CS03_SELECTED_QUESTION.readLegacySnapshot()['2025:am2:1'].level,'mastered');
+ assert.equal(f.context.window.CS03_SELECTED_QUESTION.readLegacySnapshot()['2025:am2:4'],undefined);
+ f.bridge.deactivate();
+ assert.equal(f.context.window.CS03_SELECTED_QUESTION.readLegacySnapshot()['2025:am2:1'].level,'mastered');
+});
+test('device record snapshots cannot mutate original device history',()=>{
+ const f=fixture();
+ const data=f.bridge.readDeviceRecord('2025:am2:1');
+ data.level='review';
+ assert.equal(f.original['2025:am2:1'].level,'mastered');
+});
