@@ -110,7 +110,7 @@ test('entrypoint denies quota excess before Neon and still fails closed when mod
  assert.equal(h.seen.neon,2);
 });
 
-test('real browser account client reaches Worker entrypoint, shared DO, native Function; accounts remain isolated',async()=>{
+test('browser account client reaches JWT-only Worker, shared DO, native Function; accounts remain isolated',async()=>{
  const h=setup({perUserLimit:10});
  const userB='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
  async function account(userId){
@@ -127,10 +127,12 @@ test('real browser account client reaches Worker entrypoint, shared DO, native F
     const headers=new Headers(init.headers);
     assert.equal(headers.has('x-secret'),false,'the browser must not know gateway secret');
     assert.equal(init.credentials,'omit');
+    assert.equal(headers.has('cookie'),false);
+    assert.equal(headers.has('cf-access-client-secret'),false);
     headers.set('origin',ORIGIN);headers.set('cf-connecting-ip','192.0.2.55');
     const r=new Request(url,{method:init.method,headers,body:init.body});
     Object.defineProperty(r,'cf',{value:{colo:'NRT'}});
-    return h.entry.fetch(r,h.env,h.accessContext);
+    return h.browserEntry.fetch(r,h.env);
    }});
  }
  const a=await account(USER),b=await account(userB),question='2026:am2:100';
