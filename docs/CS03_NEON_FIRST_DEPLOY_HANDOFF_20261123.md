@@ -34,3 +34,22 @@
 ローカル生成物：`C:\\Users\\kouki\\AppData\\Local\\Temp\\cs03-function-candidate-L3zQgb\\index.mjs`。SHA-256：`ada949602f4c8673ac0118a526616b3cacd8f13e400c9865908485b458906619`。パスは開発PCの一時ファイルであり、GitHub/Neonへの成果物アップロードは**未実施**。出力フラグはスクリプトの設計意図・環境変数注入待ちを表し、生成バイナリに秘密が絶対に存在しないことの独立監査ではない。CLIの終了は正常で、関係依存・サイズチェックを通過している。
 
 **次の判断**：Neon隔離Functionの実配備を希望する場合、対象branch・コードSHA・上限・秘密の投入方法（コンソールや履歴に平文を残さない）・緊急停止方法を確認し、実作成操作だけを明示承認する。Cloudflare Worker/DO配備や公開を同時に認可しない。実クラウド配置はNO-GO維持。
+
+## 7. 初回配備時の秘密・停止方式を確定（2026-11-23）
+
+Neon公式 `https://neon.com/docs/compute/functions/deploy` と `https://neon.com/docs/compute/functions/environment-variables`、接続ツールの実インターフェースを確認した。**初回配置にはZIP bundleが必須**、ランタイムは`nodejs24`、環境変数はデプロイに紐付く。以後はAPIの`environment`だけの更新が可能。個別Function削除操作も`project_id`・`branch_id`・`slug`を全て指定して行えるが、削除は破壊的であり別途承認が必要。
+
+**秘密の取り扱い：** このチャットのNeon管理ツール`deploy_function`は環境変数のJSON文字列を引数に受けるため、実DBパスワード・共有秘密をチャット／ツール呼出し引数に含めることになる。**本案件ではこの経路で実秘密を渡さない**。Neon CLIの`--env KEY=VALUE`もコマンド履歴/プロセス引数に露出するおそれがあるため秘密投入には使わない。安全な手段は**開発PC側でログ・履歴・Git管理外で秘密値を扱う、Neon公式APIへのTLS接続処理**（API認証キー/秘密をチャットへ送らない、変数の値をログしない、エラー時には値をマスクする、使用後にメモリ/一時ファイルを最小限にする）を検討し、運用者が具体的に承認した後のみ実施。Neonコンソール上の秘密入力欄が存在するなら、それを直接使えるか別途確認。**単に値をChatGPTに送って登録してもらう方法は採用しない**。
+
+**最小の2段階作成方針（まだ未実施）**：
+1. **隔離Functionのコードのみ初回配置**：隔離project`quiet-mouse-39990305`・非default branch`br-snowy-truth-a162pmdt`・slug候補`cs03progress`・Node24・検証済みSHA256`ada949602f4c8673ac0118a526616b3cacd8f13e400c9865908485b458906619`のソースをZIPに入れて作成。**`CS03_ORIGIN_SECRET`などの秘密をまだ登録しない**。現在のFunction実装はOriginが正しい`/`又は`/progress`へのリクエストでもsecret欠落なら401（DB runtime生成前）。これにより最初から認証済みの実リクエストを処理できない状態で起動できる。ただしインターネットから呼出URLにアクセス可能になり、リクエスト数の消費やDoS面が増える。**初回作成操作にも明示承認が必要**。
+2. **secret付きの最小実接続**：Cloudflare側の認証済み・Accessで保護された入口とDO quotaの実設定が完了し、下流への通信遮断策がある状態になってから、**開発PCの秘密を秘匿した手段による環境変数の追加デプロイを別承認**で行う。Neonは自動注入`DATABASE_URL`を使わず、専用DBロールの`CS03_TEST_DATABASE_URL`を指定。Function直URLは共有秘密とJWTで常時保護する。
+
+**停止・失効の具体手順**：
+- 機能停止の第一手：Cloudflare Access/Workerの当該試験経路を閉じる（クラウド間通信・本番プレビューを停止）。**Neonの直URLは残る**ため、これだけを停止完了としない。
+- Neon側：`cs03progress`の**server secretを無効化**（APIで既存Functionの環境変数を空値/除去する構成更新を検証）または**Functionそのものを削除**。後者はAPI/接続ツール`delete_function`が使えるが**別途、対象を明示して承認**を得る。Neon側の状態・公開URL 401/404・invocations、Cloudflareへの影響を確認して停止完了。既存DB/Auth/branch、他アプリは削除しない。
+- エラーや異常時に`fail open`へ切り替える、秘密検証を外す、別DBに迂回する、支払方法を登録するなどの回避は絶対しない。
+
+**未完了の証拠**：開発PCで生成した`index.mjs`はユーザーPCのTempにあり、こちらのツールはそのファイルの実バイトを取得していない。**ログに示されたSHAと実際に配備するZIPの一致・署名なし成果物の真正性は配置直前に照合する必要がある**。秘密の開発PC側への安全投入・Function API権限、初回デプロイ費用・実プラン上限と直接公開URLの扱い、緊急停止/削除操作の権限を確認するまでは**実配置NO-GO**。
+
+**次の決定**：この2段階のうち、**秘密なし・DBに接続できない初回Functionを隔離branchに作成することだけ**を、利用量・直URLの発生・停止方法・成果物一致の確認後に運営者へ明示して承認確認する。承認してもCloudflare Worker/DOの作成、秘密登録、公開、本番main操作の承認にはならない。
