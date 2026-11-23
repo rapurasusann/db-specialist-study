@@ -1,10 +1,11 @@
 // CS-03 isolated server runtime. Never import into a browser or deploy to main.
 // All settings are supplied by the server's private environment.
 import pg from 'pg';
-import {createRequire} from 'node:module';
 import {createNeonJwtVerifier} from '../src/neon-jwt-verifier.mjs';
-const require=createRequire(import.meta.url);
-const {createProgressHandler}=require('../src/progress-api.js');
+// Static CJS import lets esbuild include the progress API and its access layer.
+// Dynamic createRequire() would leave a relative require outside the Function bundle.
+import progressApi from '../src/progress-api.js';
+const {createProgressHandler}=progressApi;
 const ISOLATED_BRANCH='br-snowy-truth-a162pmdt';
 const TEST_DB='cs03_auth_sandbox';
 const ISSUER='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech';
