@@ -5,6 +5,7 @@ import {createNeonJwtVerifier} from '../src/neon-jwt-verifier.mjs';
 import {createCs03TrustedEdgeGateway} from './cs03-trusted-edge-gateway.mjs';
 import {createCs03SharedQuota} from './cs03-shared-quota.mjs';
 import {createCs03DurableObjectQuotaTransport} from './cs03-cloudflare-do-transport.mjs';
+import {createCs03QuotaObjectHandler} from './cs03-cloudflare-do-handler.mjs';
 
 const ERROR=()=>Response.json({error:'Service Unavailable'},{status:503,headers:{'cache-control':'no-store'}});
 const ipPattern=/^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$|^[0-9a-fA-F:]{2,64}$/;
@@ -42,4 +43,14 @@ export function createCs03WorkerCandidate({env,fetcher=fetch}={}){
  return async request=>{
   try{return await gateway(request);}catch{return ERROR();}
  };
+}
+
+// Matches the review-only SQLite DO class_name; intentionally no Worker default export.
+// This class is NOT public routing approval and MUST remain off live traffic.
+export class Cs03QuotaNotDeployed {
+ constructor(ctx){
+  if(!ctx?.storage)throw Error('CS03_QUOTA_STORAGE_REQUIRED');
+  this.handle=createCs03QuotaObjectHandler({storage:ctx.storage});
+ }
+ fetch(request){return this.handle(request);}
 }
