@@ -33,3 +33,17 @@ https://developers.cloudflare.com/durable-objects/platform/limits/
 - Do not deploy the local test harness or any test signing key.
 - Do not rename this document to a signed-off acceptance or approval file.
 - Never deploy or purchase services automatically. The next action is a **read-only account-plan / consumption audit** followed by completing an isolated production adapter.
+
+## Free-tier overflow safety and cost acceptance (2026-11-23 review)
+- **Cloudflare dashboard evidence supplied by the operator:** Workers plan **Free ($0)**, 0/100,000 Workers requests in the observed daily dashboard, Durable Objects showing no existing objects/usage at the time of inspection. These are point-in-time observations, not evidence that usage will remain zero or that the project is approved for deployment.
+- **Do not rely on Wrangler `limits.cpu_ms` as a Free-plan spending cap.** Cloudflare documents user-configured CPU limits for the Standard Usage Model; the Free-plan 10 ms CPU limit is a platform quota, not an independently verified cost-protection setting. The review template deliberately omits `limits`.
+- **Do not assume `workers_dev: false`, `preview_urls: false`, or an absent `route` proves Cloudflare's fail-closed overage behavior.** They prevent public candidate exposure in the review template, but the fail mode must be checked on the **actual deployed route** before it can serve traffic.
+- On Cloudflare Worker **routes**, Free-tier daily quota exhaustion may **fail open (bypass Worker)** or **fail closed (1027)**. For any security gateway route, only **fail closed** is acceptable. Verify the corresponding route setting in the dashboard; record the route pattern, fail mode, account plan, timestamp and account-wide usage before requesting isolated deployment approval. Never change the setting without an approved isolated deployment plan.
+- A gateway-only protection is not sufficient if the underlying Neon Function or database can be accessed directly. Preserve the Neon Function's independently enforced server-side gateway secret and JWT/user ownership checks; revoke any exposed credential. In an overflow or gateway failure, requests must not fall through to an unprotected backend.
+- A Free-plan limit is not an application-request budget and cannot guarantee 100% availability. Daily requests may include abuse traffic; Durable Objects have separate request, duration and SQLite quotas. No claim of zero possible bill or guaranteed access should be made without reviewing all enabled billable services and actual account settings.
+- **Status: NO-GO.** No route is deployed; there is no verified live fail-closed setting or isolated Neon connection. Keep deployment guard blockers active and do not generate approval/acceptance artifacts automatically.
+
+Provider sources:
+- https://developers.cloudflare.com/workers/platform/limits/
+- https://developers.cloudflare.com/workers/wrangler/configuration/
+- https://developers.cloudflare.com/workers/platform/pricing/
