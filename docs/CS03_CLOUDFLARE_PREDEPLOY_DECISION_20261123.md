@@ -75,3 +75,16 @@ node --test tests/cs03-worker-review-config.test.mjs tests/cs03-worker-entrypoin
 
 ### 次の開発PC復帰時に1回だけ確認
 `npm run test:cs03-worker-security`。コマンド実行前にGitHubのリモートHEADと開発PCの未コミット変更を確認する。実行ログを受領してPASS確認するまで「クラウド作成可」としない。Neonの実HTTP拒否3/3 PASSは再実施不要。
+
+
+## 重要：GitHub PagesからAccess保護APIへのCORS/認証が未成立
+
+2026-11-24、Cloudflare公式 https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/cors/ と https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/ 、MDN https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch の仕様を照合した結果、**実端末間同期を妨げうる重要な構成衝突を検出**。
+
+- ブラウザー`src/cs03-account-client.mjs`の送信は `credentials:'omit'`、JWTを`Authorization: Bearer ...`に入れるため、`github.io`発の別オリジンに向けた**CORS preflight OPTIONS**が発生する。
+- Cloudflare Accessのブラウザーログインは`CF_Authorization` Cookieを要求。クロスオリジンのOPTIONSは通常Cookieを送らず、Accessはpreflightをブロックする（公式説明）。仮にAccess側でOPTIONSをバイパスしても、**当該Workerアダプターが`ctx.access`必須でOPTIONSを503拒否**する。さらに本リポジトリの `credentials:'omit'` により実際のGET/PUTもAccessセッションCookieを付与できない。単にCORSヘッダーを追加するだけでは解決しない。
+- サードパーティCookieを全ブラウザーで使用できると仮定した設計や、Cloudflare service tokenをブラウザー配布する案は**採用しない**。`credentials:'include'`への一括切替はブラウザーのthird-party Cookie制限、CSRF、AccessのCORS設定との整合を検証するまで保留。GitHub PagesのCSPや既存公開URLも無断変更しない。
+
+**暫定結論**：Worker-level Access + `ctx.access.aud` gateは、**限定した隔離HTTP・認証拒否試験の防御策**として維持する。一方、現状のGitHub Pagesブラウザー→別ドメインAccess Worker経由での「実際の複数端末同期」は**未成立、公開不可**。次のクラウド初回配備を承認する前に、**ブラウザー同一オリジンのプレビュー入口を別に用意する案**（本番GitHub Pagesを変更せずCloudflareの試験用アセットを公開、ただしAssetsルーターの`ctx.access`非伝播に注意）または**ブラウザー向けAPIをNeon Auth JWT/DO quotaで保護し、Accessは運営専用の検査経路だけに使う別案**を比較して選択する。秘密のブラウザー埋込み不可、無条件の公開不可。`ctx.access`がブラウザーテストのCORS preflightに伝播するとは推定しない。
+
+**次のGitHub側作業**：両案の構成、CORS、Access/WARP等の制限、追加料金リスク、受入方法を具体化し、安全な構成選択に必要な情報をまとめる。現在の設計が端末間同期を実現できると虚偽に報告しない。
