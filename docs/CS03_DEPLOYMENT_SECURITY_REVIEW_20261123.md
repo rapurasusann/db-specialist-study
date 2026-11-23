@@ -112,3 +112,9 @@
 前回の `BROWSER_OR_ENVIRONMENT_ERROR` は再現していない。ただし、当該失敗の根本原因が確定したことを意味しない。同じプログラムのコード修正なしでの全件PASSとして受入証跡を記録する。
 
 **受入範囲**：同一 Chromium BrowserContext の2タブ、同一オリジン・同一アカウントの Web Locks 排他、タブ終了後の取得、共有 localStorage に残った下書きの確認待ち復元。**未受入**：異なるブラウザ/プロファイル/端末間の排他、実Neon Functions/Cloudflareのネットワーク経路、公開用CSP/CORS、アカウント課金・無料枠、実クラウドへのデプロイ。公開判定は引き続き **NO-GO**。合格済み試験の再実行は関係コード変更時や独立受入が必要な場合のみ。
+
+## 2026-11-23 workerd追加否定系（11件・未実行）
+
+既存のworkerd-localのJWT署名検証、GET/PUT、DOクォータ、無効JWT、Origin不一致、429については合格済み。重複を避けるため `local/cs03-workerd-negative-check.mjs` を追加した。**11個の新しい確認**：認証ヘッダー欠落、JWT issuer不一致、audience不一致、期限切れJWT、Origin欠落、未対応HTTP method、未対応path、PUTの不正content-type、20KB超過PUT、未許可OPTIONS、許可OPTIONS。すべて `127.0.0.1:8790` のローカル専用workerd向け。テスト専用署名鍵と模擬ストアだけを使用し、Neon/Cloudflareへの外部接続なし。**開発PC実行待ちのためPASSは未宣言。**
+
+実行時は `local/wrangler.cs03-auth-do.json` で `wrangler dev --local --port 8790` を使用し、**必ず `--local` を明示**する。Wrangler初回ログインや新規パッケージ取得を促す方法を採用しない。先にローカルサーバーの起動を確認し、別ウィンドウから上記否定系のみ実行する。共有Cloudflareアカウントと専用Cloudflareアカウントのどちらにもデプロイしない。公開判定 **NO-GO** 維持。
