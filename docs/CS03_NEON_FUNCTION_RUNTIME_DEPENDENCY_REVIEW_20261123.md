@@ -45,3 +45,9 @@
 - 実クラウド操作が必要なら**対象リソース・無料枠・費用・停止策を提示して運営者の個別承認を得る**。Worker/DO/Function生成、秘密登録、公開URL/CSP変更、課金変更、GitHub Actionsは本工程で実行しない。
 
 **公開判定NO-GO**。
+
+## 6. 開発PCでの依存・隔離設定テスト結果（5/5 PASS）
+
+操作者が開発PCで commit `14b1c35b47f408d1c10f52f5f9c701880ad499aa` に切り替え、`node --test tests/cs03-neon-function-runtime-contract.test.mjs` を実行。提出ログから **5 tests / 5 pass / 0 fail**、`CS03_NEON_RUNTIME_TEST_PASS` を確認した。Neon Functionのdefault fetchと秘密検証、`pg`・`jose`等の依存宣言、隔離DB／専用ユーザー／TLS検査、秘密欠落時のDB生成前401拒否、プレビューOFFと未承認デプロイ禁止を確認。
+
+**確認範囲は静的・ローカル検証に限定**。実Neon Functionsの依存解決・ビルド、カスタム環境変数の注入、専用branchへの配置・実接続、課金や無料枠、Cloudflare実経路のfail-closedは未実証。関連コードが変わらない限り同一5件は再実行不要。**本番公開・実クラウド配置NO-GOを維持**。
