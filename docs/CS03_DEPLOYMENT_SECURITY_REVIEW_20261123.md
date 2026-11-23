@@ -80,3 +80,9 @@
 変更：`src/cs03-tab-ownership.mjs` のロック管理、`src/cs03-study-auto-sync.mjs` のログイン時獲得・失敗時/ログアウト時解放、`src/cs03-account-entry.mjs` の既定OFFプレビュー配線。専用検証：`tests/cs03-tab-ownership.test.mjs`（同一アカウントの多重ログイン拒否・既存下書き保持、別アカウントの独立動作、API未対応で停止、認証後失敗時の解放）。
 
 この仕組みは**2タブ同時編集を許可する方式ではない**。同一ブラウザ同一オリジンの更新済みコードを対象とするもので、異なるブラウザ/端末、旧バージョンのページ、ブラウザプロファイルをまたぐ単一編集者制御ではない。異なる端末間はサーバーのrevision競合検出が必要。Web Locksの実ブラウザ試験と全般的な公開受入は未完了。Cloudflare/Neon実デプロイ禁止とNO-GOを維持する。
+
+## 2026-11-23 同一アカウント複数タブのローカルテスト合格記録
+
+開発PCでcommit `3528874a0c40cf978ff35084fcbf88de7972818f` をチェックアウトし、`node --check src/cs03-account-entry.mjs`、`node --check src/cs03-study-auto-sync.mjs`、`node --test tests/cs03-tab-ownership.test.mjs` を実行した。操作者のログにより **4 tests / 4 pass / 0 fail**、`CS03_MULTI_TAB_TEST_PASS` を確認。
+
+検証範囲はWeb Locks模擬実装での同一アカウント二重編集拒否、未保存下書きの保護、別アカウントの独立動作、Web Locks未対応時の停止、失敗後のロック解放。**Chrome等の実ブラウザでの2タブ動作は未検証**。異なるブラウザ・プロファイル・端末間はサーバー側revision競合検出の範囲。実クラウド接続・デプロイは未実施、**NO-GO継続**。合格済み4件の再実行は関連変更時のみ。
