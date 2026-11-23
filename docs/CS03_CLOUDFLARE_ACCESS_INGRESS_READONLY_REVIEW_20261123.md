@@ -64,3 +64,11 @@
 Cloudflare Zero Trustのプラン選択画面のユーザー提出スクリーンショットを目視確認。左に**ゼロトラストフリー 0ドル/席/月**、最大50席の案内。中央に**ゼロトラストスタンダード 1席あたり月額7ドル**、右にエンタープライズ（カスタム料金）が表示されている。**画面はプラン選択前**のため、Free契約の有効化やAccess Policyの作成、Worker保護の実装・確認が済んだとは扱わない。
 
 **C02判定：Freeプラン候補の料金表示は確認済み**。専用アカウント上のFree有効化後の具体的な利用条件、支払方法要求の有無、実際にWorker全体にAccessを適用できる権限／機能は引き続きOPEN。運営者が個別に承認するまではプラン選択・規約同意・有効化をしない。Worker/DO/Neonの配置、公開経路・課金変更は一切していない。**NO-GO維持**。
+
+## 9. Zero Trust Free有効化完了画面（ユーザー提出：2026-11-23）
+
+ユーザー提出のCloudflare注文完了画面に **Activate Zero Trust Free / Purchase complete / The subscription is active and you can begin using the service** と表示されている。Order summaryには **Zero Trust Free: Free**、**Protect up to 50 users at no cost**、**Due today*: $0/month** が表示される。一方、細則に **Additional usage beyond included allowance billed monthly** が表示されているため、無料枠を超えても請求されないとは断定しない。支払方法の有無や追加利用枠、支払条件が現在も変更されていないかはこの画像のみで再検証できない。
+
+**状態**：Zero Trust Freeの有効化が完了したことは画像証拠で確認。Cloudflare Accessのアプリ作成、対象Worker保護ポリシー、許可ユーザーの登録、拒否試験、Durable Objects利用状況の確認は**未実施**。この画面は契約完了画面であり、AccessがWorkerを保護中という意味ではない。既存のCloudflare Worker/DO・Neon Function配置、公開URL変更は行っていない。
+
+**次の操作**：表示された **Continue to Zero Trust** を押し、Accessの概要/設定状態を読む。**有料機能選択、支払方法登録、Accessアプリ・ポリシー作成、Worker公開は次の独立承認まで行わない**。実クラウド配置・一般公開NO-GO維持。
