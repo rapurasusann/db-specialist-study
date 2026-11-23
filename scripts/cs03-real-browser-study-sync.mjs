@@ -10,6 +10,7 @@ const root=resolve(fileURLToPath(new URL('../',import.meta.url)));
 const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.json':'application/json','.css':'text/css','.svg':'image/svg+xml','.png':'image/png'};
 const KEY='db-study-progress-v1',Q='2025:am2:1',userId='mock-account-1';
 const store=new Map(),errors=[],external=[];
+let rejectAccountSaves=false;
 let server,browser;
 function check(label,condition){console.log(label+'='+(condition?'PASS':'FAIL'));if(!condition)throw Error('ASSERT_FAILED:'+label);}
 try{
@@ -36,7 +37,7 @@ try{
   await context.exposeBinding('cs03FakeAccount',async(_source,action,id,data)=>{
    if(action==='list')return {userId,records:Object.fromEntries([...store].map(([key,row])=>[key,{data:structuredClone(row)}]))};
    if(action==='open')return structuredClone(store.get(id)??null);
-   if(action==='save'){store.set(id,structuredClone(data));return structuredClone(data);}
+   if(action==='save'){if(rejectAccountSaves)throw Error('TEST_NETWORK_WRITE_FAILURE');store.set(id,structuredClone(data));return structuredClone(data);}
    throw Error('FAKE_ACTION_NOT_ALLOWED');
   });
   const page=await context.newPage();
@@ -75,10 +76,21 @@ try{
  check('LEGACY_DEVICE_B_PRESERVED',await b.page.evaluate(([key,original])=>localStorage.getItem(key)===JSON.stringify(original),[KEY,initialB]));
  await b.page.evaluate(()=>{window.CS03_STUDY_PAGE.deactivate();window.__cs03MockAuto.logout();});
  check('BROWSER_B_SIGNOUT_RESTORES_DEVICE',await b.page.evaluate(()=>window.CS03_STUDY_PAGE.inAccountMode()===false&&document.querySelector('#history')?.textContent.includes('未学習')));
+ // Browser C: failed cloud writes must retain the account draft and block logout,
+ // without altering the remote record or device-only history.
+ const initialC={'2025:am2:3':{level:'review'}};
+ const c=await profile(initialC);
+ rejectAccountSaves=true;
+ await c.page.locator('[data-level="review"]').click();
+ await c.page.waitForFunction(()=>document.querySelector('#cs03StudyHint')?.textContent.includes('保存に失敗しました'));
+ check('FAILED_SAVE_REMOTE_UNCHANGED',store.get(Q)?.level==='mastered');
+ check('FAILED_SAVE_ACCOUNT_DRAFT_RETAINED',await c.page.evaluate(()=>document.querySelector('#history')?.textContent.includes('要復習')));
+ check('FAILED_SAVE_BLOCKS_LOGOUT',await c.page.evaluate(()=>{try{window.CS03_STUDY_PAGE.deactivate();return false;}catch(e){return e.message==='UNSAVED_ACCOUNT_PROGRESS';}}));
+ check('FAILED_SAVE_LEGACY_DEVICE_PRESERVED',await c.page.evaluate(([key,original])=>localStorage.getItem(key)===JSON.stringify(original),[KEY,initialC]));
  check('NO_EXTERNAL_REQUESTS',external.length===0);
  check('NO_PAGE_ERRORS',errors.length===0);
  console.log('CS03_REAL_BROWSER_STUDY_SYNC=PASS');
- await a.context.close();await b.context.close();
+ await a.context.close();await b.context.close();await c.context.close();
 }catch(e){
  console.log('CS03_REAL_BROWSER_STUDY_SYNC=FAIL');
  console.log('FAIL_CLASS='+(
