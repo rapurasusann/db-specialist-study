@@ -16,6 +16,7 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    const {createCs03CrossBrowserSession}=await import('./cs03-cross-browser-session.mjs');
    const {createCs03StudyAutoSync}=await import('./cs03-study-auto-sync.mjs');
    const {exportCs03UnsavedBackup}=await import('./cs03-unsaved-export.mjs');
+   const {restoreCs03UnsavedBackup}=await import('./cs03-unsaved-restore.mjs');
    // Only allow the exact isolated Managed Auth instance.
    if(cfg.authUrl!=='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech/cs03_auth_sandbox/auth')
     throw Error('AUTH_TARGET_MISMATCH');
@@ -57,6 +58,16 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
      studyHint.clear();scoped.unbind();clearCs03HistoryView(historyRoot);
     },
     onExportUnsaved:async()=>exportCs03UnsavedBackup({auto}),
+    onRestoreUnsaved:async jsonText=>{
+     const result=await restoreCs03UnsavedBackup({
+      auto,jsonText,
+      confirmRestore:count=>window.confirm(
+       count+'件のバックアップを現在のアカウントの確認待ち記録として読み込みますか？\\n'+
+       'サーバーへの送信や既存データの上書きは行いません。確認待ちの間はログアウトできません。')
+     });
+     return result.cancelled?'復元をキャンセルしました。':
+      'バックアップ '+result.restored+'件を確認待ちとして読み込みました。サーバーには送信していません。';
+    },
     onListProgress:async()=>{
      clearCs03HistoryView(historyRoot);
      const listing=await scoped.list();
