@@ -24,10 +24,17 @@ test('valid PUT is forwarded',async()=>{
  calls=0;const result=await invoke(req('PUT'),handler);
  assert.equal(result.status,200);assert.equal(calls,1);
 });
-test('allowed browser preflight does not call database runtime',async()=>{
- calls=0;const result=await invoke(new Request('https://branch-function.invalid/progress',{method:'OPTIONS',headers:{origin:ORIGIN,'access-control-request-method':'PUT','access-control-request-headers':'authorization, content-type'}}),handler);
- assert.equal(result.status,204);assert.equal(calls,0);
- assert.match(result.headers.get('access-control-allow-headers'),/authorization/);
+test('native Neon rejects OPTIONS before any database runtime access',async()=>{
+ calls=0;
+ const withoutSecret=new Request('https://branch-function.invalid/progress',{method:'OPTIONS',headers:{origin:ORIGIN,
+  'access-control-request-method':'PUT','access-control-request-headers':'authorization, content-type'}});
+ const denied=await invoke(withoutSecret,handler);
+ assert.equal(denied.status,401);
+ assert.equal(calls,0);
+ const withSecret=new Request('https://branch-function.invalid/progress',{method:'OPTIONS',headers:{origin:ORIGIN,
+  'x-secret':SECRET,'access-control-request-method':'PUT'}});
+ assert.equal((await invoke(withSecret,handler)).status,405);
+ assert.equal(calls,0);
 });
 for(const origin of ['https://evil.example','null','http://localhost:5173']){
  test('untrusted origin rejected '+origin,async()=>{
