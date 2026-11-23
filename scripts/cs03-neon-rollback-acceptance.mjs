@@ -52,67 +52,104 @@ function validateTarget(env){
  assert(!u.searchParams.has('options'),'CONNECTION_OPTIONS_BLOCKED');
  return env.CS03_TEST_DATABASE_URL;
 }
+// One acceptance attempt per invocation. Never retry database writes or login
+// automatically; transient failures must be reported, not hidden.
 async function run(){
  mark('VALIDATE_TARGET');
  const url=validateTarget(process.env);
  const client=new Client({connectionString:url,connectionTimeoutMillis:10000,query_timeout:10000});
  const userA=randomUUID(),userB=randomUUID(),question='2026:am2:100';
- let connected=false,started=false;
+ const diagnose=process.argv.includes('--diagnose');
+ let connected=false,transactionOpen=false,writeChecksPassed=false,rollbackOk=false;
+ let failure;
  try{
-  mark('CONNECT');await client.connect();connected=true;
-  mark('CHECK_IDENTITY');const p=(await client.query('SELECT current_database() AS db,current_user AS role,pg_is_in_recovery() AS is_replica')).rows[0];
+  mark('CONNECT');
+  await client.connect();connected=true;
+  mark('CHECK_IDENTITY');
+  const p=(await client.query('SELECT current_database() AS db,current_user AS role,pg_is_in_recovery() AS is_replica')).rows[0];
   assert(p.db===DB&&p.role===ROLE&&!p.is_replica,'LIVE_IDENTITY_MISMATCH');
-  mark('CHECK_PRIVILEGES');const priv=(await client.query("SELECT has_table_privilege(current_user,'public.study_progress','DELETE') AS can_delete,has_table_privilege(current_user,'public.study_progress','SELECT') AS can_select,has_table_privilege(current_user,'public.study_progress','INSERT') AS can_insert,has_table_privilege(current_user,'public.study_progress','UPDATE') AS can_update")).rows[0];
+  mark('CHECK_PRIVILEGES');
+  const priv=(await client.query("SELECT has_table_privilege(current_user,'public.study_progress','DELETE') AS can_delete,has_table_privilege(current_user,'public.study_progress','SELECT') AS can_select,has_table_privilege(current_user,'public.study_progress','INSERT') AS can_insert,has_table_privilege(current_user,'public.study_progress','UPDATE') AS can_update")).rows[0];
   assert(priv.can_delete===false&&priv.can_select&&priv.can_insert&&priv.can_update,'LIVE_PRIVILEGES_MISMATCH');
-  mark('CHECK_CATALOG');const exam=await client.query("SELECT 1 FROM public.study_exam_catalog WHERE exam_code='db'");
+  mark('CHECK_CATALOG');
+  const exam=await client.query("SELECT 1 FROM public.study_exam_catalog WHERE exam_code='db'");
   assert(exam.rowCount===1,'EXAM_NOT_FOUND');
-  if(process.argv.includes('--diagnose')){console.log('CS03_READONLY_CONNECTION_AND_PRIVILEGES_PASS');return;}
-  mark('BEGIN_TRANSACTION');await client.query('BEGIN');started=true;
-  await client.query("SET LOCAL statement_timeout = '8s'");
-  await client.query("SET LOCAL idle_in_transaction_session_timeout = '15s'");
-  const identity=async user=>client.query("SELECT set_config('app.verified_user_id',$1,true)",[user]);
-  const see=async user=>{await identity(user);return (await client.query('SELECT user_id,data,revision FROM public.study_progress WHERE user_id IN ($1,$2) AND exam_code=$3 AND question_id=$4',[userA,userB,'db',question])).rows;};
-  mark('CHECK_TEST_COLLISIONS');assert((await see(userA)).length===0,'TEST_COLLISION_A');
-  assert((await see(userB)).length===0,'TEST_COLLISION_B');
-  mark('INSERT_A');await identity(userA);
-  const a=await client.query('INSERT INTO public.study_progress(user_id,exam_code,question_id,data,revision) VALUES ($1,$2,$3,$4::jsonb,1) RETURNING revision',[userA,'db',question,JSON.stringify({acceptance:'A',stage:'insert'})]);
-  assert(a.rowCount===1&&Number(a.rows[0].revision)===1,'INSERT_A_FAILED');
-  mark('READ_AND_ISOLATE_A');assert((await see(userA)).length===1,'OWNER_A_READ_FAILED');
-  assert((await see(userB)).length===0,'CROSS_USER_A_VISIBLE_TO_B');
-  mark('INSERT_B');await identity(userB);
-  const b=await client.query('INSERT INTO public.study_progress(user_id,exam_code,question_id,data,revision) VALUES ($1,$2,$3,$4::jsonb,1) RETURNING revision',[userB,'db',question,JSON.stringify({acceptance:'B',stage:'insert'})]);
-  assert(b.rowCount===1,'INSERT_B_FAILED');
-  mark('UPDATE_B');const upd=await client.query('UPDATE public.study_progress SET data=$1::jsonb,revision=2,updated_at=now() WHERE user_id=$2 AND exam_code=$3 AND question_id=$4 AND revision=1 RETURNING revision',[JSON.stringify({acceptance:'B',stage:'update'}),userB,'db',question]);
-  assert(upd.rowCount===1&&Number(upd.rows[0].revision)===2,'UPDATE_B_FAILED');
-  mark('CHECK_ROW_ISOLATION');const brows=await see(userB);
-  assert(brows.length===1&&brows[0].user_id===userB&&Number(brows[0].revision)===2,'OWNER_B_READ_FAILED');
-  const arows=await see(userA);
-  assert(arows.length===1&&arows[0].user_id===userA&&Number(arows[0].revision)===1,'CROSS_USER_B_VISIBLE_TO_A');
-  console.log('CS03_TRANSIENT_INSERT_READ_UPDATE_RLS_PASS');
- }catch(error){
-  // Preserve the original failing stage even if rollback checks run in finally.
-  error.cs03Stage=stage;
-  throw error;
- }finally{
-  if(started){
-   try{mark('ROLLBACK');await client.query('ROLLBACK');console.log('CS03_TEST_TRANSACTION_ROLLBACK_SENT');}
-   catch{console.error('CS03_ROLLBACK_UNCONFIRMED');process.exitCode=1;}
+  if(diagnose){
+   console.log('CS03_READONLY_CONNECTION_AND_PRIVILEGES_PASS');
+  }else{
+   mark('BEGIN_TRANSACTION');
+   await client.query('BEGIN');transactionOpen=true;
+   await client.query("SET LOCAL statement_timeout = '8s'");
+   await client.query("SET LOCAL idle_in_transaction_session_timeout = '15s'");
+   const identity=async user=>client.query("SELECT set_config('app.verified_user_id',$1,true)",[user]);
+   const see=async user=>{
+    await identity(user);
+    return (await client.query('SELECT user_id,data,revision FROM public.study_progress WHERE user_id IN ($1,$2) AND exam_code=$3 AND question_id=$4',[userA,userB,'db',question])).rows;
+   };
+   mark('CHECK_TEST_COLLISIONS');
+   assert((await see(userA)).length===0,'TEST_COLLISION_A');
+   assert((await see(userB)).length===0,'TEST_COLLISION_B');
+   mark('INSERT_A');
+   await identity(userA);
+   const a=await client.query('INSERT INTO public.study_progress(user_id,exam_code,question_id,data,revision) VALUES ($1,$2,$3,$4::jsonb,1) RETURNING revision',[userA,'db',question,JSON.stringify({acceptance:'A',stage:'insert'})]);
+   assert(a.rowCount===1&&Number(a.rows[0].revision)===1,'INSERT_A_FAILED');
+   mark('READ_AND_ISOLATE_A');
+   assert((await see(userA)).length===1,'OWNER_A_READ_FAILED');
+   assert((await see(userB)).length===0,'CROSS_USER_A_VISIBLE_TO_B');
+   mark('INSERT_B');
+   await identity(userB);
+   const b=await client.query('INSERT INTO public.study_progress(user_id,exam_code,question_id,data,revision) VALUES ($1,$2,$3,$4::jsonb,1) RETURNING revision',[userB,'db',question,JSON.stringify({acceptance:'B',stage:'insert'})]);
+   assert(b.rowCount===1,'INSERT_B_FAILED');
+   mark('UPDATE_B');
+   const upd=await client.query('UPDATE public.study_progress SET data=$1::jsonb,revision=2,updated_at=now() WHERE user_id=$2 AND exam_code=$3 AND question_id=$4 AND revision=1 RETURNING revision',[JSON.stringify({acceptance:'B',stage:'update'}),userB,'db',question]);
+   assert(upd.rowCount===1&&Number(upd.rows[0].revision)===2,'UPDATE_B_FAILED');
+   mark('CHECK_ROW_ISOLATION');
+   const brows=await see(userB);
+   assert(brows.length===1&&brows[0].user_id===userB&&Number(brows[0].revision)===2,'OWNER_B_READ_FAILED');
+   const arows=await see(userA);
+   assert(arows.length===1&&arows[0].user_id===userA&&Number(arows[0].revision)===1,'CROSS_USER_B_VISIBLE_TO_A');
+   writeChecksPassed=true;
   }
-  if(connected){
+ }catch(error){
+  error.cs03Stage=stage;
+  failure=error;
+ }finally{
+  if(transactionOpen){
+   mark('ROLLBACK');
    try{
-    if(!process.argv.includes('--diagnose')){
-    mark('CHECK_ROLLBACK_RESIDUE');for(const user of [userA,userB]){
-     await client.query('BEGIN READ ONLY');
+    await client.query('ROLLBACK');
+    rollbackOk=true;
+    console.log('CS03_TEST_TRANSACTION_ROLLBACK_SENT');
+   }catch{
+    console.error('CS03_ROLLBACK_UNCONFIRMED');
+    failure??=new Error('CS03_ACCEPTANCE_ROLLBACK_UNCONFIRMED');
+    failure.cs03Stage??='ROLLBACK';
+   }
+  }
+  if(connected && transactionOpen && rollbackOk && writeChecksPassed && !failure){
+   mark('CHECK_ROLLBACK_RESIDUE');
+   try{
+    for(const user of [userA,userB]){
+     let readOnlyOpen=false;
      try{
+      await client.query('BEGIN READ ONLY');readOnlyOpen=true;
       await client.query("SELECT set_config('app.verified_user_id',$1,true)",[user]);
       const check=await client.query('SELECT count(*)::int AS n FROM public.study_progress WHERE user_id=$1 AND exam_code=$2 AND question_id=$3',[user,'db',question]);
       assert(check.rows[0].n===0,'ROLLBACK_RESIDUE');
-     }finally{await client.query('ROLLBACK');}
+     }finally{
+      if(readOnlyOpen)await client.query('ROLLBACK');
+     }
     }
     console.log('CS03_TEST_ROWS_ABSENT_AFTER_ROLLBACK_PASS');
-    }
-   }finally{await client.end();}
+   }catch(error){error.cs03Stage='CHECK_ROLLBACK_RESIDUE';failure=error;}
+  }
+  // Always close the connection, including failed connect and read-only mode.
+  // Do not hide the original error if connection cleanup itself fails.
+  try{await client.end();}catch{
+   if(!failure){failure=new Error('CS03_ACCEPTANCE_CONNECTION_CLOSE_FAILED');failure.cs03Stage='CLOSE_CONNECTION';}
   }
  }
+ if(failure)throw failure;
+ if(writeChecksPassed && rollbackOk)console.log('CS03_TRANSIENT_INSERT_READ_UPDATE_RLS_PASS');
 }
 run().catch(error=>{const message=typeof error?.message==='string'?error.message:'';const label=/^CS03_ACCEPTANCE_[A-Z0-9_]+$/.test(message)?message:'CHECK_FAILED_WITHOUT_DETAILS';const code=typeof error?.code==='string'&&SAFE_CODES.has(error.code)?error.code:'UNCLASSIFIED';console.error('CS03_ISOLATED_ACCEPTANCE_STAGE='+(error?.cs03Stage??stage));console.error('CS03_ISOLATED_ACCEPTANCE_ERROR_CODE='+code);console.error('CS03_ISOLATED_ACCEPTANCE_CATEGORY='+failureCategory(error));console.error('CS03_ISOLATED_ACCEPTANCE_FAILED:'+label);process.exitCode=1;});
