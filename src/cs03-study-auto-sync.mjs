@@ -87,6 +87,36 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
   for(const [id,row] of pending)records[id]=copy(row);
   return copy({format:'cs03-unsaved-account-progress-v1',userId:owner,records});
  }
+ function restorePending(backup){
+  current(epoch);
+  // A backup is an untrusted local file: never send it to the server on import.
+  // Restoration is only allowed when no work is running or awaiting review.
+  if(queue.size)throw Error('ACCOUNT_WRITE_IN_PROGRESS');
+  if(pending.size||blocked.size)throw Error('UNSAVED_ACCOUNT_PROGRESS');
+  if(!backup||typeof backup!=='object'||Array.isArray(backup)||
+     backup.format!=='cs03-unsaved-account-progress-v1')throw Error('BACKUP_FORMAT_INVALID');
+  if(backup.userId!==owner)throw Error('BACKUP_ACCOUNT_MISMATCH');
+  const rows=backup.records;
+  if(!rows||typeof rows!=='object'||Array.isArray(rows))throw Error('BACKUP_RECORDS_INVALID');
+  const entries=Object.entries(rows);
+  if(entries.length<1||entries.length>1600)throw Error('BACKUP_RECORDS_INVALID');
+  const snapshot=[];
+  let totalBytes=0;
+  for(const [id,data] of entries){
+   validate(id,data);
+   const safe=copy(data);
+   const size=new TextEncoder().encode(JSON.stringify(safe)).length;
+   if(size>16000)throw Error('BACKUP_RECORD_TOO_LARGE');
+   totalBytes+=size;
+   if(totalBytes>1024*1024)throw Error('BACKUP_TOO_LARGE');
+   snapshot.push([id,safe]);
+  }
+  // No asynchronous step between validation and atomic in-memory installation.
+  // Block writes/remote refresh until the operator reviews these drafts.
+  for(const [id,data] of snapshot){pending.set(id,data);blocked.add(id);}
+  for(const [id] of snapshot)onStatus('blocked',id);
+  return Object.freeze({restored:snapshot.length,accountId:owner,requiresReview:true});
+ }
  function logout(){
   // Never discard an unacknowledged write. The UI must resolve or explicitly
   // export account drafts before signing out.
@@ -96,5 +126,5 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
   session.stop();onStatus('signed-out');
  }
  function state(){return Object.freeze({active,userId:owner,pending:[...pending.keys()],blocked:[...blocked],inFlight:[...queue.keys()]});}
- return Object.freeze({login,open,edit,exportPending,logout,state});
+ return Object.freeze({login,open,edit,exportPending,restorePending,logout,state});
 }
