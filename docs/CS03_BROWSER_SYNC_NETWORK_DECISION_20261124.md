@@ -65,3 +65,14 @@
 - 変更コミット `438913d`、テスト追加 `4b2db07`。**開発PC・ローカルリポジトリを使用していないため追加テストは未実行**。先行コミットの14/14 PASSを今回の修正結果と混同しない。
 - 注意：すでに上流へ送信済みのPUTはサーバー側で保存される可能性がある。ここで保証するのは切替後の旧ユーザー応答の採用・ローカルキャッシュ書込み拒否であり、送信済みリクエストの取消しではない。
 - 次回はブラウザー用Worker入口のCORS preflight・Quota境界と、ローカルテスト一括実行条件を検討。Cloudflare実配置・Neon秘密登録・公開は引き続きNO-GO。
+
+
+## 2026-11-24 05:00 リモート作業：PUTのContent-Type厳格化
+
+- 最新のGitHubコードと `docs/CS03_CLOUDFLARE_PREDEPLOY_DECISION_20261123.md` を読み直し、既存のJWT専用ブラウザー入口、Access専用入口、DO共有Quota、アカウント切替ガードの作業と重複しない範囲を選択。
+- `server/cs03-trusted-edge-gateway.mjs` で `Content-Type` の `startsWith('application/json')` を廃止。以前は `application/json-malicious`、`application/jsonp`、不正なcharsetなどもPUTとして通過し、DO quotaやNeonに転送される可能性があった。現在は `application/json` および `charset=UTF-8` のみ受け付け、それ以外は **415** を返す。
+- `tests/cs03-shared-gateway-integration.test.mjs` に負試験を追加し、偽装Content-Typeの5種類は **DO quota 0回／Neon 0回**、許容2種類は従来どおり上流へ届くことを確認するテストを記述。
+- コードコミット `0e11e90`、テストコミット `ad28395`。**開発PCのNodeテストは未実行**。旧14/14 PASSとは区別する。
+- Worker/DO/Access、Neon、公開URL/CSP、Secrets、課金、GitHub Actions、mainは変更していない。**実端末間同期・クラウド公開はNO-GO**。
+
+**次**：ブラウザーJWT入口のOPTIONS/CORS拒否境界とJWT/DO quotaのテストを点検し、開発PC復帰時に一括実行する。まだ主作業が残っているため午前Ⅱの過去問追加は行わない。
