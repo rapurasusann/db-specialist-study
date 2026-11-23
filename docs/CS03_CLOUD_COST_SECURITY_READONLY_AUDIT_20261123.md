@@ -100,3 +100,11 @@ Cloudflare公式資料：
 
 **確認済み**：両サービスとも画面上のステータスはFree tier。前画面ではWorkers Free Active、支払い方法登録なし、Workers Requests 0/100,000、Durable Objects各利用量0を確認。
 **確認できない**：この画面は明示的な `$0` の支出上限設定・全サービスの請求額ゼロ・将来の非課金を保証する証拠ではない。現行Free枠に収まるよう専用アカウントのWorker/DOだけを利用し、未承認の有料機能や従量課金を有効化しない。WorkersのFree上限超過時fail-closedとNeon Functions実配置前の隔離条件は別途受入。公開／実配置判定 **NO-GO**。
+
+## 11. 専用Cloudflareアカウントの配置前ID固定ガード
+
+操作者の2026-11-23 Workers & Pages画面で確認した**資格勉強アプリ専用**のCloudflare Account IDを、`scripts/cs03-cloudflare-account-guard.mjs` に非機密の識別子として固定した。`CLOUDFLARE_ACCOUNT_ID`／`CF_ACCOUNT_ID` の両方を検査し、未設定・不一致・競合の場合は `CS03_DEDICATED_CLOUDFLARE_ACCOUNT_*` の停止要因を返す。レビュー用のWrangler configでは別アカウントID・公開routes・zoneの指定も拒否する。既存の `scripts/cs03-predeploy-guard.mjs` にこの検査を組み込んだ。
+
+**テスト追加・開発PCでの実行待ち**：`tests/cs03-cloudflare-account-guard.test.mjs` の5件。合格した場合でも独立の`ISOLATED_DEPLOYMENT_APPROVAL_MISSING`、`GATEWAY_RATE_LIMIT_ACCEPTANCE_MISSING` を維持し、デプロイを許可しない。**注意**：このガードは本リポジトリの検証経路のみを対象とし、直接`wrangler deploy`や別リポジトリの操作、ブラウザでの手動配置を技術的に禁止できるわけではない。将来の配置時は明示承認・対象アカウント確認・権限最小化が別途必要。
+
+作業中にCloudflare/Neon APIへの書込み、本番設定変更、有料契約、GitHub Actionsは実施していない。公開判定は引き続き**NO-GO**。
