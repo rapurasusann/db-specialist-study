@@ -78,9 +78,10 @@ showQuestion=function(){
     ['002','2025-01-12 14:00','300','01','2025-01-12 14:00','300','確定','2879'],
     ['003','2025-01-14 11:00','50','01','2025-01-12 14:00','50','確定',''],
     ['004','2025-01-15 16:00','600','01','2025-01-15 16:00','100','確定',''],
-    ['','','','02','2025-01-16 11:00','500','','']
+    ['','','','02','2025-01-16 11:00','500','',''],
+    ['⋮','⋮','⋮','⋮','⋮','⋮','⋮','⋮']
   ];
-  const contract=mk('div','pm2-sheet-note','契約番号：000273 ／ 空欄は原本に値の記載がない欄です。');
+  const contract=mk('div','pm2-sheet-note','契約番号：000273 ／ 要求番号004の2行目は上段と同じ納品要求を示します。最終行の⋮は原本の省略記号です。');
   entries.forEach((arr,i)=>{const tr=document.createElement('tr');arr.forEach((x,j)=>{const td=mk('td','',x);if(j===0&&i===4)td.setAttribute('aria-label','前行と同じ要求番号');tr.append(td)});body.append(tr)});
   sheet.append(body);sheetWrap.append(contract,sheet);
   const toggle=mk('button','pm2-fig3-original-toggle','IPA原本画像を表示して比較');toggle.type='button';toggle.setAttribute('aria-pressed','false');
@@ -98,7 +99,7 @@ showQuestion=function(){
   fig3.insertBefore(toggle,fig3.querySelector('.pm-diagram-viewport'));
   fig3.insertBefore(sheetWrap,toggle.nextSibling);
   toggle.onclick=()=>changeSource(toggle.getAttribute('aria-pressed')!=='true');
-  changeSource(false);
+  changeSource(true);
 
   function showFigure(n){
     pick.value=String(n);
