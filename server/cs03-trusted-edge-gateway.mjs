@@ -54,6 +54,16 @@ export function createCs03TrustedEdgeGateway({verifyToken,fetcher,upstreamUrl,up
   // IP comes from trusted gateway infrastructure, not client-supplied X-Forwarded-For.
   const ip=getClientIp(request);
   if(typeof ip!=='string'||!ip||ip.length>64)return result(503,'Service Unavailable');
+  let body;
+  if(request.method==='PUT'){
+   if(!request.headers.get('content-type')?.toLowerCase().startsWith('application/json'))
+    return result(415,'Unsupported Media Type');
+   const length=request.headers.get('content-length');
+   if(length!==null&&(!/^\d+$/.test(length)||Number(length)>20000))return result(413,'Payload Too Large');
+   try{body=await request.text();}catch{return result(400,'Bad Request');}
+   if(new TextEncoder().encode(body).length>20000)return result(413,'Payload Too Large');
+  }
+  if(inflight>=maxInflight)return result(429,'Too Many Requests');
   const now=clock(), user=identity.userId.toLowerCase();
   // Optional shared-quota integration for isolated verification only.
   // Production is still blocked: no trusted distributed backend is configured here.
@@ -68,16 +78,6 @@ export function createCs03TrustedEdgeGateway({verifyToken,fetcher,upstreamUrl,up
   // In-process controls are only defense-in-depth, not a billing guarantee.
   if(!allowed('g',limits.global,now)||!allowed('i:'+ip,limits.perIp,now)||
      !allowed('u:'+user,limits.perUser,now))return result(429,'Too Many Requests');
-  if(inflight>=maxInflight)return result(429,'Too Many Requests');
-  let body;
-  if(request.method==='PUT'){
-   if(!request.headers.get('content-type')?.toLowerCase().startsWith('application/json'))
-    return result(415,'Unsupported Media Type');
-   const length=request.headers.get('content-length');
-   if(length!==null&&(!/^\d+$/.test(length)||Number(length)>20000))return result(413,'Payload Too Large');
-   try{body=await request.text();}catch{return result(400,'Bad Request');}
-   if(new TextEncoder().encode(body).length>20000)return result(413,'Payload Too Large');
-  }
   inflight++;
   try{
    const dest=new URL(upstream);
