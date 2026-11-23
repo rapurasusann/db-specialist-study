@@ -77,7 +77,7 @@ export function createCs03TrustedEdgeGateway({verifyToken,fetcher,upstreamUrl,up
   if(typeof ip!=='string'||!ip||ip.length>64)return result(503,'Service Unavailable');
   let body;
   if(request.method==='PUT'){
-   if(!request.headers.get('content-type')?.toLowerCase().startsWith('application/json'))
+   if(!/^application\/json(?:\s*;\s*charset\s*=\s*(?:utf-8|"utf-8"))?\s*$/i.test(request.headers.get('content-type')??''))
     return result(415,'Unsupported Media Type');
    const length=request.headers.get('content-length');
    if(length!==null&&(!/^\d+$/.test(length)||Number(length)>20000))return result(413,'Payload Too Large');
