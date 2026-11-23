@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "scripts": {
-    "test:cs03": "node --test tests/progress-access.test.js tests/neon-jwt-verifier.test.mjs tests/progress-api.test.js tests/cs03-runtime-ssl.test.mjs tests/cs03-browser-function.test.mjs tests/cs03-predeploy-guard.test.mjs tests/cs03-account-client.test.mjs tests/cs03-account-ui.test.mjs tests/cs03-page-integration.test.mjs tests/cs03-scoped-progress.test.mjs tests/cs03-selected-question.test.mjs tests/cs03-manual-transfer.test.mjs tests/cs03-history-view.test.mjs tests/cs03-sync-preview.test.mjs tests/cs03-study-hint.test.mjs tests/cs03-inline-csp.test.mjs",
+    "test:cs03": "node --test tests/progress-access.test.js tests/neon-jwt-verifier.test.mjs tests/progress-api.test.js tests/cs03-runtime-ssl.test.mjs tests/cs03-browser-function.test.mjs tests/cs03-predeploy-guard.test.mjs tests/cs03-account-client.test.mjs tests/cs03-account-ui.test.mjs tests/cs03-page-integration.test.mjs tests/cs03-scoped-progress.test.mjs tests/cs03-selected-question.test.mjs tests/cs03-manual-transfer.test.mjs tests/cs03-history-view.test.mjs tests/cs03-sync-preview.test.mjs tests/cs03-study-hint.test.mjs tests/cs03-inline-csp.test.mjs tests/cs03-local-full-chain.test.mjs",
     "check:cs03-deploy": "node scripts/cs03-predeploy-guard.mjs",
     "build:cs03-account": "esbuild src/cs03-account-entry.mjs --bundle --platform=browser --format=esm --target=es2022 --outfile=src/cs03-account.bundle.js",
     "test:terms": "node --test tests/term-understanding.test.mjs",
