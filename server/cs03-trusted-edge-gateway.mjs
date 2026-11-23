@@ -84,7 +84,7 @@ export function createCs03TrustedEdgeGateway({verifyToken,fetcher,upstreamUrl,up
    if(request.method==='GET')dest.search=url.search;
    const headers={authorization:auth,'x-secret':upstreamSecret,origin:ORIGIN};
    if(request.method==='PUT')headers['content-type']='application/json';
-   const response=await fetcher(dest,{method:request.method,headers,body,redirect:'error',cache:'no-store',
+   const response=await fetcher(dest,{method:request.method,headers,body,redirect:'manual',cache:'no-store',
     signal:AbortSignal.timeout(8000)});
    if(![200,400,401,404,405,409,413,415,429,503].includes(response.status))
     return result(503,'Service Unavailable');
