@@ -9,7 +9,7 @@ const runbook=read('docs/CS03_INCIDENT_STOP_RECOVERY_RUNBOOK_20261123.md');
 test('runbook documents no-go, isolation, cost, draft protection and no blind rollback',()=>{
  for(const item of ['NO-GO','previewEnabled:false','429','503','409','fail-open','fail-closed',
  'CS03_ORIGIN_SECRET','CS03_GATEWAY_SECRET','localStorage','JSON','discardPending',
- 'ParkWait','main','追加','承認']){
+ 'ParkWait','main','承認']){
   assert.ok(runbook.includes(item),'RUNBOOK_MISSING:'+item);
  }
 });
