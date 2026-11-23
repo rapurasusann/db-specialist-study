@@ -128,3 +128,46 @@ test('account list rejects malformed record without caching data',async()=>{
  await assert.rejects(client.listProgress(),/PROGRESS_LIST_INVALID/);
  assert.equal(storage.map.size,0);
 });
+
+
+function deferred(){let resolve;const promise=new Promise(r=>{resolve=r;});return {promise,resolve};}
+test('account change during token retrieval blocks outgoing progress request',async()=>{
+ let active=A,requests=0;const pending=deferred();
+ const auth={signUp:{email:async()=>({data:{}})},signIn:{email:async()=>({data:{}})},
+  signOut:async()=>({data:{}}),getSession:async()=>({data:{user:{id:active}}}),
+  token:()=>pending.promise};
+ const client=createCs03AccountClient({authClient:auth,apiUrl:'https://api.example.invalid/',
+  fetcher:async()=>{requests++;return Response.json({data:null});}});
+ const job=client.pull('2025:am2:4');
+ // Let session() and the second identity check complete before token resolves.
+ await new Promise(resolve=>setImmediate(resolve));
+ active=B;pending.resolve({data:{token:'jwt-a'}});
+ await assert.rejects(job,/ACCOUNT_CHANGED/);
+ assert.equal(requests,0);
+});
+test('account change during GET response rejects stale progress without local writes',async()=>{
+ let active=A;const pending=deferred(),storage=memory();
+ const auth={signUp:{email:async()=>({data:{}})},signIn:{email:async()=>({data:{}})},
+  signOut:async()=>({data:{}}),getSession:async()=>({data:{user:{id:active}}}),
+  token:async()=>({data:{token:'jwt-a'}})};
+ const client=createCs03AccountClient({authClient:auth,apiUrl:'https://api.example.invalid/',
+  storage,fetcher:()=>pending.promise});
+ const job=client.pull('2025:am2:4');
+ await new Promise(resolve=>setImmediate(resolve));
+ active=B;pending.resolve(Response.json({data:{data:{level:'mastered'},revision:1,updated_at:'2026-11-24T00:00:00Z'}}));
+ await assert.rejects(job,/ACCOUNT_CHANGED/);
+ assert.equal(storage.map.size,0);
+});
+test('account change during PUT response rejects stale cache update',async()=>{
+ let active=A;const pending=deferred(),storage=memory();
+ const auth={signUp:{email:async()=>({data:{}})},signIn:{email:async()=>({data:{}})},
+  signOut:async()=>({data:{}}),getSession:async()=>({data:{user:{id:active}}}),
+  token:async()=>({data:{token:'jwt-a'}})};
+ const client=createCs03AccountClient({authClient:auth,apiUrl:'https://api.example.invalid/',
+  storage,fetcher:()=>pending.promise});
+ const job=client.save('2025:am2:4',{level:'review'});
+ await new Promise(resolve=>setImmediate(resolve));
+ active=B;pending.resolve(Response.json({data:{data:{level:'review'},revision:1,updated_at:'2026-11-24T00:00:00Z'}}));
+ await assert.rejects(job,/ACCOUNT_CHANGED/);
+ assert.equal(storage.map.size,0);
+});
