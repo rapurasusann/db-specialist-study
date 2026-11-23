@@ -2,7 +2,8 @@
 // Exercises transient test rows in ONE transaction, then ALWAYS rolls back.
 // Never use this against main; never print the database URL or credentials.
 import {randomUUID} from 'node:crypto';
-import {Client} from 'pg';
+import pg from 'pg';
+const {Client}=pg;
 
 const BRANCH='br-snowy-truth-a162pmdt';
 const HOST='ep-dawn-dew-a11prveg.ap-southeast-1.aws.neon.tech';
@@ -77,4 +78,4 @@ async function run(){
   }
  }
 }
-run().catch(error=>{console.error('CS03_ISOLATED_ACCEPTANCE_FAILED:'+error.message.replace(/postgres(?:ql)?:\\/\\/[^\\s]+/g,'[REDACTED_URL]'));process.exitCode=1;});
+run().catch(error=>{console.error('CS03_ISOLATED_ACCEPTANCE_FAILED:'+(/^CS03_ACCEPTANCE_[A-Z0-9_]+$/.test(error.message)?error.message:'CHECK_FAILED_WITHOUT_DETAILS'));process.exitCode=1;});
