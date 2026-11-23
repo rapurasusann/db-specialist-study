@@ -25,3 +25,33 @@
 - Keep CS-03 deploy guard blockers, candidate public routes disabled, and Worker/Neon credentials private.
 - Prepare an isolated, reversible least-privilege change proposal for DELETE and other-database CONNECT, with pre/post read-only checks and rollback; obtain explicit approval for any actual Neon privilege edits.
 - After approved least-privilege corrections, perform a scoped role-level verification before remote gateway testing.
+
+## Grant provenance confirmation (same isolated branch/database; read-only)
+
+Inspection of `pg_database.datacl`, `pg_class.relacl` and `aclexplode` established:
+
+- **DELETE on `cs03_auth_sandbox.public.study_progress`:** explicit table grant to `cs03_progress_api`, granted by `certification_study_owner`. It is independently removable without revoking SELECT/INSERT/UPDATE.
+- **CONNECT on `certification_study`:** granted to PostgreSQL **PUBLIC** (`=Tc/certification_study_owner`). The API role gets this permission *through PUBLIC*, and has **no explicit CONNECT grant on that database**. `REVOKE CONNECT ON DATABASE certification_study FROM cs03_progress_api` alone will **not** remove access granted through PUBLIC.
+- **CONNECT on `cs03_auth_sandbox`:** both PUBLIC and an explicit API-role CONNECT grant exist. The latter is expected and must remain.
+- PostgreSQL does not provide a per-role `DENY` that overrides privileges granted through PUBLIC. **Do not execute `REVOKE CONNECT ... FROM PUBLIC` without a separate, wider impact analysis of all roles/services**, because it changes permissions for every role that currently depends on PUBLIC.
+- No SQL modifications were performed. Role-level runtime tests, grant changes, the route fail-closed setting and cost acceptance remain open.
+
+### Safe change proposal — requires separate authorization before execution
+
+**Scope:** only the existing `cs03_auth_sandbox.public.study_progress` table on isolated branch `br-snowy-truth-a162pmdt`. Never run against main/default branch.
+
+Preconditions: record actual `current_database()`, `current_user`, branch ID from the Neon console, and current ACL; confirm app has no DELETE API endpoint or migration requiring this privilege. Verify the role has SELECT, INSERT and UPDATE before proceeding.
+
+Proposed **single scoped change** (not executed):
+```sql
+REVOKE DELETE ON TABLE public.study_progress FROM cs03_progress_api;
+```
+
+Postconditions (read-only): `has_table_privilege('cs03_progress_api','public.study_progress','DELETE') = false`; SELECT/INSERT/UPDATE remain true; forced RLS policy unchanged. Repeat only the relevant account read/write/row-isolation tests. If app functionality unexpectedly fails, stop and inspect dependencies; an explicitly approved rollback would be:
+```sql
+GRANT DELETE ON TABLE public.study_progress TO cs03_progress_api;
+```
+
+**Do not change CONNECT on `certification_study` in this step**. Instead, keep cross-database CONNECT as an explicit residual privilege and review whether all current users and services can tolerate revoking PUBLIC CONNECT in a separate change window. In the meantime confirm the API role has no USAGE on sensitive schemas or table privileges in that database; merely testing CONNECT is insufficient.
+
+**Status:** written proposal only. No privilege changes, secret access, new resources or deployment.
