@@ -37,7 +37,7 @@ export async function handleBrowserRequest(request, runtimeFactory=getRuntime, s
  const headers=corsHeaders(request);
  if(request.headers.get('origin')!==ORIGIN)
   return response(403,'Forbidden');
- if(url.pathname!=='/progress') return response(404,'Not Found',headers);
+ if(url.pathname!=='/progress'&&url.pathname!=='/') return response(404,'Not Found',headers);
  // The browser preflight terminates at the Cloudflare gateway. Native Neon
  // invocation must never serve an unauthenticated public preflight endpoint.
  // Check the gateway secret before any method-specific work.
@@ -55,7 +55,12 @@ export async function handleBrowserRequest(request, runtimeFactory=getRuntime, s
     return response(415,'Unsupported Media Type',headers);
  }
  try {
-  const result=await runtimeFactory().handle(request);
+  // The published Neon invocation_url is rooted at '/'. Route it to the
+  // internal progress API only after the shared-secret and method checks.
+  // Keep '/progress' for compatibility with the isolated legacy adapter.
+  const apiUrl=url.pathname==='/'?new URL('/progress'+url.search,url):url;
+  const apiRequest=apiUrl===url?request:new Request(apiUrl,request);
+  const result=await runtimeFactory().handle(apiRequest);
   const outHeaders=new Headers(result.headers);
   Object.entries(headers).forEach(([key,value])=>outHeaders.set(key,value));
   outHeaders.set('cache-control','no-store');
