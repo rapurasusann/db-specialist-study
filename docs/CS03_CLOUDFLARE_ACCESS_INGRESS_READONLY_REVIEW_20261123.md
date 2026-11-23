@@ -40,3 +40,13 @@
 | 公開判定 | **NO-GO** | クラウド実証後に改めてリリース判定 |
 
 **今回：公式情報とGitHub記録の読み取りだけ。Cloudflare/Neonへの書き込み、Secrets、GitHub Actions、route切替、Workers/DO作成、課金変更は行っていない。**
+
+## 6. Certification-StudyのWorkers画面確認（ユーザー提出：2026-11-23）
+
+ユーザー提出のCloudflareダッシュボード画像（Certification-Studyアカウント、Workers & Pages日本語表示）を目視確認。画面右側に**本日のリクエスト 0 / 100,000**、**今日の観測可能性イベント 0 / 200,000**が表示。中央に**プロジェクトが見つかりませんでした**／まだプロジェクトを作成していない旨が表示されている。**Cloudflareへのアクセス**カードには「ゼロトラストを設定する」ボタンがあり、現時点でCloudflare Accessの設定済み／利用可能なプラン／料金／ポリシーは確認できない。
+
+**画面の範囲**：Worker/Pages側でアプリ0件・当日使用量0を確認したが、Durable Objectsの実使用量/実配置の全容、Workers Freeの契約内容・課金状況、支払方法の登録有無、Zero Trust/Accessのアクティベーション状況は画像から断定できない。画面内にCloudflareアカウントIDが含まれていたため、この記録では再掲しない。
+
+**C01の進捗**：専用アカウント、Workersの当日リクエスト数、当日観測イベント、Worker/Pages 0件の証拠は収集済み。**Billing / 支払い設定とDO / AccessはOPEN**。
+
+**次の確認**：対象Certification-StudyのBilling画面でプラン・請求・支払方法の有無を確認し、Zero Trust/Accessについては設定開始せずプランや利用可否を調査する。カード番号やメールなどの秘匿情報は共有不要。Cloudflare/Neonへ書込・公開切替・課金変更なし、**NO-GO維持**。
