@@ -7,6 +7,19 @@
  let mode=null,device=null,sequence=0;
  const notify=(text)=>{const el=document.getElementById('cs03StudyHint');if(el){el.textContent=text;el.hidden=false;}};
  function inAccountMode(){return mode!==null;}
+ function readDeviceRecord(id){
+  if(!ID.test(id))throw Error('INVALID_RECORD');
+  const row=(device??progress)[id];
+  return row&&typeof row==='object'&&!Array.isArray(row)?structuredClone(row):null;
+ }
+ function readDeviceSnapshot(){
+  const records=Object.create(null);
+  for(const [id,row] of Object.entries(device??progress)){
+   if(ID.test(id)&&row&&typeof row==='object'&&!Array.isArray(row))
+    records[id]=structuredClone(row);
+  }
+  return records;
+ }
  function activate(listing,auto){
   if(mode||!listing||typeof listing.userId!=='string'||!listing.records||
      !auto||!['open','edit','state'].every(k=>typeof auto[k]==='function'))throw Error('ACCOUNT_MODE_INVALID');
@@ -78,7 +91,7 @@
   return true;
  }
  Object.defineProperty(window,'CS03_STUDY_PAGE',{
-  value:Object.freeze({inAccountMode,activate,deactivate,onStudyRender,write}),
+  value:Object.freeze({inAccountMode,readDeviceRecord,readDeviceSnapshot,activate,deactivate,onStudyRender,write}),
   writable:false,configurable:false
  });
 })();
