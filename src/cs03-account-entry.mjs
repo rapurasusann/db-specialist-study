@@ -13,6 +13,8 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    const {renderCs03HistoryView,clearCs03HistoryView}=await import('./cs03-history-view.mjs');
    const {previewCs03Sync}=await import('./cs03-sync-preview.mjs');
    const {createCs03StudyHint}=await import('./cs03-study-hint.mjs');
+   const {createCs03CrossBrowserSession}=await import('./cs03-cross-browser-session.mjs');
+   const {createCs03StudyAutoSync}=await import('./cs03-study-auto-sync.mjs');
    // Only allow the exact isolated Managed Auth instance.
    if(cfg.authUrl!=='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech/cs03_auth_sandbox/auth')
     throw Error('AUTH_TARGET_MISMATCH');
@@ -22,6 +24,9 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    });
    root.hidden=false;
    const scoped=createCs03ScopedProgress({account:client});
+   const auto=createCs03StudyAutoSync({session:createCs03CrossBrowserSession({account:client})});
+   const page=window.CS03_STUDY_PAGE;
+   if(!page)throw Error('STUDY_PAGE_BRIDGE_REQUIRED');
    const historyRoot=root.querySelector('[data-cs03="history-list"]');
    if(!historyRoot)throw Error('HISTORY_VIEW_MISSING');
    clearCs03HistoryView(historyRoot);
@@ -34,8 +39,22 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
     confirmTransfer:id=>window.confirm(id+' の端末内履歴1件をログイン中のアカウントにコピーしますか？\n既存の端末内履歴は残ります。')
    });
    const ui=mountCs03AccountPanel(root,client,{
-    onSignedIn:async()=>{studyHint.clear();clearCs03HistoryView(historyRoot);await scoped.bind();},
-    onSignedOut:()=>{studyHint.clear();scoped.unbind();clearCs03HistoryView(historyRoot);},
+    onSignedIn:async()=>{
+     studyHint.clear();clearCs03HistoryView(historyRoot);
+     await scoped.bind();
+     const listing=await auto.login();
+     try{page.activate(listing,auto);}
+     catch(error){auto.logout();throw error;}
+    },
+    onBeforeSignOut:async()=>{
+     const state=auto.state();
+     if(state.pending.length||state.blocked.length||state.inFlight?.length)
+      throw Error('UNSAVED_ACCOUNT_PROGRESS');
+    },
+    onSignedOut:()=>{
+     page.deactivate();auto.logout();
+     studyHint.clear();scoped.unbind();clearCs03HistoryView(historyRoot);
+    },
     onListProgress:async()=>{
      clearCs03HistoryView(historyRoot);
      const listing=await scoped.list();
