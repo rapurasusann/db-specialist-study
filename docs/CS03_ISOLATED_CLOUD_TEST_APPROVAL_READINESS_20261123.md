@@ -47,3 +47,23 @@
 - GitHub Actions、他アプリ・他account、本番main、支払登録、有料化は対象外。
 
 **総合判定：事前計画を文書化済み。ただしC01–C06未完了。現在の実クラウド配置・本番公開はNO-GO。**
+
+## 7. 最小実同期試験への一本化（2026-11-23）
+
+**目的：**「PCで学習進捗を保存 → 別端末で同じメールアドレスのアカウントにログイン → 同じ進捗を確認」を1回成功させる。これが達成されるまで追加の任意の静的試験・確認画面の往復を増やさない。
+
+**済みの根拠（再提出不要）**：Cloudflare Certification-StudyのWorkers Free有効、Zero Trust Free有効、支払方法未登録、Worker 0件・DO 0件・使用量0（操作者スクリーンショット）；Neon `quiet-mouse-39990305` の非default `br-snowy-truth-a162pmdt` Ready、Functions 0件（読み取り結果）；Node24向け単一bundleローカル試験6/6 PASS、Neon Functionルート・Gateway関連29/29 PASS、Access静的負試験6/6 PASS。これらは過去の開発PC実行結果であり、**クラウド上での実同期を意味しない**。
+
+### 残作業（作業を束ねる）
+1. **Neon最小配置（要独立承認）**：非default branchにCS-03専用Function 1件。Neon公式`deploy_function`が要求するZIPと`nodejs24`、server-onlyの必要envを同時投入する。ZIPはNode24 ESM esbuild単一`index.mjs`。実秘密はGitHub・チャット・ログに転記せず安全な入力方法を先に確定。実Function URLは配備後のNeon応答から取得、推測しない。Function直URLへの秘密なし・誤秘密は401、未知経路404、実ユーザーデータ書込みはこの段階では行わない。
+2. **Cloudflare隔離配備（要別承認）**：Certification-Study専用accountにWorker 1件とSQLite Durable Object 1 class、secret/binding を設定。Worker全体にAccess Free（試験者1名のみ）を紐付け、実際の入口を有効化する前に保護状態・迂回経路・Worker Free上限時Fail closedの設定をレビュー。AccessではNeonの直URLを守れないのでFunction側の秘密/JWT検証は絶対に省略しない。**Worker `request.cf`だけを信頼境界としない。** `workers_dev/preview_urls`やrouteを有効化する時は対象と停止手順を個別承認。
+3. **機能受入（上記承認・安全確認の後）**：認証済み試験者だけが学習記録を保存でき、PC→別端末へ反映。別ユーザーの進捗は読めず、JWT不正・共有秘密欠落・Quota/DO停止・Neon停止では403/401/429/503などで**保存成功と偽らない**ことを実測。ユーザー本番データや他プロジェクトには触れない。
+4. **後片付け**：異常・想定外費用・無許可2xxを検出したらHTTP試験を停止し、Access許可/Worker経路を止め、NeonのFunction直URLについては別のsecret失効・Function停止を行う。**リソース削除やsecret変更の実施自体は独立承認対象**。証拠は非秘密の設定/応答コード/利用量のみ。一般公開・CSP変更・main統合はさらに別判断。
+
+### 配置時にまだ確認が必要な実務要件（ここだけOPEN）
+- Cloudflare Worker Accessの適用順序と、利用者向け未保護のHTTP経路が一瞬も生じない作成手順。Access Freeのポリシーを作るまでは外部入口を有効にしない。
+- 秘密の投入・失効方法、DB専用ロール/branch固定、Neon Function・Cloudflare Worker双方の所有者証拠。
+- 配置するコードのpredeploy guardは現在も`TRUSTED_GATEWAY_NOT_IMPLEMENTED`、`GATEWAY_RATE_LIMIT_ACCEPTANCE_MISSING`、`ISOLATED_DEPLOYMENT_APPROVAL_MISSING`等により**BLOCKED**。テスト用構成の存在をデプロイ許可と誤認しない。安全なIngress/費用の実証が整うまで解除しない。
+- **課金**：両Freeプラン・Cloudflare支払未登録は画像で確認済みだが、ゼロコスト永久保証は不可。利用量を試験前後に確認し、超過リスク時は停止。勝手に有料化しない。
+
+**実装手順の詳細を不必要に分割しない。** 次の意思決定は、対象を絞った「Neon隔離Functionの初回実配備」の承認可否。ただしコードbundle・秘密の安全な投入方法・事故時の具体的停止操作が揃うまではその承認を実行に移さない。Cloudflare Worker/DOと本番公開について、この承認が自動的に広がることはない。**現在NO-GO**。
