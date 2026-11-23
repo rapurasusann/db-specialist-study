@@ -65,3 +65,17 @@
 - **個別承認まで禁止**：隔離Neon Function / Worker / DOの新規配置、公開ルート作成、秘密書込み、本番CSP変更、実通信テストでの課金リスクを伴う操作。
 
 **公開判定NO-GOを継続**し、既存のデプロイ停止ガードと公開プレビューOFFを維持する。
+
+## 7. 運営者確定方針：資格勉強アプリ専用Cloudflareアカウント
+
+**2026-11-23 運営者指示：他のアプリ／Cloudflareアカウントとリソース・使用量・契約を分離し、他への影響を避ける。** CS-03のCloudflare Worker / Durable Object / APIトークン / 秘密設定 / 監視 / 課金・無料枠を**資格勉強アプリ専用の別Cloudflareアカウント**にのみ配置する。現在画面に表示された既存の Cloudflare アカウントへは新規配置しない。既存アカウントの Workers、DO、DNS、Routes、Limits、課金、プラン設定を変更しない。
+
+- 現在の同一ログインでのアカウント追加と独立したFree account作成はCloudflare公式でサポートされる。ユーザーによる専用アカウント作成後、アカウントIDとFree契約の証拠を読み取り確認してから、そのIDだけを明示的に許可する。**作成・設定・配備の操作はまだ行っていない**。
+- Workers Freeのリクエスト枠はaccount単位。Cloudflare公式によればアカウントごとの請求プロファイルも独立。資格勉強アプリ専用アカウント内に他サービスを混在させない。ただしCloudflare基盤の障害まで隔離できるとは主張しない。
+- Neonは既存の `Certification-Study` 組織と `certification-study` プロジェクトを維持。分離が未確認の接続先や、他プロジェクトのリソースは使わない。
+- **新規デプロイの追加停止条件**：専用Cloudflareアカウント未作成／専用Account ID未確認／Freeプラン未確認／アカウント横断リソース共有の疑い → **NO-GO**。専用アカウント作成だけでCloudflare FunctionsやWorkerの配置許可とはみなさない。
+
+Cloudflare公式資料：
+- https://developers.cloudflare.com/fundamentals/account/create-account/
+- https://developers.cloudflare.com/fundamentals/concepts/accounts-and-zones/
+- https://developers.cloudflare.com/workers/platform/limits/
