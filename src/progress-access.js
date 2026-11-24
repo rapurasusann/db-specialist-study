@@ -14,7 +14,7 @@ function createProgressAccess({ verifyToken, store }) {
     return identity.userId.toLowerCase();
   }
   function exam(input){if(!input||typeof input.examCode!=='string'||!/^[a-z][a-z0-9_]{1,31}$/.test(input.examCode))throw Error('BAD_REQUEST');return input.examCode;}
-  const QUESTION=/^20[0-9]{2}:(am1|am2|pm1|pm2):([1-9]|[1-9][0-9]|100)$/;
+  const QUESTION=/^(20[0-9]{2}:(am1|am2|pm1|pm2):([1-9]|[1-9][0-9]|100)|term:(nf-1|nf-2|nf-3|ra-select|ra-project|ra-union|ra-intersect|ra-difference|ra-product|ra-join|ra-division|ra-rename|iso-ru|iso-rc|iso-rr|iso-ser|iso-dirty|iso-nonrepeat|iso-phantom|xp-pair|xp-tdd|xp-ci|xp-refactor|xp-collective|xp-simple|xp-small|xp-customer|xp-pace|xp-standard|crypto-symmetric|crypto-public|crypto-aes|crypto-rsa|crypto-hash|crypto-sign|crypto-hmac|crypto-hybrid|crypto-ecdh|crypto-forward|crypto-nonce|crypto-salt|crypto-aead|con-immediate|con-deferred|con-deferrable|con-set-constraints|con-initially-immediate|con-initially-deferred|con-unique|con-transaction)|step:[2-5]:[1-5]:([1-9]|10))$/;
   function key(input) {
     if (!input || typeof input.examCode !== 'string' || !/^[a-z][a-z0-9_]{1,31}$/.test(input.examCode) || typeof input.questionId !== 'string' || !QUESTION.test(input.questionId)) throw new Error('BAD_REQUEST');
     return {examCode:input.examCode, questionId:input.questionId};
