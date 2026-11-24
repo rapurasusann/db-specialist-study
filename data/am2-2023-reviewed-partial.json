@@ -359,7 +359,7 @@
       "explanation": "RANKは順位を整数で返す。PARTITION BYでクラス単位に区切る。",
       "sourcePage": 7,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -445,8 +445,11 @@
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 7,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:10": {
@@ -461,7 +464,7 @@
       "explanation": "完全外部結合で双方の不一致行を残し、どちらかのIDがNULLの行を選ぶ。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -511,8 +514,11 @@
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 8,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:11": {
@@ -527,7 +533,7 @@
       "explanation": "a,b,cの全商品を扱う店はBだけ。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -599,8 +605,11 @@
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 9,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:12": {
@@ -615,14 +624,17 @@
       "explanation": "獲得相と解放相を分け、一度解放を開始したら新たなロックを取得しない。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 10,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:13": {
-      "stem": "メーカーコードにB⁺木索引があり、値は多数かつ均等、NULLは少数。最も有効な検索は？",
+      "stem": "部品表のメーカーコード列にB⁺木索引を作成した。部品・メーカーの件数とコードの種類は十分多く、コードは均等に分布しNULLは少数とする。検索性能の改善が最も期待できる条件は？",
       "options": {
         "ア": "1001以外",
         "イ": "1001と4001以外",
@@ -633,10 +645,13 @@
       "explanation": "狭い範囲の検索は対象行が少なく、索引の利点が大きい。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 10,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:14": {
@@ -651,14 +666,17 @@
       "explanation": "同じ更新を再実行しても結果が変わらない性質。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 11,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:15": {
-      "stem": "デッドロック、システム障害、媒体障害の回復方法の組合せは？",
+      "stem": "デッドロックによる取引障害、ハードウェア誤動作によるシステム障害、記録媒体が使用不能となる媒体障害について、ロールバック（取消）とロールフォワード（再実行）の適切な組合せは？",
       "options": {
         "ア": "取消／再実行または取消／取消",
         "イ": "取消／再実行または取消／再実行",
@@ -669,10 +687,13 @@
       "explanation": "デッドロックは取消、システム障害は状況に応じて両方、媒体障害はバックアップ復元後に再実行する。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 11,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:16": {
@@ -687,10 +708,13 @@
       "explanation": "整合性を高めるための制御が増え、並行性が低下する傾向がある。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 12,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:17": {
@@ -705,10 +729,13 @@
       "explanation": "並行実行しても直列実行と同等の結果を保証する。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 12,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:18": {
@@ -723,10 +750,13 @@
       "explanation": "ハッシュで前のブロックと結び付け、改ざんを検知しやすくする。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 12,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:19": {
@@ -741,14 +771,17 @@
       "explanation": "反射型攻撃は第三者の応答を悪用する点が特徴。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:20": {
-      "stem": "インシデント対応の順序は？",
+      "stem": "JPCERT/CCのインシデントハンドリングマニュアル（2021年11月30日）に沿った処理順序は？",
       "options": {
         "ア": "対応→検知→トリアージ",
         "イ": "対応→トリアージ→検知",
@@ -759,10 +792,13 @@
       "explanation": "まず発見・受付し、重要度や緊急度を判定して対応する。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:21": {
@@ -777,14 +813,17 @@
       "explanation": "脆弱性の存在を実証したり悪用したりするコードを指す。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 14,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:22": {
-      "stem": "4台以上のディスクで2台故障まで復元できるRAIDは？",
+      "stem": "データとパリティを4台以上のディスクに分散し、任意の2台の故障までデータを復元できるRAIDレベルは？",
       "options": {
         "ア": "RAID0",
         "イ": "RAID1",
@@ -795,10 +834,13 @@
       "explanation": "RAID6は二重パリティで2台の故障に耐えられる。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 14,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:23": {
@@ -813,10 +855,13 @@
       "explanation": "需要増加を予測して将来必要な処理能力を確保する。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 14,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:24": {
@@ -831,10 +876,13 @@
       "explanation": "データ構造を中心にシステムを設計する。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 15,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:25": {
@@ -849,10 +897,13 @@
       "explanation": "本番と近い条件で公開前の問題を発見する。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 15,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     }
   }
