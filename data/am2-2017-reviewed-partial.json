@@ -1,0 +1,23 @@
+{
+  "year": 2017,
+  "source": "IPA 平成29年度春期 データベーススペシャリスト試験 午前Ⅱ",
+  "questionUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+  "answerUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_ans.pdf",
+  "status": "partial-review-only",
+  "questions": {
+    "am2:1": {
+      "stem": "データベースの3層スキーマの正しい説明は？",
+      "options": {
+        "ア": "概念スキーマは内部と外部の間にあり実体・データ項目の関連を記述する",
+        "イ": "外部スキーマは物理実装を記述し一つだけ存在する",
+        "ウ": "サブスキーマは複数DBを結合した内部スキーマの一部",
+        "エ": "内部スキーマは個々の利用者から見た記述"
+      },
+      "answer": "ア",
+      "explanation": "概念は論理構造、内部は物理構造、外部は利用者ごとの見え方を表す。",
+      "sourcePage": 3,
+      "adapted": true,
+      "needsSourceReview": true
+    }
+  }
+}
