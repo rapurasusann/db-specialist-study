@@ -114,7 +114,8 @@
               "to": "会計取引",
               "classId": "移動"
             }
-          ]
+          ],
+          "title": "仕訳モデル：各取引の移動金額合計は0"
         }
       ],
       "needsDiagramReview": true,
@@ -149,6 +150,13 @@
             "text": "SELECT 残高 FROM 勘定 a, 移動 m, 会計取引 t\nWHERE a.勘定科目 = m.勘定科目 AND a.勘定科目 = '現金' AND t.取引日 <= '2017-04-30'"
           }
         ]
+      },
+      "diagramReview": {
+        "status": "source-semantics-compared-browser-pending",
+        "reviewedOn": "2026-11-24",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 4,
+        "scope": "IPA PDF page rendered and visually compared in this review; SVG appearance and exact routing remain pending."
       }
     },
     "am2:3": {
@@ -160,7 +168,7 @@
         "エ": "人から検査項目へ1対多、項目から検査値へ多対1"
       },
       "answer": "イ",
-      "explanation": "検査項目の標準値と個人別の測定履歴を分離する。",
+      "explanation": "人と検査項目は独立して管理し、各検査値を一人の人と一つの検査項目に対応付ける。これにより同一項目の複数回の測定と最新標準値の管理が可能になる。",
       "sourcePage": 5,
       "adapted": true,
       "needsSourceReview": false,
@@ -193,10 +201,6 @@
             "attributes": {
               "人": [
                 "識別"
-              ],
-              "検査値": [
-                "計測日時",
-                "計測値"
               ],
               "検査項目": [
                 "項目名",
@@ -367,6 +371,13 @@
         "page": 5,
         "reviewedOn": "2026-11-24",
         "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      },
+      "diagramReview": {
+        "status": "source-semantics-compared-browser-pending",
+        "reviewedOn": "2026-11-24",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 5,
+        "scope": "IPA PDF page rendered and visually compared in this review; SVG appearance and exact routing remain pending."
       }
     },
     "am2:4": {
