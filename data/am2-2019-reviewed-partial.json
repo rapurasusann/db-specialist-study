@@ -17,14 +17,16 @@
       "explanation": "分断が起きた場合、一貫性と可用性を同時に保証できない。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 3,
+        "scope": "Compared actual IPA PDF screenshot in current pass; browser visual acceptance and exact diagram fidelity remain pending."
       }
     },
     "am2:2": {
-      "stem": "毎秒20件、1件当たりバッファ・ログとも10kB消費する。バッファ480MB、ログ240MB。バッファ満杯またはログ切替でチェックポイントを実施しバッファを初期化する。1時間に何回発生するか（1MB=1000kB）？ 計測開始時点でバッファとログは空で、処理速度は一定とする。",
+      "stem": "毎秒20件、1件当たりバッファ・ログとも10kB消費する。バッファ480MB、ログ240MB。バッファ満杯またはログ切替でチェックポイントを実施しバッファを初期化する。1時間に何回発生するか（1MB=1000kB）？ 計測開始時点でバッファとログは空で、処理速度は一定とする。 ログファイルは2本を交互に使用し、使用済みのファイルは保存後に初期化する。ログ書込みはWALに従い、チェックポイント時にはデータを永続化してバッファを初期化する。",
       "options": {
         "ア": "1.5",
         "イ": "2",
@@ -35,14 +37,16 @@
       "explanation": "1秒当たり20×10=200kB。ログが満杯になるのは240,000÷200=1,200秒後、バッファは2,400秒後。ログ切替が先に発生し、そのたびにバッファが初期化されるので、1時間では3,600÷1,200=3回。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 3,
+        "scope": "Compared actual IPA PDF screenshot in current pass; browser visual acceptance and exact diagram fidelity remain pending."
       }
     },
     "am2:3": {
-      "stem": "部・課・係の階層を表す三つのモデルの説明として適切なものは？",
+      "stem": "部・課・係の階層を表す三つのモデルの説明として適切なものは？ 組織レベルは階層内の位置を意味する。親子関係には循環がなく、モデルBの階層制約はその循環を禁止する。",
       "options": {
         "ア": "どのモデルも階層追加時に変更不要",
         "イ": "どのモデルも複数の親を表現できない",
@@ -53,7 +57,7 @@
       "explanation": "関連表で親子を表す場合、循環しないことは別の制約で保証する必要がある。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "uml",
@@ -180,8 +184,10 @@
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 4,
+        "scope": "Compared actual IPA PDF screenshot in current pass; browser visual acceptance and exact diagram fidelity remain pending."
       }
     },
     "am2:4": {
