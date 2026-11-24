@@ -1,0 +1,75 @@
+{
+  "year": 2016,
+  "source": "IPA 平成28年度春期 データベーススペシャリスト試験 午前Ⅱ",
+  "questionUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+  "answerUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_ans.pdf",
+  "status": "partial-review-only",
+  "questions": {
+    "am2:1": {
+      "stem": "商品、在庫商品、倉庫、入庫、出庫のUMLモデルについて、正しい説明は？ 倉庫間移動はない。",
+      "options": {
+        "ア": "1種類の商品を二つの倉庫に初入庫すると在庫商品が2件増える",
+        "イ": "2種類の商品を一つの倉庫に入庫すると入庫が1件増える",
+        "ウ": "格納先未確定の商品が存在する",
+        "エ": "出庫実績のない在庫商品は存在しない"
+      },
+      "answer": "ア",
+      "explanation": "在庫商品は商品と倉庫の組合せに対応する。出庫は0件でもよい。",
+      "sourcePage": 3,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "UMLの関連と多重度",
+          "headers": [
+            "クラス",
+            "多重度",
+            "クラス",
+            "多重度"
+          ],
+          "rows": [
+            [
+              "商品",
+              "1",
+              "在庫商品",
+              "1..*"
+            ],
+            [
+              "倉庫",
+              "1",
+              "在庫商品",
+              "0..*"
+            ],
+            [
+              "在庫商品",
+              "1",
+              "入庫",
+              "1..*"
+            ],
+            [
+              "在庫商品",
+              "1",
+              "出庫",
+              "0..*"
+            ]
+          ]
+        }
+      ]
+    },
+    "am2:2": {
+      "stem": "k次B木で各ノードは最大2kレコード、最大2k+1個の子を持つ。根を第1段として第n段までの最大格納件数は？",
+      "options": {
+        "ア": "(2k+1)^(n−1)−1",
+        "イ": "(2k+1)^n−1",
+        "ウ": "2(k+1)^(n−1)−1",
+        "エ": "2(k+1)^n−1"
+      },
+      "answer": "イ",
+      "explanation": "各段の最大件数は2k(2k+1)^(i−1)。等比数列の和は(2k+1)^n−1。",
+      "sourcePage": 3,
+      "adapted": true,
+      "needsSourceReview": true
+    }
+  }
+}
