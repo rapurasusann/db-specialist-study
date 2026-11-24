@@ -3,7 +3,7 @@
   "source": "IPA 平成28年度春期 データベーススペシャリスト試験 午前Ⅱ",
   "questionUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
   "answerUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_ans.pdf",
-  "status": "partial-review-only",
+  "status": "all-25-adapted-review-only",
   "questions": {
     "am2:1": {
       "stem": "商品、在庫商品、倉庫、入庫、出庫のUMLモデルについて、正しい説明は？ 倉庫間移動はない。",
@@ -137,6 +137,537 @@
       "sourcePage": 5,
       "adapted": true,
       "needsSourceReview": true
+    },
+    "am2:6": {
+      "stem": "医師・診療科・診察・患者の表定義から多重度を選ぶ。",
+      "options": {
+        "ア": "多:1、多:1、1:多",
+        "イ": "多:1、1:多、多:1",
+        "ウ": "1:多、多:1、1:多",
+        "エ": "1:多、1:多、多:1"
+      },
+      "answer": "イ",
+      "explanation": "診療科を参照する医師・診察、および患者を参照する診察が多側。",
+      "sourcePage": 6,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "表定義",
+          "headers": [
+            "表",
+            "主キー",
+            "その他",
+            "外部キー"
+          ],
+          "rows": [
+            [
+              "医師",
+              "医師番号",
+              "医師名",
+              "診療科コード"
+            ],
+            [
+              "診療科",
+              "診療科コード",
+              "診療科名称",
+              ""
+            ],
+            [
+              "診察",
+              "診療科コード・患者番号・診察日時",
+              "",
+              "診療科コード、患者番号"
+            ],
+            [
+              "患者",
+              "患者番号",
+              "患者名",
+              ""
+            ]
+          ]
+        }
+      ],
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "uml",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "*",
+                "toLabel": "1"
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "*",
+                "toLabel": "1"
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "1",
+                "toLabel": "*"
+              }
+            ]
+          }
+        ],
+        "イ": [
+          {
+            "type": "uml",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "*",
+                "toLabel": "1"
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "1",
+                "toLabel": "*"
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "*",
+                "toLabel": "1"
+              }
+            ]
+          }
+        ],
+        "ウ": [
+          {
+            "type": "uml",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "1",
+                "toLabel": "*"
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "*",
+                "toLabel": "1"
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "1",
+                "toLabel": "*"
+              }
+            ]
+          }
+        ],
+        "エ": [
+          {
+            "type": "uml",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "1",
+                "toLabel": "*"
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "1",
+                "toLabel": "*"
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "*",
+                "toLabel": "1"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "am2:7": {
+      "stem": "候補キーの性質は？",
+      "options": {
+        "ア": "関係の属性から選ばない",
+        "イ": "タプルごとに値が異なる",
+        "ウ": "主キーから選ぶ",
+        "エ": "複数存在できない"
+      },
+      "answer": "イ",
+      "explanation": "候補キーは各行を一意に識別する最小属性集合。",
+      "sourcePage": 6,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:8": {
+      "stem": "正規化の分解について適切なのは？",
+      "options": {
+        "ア": "全分解で従属性保存",
+        "イ": "全分解で無損失",
+        "ウ": "第3正規形まで無損失かつ従属性保存の分解が可能",
+        "エ": "第4から第5正規形への分解は自明な多値従属を保存する"
+      },
+      "answer": "ウ",
+      "explanation": "3NF合成では無損失性と従属性保存を両立できる。",
+      "sourcePage": 7,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:9": {
+      "stem": "TBL1のCOL1がTBL2のCOL1に存在する行を重複なしで取得するIN検索と等価なのは？",
+      "options": {
+        "ア": "UNION",
+        "イ": "同じCOL1を比較するEXISTS",
+        "ウ": "COL1とCOL2を両方比較する結合",
+        "エ": "左外部結合"
+      },
+      "answer": "イ",
+      "explanation": "EXISTSでCOL1の一致を確認すれば同じ行を選択できる。",
+      "sourcePage": 7,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "sql",
+          "text": "SELECT DISTINCT TBL1.COL1 FROM TBL1 WHERE COL1 IN (SELECT COL1 FROM TBL2)"
+        }
+      ]
+    },
+    "am2:10": {
+      "stem": "基底表が更新可能なとき、更新可能なビューは？",
+      "options": {
+        "ア": "DISTINCTを使う",
+        "イ": "GROUP BYを使う",
+        "ウ": "単一表をWHEREで絞る",
+        "エ": "複数表とHAVINGを使う"
+      },
+      "answer": "ウ",
+      "explanation": "単一表の単純な選択・射影なら更新を基底表に対応付けられる。",
+      "sourcePage": 8,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:11": {
+      "stem": "等結合に限定される結合アルゴリズムは？",
+      "options": {
+        "ア": "入れ子ループ",
+        "イ": "索引結合",
+        "ウ": "ソートマージ",
+        "エ": "ハッシュ"
+      },
+      "answer": "エ",
+      "explanation": "等しいキーのハッシュ値を利用する。",
+      "sourcePage": 8,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:12": {
+      "stem": "関係代数の直積とは？",
+      "options": {
+        "ア": "条件を満たす行",
+        "イ": "指定属性だけの抽出",
+        "ウ": "条件を満たす二表の組合せ",
+        "エ": "二表の全タプルの組合せ"
+      },
+      "answer": "エ",
+      "explanation": "m行とn行ならm×n行を生成する。",
+      "sourcePage": 9,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:13": {
+      "stem": "デッドロック検出に使うものは？",
+      "options": {
+        "ア": "2相ロック",
+        "イ": "時刻印",
+        "ウ": "チェックポイント",
+        "エ": "待ちグラフ"
+      },
+      "answer": "エ",
+      "explanation": "循環した待ち関係を検出する。",
+      "sourcePage": 9,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:14": {
+      "stem": "2相コミットの手順は？",
+      "options": {
+        "ア": "準備不可の場合だけ応答",
+        "イ": "全サイトの準備を確認してコミット指示",
+        "ウ": "先にコミットして失敗時に再指示",
+        "エ": "全サイトをロックしてコミット"
+      },
+      "answer": "イ",
+      "explanation": "準備相で全参加者の同意を得てから確定する。",
+      "sourcePage": 9,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:15": {
+      "stem": "和集合演算が成立する必要十分条件は？",
+      "options": {
+        "ア": "同名・同ドメインの属性が存在",
+        "イ": "属性数が同じで対応属性のドメインが同じ",
+        "ウ": "主キーのドメインが同じ",
+        "エ": "行数が同じで同ドメイン属性が存在"
+      },
+      "answer": "イ",
+      "explanation": "和両立には属性数と対応するドメインの一致が必要。",
+      "sourcePage": 10,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:16": {
+      "stem": "WALの目的は？",
+      "options": {
+        "ア": "停止なしのチェックポイント",
+        "イ": "デッドロック検出",
+        "ウ": "確定済み未書込み更新の障害回復",
+        "エ": "ログ媒体障害中の更新"
+      },
+      "answer": "ウ",
+      "explanation": "データより先にログを永続化し、確定済み変更を復元できるようにする。",
+      "sourcePage": 10,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:17": {
+      "stem": "原子性の説明は？",
+      "options": {
+        "ア": "格納場所を意識しない",
+        "イ": "全処理済みか全未処理のどちらか",
+        "ウ": "DBの一貫性維持",
+        "エ": "並行処理でも結果が正しい"
+      },
+      "answer": "イ",
+      "explanation": "トランザクションは全成功または全取消。",
+      "sourcePage": 10,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:18": {
+      "stem": "移動透過性とは？",
+      "options": {
+        "ア": "格納サイト変更を利用者が意識しない",
+        "イ": "物理分散を意識しない",
+        "ウ": "複製を意識しない",
+        "エ": "分割を意識しない"
+      },
+      "answer": "ア",
+      "explanation": "格納先を移しても利用方法を変えずに済む。",
+      "sourcePage": 11,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:19": {
+      "stem": "a=全適合件数、b=検索結果中の適合件数、c=全検索結果件数。再現率と精度は？",
+      "options": {
+        "ア": "a/b, b/c",
+        "イ": "b/a, b/c",
+        "ウ": "b/a, c/b",
+        "エ": "c/b, a/b"
+      },
+      "answer": "イ",
+      "explanation": "再現率は適合全体に対する取得割合、精度は取得結果中の適合割合。",
+      "sourcePage": 11,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:20": {
+      "stem": "従量課金クラウドに対するEDoSの目的は？",
+      "options": {
+        "ア": "カード情報取得",
+        "イ": "課金機能停止による回避",
+        "ウ": "資源消費を増やして利用者に経済的損失を与える",
+        "エ": "パスワード解析"
+      },
+      "answer": "ウ",
+      "explanation": "サービスの利用料金増加を狙う攻撃。",
+      "sourcePage": 12,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:21": {
+      "stem": "DNSの非公開情報の一括取得を防ぐ設定は？",
+      "options": {
+        "ア": "SOAシリアル更新",
+        "イ": "TTL短縮",
+        "ウ": "ゾーン転送許可先の限定",
+        "エ": "ラウンドロビン"
+      },
+      "answer": "ウ",
+      "explanation": "許可されたセカンダリ等にだけゾーン転送を認める。",
+      "sourcePage": 12,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:22": {
+      "stem": "ブロック単位のストライピングと分散パリティを使用するRAIDは？",
+      "options": {
+        "ア": "RAID0",
+        "イ": "RAID3",
+        "ウ": "RAID4",
+        "エ": "RAID5"
+      },
+      "answer": "エ",
+      "explanation": "RAID5ではパリティを複数ディスクに分散する。",
+      "sourcePage": 12,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:23": {
+      "stem": "サーバ1台とクライアント3台のうち、サーバと最低1台のクライアントが稼働すれば利用可能。独立な停止確率がサーバa、各クライアントbの場合、利用不能確率は？",
+      "options": {
+        "ア": "1−(1−a)(1−b³)",
+        "イ": "1−(1−a)(1−b)³",
+        "ウ": "(1−a)(1−b)³",
+        "エ": "1−ab³"
+      },
+      "answer": "ア",
+      "explanation": "利用可能確率は(1−a)(1−b³)。その余事象を求める。",
+      "sourcePage": 13,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:24": {
+      "stem": "フェールセーフの例は？",
+      "options": {
+        "ア": "電池の逆挿入防止",
+        "イ": "交通管制故障時に赤信号点灯",
+        "ウ": "二重コントローラで運転継続",
+        "エ": "RAID1で信頼性向上"
+      },
+      "answer": "イ",
+      "explanation": "故障時に安全側に移行する設計。",
+      "sourcePage": 13,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:25": {
+      "stem": "XPのプラクティスは？",
+      "options": {
+        "ア": "構造化プログラミング",
+        "イ": "コンポーネント指向",
+        "ウ": "ビジュアルプログラミング",
+        "エ": "ペアプログラミング"
+      },
+      "answer": "エ",
+      "explanation": "二人でコードを作成・レビューする。",
+      "sourcePage": 13,
+      "adapted": true,
+      "needsSourceReview": true
     }
-  }
+  },
+  "pendingDiagramQuestions": [
+    1,
+    4,
+    5
+  ]
 }
