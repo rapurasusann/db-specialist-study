@@ -202,7 +202,7 @@
       "explanation": "エッジはノード間の関係であり、プロパティは一つの対象に所属する。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "needsDiagramReview": true,
       "figures": [
         {
@@ -588,8 +588,11 @@
         ]
       },
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 5,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:5": {
@@ -604,7 +607,7 @@
       "explanation": "外部キーを持つ医師・診察が多側になる。",
       "sourcePage": 6,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -612,27 +615,32 @@
           "headers": [
             "表",
             "主キー",
+            "その他の属性",
             "外部キー"
           ],
           "rows": [
             [
               "医師",
               "医師番号",
+              "医師名",
               "診療科コード"
             ],
             [
               "診療科",
               "診療科コード",
+              "診療科名称",
               "なし"
             ],
             [
               "診察",
               "診療科コード・患者番号・診察日時",
-              "診療科コード、患者番号"
+              "なし",
+              "診療科コード・患者番号"
             ],
             [
               "患者",
               "患者番号",
+              "患者名",
               "なし"
             ]
           ]
@@ -858,8 +866,11 @@
         ]
       },
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 6,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:6": {
@@ -874,7 +885,7 @@
       "explanation": "履修を学生・科目・学期の組合せとして識別する必要がある。",
       "sourcePage": 7,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "needsDiagramReview": true,
       "optionFigures": {
         "ア": [
@@ -1058,8 +1069,11 @@
         ]
       },
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 7,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:7": {
@@ -1074,14 +1088,17 @@
       "explanation": "第3正規形への合成では無損失性と関数従属性保存を両立できる。",
       "sourcePage": 7,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 7,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:8": {
-      "stem": "3NFでも許される関数従属は？",
+      "stem": "第3正規形で成立する可能性がある関数従属は？",
       "options": {
         "ア": "キー→反復属性",
         "イ": "候補キーの一部分→別の候補キーの一部分",
@@ -1089,13 +1106,16 @@
         "エ": "非キー属性→別の非キー属性"
       },
       "answer": "イ",
-      "explanation": "右辺が候補キーの構成属性なら3NFでも許容される場合がある。",
+      "explanation": "右辺が候補キーを構成する属性なら、左辺がスーパーキーでなくても3NFを満たす場合がある。非キー属性への部分従属や推移的従属は認められない。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 8,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:9": {
@@ -1110,10 +1130,13 @@
       "explanation": "確定済みデータだけを読むが、反復不能読取りは起こり得る。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 8,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:10": {
@@ -1259,7 +1282,7 @@
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
         "page": 9,
         "reviewedOn": "2026-11-24",
-        "scope": "Compared visible official page screenshot with adapted stem, options and answer logic; browser acceptance separate."
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:11": {
@@ -1274,7 +1297,7 @@
       "explanation": "右表のAP条件をONに指定すると、APがない社員も左外部結合で残る。WHEREで左表のFE取得者に絞り込む。右表のAP条件をWHEREに置くとNULLの行が除外される。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -1376,8 +1399,11 @@
         ]
       },
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 10,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:12": {
@@ -1392,10 +1418,13 @@
       "explanation": "RからR固有の要素を除けば共通部分だけが残る。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 11,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:13": {
@@ -1410,14 +1439,17 @@
       "explanation": "属性ごとに選択するか否かの2通りがある。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 11,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:14": {
-      "stem": "会員別・項目別に最大行番号の値を採用し、会員名と最終購入日を横持ちにする。SQL中の三つの空欄に共通する集約関数は？ 行番号は表全体で一意とする。",
+      "stem": "会員別・項目別に最大行番号の値を採用し、会員名と最終購入日を横持ちにする。SQL中の三つの空欄に共通する集約関数は？ 行番号は表全体で一意とする。 新しい行の番号は直前に追加された行の番号に1を加える。",
       "options": {
         "ア": "COUNT",
         "イ": "DISTINCT",
@@ -1428,7 +1460,7 @@
       "explanation": "最新行の選択とCASEの非NULL値の抽出にMAXを使う。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -1510,8 +1542,11 @@
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 12,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:15": {
@@ -1526,10 +1561,13 @@
       "explanation": "準備相と確定相を分ける。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:16": {
@@ -1544,10 +1582,13 @@
       "explanation": "各外側行について内側のn行を調べる。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:17": {
@@ -1562,10 +1603,13 @@
       "explanation": "結合キー等を先に交換して転送対象行を絞る。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:18": {
@@ -1580,10 +1624,13 @@
       "explanation": "複数の版を保持して読取りと更新の競合を減らす。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 14,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:19": {
@@ -1598,10 +1645,13 @@
       "explanation": "連続したイベントをリアルタイムに評価する。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 14,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:20": {
@@ -1616,10 +1666,13 @@
       "explanation": "S/MIMEはメールの暗号化や署名を提供する。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 15,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:21": {
@@ -1634,10 +1687,13 @@
       "explanation": "学習した特徴から迷惑メールである確率を推定する。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 15,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:22": {
@@ -1646,16 +1702,19 @@
         "ア": "ミス時に全体を消去する",
         "イ": "実効速度は改善しない",
         "ウ": "ヒット時に主記憶から転送する",
-        "エ": "主記憶とCPUの速度差が大きいと実効アクセス時間の短縮が期待できる"
+        "エ": "CPUの命令実行時間と主記憶のアクセス時間の差が大きい場合、実効アクセス時間の短縮が期待できる"
       },
       "answer": "エ",
       "explanation": "高速なキャッシュで主記憶アクセスを減らす。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 15,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:23": {
@@ -1670,10 +1729,13 @@
       "explanation": "障害中のサーバへの振り分けを避ける。",
       "sourcePage": 16,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 16,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:24": {
@@ -1688,10 +1750,13 @@
       "explanation": "ESBはサービス間の連携を仲介する。",
       "sourcePage": 16,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 16,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     },
     "am2:25": {
@@ -1706,10 +1771,13 @@
       "explanation": "IPネットワーク上の保護されたコンテンツ伝送に使われる。",
       "sourcePage": 16,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 16,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
       }
     }
   },
