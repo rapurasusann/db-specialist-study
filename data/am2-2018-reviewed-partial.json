@@ -1,0 +1,51 @@
+{
+  "year": 2018,
+  "source": "IPA 平成30年度春期 データベーススペシャリスト試験 午前Ⅱ",
+  "questionUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+  "answerUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_ans.pdf",
+  "status": "partial-review-only",
+  "questions": {
+    "am2:1": {
+      "stem": "SQLのBLOB型の特徴は？",
+      "options": {
+        "ア": "全比較演算子を使用できる",
+        "イ": "大量のバイナリデータを保存できる",
+        "ウ": "列値でソートできる",
+        "エ": "文字列検索ができる"
+      },
+      "answer": "イ",
+      "explanation": "Binary Large Objectは画像などの大きなバイナリデータを保存する型。",
+      "sourcePage": 3,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:2": {
+      "stem": "主キーaを持つA表と主キーbを持つB表の関連を実装する適切な方法は？",
+      "options": {
+        "ア": "1対1ならどちら側にも外部キーを配置できる",
+        "イ": "1対多ならAにbを置く",
+        "ウ": "多対多なら中間表に片方だけの外部キーを置く",
+        "エ": "多対多なら双方に相手の外部キーを置く"
+      },
+      "answer": "ア",
+      "explanation": "1対1ならいずれかに一意性を保証する外部キーを置ける。",
+      "sourcePage": 3,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:3": {
+      "stem": "R(A,B,C,D,E)でA→BC、CD→Eが成立する場合の候補キーは？",
+      "options": {
+        "ア": "AC",
+        "イ": "ACD",
+        "ウ": "AD",
+        "エ": "CD"
+      },
+      "answer": "ウ",
+      "explanation": "ADの閉包は全属性。AもDも他の属性から導出できず、両方必要。",
+      "sourcePage": 3,
+      "adapted": true,
+      "needsSourceReview": true
+    }
+  }
+}
