@@ -3,14 +3,8 @@
   "source": "IPA 令和2年度10月 データベーススペシャリスト試験 午前Ⅱ（学習用要約）",
   "questionUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_db_am2_qs.pdf",
   "answerUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_db_am2_ans.pdf",
-  "status": "adapted-review-only",
-  "pendingDiagramQuestions": [
-    1,
-    5,
-    6,
-    7,
-    10
-  ],
+  "status": "all-25-adapted-figures-staged",
+  "pendingDiagramQuestions": [],
   "questions": {
     "am2:1": {
       "stem": "複製DB間の通信が分断した場合、CAPのCP重視とAP重視での動作は？",
@@ -24,7 +18,77 @@
       "explanation": "CPでは整合性を守るため片側の処理を制限し、APでは一時的な不一致を許容して両側を稼働させる。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "uml",
+          "title": "複製構成",
+          "classes": [
+            [
+              "端末1",
+              80,
+              25
+            ],
+            [
+              "端末2",
+              265,
+              25
+            ],
+            [
+              "サーバ1",
+              80,
+              95
+            ],
+            [
+              "サーバ2",
+              265,
+              95
+            ],
+            [
+              "DB1",
+              80,
+              165
+            ],
+            [
+              "DB2",
+              265,
+              165
+            ]
+          ],
+          "links": [
+            {
+              "kind": "association",
+              "from": "端末1",
+              "to": "サーバ1",
+              "label": ""
+            },
+            {
+              "kind": "association",
+              "from": "端末2",
+              "to": "サーバ2",
+              "label": ""
+            },
+            {
+              "kind": "association",
+              "from": "サーバ1",
+              "to": "DB1",
+              "label": ""
+            },
+            {
+              "kind": "association",
+              "from": "サーバ2",
+              "to": "DB2",
+              "label": ""
+            },
+            {
+              "kind": "association",
+              "from": "サーバ1",
+              "to": "サーバ2",
+              "label": "更新通知"
+            }
+          ]
+        }
+      ]
     },
     "am2:2": {
       "stem": "BASE型の分散NoSQLで更新が他ノードに伝播する場合の特徴は？",
@@ -80,7 +144,89 @@
       "explanation": "社員番号→所属コード→勤務地という推移的従属がある。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "table",
+            "title": "ア",
+            "headers": [
+              "学生番号（PK）",
+              "講義名（PK）",
+              "担当教員",
+              "成績"
+            ],
+            "rows": [
+              [
+                2122,
+                "経済学",
+                "山田教授",
+                "優"
+              ]
+            ]
+          }
+        ],
+        "イ": [
+          {
+            "type": "table",
+            "title": "イ",
+            "headers": [
+              "社員番号（PK）",
+              "氏名",
+              "入社年月日",
+              "電話番号"
+            ],
+            "rows": [
+              [
+                71235,
+                "山田太郎",
+                "2001-04-01",
+                "03-1234-5678"
+              ]
+            ]
+          }
+        ],
+        "ウ": [
+          {
+            "type": "table",
+            "title": "ウ",
+            "headers": [
+              "社員番号（PK）",
+              "氏名",
+              "所属コード",
+              "勤務地"
+            ],
+            "rows": [
+              [
+                15547,
+                "小林明",
+                "75T",
+                "東京"
+              ]
+            ]
+          }
+        ],
+        "エ": [
+          {
+            "type": "table",
+            "title": "エ",
+            "headers": [
+              "社員番号（PK）",
+              "身長",
+              "体重",
+              "趣味"
+            ],
+            "rows": [
+              [
+                71234,
+                170,
+                62,
+                "{テニス、ゴルフ}"
+              ]
+            ]
+          }
+        ]
+      }
     },
     "am2:6": {
       "stem": "Aの主キーa、Bの主キーbを用いて関連を実装する適切な方法は？",
@@ -94,7 +240,27 @@
       "explanation": "1対1は双方のいずれにも外部キーを配置できる。一意制約も必要。",
       "sourcePage": 6,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "A",
+          "headers": [
+            "a（PK）",
+            "その他"
+          ],
+          "rows": []
+        },
+        {
+          "type": "table",
+          "title": "B",
+          "headers": [
+            "b（PK）",
+            "その他"
+          ],
+          "rows": []
+        }
+      ]
     },
     "am2:7": {
       "stem": "完全外部結合でR.IDとS.IDのうちNULLでない方を返す関数は？",
@@ -157,6 +323,37 @@
         {
           "type": "sql",
           "text": "SELECT [a](R.ID,S.ID) AS ID, 名称1, 名称2\nFROM R FULL JOIN S ON R.ID=S.ID\nORDER BY ID"
+        },
+        {
+          "type": "table",
+          "title": "結果",
+          "headers": [
+            "ID",
+            "名称1",
+            "名称2"
+          ],
+          "rows": [
+            [
+              1,
+              "AAA",
+              "NULL"
+            ],
+            [
+              2,
+              "BBB",
+              "bbb"
+            ],
+            [
+              3,
+              "CCC",
+              "ccc"
+            ],
+            [
+              4,
+              "NULL",
+              "ddd"
+            ]
+          ]
         }
       ]
     },
@@ -252,7 +449,13 @@
       "explanation": "相関副問合せで同じ性別の最小生年月日を求める。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "sql",
+          "text": "社員（社員番号［主キー］、社員名、性別、生年月日）\nSELECT 社員番号, 社員名 FROM 社員 AS S1\nWHERE 生年月日 > ([a])"
+        }
+      ]
     },
     "am2:11": {
       "stem": "直列化可能性とは？",
@@ -464,5 +667,6 @@
       "adapted": true,
       "needsSourceReview": true
     }
-  }
+  },
+  "pendingDiagramNote": "Structured figures staged; source and browser final review pending."
 }
