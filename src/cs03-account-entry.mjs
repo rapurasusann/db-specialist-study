@@ -19,6 +19,7 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    const {restoreCs03UnsavedBackup}=await import('./cs03-unsaved-restore.mjs');
    const {attachCs03UnsavedNavigationGuard}=await import('./cs03-unsaved-navigation-guard.mjs');
    const {createCs03DraftStore}=await import('./cs03-draft-store.mjs');
+   const {createCs03PracticeBridge}=await import('./cs03-practice-bridge.mjs');
    const {createCs03TabOwnership}=await import('./cs03-tab-ownership.mjs');
    // Only allow the exact isolated Managed Auth instance.
    if(cfg.authUrl!=='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech/cs03_auth_sandbox/auth')
@@ -33,6 +34,8 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
     draftStore:createCs03DraftStore({storage:window.localStorage}),
     tabOwnership:createCs03TabOwnership({locks:window.navigator?.locks})});
    attachCs03UnsavedNavigationGuard({auto,windowRef:window});
+   const practice=createCs03PracticeBridge({notify:(state)=>{window.dispatchEvent(new Event('cs03-practice-change'));if(state==='blocked')window.alert('アカウントへの学習履歴保存に失敗しました。未保存履歴を確認してください。');}});
+   Object.defineProperty(window,'CS03_PRACTICE_BRIDGE',{value:practice,writable:false,configurable:false});
    const page=window.CS03_STUDY_PAGE;
    if(!page)throw Error('STUDY_PAGE_BRIDGE_REQUIRED');
    const historyRoot=root.querySelector('[data-cs03="history-list"]');
@@ -52,11 +55,13 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
      await scoped.bind();
      const listing=await auto.login();
      try{
+      practice.activate(listing,auto);
       page.activate(listing,auto);
+      window.dispatchEvent(new Event('cs03-practice-change'));
       const restored=auto.state().blocked.length;
       if(restored)window.alert(restored+'件の未保存記録をこの端末から再発見しました。自動送信せず確認待ちにしました。必要に応じてJSONを書き出してください。');
      }
-     catch(error){if(!auto.state().pending.length)auto.logout();throw error;}
+     catch(error){practice.deactivate();if(!auto.state().pending.length)auto.logout();throw error;}
     },
     onBeforeSignOut:async()=>{
      const state=auto.state();
@@ -64,7 +69,7 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
       throw Error('UNSAVED_ACCOUNT_PROGRESS');
     },
     onSignedOut:()=>{
-     page.deactivate();auto.logout();
+     page.deactivate();practice.deactivate();auto.logout();window.dispatchEvent(new Event('cs03-practice-change'));
      studyHint.clear();scoped.unbind();clearCs03HistoryView(historyRoot);
     },
     onExportUnsaved:async()=>exportCs03UnsavedBackup({auto}),
