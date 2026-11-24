@@ -87,15 +87,17 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
   finally{currentUser=null;}
  }
  async function pull(questionId){
-  const user=await session();
+  return pullFor((await session()).id,questionId);
+ }
+ async function pullFor(userId,questionId){
   if(!RECORD_ID.test(questionId))throw appError('INVALID_RECORD');
   const examCode='db';
-  const value=await request(user.id,'GET','progress?examCode='+examCode+'&questionId='+encodeURIComponent(questionId));
-  if((await session()).id!==user.id)throw appError('ACCOUNT_CHANGED');
+  const value=await request(userId,'GET','progress?examCode='+examCode+'&questionId='+encodeURIComponent(questionId));
+  if((await session()).id!==userId)throw appError('ACCOUNT_CHANGED');
   if(value){
-   const local=readLocal(user.id);
+   const local=readLocal(userId);
    local[questionId]={data:value.data,revision:value.revision,updatedAt:value.updated_at};
-   writeLocal(user.id,local);
+   writeLocal(userId,local);
   }
   return value;
  }
@@ -140,7 +142,7 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
   catch(error){
    if(error.message!=='REVISION_CONFLICT')throw error;
    // Read before retrying: never overwrite a newer server revision blindly.
-   await pull(questionId);
+   await pullFor(user.id,questionId);
    throw appError('REVISION_CONFLICT_REFRESHED');
   }
   if((await session()).id!==user.id)throw appError('ACCOUNT_CHANGED');
