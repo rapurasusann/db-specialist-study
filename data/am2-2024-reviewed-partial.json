@@ -451,7 +451,7 @@
         "エ": "組織は自己関連で階層を表し、従業員は一つの組織に所属する"
       },
       "answer": "エ",
-      "explanation": "組織の自己関連で階層を表し、所属関係は組織側1、従業員側多とする。",
+      "explanation": "組織の自己関連で上下の階層を表し、従業員は一つの組織に所属する。アは末端組織に所属先を限定し、イとウは所属の多重度が逆なので不適切。",
       "sourcePage": 6,
       "adapted": true,
       "sourceVisualReviewed": true,
@@ -462,23 +462,23 @@
             "classes": [
               [
                 "組織",
-                100,
-                55
+                135,
+                45
               ],
               [
                 "上位組織",
-                40,
-                145
+                45,
+                175
               ],
               [
                 "末端組織",
-                160,
-                145
+                225,
+                175
               ],
               [
                 "従業員",
-                285,
-                145
+                410,
+                175
               ]
             ],
             "links": [
@@ -651,7 +651,14 @@
         "page": 6,
         "scope": "2026-11-24: visible official PDF screenshot compared with adapted question and choices; browser acceptance separate."
       },
-      "needsDiagramReview": true
+      "needsDiagramReview": true,
+      "diagramReview": {
+        "status": "source-semantics-compared-browser-pending",
+        "reviewedOn": "2026-11-24",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 6,
+        "scope": "IPA PDF page rendered and visually compared in this review; SVG appearance and exact routing remain pending."
+      }
     },
     "am2:7": {
       "stem": "商品表と商品別売上実績表に対し、次のSQLを実行したときの売上平均金額を求める。",
