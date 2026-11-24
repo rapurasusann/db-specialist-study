@@ -106,7 +106,7 @@
       }
     },
     "am2:6": {
-      "stem": "無損失分解と関数従属性保存が常に両立する正規化は？",
+      "stem": "無損失分解と関数従属性保存が常に両立する正規化は？ ここで無損失分解とは、自然結合によって元の関係を復元できる分解をいう。",
       "options": {
         "ア": "2NF→3NF",
         "イ": "3NF→BCNF",
@@ -117,14 +117,16 @@
       "explanation": "第3正規形への合成では両条件を満たせる。BCNFでは関数従属性を保存できない場合がある。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 5,
+        "scope": "2026-11-24: visible official PDF screenshot compared with adapted question and choices; browser acceptance separate."
       }
     },
     "am2:7": {
-      "stem": "便ごとに独立した乗務員集合と乗客集合を記録する三属性の関係について正しいものは？",
+      "stem": "便ごとに独立した乗務員集合と乗客集合を記録する三属性の関係について正しいものは？ 便名・客室乗務員名・搭乗者名の3属性の組を主キーとする。",
       "options": {
         "ア": "更新異状がない",
         "イ": "非自明な関数従属がある",
@@ -135,7 +137,7 @@
       "explanation": "便番号ごとに乗務員集合と乗客集合が互いに独立しているという条件から、非自明な多値従属が成立する。便・乗務員と便・乗客の二つの関係に分解し、自然結合によって元の組合せを復元できる。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -190,12 +192,14 @@
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 5,
+        "scope": "2026-11-24: visible official PDF screenshot compared with adapted question and choices; browser acceptance separate."
       }
     },
     "am2:8": {
-      "stem": "1注文で複数商品を購入できる受注データを3NFにすると最小何表か？",
+      "stem": "顧客の1回の注文につき受注伝票を1枚発行し、1回の注文で1個以上の商品を注文できる。示した受注表を第3正規形まで正規化すると、最小で何表に分割されるか。",
       "options": {
         "ア": "2",
         "イ": "3",
@@ -203,10 +207,10 @@
         "エ": "5"
       },
       "answer": "ウ",
-      "explanation": "顧客・商品・受注・受注明細に分ける。受注金額は単価と数量から算出可能。",
+      "explanation": "受注番号から顧客コードと受注日、顧客コードから顧客名、商品コードから商品名と単価が決まると考える。顧客・商品・受注・受注明細の4表に分ける。受注金額は単価と受注数から計算できる。",
       "sourcePage": 6,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -337,9 +341,10 @@
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold.",
-        "reason": "Minimum number of relations depends on original functional dependencies and keys; source fidelity pending."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 6,
+        "scope": "2026-11-24: visible official PDF screenshot compared with adapted question and choices; browser acceptance separate."
       }
     },
     "am2:9": {
