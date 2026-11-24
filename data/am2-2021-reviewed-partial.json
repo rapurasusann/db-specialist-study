@@ -1,0 +1,1132 @@
+{
+  "year": 2021,
+  "source": "IPA 令和3年度秋期 DB午前Ⅱ（学習用要約）",
+  "questionUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+  "answerUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_ans.pdf",
+  "status": "all-25-adapted-figures-staged",
+  "answerVerification": "Matches staged answer key and independently solved from official question screenshots; official answer glyphs still unavailable",
+  "pendingDiagramQuestions": [],
+  "questions": {
+    "am2:1": {
+      "stem": "CAP定理が示す分散システムの制約は？",
+      "options": {
+        "ア": "可用性を優先し、一時的な不一致を許して最終的に整合させる",
+        "イ": "トランザクション処理によってデータの矛盾を防ぐ",
+        "ウ": "並行処理の結果を直列処理と等価にする",
+        "エ": "分散システムでは分断耐性・整合性・可用性を同時には保証できない"
+      },
+      "answer": "エ",
+      "explanation": "分断が発生すると強い整合性と可用性を同時に保証できない。\n\n分断中に両側で独立更新すれば値が食い違い得る。強い整合性を優先するなら一部の要求を制限する。",
+      "sourcePage": 3,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 3,
+        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
+      }
+    },
+    "am2:2": {
+      "stem": "部・課・係の階層を表す3モデルについて、適切な解釈を選ぶ。親子は循環しないものとし、モデルBの階層制約は循環禁止を表す。 組織レベルとは階層内での位置を指す。",
+      "options": {
+        "ア": "全モデルで階層追加時に変更不要",
+        "イ": "全モデルで複数親を表現不能",
+        "ウ": "Bでは親が子コードを外部キーに持つ",
+        "エ": "Cでは循環を防ぐ制約が必要"
+      },
+      "answer": "エ",
+      "explanation": "関連表を使うCでは循環を防止する制約が別途必要。\n\nA→B→C→Aという親子関係は階層ではない。外部キーによる存在確認だけでは循環を防げない。",
+      "sourcePage": 4,
+      "adapted": true,
+      "needsSourceReview": false,
+      "figures": [
+        {
+          "type": "uml",
+          "title": "モデルA",
+          "classes": [
+            [
+              "部",
+              55,
+              80
+            ],
+            [
+              "課",
+              175,
+              80
+            ],
+            [
+              "係",
+              295,
+              80
+            ]
+          ],
+          "links": [
+            {
+              "kind": "association",
+              "from": "部",
+              "to": "課",
+              "fromLabel": "1",
+              "toLabel": "*",
+              "label": "親子"
+            },
+            {
+              "kind": "association",
+              "from": "課",
+              "to": "係",
+              "fromLabel": "1",
+              "toLabel": "*",
+              "label": "親子"
+            }
+          ]
+        },
+        {
+          "type": "uml",
+          "title": "モデルB（階層制約あり）",
+          "classes": [
+            [
+              "組織",
+              175,
+              90
+            ]
+          ],
+          "links": [
+            {
+              "kind": "self",
+              "from": "組織",
+              "fromLabel": "0..1 親",
+              "toLabel": "* 子"
+            }
+          ]
+        },
+        {
+          "type": "uml",
+          "title": "モデルC",
+          "classes": [
+            [
+              "組織",
+              80,
+              85
+            ],
+            [
+              "組織構造",
+              265,
+              85
+            ]
+          ],
+          "links": [
+            {
+              "kind": "association",
+              "from": "組織",
+              "to": "組織構造",
+              "fromLabel": "1",
+              "toLabel": "*",
+              "label": "親・子（各1対多）"
+            }
+          ]
+        },
+        {
+          "type": "table",
+          "title": "各クラスの属性",
+          "headers": [
+            "モデル",
+            "クラス",
+            "属性"
+          ],
+          "rows": [
+            [
+              "A",
+              "部",
+              "部コード"
+            ],
+            [
+              "A",
+              "課",
+              "課コード"
+            ],
+            [
+              "A",
+              "係",
+              "係コード"
+            ],
+            [
+              "B・C",
+              "組織",
+              "組織コード、組織レベル"
+            ],
+            [
+              "C",
+              "組織構造",
+              "親組織コード、子組織コード"
+            ]
+          ]
+        }
+      ],
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 4,
+        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
+      }
+    },
+    "am2:3": {
+      "stem": "R(A,B,C)の候補キーがABとAC、従属がAB→CとC→Bの場合、最高の正規形は？",
+      "options": {
+        "ア": "1NF",
+        "イ": "2NF",
+        "ウ": "3NF",
+        "エ": "BCNF"
+      },
+      "answer": "ウ",
+      "explanation": "Bは候補キーの構成属性なので3NFを満たすが、CはスーパーキーでないためBCNFを満たさない。\n\nBは候補キーABの構成属性なので主属性。C→Bの左辺Cはスーパーキーではなく、BCNFにはならない。",
+      "sourcePage": 4,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 4,
+        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
+      }
+    },
+    "am2:4": {
+      "stem": "表定義から、医師―診療科―診察―患者の順に関係の多重度を判断する。",
+      "options": {
+        "ア": "多:1、多:1、1:多",
+        "イ": "多:1、1:多、多:1",
+        "ウ": "1:多、多:1、1:多",
+        "エ": "1:多、1:多、多:1"
+      },
+      "answer": "イ",
+      "explanation": "外部キーを持つ医師・診察が多側になる。\n\n診療科コードを持つ医師・診察、患者番号を持つ診察がそれぞれ多側。",
+      "sourcePage": 5,
+      "adapted": true,
+      "needsSourceReview": false,
+      "figures": [
+        {
+          "type": "table",
+          "title": "表定義",
+          "headers": [
+            "表",
+            "主キー",
+            "その他の属性",
+            "外部キー"
+          ],
+          "rows": [
+            [
+              "医師",
+              "医師番号",
+              "医師名",
+              "診療科コード"
+            ],
+            [
+              "診療科",
+              "診療科コード",
+              "診療科名称",
+              "なし"
+            ],
+            [
+              "診察",
+              "診療科コード＋患者番号＋診察日時",
+              "なし",
+              "診療科コード、患者番号"
+            ],
+            [
+              "患者",
+              "患者番号",
+              "患者名",
+              "なし"
+            ]
+          ]
+        }
+      ],
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "uml",
+            "title": "ア",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              }
+            ]
+          }
+        ],
+        "イ": [
+          {
+            "type": "uml",
+            "title": "イ",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              }
+            ]
+          }
+        ],
+        "ウ": [
+          {
+            "type": "uml",
+            "title": "ウ",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              }
+            ]
+          }
+        ],
+        "エ": [
+          {
+            "type": "uml",
+            "title": "エ",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              }
+            ]
+          }
+        ]
+      },
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 5,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:5": {
+      "stem": "正規化に関する適切な説明は？",
+      "options": {
+        "ア": "全分解で従属性保存",
+        "イ": "全分解で無損失",
+        "ウ": "3NFへの無損失かつ従属性保存の分解が可能",
+        "エ": "4NFから5NFでは自明な多値従属を保存"
+      },
+      "answer": "ウ",
+      "explanation": "第3正規形への合成では両方の性質を確保できる。\n\n無損失性は結合で元に戻ること、従属性保存は分解後の制約で元の従属を保証できること。",
+      "sourcePage": 5,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 5,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:6": {
+      "stem": "商品表の仕入先コードから当月仕入実績の仕入先コードをEXCEPTで除くと？",
+      "options": {
+        "ア": "K01,K01,K03",
+        "イ": "K01,K03",
+        "ウ": "K02,K02,K04",
+        "エ": "K02,K04"
+      },
+      "answer": "エ",
+      "explanation": "差集合を求め重複も除く。\n\nEXCEPTは左側にだけ存在する行を残す。通常のEXCEPTは重複も除く。",
+      "sourcePage": 6,
+      "adapted": true,
+      "needsSourceReview": false,
+      "figures": [
+        {
+          "type": "table",
+          "title": "商品",
+          "headers": [
+            "商品コード",
+            "仕入先コード"
+          ],
+          "rows": [
+            [
+              "S001",
+              "K01"
+            ],
+            [
+              "S002",
+              "K01"
+            ],
+            [
+              "S003",
+              "K02"
+            ],
+            [
+              "S004",
+              "K02"
+            ],
+            [
+              "S005",
+              "K03"
+            ],
+            [
+              "S006",
+              "K04"
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "title": "当月商品仕入合計",
+          "headers": [
+            "仕入先コード",
+            "仕入合計金額"
+          ],
+          "rows": [
+            [
+              "K01",
+              150000
+            ],
+            [
+              "K03",
+              100000
+            ],
+            [
+              "K05",
+              250000
+            ]
+          ]
+        },
+        {
+          "type": "sql",
+          "text": "SELECT 仕入先コード FROM 商品\nEXCEPT\nSELECT 仕入先コード FROM 当月商品仕入合計"
+        }
+      ],
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 6,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:7": {
+      "stem": "ダーティリードは防ぐが反復読取りの一致は保証しない隔離水準は？",
+      "options": {
+        "ア": "READ COMMITTED",
+        "イ": "READ UNCOMMITTED",
+        "ウ": "REPEATABLE READ",
+        "エ": "SERIALIZABLE"
+      },
+      "answer": "ア",
+      "explanation": "READ COMMITTEDは確定済み値だけを読むが再読取り時の更新は許す。\n\nREAD UNCOMMITTEDは未確定値を許し、REPEATABLE READは反復不能読取りを防ぐ。",
+      "sourcePage": 6,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 6,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:8": {
+      "stem": "示された結果を得るため、左外部結合の空欄[a]に入る条件を選ぶ。",
+      "options": {
+        "ア": "SQL 1",
+        "イ": "SQL 2",
+        "ウ": "SQL 3",
+        "エ": "SQL 4"
+      },
+      "answer": "ア",
+      "explanation": "右側のAP条件はONに置き、左側FEだけをWHEREで絞る。\n\n右表のAP条件をWHEREに置くと、APのない社員のNULL補完行が除外される。",
+      "sourcePage": 7,
+      "adapted": true,
+      "needsSourceReview": false,
+      "figures": [
+        {
+          "type": "table",
+          "title": "社員取得資格",
+          "headers": [
+            "社員コード",
+            "資格"
+          ],
+          "rows": [
+            [
+              "S001",
+              "FE"
+            ],
+            [
+              "S001",
+              "AP"
+            ],
+            [
+              "S001",
+              "DB"
+            ],
+            [
+              "S002",
+              "FE"
+            ],
+            [
+              "S002",
+              "SM"
+            ],
+            [
+              "S003",
+              "FE"
+            ],
+            [
+              "S004",
+              "AP"
+            ],
+            [
+              "S005",
+              "NULL"
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "title": "結果",
+          "headers": [
+            "社員コード",
+            "資格1",
+            "資格2"
+          ],
+          "rows": [
+            [
+              "S001",
+              "FE",
+              "AP"
+            ],
+            [
+              "S002",
+              "FE",
+              "NULL"
+            ],
+            [
+              "S003",
+              "FE",
+              "NULL"
+            ]
+          ]
+        },
+        {
+          "type": "sql",
+          "text": "SELECT C1.社員コード, C1.資格 AS 資格1, C2.資格 AS 資格2\nFROM 社員取得資格 C1 LEFT OUTER JOIN 社員取得資格 C2\n[a]"
+        }
+      ],
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 7,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      },
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "sql",
+            "text": "ON C1.社員コード = C2.社員コード AND C1.資格 = 'FE' AND C2.資格 = 'AP'\nWHERE C1.資格 = 'FE'"
+          }
+        ],
+        "イ": [
+          {
+            "type": "sql",
+            "text": "ON C1.社員コード = C2.社員コード AND C1.資格 = 'FE' AND C2.資格 = 'AP'\nWHERE C1.資格 IS NOT NULL"
+          }
+        ],
+        "ウ": [
+          {
+            "type": "sql",
+            "text": "ON C1.社員コード = C2.社員コード AND C1.資格 = 'FE' AND C2.資格 = 'AP'\nWHERE C2.資格 = 'AP'"
+          }
+        ],
+        "エ": [
+          {
+            "type": "sql",
+            "text": "ON C1.社員コード = C2.社員コード\nWHERE C1.資格 = 'FE' AND C2.資格 = 'AP'"
+          }
+        ]
+      }
+    },
+    "am2:9": {
+      "stem": "n属性の関係の射影は空集合と全属性を含め何通り？",
+      "options": {
+        "ア": "log₂n",
+        "イ": "n",
+        "ウ": "2n",
+        "エ": "2ⁿ"
+      },
+      "answer": "エ",
+      "explanation": "各属性を含めるか否かの2択がn個ある。\n\nA,B,Cなら空集合も含め2×2×2=8通り。",
+      "sourcePage": 8,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 8,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:10": {
+      "stem": "会員の属性は複数行で管理し、行番号は追加順に1ずつ増加する。同じ会員・項目の最新行を採用する。示された結果を得るSQLの三つの[a]に共通する語は？",
+      "options": {
+        "ア": "COUNT",
+        "イ": "DISTINCT",
+        "ウ": "MAX",
+        "エ": "MIN"
+      },
+      "answer": "ウ",
+      "explanation": "最大行番号を選び、CASEの非NULL値をMAXで取り出す。\n\n最大行番号で最新版を選び、CASEで対象外をNULLにしてMAXで値を取り出す。",
+      "sourcePage": 9,
+      "adapted": true,
+      "needsSourceReview": false,
+      "figures": [
+        {
+          "type": "table",
+          "title": "会員項目",
+          "headers": [
+            "行番号",
+            "会員番号",
+            "項目名",
+            "項目値"
+          ],
+          "rows": [
+            [
+              1,
+              "0111",
+              "会員名",
+              "情報太郎"
+            ],
+            [
+              2,
+              "0111",
+              "最終購入年月日",
+              "2021-02-05"
+            ],
+            [
+              3,
+              "0112",
+              "会員名",
+              "情報花子"
+            ],
+            [
+              4,
+              "0112",
+              "最終購入年月日",
+              "2021-01-30"
+            ],
+            [
+              5,
+              "0112",
+              "最終購入年月日",
+              "2021-02-01"
+            ],
+            [
+              6,
+              "0113",
+              "会員名",
+              "情報次郎"
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "title": "結果",
+          "headers": [
+            "会員番号",
+            "会員名",
+            "最終購入年月日"
+          ],
+          "rows": [
+            [
+              "0111",
+              "情報太郎",
+              "2021-02-05"
+            ],
+            [
+              "0112",
+              "情報花子",
+              "2021-02-01"
+            ],
+            [
+              "0113",
+              "情報次郎",
+              "NULL"
+            ]
+          ]
+        },
+        {
+          "type": "sql",
+          "text": "SELECT 会員番号,\n [a](CASE WHEN 項目名='会員名' THEN 項目値 END) AS 会員名,\n [a](CASE WHEN 項目名='最終購入年月日' THEN 項目値 END) AS 最終購入年月日\nFROM (SELECT 会員番号, 項目名, 項目値 FROM 会員項目\n WHERE 行番号 IN (SELECT [a](行番号) FROM 会員項目 GROUP BY 会員番号, 項目名)) T\nGROUP BY 会員番号 ORDER BY 会員番号"
+        }
+      ],
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 9,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:11": {
+      "stem": "和両立が不要な関係演算は？",
+      "options": {
+        "ア": "共通集合",
+        "イ": "差集合",
+        "ウ": "直積",
+        "エ": "和集合"
+      },
+      "answer": "ウ",
+      "explanation": "直積は異なる属性構成でも実行できる。\n\n2行と3行の直積は6行。和・差・共通集合と違い属性構成の一致は不要。",
+      "sourcePage": 10,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 10,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:12": {
+      "stem": "分散DBの2相コミットの性質は？",
+      "options": {
+        "ア": "参加者ごとに異なる確定指示",
+        "イ": "主サイトの指示が届かず確定判断不能の場合がある",
+        "ウ": "一部取消でも全体確定可能",
+        "エ": "独立した1相コミットで一貫性保証"
+      },
+      "answer": "イ",
+      "explanation": "準備済み参加者は最終決定を受け取れないと待つことがある。\n\n準備済みの参加者が独断で確定すると他の参加者と結果が食い違い得る。",
+      "sourcePage": 10,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 10,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:13": {
+      "stem": "2相ロックの規則は？",
+      "options": {
+        "ア": "デッドロックなし",
+        "イ": "開始順コミット",
+        "ウ": "全解除後のみコミット",
+        "エ": "必要なロックを取得し終えてから解除"
+      },
+      "answer": "エ",
+      "explanation": "取得相と解放相を分離する。\n\n一つでもロックを解放すると追加取得はできない。デッドロック防止とは別の性質。",
+      "sourcePage": 11,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 11,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:14": {
+      "stem": "二つのトランザクションX、Yの間で成立するロックの説明は？",
+      "options": {
+        "ア": "別行bの専有も不可",
+        "イ": "表全体の専有は不可",
+        "ウ": "表共有と表専有は両立",
+        "エ": "表専有と他者の行専有は両立"
+      },
+      "answer": "イ",
+      "explanation": "表全体への専有ロックはその表の既存行ロックと競合する。\n\n表全体を専有すると既存の共有行ロックの対象も含むので競合する。",
+      "sourcePage": 11,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 11,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:15": {
+      "stem": "各n行の2表を単純な入れ子ループで結合する計算量は？",
+      "options": {
+        "ア": "O(log n)",
+        "イ": "O(n)",
+        "ウ": "O(n log n)",
+        "エ": "O(n²)"
+      },
+      "answer": "エ",
+      "explanation": "外側のn行それぞれに内側n行を比較する。\n\n100行ずつなら単純比較は1万組。件数が倍になると比較数は4倍。",
+      "sourcePage": 11,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 11,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:16": {
+      "stem": "MVCCの特徴は？",
+      "options": {
+        "ア": "明示ロック不可",
+        "イ": "アプリが版を指定必須",
+        "ウ": "更新で新版を作り読取りの待ちを回避",
+        "エ": "デッドロックなし"
+      },
+      "answer": "ウ",
+      "explanation": "読取りが適切な旧版を参照できる。\n\n読取りに対応する確定済み旧版を参照する。書込み同士の競合は別途制御が必要。",
+      "sourcePage": 12,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 12,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:17": {
+      "stem": "Indexed Database APIの用途は？",
+      "options": {
+        "ア": "JavaのDB接続",
+        "イ": "埋込みSQL",
+        "ウ": "ブラウザ内ストレージのトランザクション",
+        "エ": "ストアドプロシージャ"
+      },
+      "answer": "ウ",
+      "explanation": "IndexedDBはブラウザ内で構造化データを保存するAPI。\n\nブラウザ内のオブジェクトストアと索引を扱う。サーバDBへの接続APIとは異なる。",
+      "sourcePage": 12,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 12,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:18": {
+      "stem": "Apache Sparkの特徴は？",
+      "options": {
+        "ア": "MapReduce型バッチ専用",
+        "イ": "RDDに変換を適用",
+        "ウ": "Pub/Subメッセージング",
+        "エ": "マスターなしKVS"
+      },
+      "answer": "イ",
+      "explanation": "RDDは分散データ集合で変換・処理を行える。\n\nRDDは分散データ集合。変換とアクションを通じてデータ処理を行う。",
+      "sourcePage": 13,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 13,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:19": {
+      "stem": "JPCERT/CCのインシデントハンドリングマニュアル（2015年11月26日）に沿った対応順序は？",
+      "options": {
+        "ア": "対応→検知→分類",
+        "イ": "対応→分類→検知",
+        "ウ": "検知→対応→分類",
+        "エ": "検知→分類→対応"
+      },
+      "answer": "エ",
+      "explanation": "検知後に優先度を判断して対応する。\n\n検知後に影響や緊急度を判断し、封じ込めや復旧などの対応につなげる。",
+      "sourcePage": 13,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 13,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:20": {
+      "stem": "ベイジアンフィルタの仕組みは？",
+      "options": {
+        "ア": "許可リスト",
+        "イ": "送信サーバ検証",
+        "ウ": "中継サーバ一覧",
+        "エ": "分類済みメールから統計的に学習"
+      },
+      "answer": "エ",
+      "explanation": "メールの特徴から迷惑メールの確率を推定する。\n\n固定リストだけでなく、学習済みの単語等の出現傾向を用いて分類する。",
+      "sourcePage": 13,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 13,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:21": {
+      "stem": "パケットフィルタ型FWの主な判断材料は？",
+      "options": {
+        "ア": "POST本文",
+        "イ": "送受信IPとポート",
+        "ウ": "送信元MACのみ",
+        "エ": "URL"
+      },
+      "answer": "イ",
+      "explanation": "ネットワーク・トランスポート層の情報で通過を制御する。\n\nHTTP本文の検査は通常より上位層の機能。パケットフィルタはIPやポート等で判定する。",
+      "sourcePage": 14,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 14,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:22": {
+      "stem": "ECCで1ビット訂正と2ビット検出に用いる符号は？",
+      "options": {
+        "ア": "偶数パリティ",
+        "イ": "垂直パリティ",
+        "ウ": "チェックサム",
+        "エ": "ハミング符号"
+      },
+      "answer": "エ",
+      "explanation": "通常のハミング符号は1ビット訂正に用いられる。全体パリティを追加した拡張ハミング符号は1ビット訂正・2ビット検出（SECDED）が可能。",
+      "sourcePage": 14,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 14,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:23": {
+      "stem": "同じ処理能力のn台のサーバに負荷が均等に分散され、通常は各サーバの処理能力の60%を使用する。8台が停止しても総負荷が変わらず、残りのサーバに均等に再配分される場合、各サーバの使用率を80%以下にするには最低何台必要か。",
+      "options": {
+        "ア": "32",
+        "イ": "34",
+        "ウ": "36",
+        "エ": "40"
+      },
+      "answer": "ア",
+      "explanation": "総負荷は0.6n台分。停止後の許容処理能力は0.8(n−8)台分。0.6n≤0.8(n−8)を解くと0.2n≥6.4、n≥32。",
+      "sourcePage": 14,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 14,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:24": {
+      "stem": "使用性を改善する施策は？",
+      "options": {
+        "ア": "オンラインヘルプ充実",
+        "イ": "外部連携拡張",
+        "ウ": "機能追加",
+        "エ": "データ複製"
+      },
+      "answer": "ア",
+      "explanation": "利用方法を理解しやすくすることは使用性向上に直結する。\n\n使用性は利用者の操作や理解の容易さ。データ複製などによる可用性改善とは異なる。",
+      "sourcePage": 15,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 15,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    },
+    "am2:25": {
+      "stem": "マッシュアップとは？",
+      "options": {
+        "ア": "既存コードから仕様抽出",
+        "イ": "既存コードを部品化",
+        "ウ": "クラスライブラリ利用",
+        "エ": "公開サービスを組み合わせ新サービス提供"
+      },
+      "answer": "エ",
+      "explanation": "複数の既存サービスを組み合わせる。\n\n地図サービスと店舗情報を組み合わせる例がある。既存サービスの機能を連携させる点が重要。",
+      "sourcePage": 15,
+      "adapted": true,
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 15,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      }
+    }
+  },
+  "pendingDiagramNote": "Q2/Q4 structured diagram data added; visual layout fidelity and remaining source review pending."
+}
