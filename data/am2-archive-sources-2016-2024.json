@@ -34,7 +34,7 @@
         "イ",
         "エ"
       ],
-      "answerVerification": "2026-11-24: IPA official answer PDF page 1 visually inspected and text read; 25/25 match registered answers."
+      "answerVerification": "2026-11-24: IPA official answer PDF directly retrieved; page 1 screenshot and extracted text inspected; 25/25 registered answers match. Scope: answer key only."
     },
     {
       "year": 2017,
@@ -68,7 +68,7 @@
         "ア",
         "ア"
       ],
-      "answerVerification": "IPA official PDF text extracted 2026-11-24, 25/25 match; question booklet image verification remains separate."
+      "answerVerification": "2026-11-24: IPA official answer PDF directly retrieved; page 1 screenshot and extracted text inspected; 25/25 registered answers match. Scope: answer key only."
     },
     {
       "year": 2018,
@@ -102,7 +102,7 @@
         "ウ",
         "エ"
       ],
-      "answerVerification": "Registered key comparison recorded previously; independently retrievable official PDF evidence not yet attached. Direct verification required before release."
+      "answerVerification": "2026-11-24: IPA official answer PDF directly retrieved; page 1 screenshot and extracted text inspected; 25/25 registered answers match. Scope: answer key only."
     },
     {
       "year": 2019,
@@ -136,7 +136,7 @@
         "ウ",
         "イ"
       ],
-      "answerVerification": "IPA official answer PDF visually verified 2026-11-24"
+      "answerVerification": "2026-11-24: IPA official answer PDF directly retrieved; page 1 screenshot and extracted text inspected; 25/25 registered answers match. Scope: answer key only."
     },
     {
       "year": 2020,
@@ -170,7 +170,7 @@
         "イ",
         "エ"
       ],
-      "answerVerification": "Registered key comparison recorded previously; independently retrievable official PDF evidence not yet attached. Direct verification required before release."
+      "answerVerification": "2026-11-24: IPA official answer PDF directly retrieved; page 1 screenshot and extracted text inspected; 25/25 registered answers match. Scope: answer key only."
     },
     {
       "year": 2021,
@@ -239,7 +239,7 @@
         "イ",
         "イ"
       ],
-      "answerVerification": "Registered key comparison recorded previously; independently retrievable official PDF evidence not yet attached. Direct verification required before release."
+      "answerVerification": "2026-11-24: IPA official answer PDF directly retrieved; page 1 screenshot and extracted text inspected; 25/25 registered answers match. Scope: answer key only."
     },
     {
       "year": 2023,
@@ -273,7 +273,7 @@
         "エ",
         "エ"
       ],
-      "answerVerification": "Registered key comparison recorded previously; independently retrievable official PDF evidence not yet attached. Direct verification required before release."
+      "answerVerification": "2026-11-24: IPA official answer PDF directly retrieved; page 1 screenshot and extracted text inspected; 25/25 registered answers match. Scope: answer key only."
     },
     {
       "year": 2024,
@@ -307,7 +307,7 @@
         "ウ",
         "エ"
       ],
-      "answerVerification": "Registered key comparison recorded previously; independently retrievable official PDF evidence not yet attached. Direct verification required before release."
+      "answerVerification": "2026-11-24: IPA official answer PDF directly retrieved; page 1 screenshot and extracted text inspected; 25/25 registered answers match. Scope: answer key only."
     }
   ],
   "pendingOfficialAnswerRecheck": [
