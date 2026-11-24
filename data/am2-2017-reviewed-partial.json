@@ -3,7 +3,7 @@
   "source": "IPA 平成29年度春期 データベーススペシャリスト試験 午前Ⅱ",
   "questionUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
   "answerUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_ans.pdf",
-  "status": "partial-review-only",
+  "status": "all-25-adapted-review-only",
   "questions": {
     "am2:1": {
       "stem": "データベースの3層スキーマの正しい説明は？",
@@ -615,6 +615,34 @@
       "answer": "ウ",
       "explanation": "ネットワークとディスク心拍を確認後に専有を行う。",
       "sourcePage": 16,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:24": {
+      "stem": "JIS X 25010:2013の品質特性で正しい説明は？",
+      "options": {
+        "ア": "機能適合性は明示・暗黙のニーズを満たす機能の提供度",
+        "イ": "信頼性は資源量に対する性能",
+        "ウ": "性能効率性は利用者の目標達成度",
+        "エ": "保守性は所定時間に機能を実行する度合い"
+      },
+      "answer": "ア",
+      "explanation": "機能適合性は必要な機能が提供される度合い。残りは別の品質特性の説明。",
+      "sourcePage": 17,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:25": {
+      "stem": "リファクタリングとは？",
+      "options": {
+        "ア": "外部動作を維持して内部構造を改善",
+        "イ": "コードから設計書を生成",
+        "ウ": "部品を組み合わせ開発",
+        "エ": "変更による影響をテスト"
+      },
+      "answer": "ア",
+      "explanation": "機能を変えずに可読性や保守性を改善する。",
+      "sourcePage": 17,
       "adapted": true,
       "needsSourceReview": true
     }
