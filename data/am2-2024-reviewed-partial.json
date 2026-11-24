@@ -60,14 +60,16 @@
       "sourcePage": 5,
       "verifiedAgainstSource": true,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 5,
+        "scope": "2026-11-24: visible official PDF screenshot compared with adapted question and choices; browser acceptance separate."
       }
     },
     "am2:5": {
-      "stem": "多くの属性から成る複合主キーを扱いやすくする対応はどれか。",
+      "stem": "関係DBで主キーが多数の属性からなる複合キーとなった。主キーとして扱う属性数を減らすための適切な対応は？",
       "options": {
         "ア": "属性を一つ選び主キーにして残りを外部キーにする。",
         "イ": "属性を一つ選び主キーにして残りを代替キーにする。",
@@ -79,10 +81,12 @@
       "sourcePage": 5,
       "verifiedAgainstSource": true,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 5,
+        "scope": "2026-11-24: visible official PDF screenshot compared with adapted question and choices; browser acceptance separate."
       }
     },
     "am2:3": {
@@ -640,11 +644,14 @@
           }
         ]
       },
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
-      }
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 6,
+        "scope": "2026-11-24: visible official PDF screenshot compared with adapted question and choices; browser acceptance separate."
+      },
+      "needsDiagramReview": true
     },
     "am2:7": {
       "stem": "商品表と商品別売上実績表に対し、次のSQLを実行したときの売上平均金額を求める。",
