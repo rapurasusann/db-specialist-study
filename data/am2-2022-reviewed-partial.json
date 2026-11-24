@@ -104,16 +104,35 @@
       "explanation": "BとCは相互に導出できるのでAからどちらか一方への従属で足りる。ZではB→Cを導出できない。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
-          "type": "sql",
-          "text": "X = {A→B, B→C, C→B, {A,D}→E}\nY = {A→C, B→C, C→B, {A,D}→E}\nZ = {A→B, C→B, {A,C,D}→E}"
+          "type": "table",
+          "headers": [
+            "集合",
+            "関数従属"
+          ],
+          "rows": [
+            [
+              "X",
+              "A→B, B→C, C→B, AD→E"
+            ],
+            [
+              "Y",
+              "A→C, B→C, C→B, AD→E"
+            ],
+            [
+              "Z",
+              "A→B, C→B, ACD→E"
+            ]
+          ]
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 5,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:5": {
@@ -128,25 +147,27 @@
       "explanation": "第2正規形で除去する部分関数従属に加え、非キー属性への推移的関数従属を解消する。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 5,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:6": {
       "stem": "文書の作成者・承認者を社員表から取得する。社員表に存在しない作成者IDの文書も残すには？",
       "options": {
-        "ア": "文書を起点に社員A、Bへ順にLEFT OUTER JOIN",
-        "イ": "文書から社員A、Bへ順にRIGHT OUTER JOIN",
-        "ウ": "文書、社員A、社員Bを列挙してさらに同じ別名でLEFT JOIN",
-        "エ": "文書と社員A、BをWHEREの等値条件で結合"
+        "ア": "SQL 1",
+        "イ": "SQL 2",
+        "ウ": "SQL 3",
+        "エ": "SQL 4"
       },
       "answer": "ア",
       "explanation": "文書を左側に置けば対応社員がなくても文書行は残り、氏名はNULLになる。",
       "sourcePage": 6,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -189,25 +210,25 @@
           "rows": [
             [
               100,
-              "山田太郎"
+              "社員A"
             ],
             [
               200,
-              "山本花子"
+              "社員B"
             ],
             [
               300,
-              "川上一郎"
+              "社員C"
             ],
             [
               400,
-              "渡辺良子"
+              "社員D"
             ]
           ]
         },
         {
           "type": "table",
-          "title": "結果",
+          "title": "結果（氏名は学習用に変更）",
           "headers": [
             "文書ID",
             "作成者ID",
@@ -219,41 +240,69 @@
             [
               1,
               100,
-              "山田太郎",
+              "社員A",
               200,
-              "山本花子"
+              "社員B"
             ],
             [
               2,
               100,
-              "山田太郎",
+              "社員A",
               300,
-              "川上一郎"
+              "社員C"
             ],
             [
               3,
               200,
-              "山本花子",
+              "社員B",
               400,
-              "渡辺良子"
+              "社員D"
             ],
             [
               4,
               500,
               "NULL",
               400,
-              "渡辺良子"
+              "社員D"
             ]
           ]
         },
         {
           "type": "sql",
-          "text": "SELECT 文書ID, 作成者ID, A.氏名 AS 作成者氏名,\n 承認者ID, B.氏名 AS 承認者氏名 FROM [a]"
+          "text": "SELECT 文書ID, 作成者ID, A.氏名 AS 作成者氏名,\n承認者ID, B.氏名 AS 承認者氏名 FROM [a]"
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 6,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
+      },
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "sql",
+            "text": "文書 LEFT OUTER JOIN 社員 A ON 文書.作成者ID = A.社員ID\nLEFT OUTER JOIN 社員 B ON 文書.承認者ID = B.社員ID"
+          }
+        ],
+        "イ": [
+          {
+            "type": "sql",
+            "text": "文書 RIGHT OUTER JOIN 社員 A ON 文書.作成者ID = A.社員ID\nRIGHT OUTER JOIN 社員 B ON 文書.承認者ID = B.社員ID"
+          }
+        ],
+        "ウ": [
+          {
+            "type": "sql",
+            "text": "文書, 社員 A, 社員 B\nLEFT OUTER JOIN 社員 A ON 文書.作成者ID = A.社員ID\nLEFT OUTER JOIN 社員 B ON 文書.承認者ID = B.社員ID"
+          }
+        ],
+        "エ": [
+          {
+            "type": "sql",
+            "text": "文書, 社員 A, 社員 B\nWHERE 文書.作成者ID = A.社員ID AND 文書.承認者ID = B.社員ID"
+          }
+        ]
       }
     },
     "am2:7": {
@@ -268,7 +317,7 @@
       "explanation": "Aの売上は50、NULL、250。AVGはNULLを除くので150。",
       "sourcePage": 7,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -343,8 +392,10 @@
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 7,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:8": {
@@ -359,7 +410,7 @@
       "explanation": "自身を上司とする社員が一人もいない社員を選ぶ。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -413,8 +464,10 @@
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 8,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:9": {
@@ -429,10 +482,12 @@
       "explanation": "UNIONは重複を除く。元の行に重複がなければ結果は等しい。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 9,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:10": {
@@ -447,10 +502,12 @@
       "explanation": "Rだけに含まれる行をRから除くと共通部分が残る。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 9,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:11": {
@@ -465,10 +522,12 @@
       "explanation": "直積で組合せを作り、結合属性が等しい行を選択する。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 9,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:12": {
@@ -483,7 +542,7 @@
       "explanation": "同じ性別の最小生年月日を相関副問合せで求め、その日より後に生まれた人を選択する。最小日付に該当する人が複数いても全員除外される。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "sql",
@@ -517,8 +576,10 @@
         ]
       },
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 10,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:13": {
@@ -533,10 +594,12 @@
       "explanation": "取得順を統一すると循環待ちを防ぎやすい。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 10,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:14": {
@@ -551,10 +614,12 @@
       "explanation": "反復不能読取りを防ぐ最低水準はREPEATABLE READ。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 11,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:15": {
@@ -569,10 +634,12 @@
       "explanation": "原子性は処理を不可分な単位として扱う。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 11,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:16": {
@@ -587,10 +654,12 @@
       "explanation": "CEPはイベントの流れをリアルタイムに評価する。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 11,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:17": {
@@ -605,10 +674,12 @@
       "explanation": "ノートブック等でコード実行と分析結果を対話的に扱う。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 12,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:18": {
@@ -623,10 +694,12 @@
       "explanation": "多様なデータを元の形式に近い状態で保存する。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 12,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:19": {
@@ -641,10 +714,12 @@
       "explanation": "AESのブロック長は128ビット、鍵長は128・192・256ビット。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 12,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:20": {
@@ -659,10 +734,12 @@
       "explanation": "DLPは機密データの不正な持ち出しを検知し防止する。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 13,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:21": {
@@ -677,10 +754,12 @@
       "explanation": "IPsecはIP層で認証や暗号化を提供する。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 13,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:22": {
@@ -695,10 +774,12 @@
       "explanation": "物理容量を必要になった時点で割り当てる方式。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 13,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:23": {
@@ -713,10 +794,12 @@
       "explanation": "資源のアクセス方法の違いを利用者から隠す。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 14,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:24": {
@@ -731,10 +814,12 @@
       "explanation": "適切な規模のモジュールに分割できている割合は理解・変更のしやすさの指標となる。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 14,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     },
     "am2:25": {
@@ -749,10 +834,12 @@
       "explanation": "ソースからAPI仕様などの文書を自動生成する。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 14,
+        "scope": "2026-11-24: actual IPA page screenshot inspected; adapted topic, options and answer logic compared; browser acceptance pending."
       }
     }
   }
