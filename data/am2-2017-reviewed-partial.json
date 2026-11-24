@@ -118,6 +118,512 @@
       "sourcePage": 6,
       "adapted": true,
       "needsSourceReview": true
+    },
+    "am2:7": {
+      "stem": "講義名から担当教員、所属コードから勤務地が一意に決まる。第2正規形だが第3正規形でない表は？",
+      "options": {
+        "ア": "学生番号・講義名が複合キーの成績表",
+        "イ": "社員番号がキーの連絡先表",
+        "ウ": "社員番号がキーで所属コードと勤務地を含む表",
+        "エ": "趣味が繰返し項目の社員表"
+      },
+      "answer": "ウ",
+      "explanation": "社員番号から所属コードを経由して勤務地が決まる推移的従属がある。",
+      "sourcePage": 7,
+      "adapted": true,
+      "needsSourceReview": true,
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "table",
+            "title": "ア",
+            "headers": [
+              "学生番号(PK)",
+              "講義名(PK)",
+              "担当教員",
+              "成績"
+            ],
+            "rows": [
+              [
+                2122,
+                "経済学",
+                "山田教授",
+                "優"
+              ]
+            ]
+          }
+        ],
+        "イ": [
+          {
+            "type": "table",
+            "title": "イ",
+            "headers": [
+              "社員番号(PK)",
+              "氏名",
+              "入社年月日",
+              "電話番号"
+            ],
+            "rows": [
+              [
+                71235,
+                "山田太郎",
+                "2001-04-01",
+                "03-1234-5678"
+              ]
+            ]
+          }
+        ],
+        "ウ": [
+          {
+            "type": "table",
+            "title": "ウ",
+            "headers": [
+              "社員番号(PK)",
+              "氏名",
+              "所属コード",
+              "勤務地"
+            ],
+            "rows": [
+              [
+                15547,
+                "小林明",
+                "75T",
+                "東京"
+              ]
+            ]
+          }
+        ],
+        "エ": [
+          {
+            "type": "table",
+            "title": "エ",
+            "headers": [
+              "社員番号(PK)",
+              "身長",
+              "体重",
+              "趣味"
+            ],
+            "rows": [
+              [
+                71234,
+                170,
+                62,
+                "{テニス、ゴルフ}"
+              ]
+            ]
+          }
+        ]
+      }
+    },
+    "am2:8": {
+      "stem": "部署別に役職ごとの人数をCOUNTとCASEで集計する。空欄に入る式は？",
+      "options": {
+        "ア": "THEN 1 ELSE -1",
+        "イ": "THEN 1 ELSE 0",
+        "ウ": "THEN 1 ELSE NULL",
+        "エ": "THEN NULL ELSE 1"
+      },
+      "answer": "ウ",
+      "explanation": "COUNTはNULLを数えない。",
+      "sourcePage": 8,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "sql",
+          "text": "SELECT 部署コード, COUNT(CASE WHEN 役職='主任' [a] END), COUNT(CASE WHEN 役職='一般社員' [a] END) FROM 社員 GROUP BY 部署コード"
+        },
+        {
+          "type": "table",
+          "title": "結果例",
+          "headers": [
+            "部署コード",
+            "主任",
+            "一般社員"
+          ],
+          "rows": [
+            [
+              "AA01",
+              2,
+              5
+            ],
+            [
+              "AA02",
+              1,
+              3
+            ],
+            [
+              "BB01",
+              0,
+              1
+            ]
+          ]
+        }
+      ]
+    },
+    "am2:9": {
+      "stem": "A=5、B=4、C=NULLのとき (A>C) OR (B>A) OR (C=A) の評価は？",
+      "options": {
+        "ア": "空",
+        "イ": "false",
+        "ウ": "true",
+        "エ": "unknown"
+      },
+      "answer": "エ",
+      "explanation": "不定 OR 偽 OR 不定は不定。",
+      "sourcePage": 8,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:10": {
+      "stem": "出荷実績の合計が300以下の商品について月末在庫数を合計する。出荷なしの商品のSUMはNULLとする。結果は？",
+      "options": {
+        "ア": "400",
+        "イ": "500",
+        "ウ": "600",
+        "エ": "700"
+      },
+      "answer": "ア",
+      "explanation": "S001とS003が該当し100+300=400。",
+      "sourcePage": 9,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "在庫",
+          "headers": [
+            "商品",
+            "在庫数"
+          ],
+          "rows": [
+            [
+              "S001",
+              100
+            ],
+            [
+              "S002",
+              250
+            ],
+            [
+              "S003",
+              300
+            ],
+            [
+              "S004",
+              450
+            ],
+            [
+              "S005",
+              200
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "title": "出荷",
+          "headers": [
+            "商品",
+            "出荷数"
+          ],
+          "rows": [
+            [
+              "S001",
+              50
+            ],
+            [
+              "S003",
+              150
+            ],
+            [
+              "S001",
+              100
+            ],
+            [
+              "S005",
+              100
+            ],
+            [
+              "S005",
+              250
+            ],
+            [
+              "S003",
+              150
+            ]
+          ]
+        }
+      ]
+    },
+    "am2:11": {
+      "stem": "PCには番号1、2のスロットがあり、カードは最大1台のPCに取り付けられる。取付け表の制約は？",
+      "options": {
+        "ア": "PK(PCID,スロット番号)",
+        "イ": "PK(PCID,スロット番号,カードID)",
+        "ウ": "PK(PCID,スロット番号) と UNIQUE(カードID)",
+        "エ": "PK(スロット番号,カードID) と UNIQUE(PCID)"
+      },
+      "answer": "ウ",
+      "explanation": "スロットごとの一意性とカードの重複取付け禁止を両立する。",
+      "sourcePage": 10,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "uml",
+          "classes": [
+            [
+              "PC",
+              45,
+              80
+            ],
+            [
+              "取付け",
+              175,
+              80
+            ],
+            [
+              "カード",
+              305,
+              80
+            ]
+          ],
+          "links": [
+            {
+              "kind": "association",
+              "from": "PC",
+              "to": "取付け",
+              "fromLabel": "1",
+              "toLabel": "0..2"
+            },
+            {
+              "kind": "association",
+              "from": "取付け",
+              "to": "カード",
+              "fromLabel": "0..1",
+              "toLabel": "1"
+            }
+          ]
+        }
+      ]
+    },
+    "am2:12": {
+      "stem": "和両立のRとSで共通集合と等しい式は？",
+      "options": {
+        "ア": "R−(R−S)",
+        "イ": "R−(S−R)",
+        "ウ": "(R−S)−(S−R)",
+        "エ": "S−(R−S)"
+      },
+      "answer": "ア",
+      "explanation": "RからR固有の要素を除く。",
+      "sourcePage": 11,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:13": {
+      "stem": "n属性から選べる射影の総数は？ 空と全属性を含む。",
+      "options": {
+        "ア": "2n",
+        "イ": "2ⁿ",
+        "ウ": "log₂n",
+        "エ": "n"
+      },
+      "answer": "イ",
+      "explanation": "各属性について選ぶか選ばないかの2択。",
+      "sourcePage": 11,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:14": {
+      "stem": "分散DBの2相コミットで必要な処理は？",
+      "options": {
+        "ア": "他の取引から参照を禁止",
+        "イ": "全参加DBの更新可能性を確認する通信",
+        "ウ": "ロールバックを禁止",
+        "エ": "通信異常でも必ず確定"
+      },
+      "answer": "イ",
+      "explanation": "全参加者の準備を確認してから確定を決める。",
+      "sourcePage": 11,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:15": {
+      "stem": "2相ロック方式が保証する性質は？",
+      "options": {
+        "ア": "デッドロックなし",
+        "イ": "解放後の再取得可能",
+        "ウ": "専有ロックのみ使用",
+        "エ": "競合直列化可能性"
+      },
+      "answer": "エ",
+      "explanation": "取得相と解放相に分けることで競合直列化可能性を保証する。",
+      "sourcePage": 12,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:16": {
+      "stem": "ACIDの正しい説明は？",
+      "options": {
+        "ア": "一部処理だけ成功してよい",
+        "イ": "確定結果は障害で失われてもよい",
+        "ウ": "実行結果は整合した状態になる",
+        "エ": "並行処理の影響を無制限に受ける"
+      },
+      "answer": "ウ",
+      "explanation": "一貫性は整合した状態を維持する性質。",
+      "sourcePage": 12,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:17": {
+      "stem": "合計点を求めた後、別取引が条件に合う受験者を追加して確定し、その後人数を集計したため平均がずれた。現象は？",
+      "options": {
+        "ア": "反復不能読取り",
+        "イ": "順次読取り",
+        "ウ": "ダーティリード",
+        "エ": "ファントムリード"
+      },
+      "answer": "エ",
+      "explanation": "同じ検索条件で対象行の集合が変わった。",
+      "sourcePage": 13,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "処理順序",
+          "headers": [
+            "順番",
+            "T1",
+            "T2"
+          ],
+          "rows": [
+            [
+              1,
+              "合計点算出",
+              ""
+            ],
+            [
+              2,
+              "",
+              "受験者追加"
+            ],
+            [
+              3,
+              "",
+              "COMMIT"
+            ],
+            [
+              4,
+              "人数算出",
+              ""
+            ],
+            [
+              5,
+              "平均算出",
+              ""
+            ],
+            [
+              6,
+              "COMMIT",
+              ""
+            ]
+          ]
+        }
+      ]
+    },
+    "am2:18": {
+      "stem": "行aに共有ロックがある場合のロック競合として正しいものは？",
+      "options": {
+        "ア": "別行bの専有も不可",
+        "イ": "表全体の専有は不可",
+        "ウ": "表共有と表専有は両立",
+        "エ": "表専有と他取引の行専有は両立"
+      },
+      "answer": "イ",
+      "explanation": "表全体の専有は既存行ロックと競合する。",
+      "sourcePage": 14,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:19": {
+      "stem": "各n行の二表を単純な入れ子ループで結合する計算量は？",
+      "options": {
+        "ア": "O(2n)",
+        "イ": "O(log n)",
+        "ウ": "O(n²)",
+        "エ": "O(n log n)"
+      },
+      "answer": "ウ",
+      "explanation": "外側の各行について内側n行を比較する。",
+      "sourcePage": 14,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:20": {
+      "stem": "CSIRTの役割は？",
+      "options": {
+        "ア": "個人情報保護認証",
+        "イ": "セキュリティインシデント対応",
+        "ウ": "暗号技術選定",
+        "エ": "国家政策の総合調整"
+      },
+      "answer": "イ",
+      "explanation": "組織のインシデント対応を担う。",
+      "sourcePage": 14,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:21": {
+      "stem": "SSHの用途は？",
+      "options": {
+        "ア": "メール暗号化標準",
+        "イ": "カード決済仕様",
+        "ウ": "メール暗号化ソフト",
+        "エ": "安全な遠隔ログイン・ファイル転送"
+      },
+      "answer": "エ",
+      "explanation": "暗号化された遠隔操作を提供する。",
+      "sourcePage": 15,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:22": {
+      "stem": "メモリのデータ誤りを自動訂正できる方式は？",
+      "options": {
+        "ア": "ECC",
+        "イ": "RSA",
+        "ウ": "チェックサム",
+        "エ": "パリティ"
+      },
+      "answer": "ア",
+      "explanation": "誤り訂正符号を使う。",
+      "sourcePage": 15,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:23": {
+      "stem": "HAのフェールオーバー手順を選ぶ。1:ディスク心拍確認、2:ドライブ専有、3:ネットワーク確認、4:本番系停止。",
+      "options": {
+        "ア": "1→2→3→4",
+        "イ": "2→3→1→4",
+        "ウ": "3→1→2→4",
+        "エ": "3→2→1→4"
+      },
+      "answer": "ウ",
+      "explanation": "ネットワークとディスク心拍を確認後に専有を行う。",
+      "sourcePage": 16,
+      "adapted": true,
+      "needsSourceReview": true
     }
-  }
+  },
+  "pendingDiagramQuestions": [
+    2,
+    3,
+    10,
+    11,
+    17
+  ]
 }
