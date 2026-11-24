@@ -3,6 +3,7 @@ import {readFileSync,existsSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {resolve} from 'node:path';
 import {inspectCs03CloudflareAccount} from './cs03-cloudflare-account-guard.mjs';
+import {inspectCs03BrowserWorkerReviewTemplate} from './cs03-worker-review-config.mjs';
 const root=resolve(fileURLToPath(new URL('../',import.meta.url)));
 const read=path=>readFileSync(resolve(root,path),'utf8');
 export function inspectCs03Deployment(){
@@ -16,13 +17,17 @@ export function inspectCs03Deployment(){
   blockers.push('NATIVE_FUNCTION_GATEWAY_GUARD_UNVERIFIED');
  if(!/authorization:'Bearer '/.test(clientCode))
   blockers.push('CLIENT_JWT_HEADER_UNVERIFIED');
- // Existence of a local prototype never proves a trusted, deployable gateway.
- // The prototype explicitly declares its per-process limits unsafe for deployment.
- const gatewayPath='server/cs03-trusted-edge-gateway.mjs';
- if(!existsSync(resolve(root,gatewayPath)) ||
-    /NOT SAFE TO DEPLOY/.test(read(gatewayPath)) ||
-    !existsSync(resolve(root,'server/cs03-gateway-production-adapter.mjs')))
-  blockers.push('TRUSTED_GATEWAY_NOT_IMPLEMENTED');
+ // Static wiring evidence only; actual ingress and quota are not verified here.
+ const gatewayPaths=['server/cs03-trusted-edge-gateway.mjs','server/cs03-worker-candidate.mjs','server/cs03-browser-jwt-entrypoint.mjs','server/cs03-shared-quota.mjs','server/cs03-cloudflare-do-transport.mjs','server/cs03-cloudflare-do-handler.mjs'];
+ if(gatewayPaths.some(path=>!existsSync(resolve(root,path))))blockers.push('TRUSTED_GATEWAY_NOT_IMPLEMENTED');
+ else if(!/sharedQuota,fetcher,upstreamUrl,upstreamSecret/.test(read(gatewayPaths[1])) ||
+         !/atomicConsume:createCs03DurableObjectQuotaTransport/.test(read(gatewayPaths[1])) ||
+         !/createCs03WorkerCandidate/.test(read(gatewayPaths[2])))
+  blockers.push('SHARED_GATEWAY_WIRING_UNVERIFIED');
+ try{blockers.push(...inspectCs03BrowserWorkerReviewTemplate().map(code=>'BROWSER_TEMPLATE_'+code));}
+ catch{blockers.push('BROWSER_TEMPLATE_UNREADABLE');}
+ // No file-presence check may substitute for independently verified live prerequisites.
+ blockers.push('LIVE_ISOLATION_AND_COST_NOT_VERIFIED');
  if(!existsSync(resolve(root,'docs/CS03_GATEWAY_RATE_LIMIT_ACCEPTANCE.md')))
   blockers.push('GATEWAY_RATE_LIMIT_ACCEPTANCE_MISSING');
  if(!existsSync(resolve(root,'docs/CS03_ISOLATED_DEPLOYMENT_APPROVAL.md')))
