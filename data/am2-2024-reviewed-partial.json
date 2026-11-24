@@ -739,10 +739,13 @@
         }
       ],
       "sourceVisualReviewed": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 7,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:8": {
@@ -876,22 +879,25 @@
         }
       ],
       "sourceVisualReviewed": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 8,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:9": {
       "stem": "商品表と納品表を商品番号で等結合した結果を選ぶ。",
       "options": {
-        "ア": "3行、1列",
-        "イ": "3行、2列",
-        "ウ": "5行、1列",
-        "エ": "5行、2列"
+        "ア": "3行・商品番号列1つ",
+        "イ": "3行・商品番号列2つ",
+        "ウ": "5行・商品番号列1つ",
+        "エ": "5行・商品番号列2つ"
       },
       "answer": "エ",
-      "explanation": "等結合は条件に一致する全組合せを残し、結合列を自動で一つにまとめない。自然結合との違いに注意。",
+      "explanation": "商品と納品を商品番号で等結合すると5行になる。等結合では両表の商品番号列を残すため合計6列。自然結合なら共通属性を一つにまとめる。",
       "sourcePage": 9,
       "adapted": true,
       "figures": [
@@ -1143,14 +1149,17 @@
         ]
       },
       "sourceVisualReviewed": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 9,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:10": {
-      "stem": "従業員表をS1として、男女それぞれの最年長者を除くため WHERE 生年月日 > (副問合せ) とする。適切な副問合せは？",
+      "stem": "従業員表（従業員番号が主キー、従業員名、性別、生年月日）から男女それぞれの最年長者を除くSQLの空欄に入る副問合せは？",
       "options": {
         "ア": "SQL 1",
         "イ": "SQL 2",
@@ -1161,7 +1170,7 @@
       "explanation": "同じ性別の最小生年月日を相関副問合せで求め、その日より後に生まれた人を選択する。最小日付に該当する人が複数いても全員除外される。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "sql",
@@ -1195,8 +1204,11 @@
         ]
       },
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 10,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:11": {
@@ -1211,10 +1223,13 @@
       "explanation": "直積は全行の組合せを作る。集合演算の和・差・積集合には対応する属性の互換性が必要。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 10,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:12": {
@@ -1229,14 +1244,17 @@
       "explanation": "確定前の値を読むのがダーティリード。アはファントム、イはノンリピータブルリード。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 11,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:13": {
-      "stem": "待ち関係が B→D、D→C、C→B、C→A、D→E、E→G、F→D、F→E のとき、永久待ちになる処理は？",
+      "stem": "待ち関係が B→D、D→C、C→B、C→A、D→E、E→G、F→D、F→E のとき、永久待ちになる処理は？ 矢印X→YはXがYの資源解放を待つことを表す。",
       "options": {
         "ア": "A,B,C,D",
         "イ": "B,C,D",
@@ -1334,10 +1352,13 @@
         }
       ],
       "sourceVisualReviewed": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 11,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:14": {
@@ -1386,10 +1407,13 @@
         }
       ],
       "sourceVisualReviewed": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 12,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:15": {
@@ -1404,10 +1428,13 @@
       "explanation": "古いxに基づくyと新しいxの組合せが整合しなくなる。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 12,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:16": {
@@ -1422,10 +1449,13 @@
       "explanation": "CEPはイベントの流れを監視し、組合せや条件に応じてリアルタイム処理する。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:17": {
@@ -1440,10 +1470,13 @@
       "explanation": "ファクトは売上や数量などの実績、ディメンションは商品や日付など分析軸。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:18": {
@@ -1458,10 +1491,13 @@
       "explanation": "データの流れと変換履歴を追跡し、原因調査や変更の影響分析に使う。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:19": {
@@ -1476,10 +1512,13 @@
       "explanation": "95^n > 10^16なので1.98n>16。8桁は15.84、9桁は17.82となる。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 14,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:20": {
@@ -1494,10 +1533,13 @@
       "explanation": "単語などの出現傾向から迷惑メールである確率を推定する。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 14,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:21": {
@@ -1512,10 +1554,13 @@
       "explanation": "ブロックの内容や前のブロックとのつながりをハッシュ値で検証できる。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 14,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:22": {
@@ -1530,10 +1575,13 @@
       "explanation": "複数グループで並列処理できる。パリティはグループごとに必要で、故障耐性もグループ単位で決まる。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 15,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:23": {
@@ -1548,10 +1596,13 @@
       "explanation": "セッション情報を共有することで別のサーバでも利用者の処理状態を継続できる。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 15,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:24": {
@@ -1566,10 +1617,13 @@
       "explanation": "共通部品を再利用することで重複開発を減らす。機器固有の試験は依然必要。",
       "sourcePage": 16,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 16,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     },
     "am2:25": {
@@ -1584,10 +1638,13 @@
       "explanation": "失敗するテストを書き、最小限の実装で成功させ、リファクタリングする。",
       "sourcePage": 16,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 16,
+        "reviewedOn": "2026-11-24",
+        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
       }
     }
   },
