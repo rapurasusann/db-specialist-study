@@ -25,9 +25,10 @@
      !auto||!['open','edit','state'].every(k=>typeof auto[k]==='function'))throw Error('ACCOUNT_MODE_INVALID');
   const fresh=Object.create(null);
   for(const [id,row] of Object.entries(listing.records)){
-   if(!ID.test(id)||!row||typeof row!=='object'||!row.data||
+   if(!row||typeof row!=='object'||!row.data||
       typeof row.data!=='object'||Array.isArray(row.data))throw Error('ACCOUNT_SNAPSHOT_INVALID');
-   fresh[id]=structuredClone(row.data);
+   if(ID.test(id))fresh[id]=structuredClone(row.data);
+   else if(!window.CS03_PRACTICE_BRIDGE?.isActive())throw Error('ACCOUNT_SNAPSHOT_INVALID');
   }
   device=progress;mode={auto,ready:new Set(),loading:new Map(),seq:++sequence};
   progress=fresh;renderMode(); // Account data only; never calls save().
