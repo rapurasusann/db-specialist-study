@@ -19,7 +19,11 @@
       "explanation": "分断が発生すると強い整合性と可用性を同時に保証できない。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:2": {
       "stem": "部・課・係の階層を表す3モデルについて、適切な解釈を選ぶ。親子は循環しないものとし、モデルBの階層制約は循環禁止を表す。",
@@ -155,7 +159,11 @@
             ]
           ]
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:3": {
       "stem": "R(A,B,C)の候補キーがABとAC、従属がAB→CとC→Bの場合、最高の正規形は？",
@@ -169,10 +177,14 @@
       "explanation": "Bは候補キーの構成属性なので3NFを満たすが、CはスーパーキーでないためBCNFを満たさない。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:4": {
-      "stem": "医師・診療科・診察・患者の関係として正しい多重度は？",
+      "stem": "表定義から、医師―診療科―診察―患者の順に関係の多重度を判断する。",
       "options": {
         "ア": "多:1、多:1、1:多",
         "イ": "多:1、1:多、多:1",
@@ -439,6 +451,10 @@
             ]
           }
         ]
+      },
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
       }
     },
     "am2:5": {
@@ -453,7 +469,11 @@
       "explanation": "第3正規形への合成では両方の性質を確保できる。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:6": {
       "stem": "商品表の仕入先コードから当月仕入実績の仕入先コードをEXCEPTで除くと？",
@@ -525,7 +545,11 @@
             ]
           ]
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:7": {
       "stem": "ダーティリードは防ぐが反復読取りの一致は保証しない隔離水準は？",
@@ -539,7 +563,11 @@
       "explanation": "READ COMMITTEDは確定済み値だけを読むが再読取り時の更新は許す。",
       "sourcePage": 6,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:8": {
       "stem": "資格FE取得者を残し、APがあれば併記するLEFT JOINの条件は？",
@@ -623,7 +651,11 @@
             ]
           ]
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:9": {
       "stem": "n属性の関係の射影は空集合と全属性を含め何通り？",
@@ -637,7 +669,11 @@
       "explanation": "各属性を含めるか否かの2択がn個ある。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:10": {
       "stem": "会員項目の最新行番号を選び、CASEで横持ちに変換するとき共通して使う集約は？",
@@ -701,7 +737,11 @@
             ]
           ]
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:11": {
       "stem": "和両立が不要な関係演算は？",
@@ -715,7 +755,11 @@
       "explanation": "直積は異なる属性構成でも実行できる。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:12": {
       "stem": "分散DBの2相コミットの性質は？",
@@ -729,7 +773,11 @@
       "explanation": "準備済み参加者は最終決定を受け取れないと待つことがある。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:13": {
       "stem": "2相ロックの規則は？",
@@ -743,7 +791,11 @@
       "explanation": "取得相と解放相を分離する。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:14": {
       "stem": "行aの共有ロックと表全体の専有ロックの関係は？",
@@ -757,7 +809,11 @@
       "explanation": "表全体への専有ロックはその表の既存行ロックと競合する。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:15": {
       "stem": "各n行の2表を単純な入れ子ループで結合する計算量は？",
@@ -771,7 +827,11 @@
       "explanation": "外側のn行それぞれに内側n行を比較する。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:16": {
       "stem": "MVCCの特徴は？",
@@ -785,7 +845,11 @@
       "explanation": "読取りが適切な旧版を参照できる。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:17": {
       "stem": "Indexed Database APIの用途は？",
@@ -799,7 +863,11 @@
       "explanation": "IndexedDBはブラウザ内で構造化データを保存するAPI。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:18": {
       "stem": "Apache Sparkの特徴は？",
@@ -813,7 +881,11 @@
       "explanation": "RDDは分散データ集合で変換・処理を行える。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:19": {
       "stem": "インシデント対応の順序は？",
@@ -827,7 +899,11 @@
       "explanation": "検知後に優先度を判断して対応する。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:20": {
       "stem": "ベイジアンフィルタの仕組みは？",
@@ -841,7 +917,11 @@
       "explanation": "メールの特徴から迷惑メールの確率を推定する。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:21": {
       "stem": "パケットフィルタ型FWの主な判断材料は？",
@@ -855,7 +935,11 @@
       "explanation": "ネットワーク・トランスポート層の情報で通過を制御する。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:22": {
       "stem": "ECCで1ビット訂正と2ビット検出に用いる符号は？",
@@ -866,13 +950,17 @@
         "エ": "ハミング符号"
       },
       "answer": "エ",
-      "explanation": "拡張ハミング符号でSECDEDを実現する。",
+      "explanation": "通常のハミング符号は1ビット訂正に用いられる。全体パリティを追加した拡張ハミング符号は1ビット訂正・2ビット検出（SECDED）が可能。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:23": {
-      "stem": "通常60%使用の同等サーバが8台停止しても残りを80%以下にする最小台数は？",
+      "stem": "同じ処理能力のn台のサーバに負荷が均等に分散され、通常は各サーバの処理能力の60%を使用する。8台が停止しても総負荷が変わらず、残りのサーバに均等に再配分される場合、各サーバの使用率を80%以下にするには最低何台必要か。",
       "options": {
         "ア": "32",
         "イ": "34",
@@ -880,10 +968,14 @@
         "エ": "40"
       },
       "answer": "ア",
-      "explanation": "0.6n≤0.8(n−8)よりn≥32。",
+      "explanation": "総負荷は0.6n台分。停止後の許容処理能力は0.8(n−8)台分。0.6n≤0.8(n−8)を解くと0.2n≥6.4、n≥32。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:24": {
       "stem": "使用性を改善する施策は？",
@@ -897,7 +989,11 @@
       "explanation": "利用方法を理解しやすくすることは使用性向上に直結する。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:25": {
       "stem": "マッシュアップとは？",
@@ -911,7 +1007,11 @@
       "explanation": "複数の既存サービスを組み合わせる。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     }
   },
   "pendingDiagramNote": "Q2/Q4 structured diagram data added; visual layout fidelity and remaining source review pending."
