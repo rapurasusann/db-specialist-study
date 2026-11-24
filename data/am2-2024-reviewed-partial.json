@@ -154,7 +154,10 @@
               "bidirectional": true
             }
           ],
-          "shape": "rect"
+          "shape": "rect",
+          "incomingPointers": [
+            "A"
+          ]
         }
       ],
       "optionFigures": {
@@ -221,7 +224,10 @@
                 "bidirectional": true
               }
             ],
-            "shape": "rect"
+            "shape": "rect",
+            "incomingPointers": [
+              "A"
+            ]
           }
         ],
         "イ": [
@@ -292,7 +298,10 @@
                 "bidirectional": true
               }
             ],
-            "shape": "rect"
+            "shape": "rect",
+            "incomingPointers": [
+              "A"
+            ]
           }
         ],
         "ウ": [
@@ -363,7 +372,10 @@
                 "bidirectional": true
               }
             ],
-            "shape": "rect"
+            "shape": "rect",
+            "incomingPointers": [
+              "A"
+            ]
           }
         ],
         "エ": [
@@ -429,7 +441,10 @@
                 "bidirectional": true
               }
             ],
-            "shape": "rect"
+            "shape": "rect",
+            "incomingPointers": [
+              "A"
+            ]
           }
         ]
       },
