@@ -17,7 +17,11 @@
       "explanation": "BASEの最終的整合性では一時的な差異を許容し、更新が伝播すると一致する。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:2": {
       "stem": "社員には必ず一つの入社年がある。入社者がいない年も存在する。社員側a、年側bの多重度は？",
@@ -58,7 +62,11 @@
             }
           ]
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:3": {
       "stem": "R(A,B,C,D,E)でA→B、A→C、{C,D}→Eが成立する。{A,B}の属性閉包は？",
@@ -72,7 +80,11 @@
       "explanation": "AからCを追加できるがDがないためEは導出できない。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:4": {
       "stem": "W={A→{B,C}, {A,D}→E, {A,C,D}→E, B→C, C→B}。冗長性を取り除いた同等な集合を選ぶ。",
@@ -92,7 +104,11 @@
           "type": "sql",
           "text": "X = {A→B, B→C, C→B, {A,D}→E}\nY = {A→C, B→C, C→B, {A,D}→E}\nZ = {A→B, C→B, {A,C,D}→E}"
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:5": {
       "stem": "第2正規形から第3正規形にするための条件は？",
@@ -106,7 +122,11 @@
       "explanation": "第2正規形で除去する部分関数従属に加え、非キー属性への推移的関数従属を解消する。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:6": {
       "stem": "文書の作成者・承認者を社員表から取得する。社員表に存在しない作成者IDの文書も残すには？",
@@ -224,7 +244,11 @@
           "type": "sql",
           "text": "SELECT 文書ID, 作成者ID, A.氏名 AS 作成者氏名,\n 承認者ID, B.氏名 AS 承認者氏名 FROM [a]"
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:7": {
       "stem": "商品表と売上実績表を左外部結合し、ランクAの平均売上を求める。結果は？",
@@ -311,7 +335,11 @@
           "type": "sql",
           "text": "SELECT AVG(売上合計金額) AS 売上平均金額\nFROM 商品 LEFT OUTER JOIN 商品別売上実績\nON 商品.商品コード = 商品別売上実績.商品コード\nWHERE 商品ランク = 'A'\nGROUP BY 商品ランク"
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:8": {
       "stem": "社員表に対する次のNOT EXISTS問合せの結果は？",
@@ -377,7 +405,11 @@
           "type": "sql",
           "text": "SELECT 社員コード FROM 社員 X\nWHERE NOT EXISTS\n (SELECT * FROM 社員 Y WHERE X.社員コード = Y.上司)"
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:9": {
       "stem": "SELECT * FROM R UNION SELECT * FROM R と SELECT * FROM R が同じ結果になる必要十分条件は？",
@@ -391,7 +423,11 @@
       "explanation": "UNIONは重複を除く。元の行に重複がなければ結果は等しい。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:10": {
       "stem": "和両立なRとSについてR∩Sと等しい式は？",
@@ -405,7 +441,11 @@
       "explanation": "Rだけに含まれる行をRから除くと共通部分が残る。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:11": {
       "stem": "等結合を表せる関係演算の組合せは？",
@@ -419,18 +459,22 @@
       "explanation": "直積で組合せを作り、結合属性が等しい行を選択する。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:12": {
       "stem": "社員表から男女それぞれの最年長者を除く。生年月日 > (副問合せ) の副問合せは？",
       "options": {
-        "ア": "性別別にMINをGROUP BY",
-        "イ": "生年月日比較又は性別一致でMIN",
-        "ウ": "外側と性別一致の条件でMIN",
-        "エ": "未定義別名S2でGROUP BY"
+        "ア": "SQL 1",
+        "イ": "SQL 2",
+        "ウ": "SQL 3",
+        "エ": "SQL 4"
       },
       "answer": "ウ",
-      "explanation": "相関副問合せで同じ性別の最小生年月日を求め、それより後の日付を選ぶ。",
+      "explanation": "同じ性別の最小生年月日を相関副問合せで求め、その日より後に生まれた人を選択する。最小日付に該当する人が複数いても全員除外される。",
       "sourcePage": 10,
       "adapted": true,
       "needsSourceReview": true,
@@ -439,7 +483,37 @@
           "type": "sql",
           "text": "社員（社員番号［主キー］, 社員名, 性別, 生年月日）\nSELECT 社員番号, 社員名 FROM 社員 AS S1\nWHERE 生年月日 > ([a])"
         }
-      ]
+      ],
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 社員 AS S2 GROUP BY S2.性別"
+          }
+        ],
+        "イ": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 社員 AS S2 WHERE S1.生年月日 > S2.生年月日 OR S1.性別 = S2.性別"
+          }
+        ],
+        "ウ": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 社員 AS S2 WHERE S1.性別 = S2.性別"
+          }
+        ],
+        "エ": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 社員 GROUP BY S2.性別"
+          }
+        ]
+      },
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:13": {
       "stem": "並行バッチのデッドロックを減らす設計は？",
@@ -453,7 +527,11 @@
       "explanation": "取得順を統一すると循環待ちを防ぎやすい。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:14": {
       "stem": "T1が同じ行を読み直すとT2のコミット後に値が変わる。この現象を防ぐ最低のSQL隔離水準は？",
@@ -467,7 +545,11 @@
       "explanation": "反復不能読取りを防ぐ最低水準はREPEATABLE READ。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:15": {
       "stem": "ACIDの原子性に該当する性質は？",
@@ -481,7 +563,11 @@
       "explanation": "原子性は処理を不可分な単位として扱う。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:16": {
       "stem": "CEPの特徴は？",
@@ -495,7 +581,11 @@
       "explanation": "CEPはイベントの流れをリアルタイムに評価する。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:17": {
       "stem": "JupyterLabとは？",
@@ -509,7 +599,11 @@
       "explanation": "ノートブック等でコード実行と分析結果を対話的に扱う。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:18": {
       "stem": "データレイクの特徴は？",
@@ -523,7 +617,11 @@
       "explanation": "多様なデータを元の形式に近い状態で保存する。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:19": {
       "stem": "AESで選べる鍵長は？",
@@ -537,7 +635,11 @@
       "explanation": "AESのブロック長は128ビット、鍵長は128・192・256ビット。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:20": {
       "stem": "DLPの機能は？",
@@ -551,7 +653,11 @@
       "explanation": "DLPは機密データの不正な持ち出しを検知し防止する。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:21": {
       "stem": "IPv6通信をネットワーク層で暗号化する技術は？",
@@ -565,7 +671,11 @@
       "explanation": "IPsecはIP層で認証や暗号化を提供する。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:22": {
       "stem": "シンプロビジョニングとは？",
@@ -579,7 +689,11 @@
       "explanation": "物理容量を必要になった時点で割り当てる方式。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:23": {
       "stem": "分散処理におけるアクセス透過性とは？",
@@ -593,7 +707,11 @@
       "explanation": "資源のアクセス方法の違いを利用者から隠す。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:24": {
       "stem": "ソフトウェア保守性を定量評価する指標は？",
@@ -607,7 +725,11 @@
       "explanation": "適切な規模のモジュールに分割できている割合は理解・変更のしやすさの指標となる。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:25": {
       "stem": "ドキュメンテーションジェネレーターとは？",
@@ -621,7 +743,11 @@
       "explanation": "ソースからAPI仕様などの文書を自動生成する。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     }
   }
 }
