@@ -1472,7 +1472,7 @@ const entry={
     }
   }
 };
-const entries={2024:entry,2023:archive2023Data,2022:archive2022Data};
+const entries={2024:entry,2023:archive2023Data,2022:archive2022Data,2021:archive2021Data};
 const originalQuestion=showQuestion;
 const originalRenderYears=renderYears;
 const isArchive=()=>Object.hasOwn(entries,Number(year))&&courseId==='am2';
