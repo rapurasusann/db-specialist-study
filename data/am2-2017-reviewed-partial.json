@@ -27,18 +27,18 @@
       }
     },
     "am2:2": {
-      "stem": "会計取引の増減額は、残高を増やす場合は正、減らす場合は負とする。今期の取引だけが会計取引表にある。現金勘定の2017年4月30日時点の残高を求めるSQLの考え方として適切なものは？",
+      "stem": "会計取引の金額は残高の増加なら正、減少なら負とする。各取引の金額合計は0で、会計取引表には今期分だけを保持する。2017年4月30日現在の現金残高を求めるSQLを選ぶ。",
       "options": {
-        "ア": "期首残高を含めず移動金額を合計",
-        "イ": "期首残高に対象日までの移動金額を加算し勘定別に集約",
-        "ウ": "残高列を直接取得し結合条件を省略",
-        "エ": "残高列を直接取得し取引番号の結合を省略"
+        "ア": "SQL 1",
+        "イ": "SQL 2",
+        "ウ": "SQL 3",
+        "エ": "SQL 4"
       },
       "answer": "イ",
       "explanation": "勘定科目と取引番号で3表を結合し、現金かつ指定日以前の取引に絞る。期首残高に符号付き金額の合計を加える。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -119,12 +119,36 @@
       ],
       "needsDiagramReview": true,
       "contentReview": {
-        "status": "partial",
-        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "status": "adapted-content-compared",
         "page": 4,
-        "reviewedOn": "2026-11-24",
-        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate.",
-        "reason": "SQL options remain summarized rather than executable SQL."
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "scope": "Page image directly inspected; SQL rewritten using aliases; visual acceptance pending."
+      },
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "sql",
+            "text": "SELECT SUM(m.金額) AS 残高 FROM 勘定 a, 移動 m, 会計取引 t\nWHERE a.勘定科目 = m.勘定科目 AND t.取引番号 = m.取引番号 AND a.勘定科目 = '現金' AND t.取引日 <= '2017-04-30'"
+          }
+        ],
+        "イ": [
+          {
+            "type": "sql",
+            "text": "SELECT a.期首残高 + SUM(m.金額) AS 残高 FROM 勘定 a, 移動 m, 会計取引 t\nWHERE a.勘定科目 = m.勘定科目 AND t.取引番号 = m.取引番号 AND a.勘定科目 = '現金' AND t.取引日 <= '2017-04-30'\nGROUP BY a.勘定科目, a.期首残高"
+          }
+        ],
+        "ウ": [
+          {
+            "type": "sql",
+            "text": "SELECT 残高 FROM 勘定 a, 移動 m, 会計取引 t\nWHERE a.勘定科目 = '現金' AND t.取引日 <= '2017-04-30'"
+          }
+        ],
+        "エ": [
+          {
+            "type": "sql",
+            "text": "SELECT 残高 FROM 勘定 a, 移動 m, 会計取引 t\nWHERE a.勘定科目 = m.勘定科目 AND a.勘定科目 = '現金' AND t.取引日 <= '2017-04-30'"
+          }
+        ]
       }
     },
     "am2:3": {
