@@ -14,7 +14,7 @@
         "エ": "分断時に整合性と可用性を同時に保証できない"
       },
       "answer": "エ",
-      "explanation": "ネットワーク分断が起きると、一貫した応答を優先するか、応答を継続するかの選択が必要になる。",
+      "explanation": "ネットワーク分断が起きると、一貫した応答を優先するか、応答を継続するかの選択が必要になる。\n\n分断中の強い整合性を守るなら一部の要求を拒否・待機させる場合がある。可用性優先では一時的不一致を許し得る。",
       "sourcePage": 3,
       "adapted": true,
       "needsSourceReview": false,
@@ -34,7 +34,7 @@
         "エ": "レプリケーション"
       },
       "answer": "ウ",
-      "explanation": "シャーディングはデータを分割して複数ノードに配置する。複製とは異なる。",
+      "explanation": "シャーディングはデータを分割して複数ノードに配置する。複製とは異なる。\n\n範囲で別々のデータを配置するのがシャーディング。同じデータを複数箇所に置くレプリケーションとは異なる。",
       "sourcePage": 3,
       "adapted": true,
       "needsSourceReview": false,
@@ -54,7 +54,7 @@
         "エ": "業務対象の情報構造の抽象化"
       },
       "answer": "エ",
-      "explanation": "実装方式ではなく、業務の実体と関連を表現する。",
+      "explanation": "実装方式ではなく、業務の実体と関連を表現する。\n\n管理対象とその関連を表す。索引や物理格納方法は概念モデルの主題ではない。",
       "sourcePage": 4,
       "adapted": true,
       "needsSourceReview": false,
@@ -74,7 +74,7 @@
         "エ": "X!"
       },
       "answer": "イ",
-      "explanation": "木の高さは件数の対数に比例する。",
+      "explanation": "木の高さは件数の対数に比例する。\n\n根から葉まで分岐を選ぶので全件を順に探さない。平衡木の高さは対数的に増える。",
       "sourcePage": 4,
       "adapted": true,
       "needsSourceReview": false,
@@ -94,7 +94,7 @@
         "エ": "従業員番号・言語／両列"
       },
       "answer": "エ",
-      "explanation": "従業員と言語の組合せをキーとし、言語を使えない人は言語表に行を持たない。",
+      "explanation": "従業員と言語の組合せをキーとし、言語を使えない人は言語表に行を持たない。\n\n社員1がJavaとPythonを使い社員2もJavaを使うなら、社員番号だけでも言語だけでも一意にならない。",
       "sourcePage": 4,
       "adapted": true,
       "needsSourceReview": false,
@@ -207,7 +207,7 @@
         "エ": "5"
       },
       "answer": "ウ",
-      "explanation": "受注番号から顧客コードと受注日、顧客コードから顧客名、商品コードから商品名と単価が決まると考える。顧客・商品・受注・受注明細の4表に分ける。受注金額は単価と受注数から計算できる。",
+      "explanation": "受注番号から顧客コードと受注日、顧客コードから顧客名、商品コードから商品名と単価が決まると考える。顧客・商品・受注・受注明細の4表に分ける。受注金額は単価と受注数から計算できる。\n\n顧客名や商品名を明細に毎回保存すると一部だけ更新したときに不整合が起きる。計算列専用の表は不要。",
       "sourcePage": 6,
       "adapted": true,
       "needsSourceReview": false,
@@ -356,7 +356,7 @@
         "エ": "RANK"
       },
       "answer": "エ",
-      "explanation": "RANKは順位を整数で返す。PARTITION BYでクラス単位に区切る。",
+      "explanation": "RANKは順位を整数で返す。PARTITION BYでクラス単位に区切る。\n\n得点90,90,80ならRANKは1,1,3。DENSE_RANKは1,1,2。PARTITION BYでクラスごとに順位を付け直す。",
       "sourcePage": 7,
       "adapted": true,
       "needsSourceReview": false,
@@ -461,7 +461,7 @@
         "エ": "RIGHT OUTER JOIN"
       },
       "answer": "ア",
-      "explanation": "完全外部結合で双方の不一致行を残し、どちらかのIDがNULLの行を選ぶ。",
+      "explanation": "完全外部結合で双方の不一致行を残し、どちらかのIDがNULLの行を選ぶ。\n\n左外部結合だけでは右側にしかない行を取得できない。両側の不一致行を残してからNULLを判定する。",
       "sourcePage": 8,
       "adapted": true,
       "needsSourceReview": false,
@@ -530,7 +530,7 @@
         "エ": "E"
       },
       "answer": "ウ",
-      "explanation": "a,b,cの全商品を扱う店はBだけ。",
+      "explanation": "a,b,cの全商品を扱う店はBだけ。\n\nSの商品を一つでも扱う店ではなく、全商品を扱う店を選ぶのが商演算。",
       "sourcePage": 9,
       "adapted": true,
       "needsSourceReview": false,
@@ -621,7 +621,7 @@
         "エ": "必要なロックを獲得し終えてから解除する"
       },
       "answer": "エ",
-      "explanation": "獲得相と解放相を分け、一度解放を開始したら新たなロックを取得しない。",
+      "explanation": "獲得相と解放相を分け、一度解放を開始したら新たなロックを取得しない。\n\n一つでも解放した後は追加取得できない。全ロックを一度に取得する必要があるという意味ではない。",
       "sourcePage": 10,
       "adapted": true,
       "needsSourceReview": false,
@@ -642,7 +642,7 @@
         "エ": "NULL以外"
       },
       "answer": "ウ",
-      "explanation": "狭い範囲の検索は対象行が少なく、索引の利点が大きい。",
+      "explanation": "狭い範囲の検索は対象行が少なく、索引の利点が大きい。\n\n範囲が広いと多くのデータ行へのアクセスが必要となり、全表走査の方が有利な場合がある。",
       "sourcePage": 10,
       "adapted": true,
       "needsSourceReview": false,
@@ -663,7 +663,7 @@
         "エ": "ログの先行書込み"
       },
       "answer": "イ",
-      "explanation": "同じ更新を再実行しても結果が変わらない性質。",
+      "explanation": "同じ更新を再実行しても結果が変わらない性質。\n\n値を120に設定する操作は繰り返しても120。単純に20を足す操作は繰返しで結果が変わる。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": false,
@@ -705,7 +705,7 @@
         "エ": "減・減"
       },
       "answer": "エ",
-      "explanation": "整合性を高めるための制御が増え、並行性が低下する傾向がある。",
+      "explanation": "整合性を高めるための制御が増え、並行性が低下する傾向がある。\n\n強い隔離性では待機・再試行が増え得る。ただし実際の処理件数は実装や負荷による。",
       "sourcePage": 12,
       "adapted": true,
       "needsSourceReview": false,
@@ -726,7 +726,7 @@
         "エ": "直列化可能性"
       },
       "answer": "エ",
-      "explanation": "並行実行しても直列実行と同等の結果を保証する。",
+      "explanation": "並行実行しても直列実行と同等の結果を保証する。\n\nA→Bの直列実行と等価なら途中で交互に実行しても直列化可能。",
       "sourcePage": 12,
       "adapted": true,
       "needsSourceReview": false,
@@ -747,7 +747,7 @@
         "エ": "直前のデータを検証するハッシュ値"
       },
       "answer": "エ",
-      "explanation": "ハッシュで前のブロックと結び付け、改ざんを検知しやすくする。",
+      "explanation": "ハッシュで前のブロックと結び付け、改ざんを検知しやすくする。\n\n前のブロックを変更すると後続が保持するハッシュ値と一致しなくなる。ハッシュは暗号化とは異なる。",
       "sourcePage": 12,
       "adapted": true,
       "needsSourceReview": false,
@@ -768,7 +768,7 @@
         "エ": "感染端末でのデータ破壊"
       },
       "answer": "ウ",
-      "explanation": "反射型攻撃は第三者の応答を悪用する点が特徴。",
+      "explanation": "反射型攻撃は第三者の応答を悪用する点が特徴。\n\n第三者の応答を利用して対象へ負荷を集中させる点が特徴。",
       "sourcePage": 13,
       "adapted": true,
       "needsSourceReview": false,
@@ -789,7 +789,7 @@
         "エ": "検知→トリアージ→対応"
       },
       "answer": "エ",
-      "explanation": "まず発見・受付し、重要度や緊急度を判定して対応する。",
+      "explanation": "まず発見・受付し、重要度や緊急度を判定して対応する。\n\n検知・受付から影響と緊急度を評価し、封じ込めや復旧につなげる。",
       "sourcePage": 13,
       "adapted": true,
       "needsSourceReview": false,
@@ -810,7 +810,7 @@
         "エ": "脆弱性の検査や悪用に用いるプログラム"
       },
       "answer": "エ",
-      "explanation": "脆弱性の存在を実証したり悪用したりするコードを指す。",
+      "explanation": "脆弱性の存在を実証したり悪用したりするコードを指す。\n\n欠陥そのものと、それを検証・利用するコードを区別する。",
       "sourcePage": 14,
       "adapted": true,
       "needsSourceReview": false,
@@ -831,7 +831,7 @@
         "エ": "RAID6"
       },
       "answer": "エ",
-      "explanation": "RAID6は二重パリティで2台の故障に耐えられる。",
+      "explanation": "RAID6は二重パリティで2台の故障に耐えられる。\n\nRAID5は通常1台故障まで、RAID6は二重パリティで2台故障まで対応する。",
       "sourcePage": 14,
       "adapted": true,
       "needsSourceReview": false,
@@ -852,7 +852,7 @@
         "エ": "特定資源の利用率向上"
       },
       "answer": "イ",
-      "explanation": "需要増加を予測して将来必要な処理能力を確保する。",
+      "explanation": "需要増加を予測して将来必要な処理能力を確保する。\n\n将来の利用増加を見込みCPU・メモリ等の容量を計画する。単発の性能調整とは異なる。",
       "sourcePage": 14,
       "adapted": true,
       "needsSourceReview": false,
@@ -873,7 +873,7 @@
         "エ": "データを中心にERモデルで整理"
       },
       "answer": "エ",
-      "explanation": "データ構造を中心にシステムを設計する。",
+      "explanation": "データ構造を中心にシステムを設計する。\n\n実体と関連を中心に整理する。処理手順を中心にする分析とは視点が異なる。",
       "sourcePage": 15,
       "adapted": true,
       "needsSourceReview": false,
@@ -894,7 +894,7 @@
         "エ": "本番相当構成でリリース前の最終試験をする環境"
       },
       "answer": "エ",
-      "explanation": "本番と近い条件で公開前の問題を発見する。",
+      "explanation": "本番と近い条件で公開前の問題を発見する。\n\n本番に近い構成で公開前に確認する。日常の実装環境や一般公開環境とは役割が異なる。",
       "sourcePage": 15,
       "adapted": true,
       "needsSourceReview": false,

@@ -16,7 +16,7 @@
         "エ": "分散システムでは分断耐性・整合性・可用性を同時には保証できない"
       },
       "answer": "エ",
-      "explanation": "分断が発生すると強い整合性と可用性を同時に保証できない。",
+      "explanation": "分断が発生すると強い整合性と可用性を同時に保証できない。\n\n分断中に両側で独立更新すれば値が食い違い得る。強い整合性を優先するなら一部の要求を制限する。",
       "sourcePage": 3,
       "adapted": true,
       "needsSourceReview": false,
@@ -36,7 +36,7 @@
         "エ": "Cでは循環を防ぐ制約が必要"
       },
       "answer": "エ",
-      "explanation": "関連表を使うCでは循環を防止する制約が別途必要。",
+      "explanation": "関連表を使うCでは循環を防止する制約が別途必要。\n\nA→B→C→Aという親子関係は階層ではない。外部キーによる存在確認だけでは循環を防げない。",
       "sourcePage": 4,
       "adapted": true,
       "needsSourceReview": false,
@@ -178,7 +178,7 @@
         "エ": "BCNF"
       },
       "answer": "ウ",
-      "explanation": "Bは候補キーの構成属性なので3NFを満たすが、CはスーパーキーでないためBCNFを満たさない。",
+      "explanation": "Bは候補キーの構成属性なので3NFを満たすが、CはスーパーキーでないためBCNFを満たさない。\n\nBは候補キーABの構成属性なので主属性。C→Bの左辺Cはスーパーキーではなく、BCNFにはならない。",
       "sourcePage": 4,
       "adapted": true,
       "needsSourceReview": false,
@@ -198,7 +198,7 @@
         "エ": "1:多、1:多、多:1"
       },
       "answer": "イ",
-      "explanation": "外部キーを持つ医師・診察が多側になる。",
+      "explanation": "外部キーを持つ医師・診察が多側になる。\n\n診療科コードを持つ医師・診察、患者番号を持つ診察がそれぞれ多側。",
       "sourcePage": 5,
       "adapted": true,
       "needsSourceReview": false,
@@ -474,7 +474,7 @@
         "エ": "4NFから5NFでは自明な多値従属を保存"
       },
       "answer": "ウ",
-      "explanation": "第3正規形への合成では両方の性質を確保できる。",
+      "explanation": "第3正規形への合成では両方の性質を確保できる。\n\n無損失性は結合で元に戻ること、従属性保存は分解後の制約で元の従属を保証できること。",
       "sourcePage": 5,
       "adapted": true,
       "needsSourceReview": false,
@@ -494,7 +494,7 @@
         "エ": "K02,K04"
       },
       "answer": "エ",
-      "explanation": "差集合を求め重複も除く。",
+      "explanation": "差集合を求め重複も除く。\n\nEXCEPTは左側にだけ存在する行を残す。通常のEXCEPTは重複も除く。",
       "sourcePage": 6,
       "adapted": true,
       "needsSourceReview": false,
@@ -576,7 +576,7 @@
         "エ": "SERIALIZABLE"
       },
       "answer": "ア",
-      "explanation": "READ COMMITTEDは確定済み値だけを読むが再読取り時の更新は許す。",
+      "explanation": "READ COMMITTEDは確定済み値だけを読むが再読取り時の更新は許す。\n\nREAD UNCOMMITTEDは未確定値を許し、REPEATABLE READは反復不能読取りを防ぐ。",
       "sourcePage": 6,
       "adapted": true,
       "needsSourceReview": false,
@@ -596,7 +596,7 @@
         "エ": "SQL 4"
       },
       "answer": "ア",
-      "explanation": "右側のAP条件はONに置き、左側FEだけをWHEREで絞る。",
+      "explanation": "右側のAP条件はONに置き、左側FEだけをWHEREで絞る。\n\n右表のAP条件をWHEREに置くと、APのない社員のNULL補完行が除外される。",
       "sourcePage": 7,
       "adapted": true,
       "needsSourceReview": false,
@@ -716,7 +716,7 @@
         "エ": "2ⁿ"
       },
       "answer": "エ",
-      "explanation": "各属性を含めるか否かの2択がn個ある。",
+      "explanation": "各属性を含めるか否かの2択がn個ある。\n\nA,B,Cなら空集合も含め2×2×2=8通り。",
       "sourcePage": 8,
       "adapted": true,
       "needsSourceReview": false,
@@ -736,7 +736,7 @@
         "エ": "MIN"
       },
       "answer": "ウ",
-      "explanation": "最大行番号を選び、CASEの非NULL値をMAXで取り出す。",
+      "explanation": "最大行番号を選び、CASEの非NULL値をMAXで取り出す。\n\n最大行番号で最新版を選び、CASEで対象外をNULLにしてMAXで値を取り出す。",
       "sourcePage": 9,
       "adapted": true,
       "needsSourceReview": false,
@@ -836,7 +836,7 @@
         "エ": "和集合"
       },
       "answer": "ウ",
-      "explanation": "直積は異なる属性構成でも実行できる。",
+      "explanation": "直積は異なる属性構成でも実行できる。\n\n2行と3行の直積は6行。和・差・共通集合と違い属性構成の一致は不要。",
       "sourcePage": 10,
       "adapted": true,
       "needsSourceReview": false,
@@ -856,7 +856,7 @@
         "エ": "独立した1相コミットで一貫性保証"
       },
       "answer": "イ",
-      "explanation": "準備済み参加者は最終決定を受け取れないと待つことがある。",
+      "explanation": "準備済み参加者は最終決定を受け取れないと待つことがある。\n\n準備済みの参加者が独断で確定すると他の参加者と結果が食い違い得る。",
       "sourcePage": 10,
       "adapted": true,
       "needsSourceReview": false,
@@ -876,7 +876,7 @@
         "エ": "必要なロックを取得し終えてから解除"
       },
       "answer": "エ",
-      "explanation": "取得相と解放相を分離する。",
+      "explanation": "取得相と解放相を分離する。\n\n一つでもロックを解放すると追加取得はできない。デッドロック防止とは別の性質。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": false,
@@ -896,7 +896,7 @@
         "エ": "表専有と他者の行専有は両立"
       },
       "answer": "イ",
-      "explanation": "表全体への専有ロックはその表の既存行ロックと競合する。",
+      "explanation": "表全体への専有ロックはその表の既存行ロックと競合する。\n\n表全体を専有すると既存の共有行ロックの対象も含むので競合する。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": false,
@@ -916,7 +916,7 @@
         "エ": "O(n²)"
       },
       "answer": "エ",
-      "explanation": "外側のn行それぞれに内側n行を比較する。",
+      "explanation": "外側のn行それぞれに内側n行を比較する。\n\n100行ずつなら単純比較は1万組。件数が倍になると比較数は4倍。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": false,
@@ -936,7 +936,7 @@
         "エ": "デッドロックなし"
       },
       "answer": "ウ",
-      "explanation": "読取りが適切な旧版を参照できる。",
+      "explanation": "読取りが適切な旧版を参照できる。\n\n読取りに対応する確定済み旧版を参照する。書込み同士の競合は別途制御が必要。",
       "sourcePage": 12,
       "adapted": true,
       "needsSourceReview": false,
@@ -956,7 +956,7 @@
         "エ": "ストアドプロシージャ"
       },
       "answer": "ウ",
-      "explanation": "IndexedDBはブラウザ内で構造化データを保存するAPI。",
+      "explanation": "IndexedDBはブラウザ内で構造化データを保存するAPI。\n\nブラウザ内のオブジェクトストアと索引を扱う。サーバDBへの接続APIとは異なる。",
       "sourcePage": 12,
       "adapted": true,
       "needsSourceReview": false,
@@ -976,7 +976,7 @@
         "エ": "マスターなしKVS"
       },
       "answer": "イ",
-      "explanation": "RDDは分散データ集合で変換・処理を行える。",
+      "explanation": "RDDは分散データ集合で変換・処理を行える。\n\nRDDは分散データ集合。変換とアクションを通じてデータ処理を行う。",
       "sourcePage": 13,
       "adapted": true,
       "needsSourceReview": false,
@@ -996,7 +996,7 @@
         "エ": "検知→分類→対応"
       },
       "answer": "エ",
-      "explanation": "検知後に優先度を判断して対応する。",
+      "explanation": "検知後に優先度を判断して対応する。\n\n検知後に影響や緊急度を判断し、封じ込めや復旧などの対応につなげる。",
       "sourcePage": 13,
       "adapted": true,
       "needsSourceReview": false,
@@ -1016,7 +1016,7 @@
         "エ": "分類済みメールから統計的に学習"
       },
       "answer": "エ",
-      "explanation": "メールの特徴から迷惑メールの確率を推定する。",
+      "explanation": "メールの特徴から迷惑メールの確率を推定する。\n\n固定リストだけでなく、学習済みの単語等の出現傾向を用いて分類する。",
       "sourcePage": 13,
       "adapted": true,
       "needsSourceReview": false,
@@ -1036,7 +1036,7 @@
         "エ": "URL"
       },
       "answer": "イ",
-      "explanation": "ネットワーク・トランスポート層の情報で通過を制御する。",
+      "explanation": "ネットワーク・トランスポート層の情報で通過を制御する。\n\nHTTP本文の検査は通常より上位層の機能。パケットフィルタはIPやポート等で判定する。",
       "sourcePage": 14,
       "adapted": true,
       "needsSourceReview": false,
@@ -1096,7 +1096,7 @@
         "エ": "データ複製"
       },
       "answer": "ア",
-      "explanation": "利用方法を理解しやすくすることは使用性向上に直結する。",
+      "explanation": "利用方法を理解しやすくすることは使用性向上に直結する。\n\n使用性は利用者の操作や理解の容易さ。データ複製などによる可用性改善とは異なる。",
       "sourcePage": 15,
       "adapted": true,
       "needsSourceReview": false,
@@ -1116,7 +1116,7 @@
         "エ": "公開サービスを組み合わせ新サービス提供"
       },
       "answer": "エ",
-      "explanation": "複数の既存サービスを組み合わせる。",
+      "explanation": "複数の既存サービスを組み合わせる。\n\n地図サービスと店舗情報を組み合わせる例がある。既存サービスの機能を連携させる点が重要。",
       "sourcePage": 15,
       "adapted": true,
       "needsSourceReview": false,

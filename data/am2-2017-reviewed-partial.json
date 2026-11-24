@@ -14,7 +14,7 @@
         "エ": "内部スキーマは個々の利用者から見た記述"
       },
       "answer": "ア",
-      "explanation": "概念は論理構造、内部は物理構造、外部は利用者ごとの見え方を表す。",
+      "explanation": "概念は論理構造、内部は物理構造、外部は利用者ごとの見え方を表す。\n\n外部は利用者別の見え方、概念はDB全体の論理構造、内部は格納や索引など。物理変更を利用者から隠すために分離する。",
       "sourcePage": 3,
       "adapted": true,
       "needsSourceReview": false,
@@ -35,7 +35,7 @@
         "エ": "SQL 4"
       },
       "answer": "イ",
-      "explanation": "勘定科目と取引番号で3表を結合し、現金かつ指定日以前の取引に絞る。期首残高に符号付き金額の合計を加える。",
+      "explanation": "勘定科目と取引番号で3表を結合し、現金かつ指定日以前の取引に絞る。期首残高に符号付き金額の合計を加える。\n\nまず対象期間と現金勘定の行を絞り、増減を符号付きで合計する。期首残高を加えないと期末時点の残高にはならない。",
       "sourcePage": 4,
       "adapted": true,
       "needsSourceReview": false,
@@ -168,7 +168,7 @@
         "エ": "人から検査項目へ1対多、項目から検査値へ多対1"
       },
       "answer": "イ",
-      "explanation": "人と検査項目は独立して管理し、各検査値を一人の人と一つの検査項目に対応付ける。これにより同一項目の複数回の測定と最新標準値の管理が可能になる。",
+      "explanation": "人と検査項目は独立して管理し、各検査値を一人の人と一つの検査項目に対応付ける。これにより同一項目の複数回の測定と最新標準値の管理が可能になる。\n\n標準値は検査項目の属性、測定日時と測定値は個々の検査記録の属性。項目と測定履歴を同じ表で上書きしない。",
       "sourcePage": 5,
       "adapted": true,
       "needsSourceReview": false,
@@ -389,7 +389,7 @@
         "エ": "BC、CD"
       },
       "answer": "ウ",
-      "explanation": "Bは他の属性から導出できない。AB、BC、BDはいずれも全属性を導出できる最小集合。",
+      "explanation": "Bは他の属性から導出できない。AB、BC、BDはいずれも全属性を導出できる最小集合。\n\nAB→C→（BCから）D→AE、BC→D→AE、BD→AE→（ABから）C。Bが右辺にないので全候補にBが必要。",
       "sourcePage": 5,
       "adapted": true,
       "needsSourceReview": false,
@@ -410,7 +410,7 @@
         "エ": "正実体"
       },
       "answer": "ウ",
-      "explanation": "弱実体は他の実体に存在を依存する。",
+      "explanation": "弱実体は他の実体に存在を依存する。\n\n親の存在に依存する子を考える。独立して識別できる強実体と区別する。厳密な弱実体の識別では所有者のキーも関係する。",
       "sourcePage": 6,
       "adapted": true,
       "needsSourceReview": false,
@@ -431,7 +431,7 @@
         "エ": "ロールフォワード用に更新後情報を保存"
       },
       "answer": "エ",
-      "explanation": "更新後情報を用いて確定済みの変更を再現する。",
+      "explanation": "更新後情報を用いて確定済みの変更を再現する。\n\n例えば値100→120の更新なら、REDOは120を復元する。UNDOでは更新前の100などを利用する。",
       "sourcePage": 6,
       "adapted": true,
       "needsSourceReview": false,
@@ -452,7 +452,7 @@
         "エ": "趣味が繰返し項目の社員表"
       },
       "answer": "ウ",
-      "explanation": "社員番号から所属コードを経由して勤務地が決まる推移的従属がある。",
+      "explanation": "社員番号から所属コードを経由して勤務地が決まる推移的従属がある。\n\n社員番号→所属コード→勤務地。勤務地を所属表へ移し、社員表には所属コードを保持すれば重複を減らせる。",
       "sourcePage": 7,
       "adapted": true,
       "needsSourceReview": false,
@@ -555,7 +555,7 @@
         "エ": "THEN NULL ELSE 1"
       },
       "answer": "ウ",
-      "explanation": "COUNTはNULLを数えない。",
+      "explanation": "COUNTはNULLを数えない。\n\nCOUNT(CASE WHEN 条件 THEN 1 ELSE NULL END)なら条件を満たす行だけ数える。ELSE 0では0もNULLでないので数えてしまう。",
       "sourcePage": 8,
       "adapted": true,
       "needsSourceReview": false,
@@ -608,7 +608,7 @@
         "エ": "unknown"
       },
       "answer": "エ",
-      "explanation": "不定 OR 偽 OR 不定は不定。",
+      "explanation": "不定 OR 偽 OR 不定は不定。\n\nNULLとの大小・等値比較はUNKNOWN、4>5はFALSE。ORにTRUEがなくUNKNOWNがあるためUNKNOWNになる。",
       "sourcePage": 8,
       "adapted": true,
       "needsSourceReview": false,
@@ -629,7 +629,7 @@
         "エ": "700"
       },
       "answer": "ア",
-      "explanation": "S001とS003が該当し100+300=400。",
+      "explanation": "S001とS003が該当し100+300=400。\n\n該当行だけの金額を足す。集計前にビューの抽出・結合条件を適用することがポイント。",
       "sourcePage": 9,
       "adapted": true,
       "needsSourceReview": false,
@@ -733,7 +733,7 @@
         "エ": "PK(スロット番号, メモリカードID) と UNIQUE(PCID)"
       },
       "answer": "ウ",
-      "explanation": "スロットごとの一意性とカードの重複取付け禁止を両立する。",
+      "explanation": "スロットごとの一意性とカードの重複取付け禁止を両立する。\n\nPCIDとスロット番号の組を主キーにすれば1スロットに2枚登録できない。カードIDのUNIQUEで同じカードの別スロット登録も防ぐ。",
       "sourcePage": 10,
       "adapted": true,
       "needsSourceReview": false,
@@ -807,7 +807,7 @@
         "エ": "S−(R−S)"
       },
       "answer": "ア",
-      "explanation": "R−SはRにだけ含まれる要素であり、これをRから除けばR∩Sになる。",
+      "explanation": "R−SはRにだけ含まれる要素であり、これをRから除けばR∩Sになる。\n\nR={1,2},S={2,3}ならR−S={1}、R−{1}={2}。差集合は順番を逆にすると結果が変わる。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": false,
@@ -828,7 +828,7 @@
         "エ": "n"
       },
       "answer": "イ",
-      "explanation": "各属性について選ぶか選ばないかの2択。",
+      "explanation": "各属性について選ぶか選ばないかの2択。\n\n属性がA,Bなら空、A、B、ABの4通り。n個なら各属性の2択を掛けて2ⁿ。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": false,
@@ -849,7 +849,7 @@
         "エ": "通信異常でも必ず確定"
       },
       "answer": "イ",
-      "explanation": "全参加者の準備を確認してから確定を決める。",
+      "explanation": "全参加者の準備を確認してから確定を決める。\n\n準備完了を確認してからコミットを指示する。準備相は各参加DBが確定できる状態かを揃えるために必要。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": false,
@@ -870,7 +870,7 @@
         "エ": "競合直列化可能性"
       },
       "answer": "エ",
-      "explanation": "取得相と解放相に分けることで競合直列化可能性を保証する。",
+      "explanation": "取得相と解放相に分けることで競合直列化可能性を保証する。\n\n一度ロックを解放した取引は追加取得しない。この規則が競合直列化可能性を保証するが、デッドロック自体を防ぐとは限らない。",
       "sourcePage": 12,
       "adapted": true,
       "needsSourceReview": false,
@@ -891,7 +891,7 @@
         "エ": "並行処理の影響を無制限に受ける"
       },
       "answer": "ウ",
-      "explanation": "一貫性は整合した状態を維持する性質。",
+      "explanation": "一貫性は整合した状態を維持する性質。\n\n原子性は全成功か全取消、隔離性は並行処理の影響、耐久性は確定後の保持。一貫性は制約などに沿った状態の維持。",
       "sourcePage": 12,
       "adapted": true,
       "needsSourceReview": false,
@@ -912,7 +912,7 @@
         "エ": "ファントムリード"
       },
       "answer": "エ",
-      "explanation": "同じ検索条件で対象行の集合が変わった。",
+      "explanation": "同じ検索条件で対象行の集合が変わった。\n\n行の値が変わる反復不能読取りとは異なり、条件に合う行の集合が増減した点に注目する。",
       "sourcePage": 13,
       "adapted": true,
       "needsSourceReview": false,
@@ -976,7 +976,7 @@
         "エ": "Xの表専有ロックとYの行専有ロックは両立する"
       },
       "answer": "イ",
-      "explanation": "表全体の専有は既存行ロックと競合する。",
+      "explanation": "表全体の専有は既存行ロックと競合する。\n\n表全体の専有ロックは既存の行共有ロックと両立できない。異なる行同士のロックなら両立できる場合がある。",
       "sourcePage": 14,
       "adapted": true,
       "needsSourceReview": false,
@@ -997,7 +997,7 @@
         "エ": "O(n log n)"
       },
       "answer": "ウ",
-      "explanation": "外側の各行について内側n行を比較する。",
+      "explanation": "外側の各行について内側n行を比較する。\n\n外側3行、内側3行なら9比較。nが倍になれば比較数は約4倍になる。",
       "sourcePage": 14,
       "adapted": true,
       "needsSourceReview": false,
@@ -1018,7 +1018,7 @@
         "エ": "国家政策の総合調整"
       },
       "answer": "イ",
-      "explanation": "組織のインシデント対応を担う。",
+      "explanation": "組織のインシデント対応を担う。\n\n検知後の調査、優先度判断、封じ込め、復旧支援などを担当する。認証制度や暗号方式の選定そのものとは異なる。",
       "sourcePage": 14,
       "adapted": true,
       "needsSourceReview": false,
@@ -1039,7 +1039,7 @@
         "エ": "安全な遠隔ログイン・ファイル転送"
       },
       "answer": "エ",
-      "explanation": "暗号化された遠隔操作を提供する。",
+      "explanation": "暗号化された遠隔操作を提供する。\n\nSSHは遠隔操作の通信を暗号化する。S/MIMEなどのメール暗号化方式とは用途が異なる。",
       "sourcePage": 15,
       "adapted": true,
       "needsSourceReview": false,
@@ -1060,7 +1060,7 @@
         "エ": "パリティ"
       },
       "answer": "ア",
-      "explanation": "誤り訂正符号を使う。",
+      "explanation": "誤り訂正符号を使う。\n\n単純なパリティは誤りの検出が中心。ECCでは冗長な情報によって誤りの位置を特定・訂正できる場合がある。",
       "sourcePage": 15,
       "adapted": true,
       "needsSourceReview": false,
@@ -1102,7 +1102,7 @@
         "エ": "保守性は所定時間に機能を実行する度合い"
       },
       "answer": "ア",
-      "explanation": "機能適合性は必要な機能が提供される度合い。残りは別の品質特性の説明。",
+      "explanation": "機能適合性は必要な機能が提供される度合い。残りは別の品質特性の説明。\n\n性能効率性は資源に対する性能、信頼性は故障などへの耐性、保守性は修正の容易さ。必要機能の充足は機能適合性。",
       "sourcePage": 17,
       "adapted": true,
       "needsSourceReview": false,
@@ -1123,7 +1123,7 @@
         "エ": "変更による影響をテスト"
       },
       "answer": "ア",
-      "explanation": "機能を変えずに可読性や保守性を改善する。",
+      "explanation": "機能を変えずに可読性や保守性を改善する。\n\n長い処理を関数に分けるなど、外部仕様を維持して内部構造だけ改善する。機能追加そのものではない。",
       "sourcePage": 17,
       "adapted": true,
       "needsSourceReview": false,

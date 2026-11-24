@@ -14,7 +14,7 @@
         "エ": "ネットワーク分断時は要求を拒否する"
       },
       "answer": "イ",
-      "explanation": "BASEの最終的整合性では一時的な差異を許容し、更新が伝播すると一致する。",
+      "explanation": "BASEの最終的整合性では一時的な差異を許容し、更新が伝播すると一致する。\n\n更新直後はノード間に差があっても、更新が止まり正常に伝播すれば収束することを目指す。",
       "sourcePage": 3,
       "adapted": true,
       "needsSourceReview": false,
@@ -34,7 +34,7 @@
         "エ": "1..*／1"
       },
       "answer": "イ",
-      "explanation": "一つの年に社員は0人以上、一人の社員には年が必ず一つ対応する。",
+      "explanation": "一つの年に社員は0人以上、一人の社員には年が必ず一つ対応する。\n\n社員から年を見ると必ず1、年から社員を見ると0以上。多重度は反対側の一実体に対応する数。",
       "sourcePage": 4,
       "adapted": true,
       "needsSourceReview": false,
@@ -101,7 +101,7 @@
         "エ": "Zのみ"
       },
       "answer": "イ",
-      "explanation": "BとCは相互に導出できるのでAからどちらか一方への従属で足りる。ZではB→Cを導出できない。",
+      "explanation": "BとCは相互に導出できるのでAからどちらか一方への従属で足りる。ZではB→Cを導出できない。\n\nAからBまたはCの片方を得れば相互従属でもう片方を得られる。AD→EがあればACD→Eも導出可能。",
       "sourcePage": 5,
       "adapted": true,
       "needsSourceReview": false,
@@ -144,7 +144,7 @@
         "エ": "任意の従属の右辺が非キー属性"
       },
       "answer": "イ",
-      "explanation": "第2正規形で除去する部分関数従属に加え、非キー属性への推移的関数従属を解消する。",
+      "explanation": "第2正規形で除去する部分関数従属に加え、非キー属性への推移的関数従属を解消する。\n\n社員番号→部署コード→部署名なら部署名を部署表へ分離する。部分従属の除去とは異なる。",
       "sourcePage": 5,
       "adapted": true,
       "needsSourceReview": false,
@@ -164,7 +164,7 @@
         "エ": "SQL 4"
       },
       "answer": "ア",
-      "explanation": "文書を左側に置けば対応社員がなくても文書行は残り、氏名はNULLになる。",
+      "explanation": "文書を左側に置けば対応社員がなくても文書行は残り、氏名はNULLになる。\n\nINNER JOINでは対応社員のない文書が消える。LEFT JOINは文書を残し社員列をNULLで補う。",
       "sourcePage": 6,
       "adapted": true,
       "needsSourceReview": false,
@@ -314,7 +314,7 @@
         "エ": "275"
       },
       "answer": "イ",
-      "explanation": "Aの売上は50、NULL、250。AVGはNULLを除くので150。",
+      "explanation": "Aの売上は50、NULL、250。AVGはNULLを除くので150。\n\nAVGはNULLを0として数えない。(50+250)÷2=150。",
       "sourcePage": 7,
       "adapted": true,
       "needsSourceReview": false,
@@ -407,7 +407,7 @@
         "エ": "S003,S006"
       },
       "answer": "ウ",
-      "explanation": "自身を上司とする社員が一人もいない社員を選ぶ。",
+      "explanation": "自身を上司とする社員が一人もいない社員を選ぶ。\n\n外側の社員を上司として参照する行がないかを調べる。本人の上司列がNULLかどうかとは別。",
       "sourcePage": 8,
       "adapted": true,
       "needsSourceReview": false,
@@ -479,7 +479,7 @@
         "エ": "列が1個"
       },
       "answer": "ウ",
-      "explanation": "UNIONは重複を除く。元の行に重複がなければ結果は等しい。",
+      "explanation": "UNIONは重複を除く。元の行に重複がなければ結果は等しい。\n\nRに同じ行が2件あればUNION結果では1件になる。UNION ALLとは異なる。",
       "sourcePage": 9,
       "adapted": true,
       "needsSourceReview": false,
@@ -499,7 +499,7 @@
         "エ": "S−(R−S)"
       },
       "answer": "イ",
-      "explanation": "Rだけに含まれる行をRから除くと共通部分が残る。",
+      "explanation": "Rだけに含まれる行をRから除くと共通部分が残る。\n\nR={1,2},S={2,3}ならR−S={1}、R−{1}={2}。",
       "sourcePage": 9,
       "adapted": true,
       "needsSourceReview": false,
@@ -519,7 +519,7 @@
         "エ": "直積・選択"
       },
       "answer": "エ",
-      "explanation": "直積で組合せを作り、結合属性が等しい行を選択する。",
+      "explanation": "直積で組合せを作り、結合属性が等しい行を選択する。\n\n全組合せからキーが一致する行を残す。列を減らす射影とは異なる。",
       "sourcePage": 9,
       "adapted": true,
       "needsSourceReview": false,
@@ -591,7 +591,7 @@
         "エ": "全バッチでロック取得順を統一"
       },
       "answer": "エ",
-      "explanation": "取得順を統一すると循環待ちを防ぎやすい。",
+      "explanation": "取得順を統一すると循環待ちを防ぎやすい。\n\n全処理でA→Bの順に取得すれば、片方がAを保持してBを待ち、他方がBを保持してAを待つ循環を避けられる。",
       "sourcePage": 10,
       "adapted": true,
       "needsSourceReview": false,
@@ -611,7 +611,7 @@
         "エ": "SERIALIZABLE"
       },
       "answer": "ウ",
-      "explanation": "反復不能読取りを防ぐ最低水準はREPEATABLE READ。",
+      "explanation": "反復不能読取りを防ぐ最低水準はREPEATABLE READ。\n\nREAD COMMITTEDは確定後の値の変化を許す。SERIALIZABLEは必要最低限より強い。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": false,
@@ -631,7 +631,7 @@
         "エ": "並行実行と直列実行の同等性"
       },
       "answer": "ウ",
-      "explanation": "原子性は処理を不可分な単位として扱う。",
+      "explanation": "原子性は処理を不可分な単位として扱う。\n\n振替で出金と入金の片方だけを確定させない。全成功か全取消を保証する。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": false,
@@ -651,7 +651,7 @@
         "エ": "連続イベントを監視し条件成立時に処理"
       },
       "answer": "エ",
-      "explanation": "CEPはイベントの流れをリアルタイムに評価する。",
+      "explanation": "CEPはイベントの流れをリアルタイムに評価する。\n\nイベントの組合せや条件をリアルタイムに評価する。蓄積後の一括処理とは異なる。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": false,
@@ -671,7 +671,7 @@
         "エ": "マスターのない分散DB"
       },
       "answer": "イ",
-      "explanation": "ノートブック等でコード実行と分析結果を対話的に扱う。",
+      "explanation": "ノートブック等でコード実行と分析結果を対話的に扱う。\n\nコードと結果、説明を同じノートブックで扱える。分散処理エンジンそのものではない。",
       "sourcePage": 12,
       "adapted": true,
       "needsSourceReview": false,
@@ -691,7 +691,7 @@
         "エ": "未加工データを蓄積し必要時に加工"
       },
       "answer": "エ",
-      "explanation": "多様なデータを元の形式に近い状態で保存する。",
+      "explanation": "多様なデータを元の形式に近い状態で保存する。\n\nデータウェアハウスは分析用途に整理したデータが中心。データレイクは加工前の多様なデータも蓄積する。",
       "sourcePage": 12,
       "adapted": true,
       "needsSourceReview": false,
@@ -711,7 +711,7 @@
         "エ": "ブロック長−32ビット"
       },
       "answer": "ア",
-      "explanation": "AESのブロック長は128ビット、鍵長は128・192・256ビット。",
+      "explanation": "AESのブロック長は128ビット、鍵長は128・192・256ビット。\n\n鍵長が変わってもAESのブロック長は128ビット。両者を混同しない。",
       "sourcePage": 12,
       "adapted": true,
       "needsSourceReview": false,
@@ -731,7 +731,7 @@
         "エ": "消去証明書を発行"
       },
       "answer": "イ",
-      "explanation": "DLPは機密データの不正な持ち出しを検知し防止する。",
+      "explanation": "DLPは機密データの不正な持ち出しを検知し防止する。\n\n機密情報を含む通信やファイル操作を検知・制御する。バックアップとは目的が異なる。",
       "sourcePage": 13,
       "adapted": true,
       "needsSourceReview": false,
@@ -751,7 +751,7 @@
         "エ": "TLS"
       },
       "answer": "ア",
-      "explanation": "IPsecはIP層で認証や暗号化を提供する。",
+      "explanation": "IPsecはIP層で認証や暗号化を提供する。\n\nSSHは遠隔操作、TLSは一般にアプリケーション通信、IPsecはIP層の通信保護に用いる。",
       "sourcePage": 13,
       "adapted": true,
       "needsSourceReview": false,
@@ -771,7 +771,7 @@
         "エ": "仮想容量を提供し物理容量を使用量に応じて割当"
       },
       "answer": "エ",
-      "explanation": "物理容量を必要になった時点で割り当てる方式。",
+      "explanation": "物理容量を必要になった時点で割り当てる方式。\n\n仮想容量を大きく割り当てても物理領域は使用時に確保する。実容量の監視は必要。",
       "sourcePage": 13,
       "adapted": true,
       "needsSourceReview": false,
@@ -791,7 +791,7 @@
         "エ": "故障時に別計算機で処理"
       },
       "answer": "ア",
-      "explanation": "資源のアクセス方法の違いを利用者から隠す。",
+      "explanation": "資源のアクセス方法の違いを利用者から隠す。\n\n遠隔ファイルも同じ操作で利用できることが例。配置変更や障害を隠す性質とは区別する。",
       "sourcePage": 14,
       "adapted": true,
       "needsSourceReview": false,
@@ -811,7 +811,7 @@
         "エ": "推定総エラー数−摘出数"
       },
       "answer": "イ",
-      "explanation": "適切な規模のモジュールに分割できている割合は理解・変更のしやすさの指標となる。",
+      "explanation": "適切な規模のモジュールに分割できている割合は理解・変更のしやすさの指標となる。\n\n適切な大きさのモジュールは理解・修正しやすい。分岐カバレージはテスト網羅性の指標。",
       "sourcePage": 14,
       "adapted": true,
       "needsSourceReview": false,
@@ -831,7 +831,7 @@
         "エ": "マークアップ文書の組版"
       },
       "answer": "イ",
-      "explanation": "ソースからAPI仕様などの文書を自動生成する。",
+      "explanation": "ソースからAPI仕様などの文書を自動生成する。\n\nソースのコメント等からAPI仕様を生成する。ソースを実行する機能ではない。",
       "sourcePage": 14,
       "adapted": true,
       "needsSourceReview": false,

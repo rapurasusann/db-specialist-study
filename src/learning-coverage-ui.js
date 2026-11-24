@@ -1,7 +1,7 @@
-import {termQuestions} from './term-understanding-questions.js';
-import {stepQuestions} from './afternoon-step-up-questions.js?v=20261124a';
-import './term-understanding-ui.js?v=20261124coverage1';
-import './afternoon-step-up-ui.js?v=20261124coverage1';
+import {termQuestions} from './term-understanding-questions.js?v=20261124ex1';
+import {stepQuestions} from './afternoon-step-up-questions.js?v=20261124ex1';
+import './term-understanding-ui.js?v=20261124ex1';
+import './afternoon-step-up-ui.js?v=20261124ex1';
 const byId=id=>document.getElementById(id);
 const labels={am2:'午前Ⅱ',term:'用語理解',2:'Lv.2 基礎記述',3:'Lv.3 SQL演習',4:'Lv.4 ER図演習',5:'Lv.5 業務仕様の読解'};
 const groups=['am2','term','2','3','4','5'];

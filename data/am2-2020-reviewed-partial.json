@@ -15,7 +15,7 @@
         "エ": "両側継続／両側停止"
       },
       "answer": "イ",
-      "explanation": "CPでは整合性を守るため片側の処理を制限し、APでは一時的な不一致を許容して両側を稼働させる。",
+      "explanation": "CPでは整合性を守るため片側の処理を制限し、APでは一時的な不一致を許容して両側を稼働させる。\n\nこの構成では片側を制限して一貫した更新を保つのがCP、双方の要求を受け付けるのがAPの考え方。ただしCPの具体的な停止範囲は実装に依存する。",
       "sourcePage": 3,
       "adapted": true,
       "needsSourceReview": false,
@@ -106,7 +106,7 @@
         "エ": "分断時は要求を拒否"
       },
       "answer": "イ",
-      "explanation": "最終的整合性では一時的な差異が許容される。",
+      "explanation": "最終的整合性では一時的な差異が許容される。\n\n更新直後はノードごとに値が異なり得る。更新が止まり通信が回復すれば同じ状態へ収束することを目指す。",
       "sourcePage": 4,
       "adapted": true,
       "needsSourceReview": false,
@@ -126,7 +126,7 @@
         "エ": "CD"
       },
       "answer": "ウ",
-      "explanation": "ADからBとCを得て、CDからEを得る。AとDのどちらも省けない。",
+      "explanation": "ADからBとCを得て、CDからEを得る。AとDのどちらも省けない。\n\n閉包を求めるとAD→ABCD→ABCDE。AとDは従属の右辺にないため両方を含める必要がある。",
       "sourcePage": 4,
       "adapted": true,
       "needsSourceReview": false,
@@ -146,7 +146,7 @@
         "エ": "ロールフォワード用に更新後の値"
       },
       "answer": "エ",
-      "explanation": "REDOは更新後情報を用いて確定した更新を再現する。",
+      "explanation": "REDOは更新後情報を用いて確定した更新を再現する。\n\n更新後情報は確定済み変更の再現、更新前情報は未確定変更の取消に利用される。実際のログ形式はDBMSによる。",
       "sourcePage": 5,
       "adapted": true,
       "needsSourceReview": false,
@@ -270,7 +270,7 @@
         "エ": "多対多なら双方に互いの外部キーを置く"
       },
       "answer": "ア",
-      "explanation": "1対1は双方のいずれにも外部キーを配置できる。一意制約も必要。",
+      "explanation": "1対1は双方のいずれにも外部キーを配置できる。一意制約も必要。\n\n参照列に一意制約がなければ一つの親を複数行から参照できてしまう。必須関連ならNULLの扱いも確認する。",
       "sourcePage": 6,
       "adapted": true,
       "needsSourceReview": false,
@@ -311,7 +311,7 @@
         "エ": "UNIQUE"
       },
       "answer": "ア",
-      "explanation": "COALESCEは最初の非NULL値を返す。",
+      "explanation": "COALESCEは最初の非NULL値を返す。\n\nCOALESCE(NULL,3)は3、COALESCE(2,3)は2。完全外部結合では片側が欠けたIDを補う用途に使える。",
       "sourcePage": 6,
       "adapted": true,
       "needsSourceReview": false,
@@ -486,7 +486,7 @@
         "エ": "全行の組合せ"
       },
       "answer": "エ",
-      "explanation": "Rがm行、Sがn行なら直積はm×n行になる。",
+      "explanation": "Rがm行、Sがn行なら直積はm×n行になる。\n\n例えばRが2行、Sが3行なら6行。共通属性が等しい組に限定するのは等結合。",
       "sourcePage": 7,
       "adapted": true,
       "needsSourceReview": false,
@@ -560,7 +560,7 @@
         "エ": "並行実行結果がある逐次実行結果と同じ"
       },
       "answer": "エ",
-      "explanation": "実際の実行順が並行でも、直列実行と同じ結果なら直列化可能。",
+      "explanation": "実際の実行順が並行でも、直列実行と同じ結果なら直列化可能。\n\n並行実行の途中順序が直列と同じである必要はない。競合する操作を考慮した等価性がポイント。",
       "sourcePage": 8,
       "adapted": true,
       "needsSourceReview": false,
@@ -581,7 +581,7 @@
         "エ": "チェックポイント"
       },
       "answer": "イ",
-      "explanation": "SAVEPOINTを設定し、ROLLBACK TOでその地点まで戻せる。",
+      "explanation": "SAVEPOINTを設定し、ROLLBACK TOでその地点まで戻せる。\n\n取引の途中に目印を置き、そこまでの変更は残したまま後続部分だけ取り消す。COMMITとは異なる。",
       "sourcePage": 9,
       "adapted": true,
       "needsSourceReview": false,
@@ -602,7 +602,7 @@
         "エ": "キーを関数に入力して格納先を決める"
       },
       "answer": "エ",
-      "explanation": "ハッシュ関数で格納位置を決める。",
+      "explanation": "ハッシュ関数で格納位置を決める。\n\nハッシュ値を使い格納先を絞る。異なるキーが同じハッシュ値になる衝突への対策が必要。",
       "sourcePage": 9,
       "adapted": true,
       "needsSourceReview": false,
@@ -623,7 +623,7 @@
         "エ": "2相ロック"
       },
       "answer": "イ",
-      "explanation": "競合が少ないと仮定し、確定前に検証する。",
+      "explanation": "競合が少ないと仮定し、確定前に検証する。\n\n更新前の読取りから確定までに競合が生じたかを検証する。競合時は取消や再試行が必要になる。",
       "sourcePage": 9,
       "adapted": true,
       "needsSourceReview": false,
@@ -644,7 +644,7 @@
         "エ": "イベントが条件に合致したら処理"
       },
       "answer": "エ",
-      "explanation": "連続するイベントを監視・評価する。",
+      "explanation": "連続するイベントを監視・評価する。\n\nイベントの組合せや時系列条件を満たしたときに処理する。定期的に全データを集計する方法とは異なる。",
       "sourcePage": 10,
       "adapted": true,
       "needsSourceReview": false,
@@ -665,7 +665,7 @@
         "エ": "ワイドカラム"
       },
       "answer": "ア",
-      "explanation": "キーと値の組を基本単位とする。",
+      "explanation": "キーと値の組を基本単位とする。\n\nキーで値を取得する単純な構造。文書ストアは文書内部の属性を利用する問い合わせなども扱う。",
       "sourcePage": 10,
       "adapted": true,
       "needsSourceReview": false,
@@ -686,7 +686,7 @@
         "エ": "ロールアップ"
       },
       "answer": "ア",
-      "explanation": "この設問でのダイスは分析の観点を切り替える操作。",
+      "explanation": "この設問でのダイスは分析の観点を切り替える操作。\n\n集計の切り口を変更する。詳細な階層へ移るドリルダウンとは区別する。",
       "sourcePage": 10,
       "adapted": true,
       "needsSourceReview": false,
@@ -707,7 +707,7 @@
         "エ": "マージジョイン"
       },
       "answer": "イ",
-      "explanation": "半結合で転送するデータ量を減らす。",
+      "explanation": "半結合で転送するデータ量を減らす。\n\n結合キーを先に送って一致する行を絞ることで、遠隔の全行を転送せずに済む場合がある。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": false,
@@ -728,7 +728,7 @@
         "エ": "ワンタイム認証コード"
       },
       "answer": "ア",
-      "explanation": "脆弱性を利用するコードを指す。",
+      "explanation": "脆弱性を利用するコードを指す。\n\n脆弱性そのものではなく、それを検証・利用するプログラムを指す。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": false,
@@ -749,7 +749,7 @@
         "エ": "ルート認証局の公開鍵で署名"
       },
       "answer": "イ",
-      "explanation": "証明書は公開鍵と主体の結び付きを認証する。署名には認証局の秘密鍵を使う。",
+      "explanation": "証明書は公開鍵と主体の結び付きを認証する。署名には認証局の秘密鍵を使う。\n\n証明書に含まれる公開鍵と主体の対応を認証する。証明書そのものに所有者の秘密鍵を含めない。",
       "sourcePage": 12,
       "adapted": true,
       "needsSourceReview": false,
@@ -770,7 +770,7 @@
         "エ": "感染端末でファイル破壊"
       },
       "answer": "ア",
-      "explanation": "複数の攻撃手法を組み合わせる点が特徴。",
+      "explanation": "複数の攻撃手法を組み合わせる点が特徴。\n\nネットワーク層とアプリケーション層など異なる種類の妨害を組み合わせるため、単一の対策だけでは不十分な場合がある。",
       "sourcePage": 12,
       "adapted": true,
       "needsSourceReview": false,
@@ -791,7 +791,7 @@
         "エ": "微小な鏡を回転させる"
       },
       "answer": "イ",
-      "explanation": "電界で粒子を移動させて表示を変える。",
+      "explanation": "電界で粒子を移動させて表示を変える。\n\n電界で着色粒子の位置を変えることで見える色を変える。発光素子のように自ら光を出す方式ではない。",
       "sourcePage": 13,
       "adapted": true,
       "needsSourceReview": false,
@@ -833,7 +833,7 @@
         "エ": "ER図による要件表現"
       },
       "answer": "イ",
-      "explanation": "BPMNは業務プロセスの標準的な図記法。",
+      "explanation": "BPMNは業務プロセスの標準的な図記法。\n\n業務手順や分岐などを標準化された記号で表す。ER図はデータ構造を表すもので目的が異なる。",
       "sourcePage": 14,
       "adapted": true,
       "needsSourceReview": false,
