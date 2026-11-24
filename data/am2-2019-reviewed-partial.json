@@ -1,0 +1,75 @@
+{
+  "year": 2019,
+  "source": "IPA 平成31年度春期 データベーススペシャリスト試験 午前Ⅱ",
+  "questionUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+  "answerUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_ans.pdf",
+  "status": "partial-review-only",
+  "questions": {
+    "am2:1": {
+      "stem": "分散DBで一貫性、可用性、分断耐性の三つを同時に保証できないことを示す定理は？",
+      "options": {
+        "ア": "BASE特性",
+        "イ": "CAP定理",
+        "ウ": "アムダールの法則",
+        "エ": "ベイズの定理"
+      },
+      "answer": "イ",
+      "explanation": "分断が起きた場合、一貫性と可用性を同時に保証できない。",
+      "sourcePage": 3,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:2": {
+      "stem": "毎秒20件、1件当たりバッファ・ログとも10kB消費する。バッファ480MB、ログ240MB。バッファ満杯またはログ切替でチェックポイントを実施しバッファを初期化する。1時間に何回発生するか（1MB=1000kB）？",
+      "options": {
+        "ア": "1.5",
+        "イ": "2",
+        "ウ": "3",
+        "エ": "6"
+      },
+      "answer": "ウ",
+      "explanation": "ログは毎秒200kB増え、1200秒で切り替わる。バッファ満杯より先に発生するので3600÷1200=3回。",
+      "sourcePage": 3,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:3": {
+      "stem": "部・課・係の階層を表す三つのモデルの説明として適切なものは？",
+      "options": {
+        "ア": "どのモデルも階層追加時に変更不要",
+        "イ": "どのモデルも複数の親を表現できない",
+        "ウ": "モデルBでは親が子の組織コードを外部キーに持つ",
+        "エ": "モデルCには親子関係の循環を防ぐ制約が必要"
+      },
+      "answer": "エ",
+      "explanation": "関連表で親子を表す場合、循環しないことは別の制約で保証する必要がある。",
+      "sourcePage": 4,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "モデルの構造（要約）",
+          "headers": [
+            "モデル",
+            "関連"
+          ],
+          "rows": [
+            [
+              "A",
+              "部1―多課、課1―多係"
+            ],
+            [
+              "B",
+              "組織の自己関連：親0..1、子*、循環禁止"
+            ],
+            [
+              "C",
+              "組織構造に親組織コードと子組織コードを保持"
+            ]
+          ]
+        }
+      ]
+    }
+  }
+}
