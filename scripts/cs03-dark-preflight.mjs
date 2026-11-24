@@ -21,7 +21,7 @@ export async function checkAbsent({account,token,fetcher=fetch}){
  if(body.result.some(x=>x.id===NAME))throw Error('WORKER_ALREADY_EXISTS');
  return true;
 }
-export const ALLOWED_CHANGES=new Set(['docs/CS03_ISOLATED_DEPLOYMENT_APPROVAL.md','docs/CS03_HANDOFF_20261125.md','docs/CS03_DARK_DEPLOY_EXECUTION_20261125.md','scripts/cs03-dark-preflight.mjs','tests/cs03-dark-preflight.test.mjs','scripts/cs03-dark-dry-run.mjs','tests/cs03-dark-dry-run.test.mjs']);
+export const ALLOWED_CHANGES=new Set(['docs/CS03_ISOLATED_DEPLOYMENT_APPROVAL.md','docs/CS03_HANDOFF_20261125.md','docs/CS03_DARK_DEPLOY_EXECUTION_20261125.md','scripts/cs03-dark-preflight.mjs','tests/cs03-dark-preflight.test.mjs','scripts/cs03-dark-dry-run.mjs','tests/cs03-dark-dry-run.test.mjs','scripts/cs03-dark-credential.mjs','tests/cs03-dark-credential.test.mjs','scripts/cs03-dark-prepare.mjs','tests/cs03-dark-prepare.test.mjs']);
 export function validateChanges(paths,status){if(paths.some(p=>!ALLOWED_CHANGES.has(p)))throw Error('DEPLOYMENT_SOURCE_CHANGED');if(status)throw Error('WORKTREE_DIRTY');}
 export async function localPreflight(expectedHead){
  const root=fileURLToPath(new URL('../',import.meta.url));
