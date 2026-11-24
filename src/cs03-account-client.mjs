@@ -4,6 +4,24 @@ import {validCs03RecordId,CS03_MAX_CATALOG_RECORDS} from './cs03-learning-record
 const USER_ID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 function appError(message){return new Error(message);}
+function abortCheck(signal){if(signal?.aborted)throw signal.reason??appError('PROGRESS_LIST_CANCELLED');}
+function abortable(start,signal){
+ if(!signal)return Promise.resolve().then(start);
+ abortCheck(signal);
+ return new Promise((resolve,reject)=>{
+  const onAbort=()=>reject(signal.reason??appError('PROGRESS_LIST_CANCELLED'));
+  signal.addEventListener('abort',onAbort,{once:true});
+  Promise.resolve().then(()=>{abortCheck(signal);return start();}).then(resolve,reject).finally(()=>signal.removeEventListener('abort',onAbort));
+ });
+}
+function defaultWait(ms,signal){
+ return new Promise((resolve,reject)=>{
+  abortCheck(signal);
+  const timer=setTimeout(()=>{signal?.removeEventListener('abort',cancel);resolve();},ms);
+  function cancel(){clearTimeout(timer);reject(signal.reason??appError('PROGRESS_LIST_CANCELLED'));}
+  signal?.addEventListener('abort',cancel,{once:true});
+ });
+}
 function checkResult(result) {
  if(result?.error)throw appError('AUTH_REQUEST_FAILED');
  return result?.data;
@@ -17,7 +35,7 @@ function checkRecord(id,data){
  if(!validCs03RecordId(id)||!data||typeof data!=='object'||Array.isArray(data))throw appError('INVALID_RECORD');
  if(new TextEncoder().encode(JSON.stringify(data)).length>16000)throw appError('RECORD_TOO_LARGE');
 }
-export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage,wait=ms=>new Promise(resolve=>setTimeout(resolve,ms))}){
+export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage,wait=defaultWait,listTimeoutMs=600000,onListStatus=()=>{}}){
  if(!authClient?.signUp?.email||!authClient?.signIn?.email||!authClient?.getSession||!authClient?.signOut||!authClient?.token)
   throw appError('AUTH_CLIENT_REQUIRED');
  let endpoint;
@@ -25,7 +43,10 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
  if(endpoint.protocol!=='https:'||!endpoint.hostname||endpoint.username||endpoint.password||endpoint.search||endpoint.hash||endpoint.pathname!=='/')
   throw appError('API_NOT_CONFIGURED');
  const prefix='db-study-cs03-progress-';
- let currentUser=null;
+ let currentUser=null,listController=null;
+ if(!Number.isSafeInteger(listTimeoutMs)||listTimeoutMs<1||listTimeoutMs>600000||typeof onListStatus!=='function')throw appError('LIST_CONFIG_INVALID');
+ function listStatus(status){try{onListStatus(status)}catch{/* display callback cannot alter sync */}}
+ function cancelListProgress(){if(!listController)return false;listController.abort(appError('PROGRESS_LIST_CANCELLED'));return true;}
  const storageKey=id=>prefix+id;
  async function session(){
   const s=checkResult(await authClient.getSession());
@@ -34,34 +55,35 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
   currentUser=user.id;
   return user;
  }
- async function jwtFor(userId){
+ async function jwtFor(userId,signal){
   // Check identity again immediately before requesting a token.
-  const latest=await session();
+  const latest=await abortable(session,signal);
   if(latest.id!==userId)throw appError('ACCOUNT_CHANGED');
-  const data=checkResult(await authClient.token());
+  const data=checkResult(await abortable(()=>authClient.token(),signal));
   if(typeof data?.token!=='string'||!data.token)throw appError('TOKEN_UNAVAILABLE');
   // Auth can switch accounts while token() is in flight.
-  if((await session()).id!==userId)throw appError('ACCOUNT_CHANGED');
-  return data.token;
+  if((await abortable(session,signal)).id!==userId)throw appError('ACCOUNT_CHANGED');
+  abortCheck(signal);return data.token;
  }
- async function request(userId,method,path,body){
-  const token=await jwtFor(userId);
+ async function request(userId,method,path,body,signal){
+  const token=await jwtFor(userId,signal);abortCheck(signal);
   const headers={authorization:'Bearer '+token};
   if(body!==undefined)headers['content-type']='application/json';
-  const response=await fetcher(new URL(path,endpoint),{
+  const response=await abortable(()=>fetcher(new URL(path,endpoint),{
    method,headers,cache:'no-store',credentials:'omit',redirect:'error',
-   ...(body!==undefined?{body:JSON.stringify(body)}:{})
-  });
+   ...(body!==undefined?{body:JSON.stringify(body)}:{}),...(signal?{signal}:{})
+  }),signal);
   // Never process an old account's response after an account switch.
-  if((await session()).id!==userId)throw appError('ACCOUNT_CHANGED');
+  if((await abortable(session,signal)).id!==userId)throw appError('ACCOUNT_CHANGED');
   if(!response.ok) {
    if(response.status===401)throw appError('SIGN_IN_REQUIRED');
    if(response.status===429)throw appError('PROGRESS_RATE_LIMITED');
    if(response.status===409)throw appError('REVISION_CONFLICT');
    throw appError('PROGRESS_API_FAILED');
   }
-  const parsed=await response.json();
-  if((await session()).id!==userId)throw appError('ACCOUNT_CHANGED');
+  const parsed=await abortable(()=>response.json(),signal);
+  if((await abortable(session,signal)).id!==userId)throw appError('ACCOUNT_CHANGED');
+  abortCheck(signal);
   return parsed?.data;
  }
  function readLocal(userId){
@@ -85,6 +107,7 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
   return session();
  }
  async function signOut(){
+  cancelListProgress();
   try{checkResult(await authClient.signOut());}
   finally{currentUser=null;}
  }
@@ -104,7 +127,12 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
   return value;
  }
  async function listProgress(){
-  const user=await session();
+  if(listController)throw appError('PROGRESS_LIST_IN_PROGRESS');
+  const controller=new AbortController(),signal=controller.signal;listController=controller;
+  const timer=setTimeout(()=>controller.abort(appError('PROGRESS_LIST_TIMEOUT')),listTimeoutMs);
+  listStatus({phase:'loading',received:0});
+  try{
+  const user=await abortable(session,signal);
   const records={};
   let cursor=null;
   const seen=new Set();
@@ -116,14 +144,15 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
    const path='progress?examCode=db&limit=100'+(cursor?'&cursor='+encodeURIComponent(cursor):'');
    let value;
    for(;;){
-    try{value=await request(user.id,'GET',path);break;}
+    try{value=await request(user.id,'GET',path,undefined,signal);break;}
     catch(error){
      if(error.message!=='PROGRESS_RATE_LIMITED')throw error;
      if(quotaWaits>=maxQuotaWaits)throw appError('PROGRESS_LIST_QUOTA_LIMIT');
      quotaWaits++;
      // Gateway does not expose Retry-After. Keep the same cursor and wait a full window.
-     await wait(60000);
-     if((await session()).id!==user.id)throw appError('ACCOUNT_CHANGED');
+     listStatus({phase:'quota-wait',received:Object.keys(records).length,waitMs:60000});
+     await abortable(()=>wait(60000,signal),signal);
+     if((await abortable(session,signal)).id!==user.id)throw appError('ACCOUNT_CHANGED');
     }
    }
    if(!value||!Array.isArray(value.records)||value.records.length>100)throw appError('PROGRESS_LIST_INVALID');
@@ -135,9 +164,11 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
     if(Object.keys(records).length>=maxRecords)throw appError('PROGRESS_LIST_LIMIT');
     records[row.question_id]={data:structuredClone(row.data),revision:row.revision,updatedAt:row.updated_at};
    }
+   listStatus({phase:'loading',received:Object.keys(records).length});
    const next=value.nextCursor;
    if(next===null){
-    const latest=await session();
+    const latest=await abortable(session,signal);
+    abortCheck(signal);
     if(latest.id!==user.id)throw appError('ACCOUNT_CHANGED');
     // Return an isolated snapshot; never merge into legacy progress or another user's cache.
     return structuredClone(records);
@@ -147,6 +178,7 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
    seen.add(next);cursor=next;
   }
   throw appError('PROGRESS_LIST_LIMIT');
+  }finally{clearTimeout(timer);if(listController===controller)listController=null;listStatus({phase:'idle'});}
  }
  async function save(questionId,data){
   checkRecord(questionId,data);
@@ -166,5 +198,5 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
   writeLocal(user.id,local);
   return result;
  }
- return Object.freeze({signUp,signIn,signOut,session,pull,save,listProgress,readLocal,storageKey});
+ return Object.freeze({signUp,signIn,signOut,session,pull,save,listProgress,cancelListProgress,readLocal,storageKey});
 }
