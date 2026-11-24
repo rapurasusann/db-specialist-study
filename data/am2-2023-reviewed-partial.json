@@ -17,7 +17,11 @@
       "explanation": "ネットワーク分断が起きると、一貫した応答を優先するか、応答を継続するかの選択が必要になる。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:2": {
       "stem": "先頭文字の範囲でデータを3ノードに分配する方式は？ A～Gはノード1、H～Nはノード2、O～Zはノード3に格納する。",
@@ -31,7 +35,11 @@
       "explanation": "シャーディングはデータを分割して複数ノードに配置する。複製とは異なる。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:3": {
       "stem": "概念データモデルとは？",
@@ -45,7 +53,11 @@
       "explanation": "実装方式ではなく、業務の実体と関連を表現する。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:4": {
       "stem": "B⁺木でX件から候補キーにより1件を探すときの計算量は？",
@@ -59,7 +71,11 @@
       "explanation": "木の高さは件数の対数に比例する。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:5": {
       "stem": "従業員が0個以上のプログラム言語を使える。言語表の列と主キーは？",
@@ -73,7 +89,11 @@
       "explanation": "従業員と言語の組合せをキーとし、言語を使えない人は言語表に行を持たない。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:6": {
       "stem": "無損失分解と関数従属性保存が常に両立する正規化は？",
@@ -87,7 +107,11 @@
       "explanation": "第3正規形への合成では両条件を満たせる。BCNFでは関数従属性を保存できない場合がある。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:7": {
       "stem": "便ごとに独立した乗務員集合と乗客集合を記録する三属性の関係について正しいものは？",
@@ -98,7 +122,7 @@
         "エ": "BCNFではない"
       },
       "answer": "ウ",
-      "explanation": "独立した多値従属があるので、便と乗務員、便と乗客に分けられる。",
+      "explanation": "便番号ごとに乗務員集合と乗客集合が互いに独立しているという条件から、非自明な多値従属が成立する。便・乗務員と便・乗客の二つの関係に分解し、自然結合によって元の組合せを復元できる。",
       "sourcePage": 5,
       "adapted": true,
       "needsSourceReview": true,
@@ -154,7 +178,11 @@
             ]
           ]
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:8": {
       "stem": "1注文で複数商品を購入できる受注データを3NFにすると最小何表か？",
@@ -297,7 +325,12 @@
             ]
           ]
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold.",
+        "reason": "Minimum number of relations depends on original functional dependencies and keys; source fidelity pending."
+      }
     },
     "am2:9": {
       "stem": "クラス別に得点の降順で順位を付けるSQLの関数は？",
@@ -395,7 +428,11 @@
           "type": "sql",
           "text": "SELECT 氏名, クラス, 得点,\n [a]() OVER (PARTITION BY クラス ORDER BY 得点 DESC) 順位\nFROM 成績"
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:10": {
       "stem": "二つの表の片方だけに存在するIDを、NULL判定で抽出する結合は？",
@@ -457,7 +494,11 @@
           "type": "sql",
           "text": "SELECT COALESCE(A.ID, B.ID)\nFROM A [a] B ON A.ID = B.ID\nWHERE A.ID IS NULL OR B.ID IS NULL"
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:11": {
       "stem": "R÷S（商演算）でSの商品すべてを扱う店を選ぶ。",
@@ -541,7 +582,11 @@
             ]
           ]
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:12": {
       "stem": "2相ロックの規則は？",
@@ -555,7 +600,11 @@
       "explanation": "獲得相と解放相を分け、一度解放を開始したら新たなロックを取得しない。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:13": {
       "stem": "メーカーコードにB⁺木索引があり、値は多数かつ均等、NULLは少数。最も有効な検索は？",
@@ -569,7 +618,11 @@
       "explanation": "狭い範囲の検索は対象行が少なく、索引の利点が大きい。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:14": {
       "stem": "REDOのべき等性とは？",
@@ -583,7 +636,11 @@
       "explanation": "同じ更新を再実行しても結果が変わらない性質。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:15": {
       "stem": "デッドロック、システム障害、媒体障害の回復方法の組合せは？",
@@ -597,7 +654,11 @@
       "explanation": "デッドロックは取消、システム障害は状況に応じて両方、媒体障害はバックアップ復元後に再実行する。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:16": {
       "stem": "隔離性水準を上げた場合、不整合読取りの件数と処理件数の一般的傾向は？",
@@ -611,7 +672,11 @@
       "explanation": "整合性を高めるための制御が増え、並行性が低下する傾向がある。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:17": {
       "stem": "並行実行結果が何らかの直列実行結果と等しい性質は？",
@@ -625,7 +690,11 @@
       "explanation": "並行実行しても直列実行と同等の結果を保証する。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:18": {
       "stem": "ブロックチェーンの構造上の特徴は？",
@@ -639,7 +708,11 @@
       "explanation": "ハッシュで前のブロックと結び付け、改ざんを検知しやすくする。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:19": {
       "stem": "DRDoSに該当する攻撃の特徴は？",
@@ -653,7 +726,11 @@
       "explanation": "反射型攻撃は第三者の応答を悪用する点が特徴。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:20": {
       "stem": "インシデント対応の順序は？",
@@ -667,7 +744,11 @@
       "explanation": "まず発見・受付し、重要度や緊急度を判定して対応する。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:21": {
       "stem": "エクスプロイトコードとは？",
@@ -681,7 +762,11 @@
       "explanation": "脆弱性の存在を実証したり悪用したりするコードを指す。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:22": {
       "stem": "4台以上のディスクで2台故障まで復元できるRAIDは？",
@@ -695,7 +780,11 @@
       "explanation": "RAID6は二重パリティで2台の故障に耐えられる。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:23": {
       "stem": "キャパシティプランニングの目的は？",
@@ -709,7 +798,11 @@
       "explanation": "需要増加を予測して将来必要な処理能力を確保する。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:24": {
       "stem": "データ中心アプローチの特徴は？",
@@ -723,7 +816,11 @@
       "explanation": "データ構造を中心にシステムを設計する。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:25": {
       "stem": "ステージング環境とは？",
@@ -737,7 +834,11 @@
       "explanation": "本番と近い条件で公開前の問題を発見する。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     }
   }
 }
