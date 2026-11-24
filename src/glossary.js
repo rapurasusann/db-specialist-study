@@ -92,7 +92,9 @@
         let best = null, at = text.length;
         for (const item of applicable) {
           if (used.has(item.id || item.phrase)) continue;
-          const ix = text.indexOf(item.phrase, pos);
+          let ix = text.indexOf(item.phrase, pos);
+          // Do not match ASCII terms inside longer identifiers (IN inside JOIN, etc.).
+          while (ix >= 0 && ((/^[A-Za-z0-9_]/.test(item.phrase) && /[A-Za-z0-9_]/.test(text[ix-1] || '')) || (/[A-Za-z0-9_]$/.test(item.phrase) && /[A-Za-z0-9_]/.test(text[ix+item.phrase.length] || '')))) ix = text.indexOf(item.phrase, ix+1);
           if (ix >= 0 && (ix < at || (ix === at && best && item.phrase.length > best.phrase.length))) {
             at = ix; best = item;
           }
