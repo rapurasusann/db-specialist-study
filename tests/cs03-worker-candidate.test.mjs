@@ -27,7 +27,7 @@ test('candidate supports strict browser preflight but forwards nothing upstream'
  let count=0;
  const candidate=createCs03WorkerCandidate({env:bindings(),fetcher:async()=>{count++;throw Error('UNEXPECTED_UPSTREAM');}});
  const request=new Request('https://candidate.invalid/progress',{method:'OPTIONS',headers:{
-  origin:ORIGIN,'access-control-request-method':'GET','access-control-request-headers':'authorization, content-type'
+  origin:ORIGIN,'access-control-request-method':'GET','access-control-request-headers':'authorization'
  }});
  const response=await candidate(request);
  assert.equal(response.status,204);
