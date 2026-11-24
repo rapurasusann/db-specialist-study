@@ -17,7 +17,7 @@
       "explanation": "在庫商品は商品と倉庫の組合せに対応する。出庫は0件でもよい。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "uml",
@@ -107,10 +107,17 @@
             ]
           }
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 3,
+        "reviewedOn": "2026-11-24",
+        "scope": "stem, choices, logical answer and explanation; SVG visual acceptance separate"
+      }
     },
     "am2:2": {
-      "stem": "k次B木で各ノードは最大2kレコード、最大2k+1個の子を持つ。根を第1段として第n段までの最大格納件数は？",
+      "stem": "k次のB木を考える。根のレコード数は1～2k、その他のノードはk～2kである。根を第1段とし、kとnは自然数（n≧2）とする。第n段までの最大格納件数はいくつか。",
       "options": {
         "ア": "(2k+1)^(n−1)−1",
         "イ": "(2k+1)^n−1",
@@ -121,7 +128,14 @@
       "explanation": "各段の最大件数は2k(2k+1)^(i−1)。等比数列の和は(2k+1)^n−1。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 3,
+        "reviewedOn": "2026-11-24",
+        "scope": "stem, choices, logical answer and explanation; SVG visual acceptance separate"
+      }
     },
     "am2:3": {
       "stem": "R(A,B,C)でA→B、B→Cが成立するとき、導出不能な関数従属は？",
@@ -135,10 +149,17 @@
       "explanation": "BとCからAを導く規則が存在しない。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 4,
+        "reviewedOn": "2026-11-24",
+        "scope": "stem, choices, logical answer and explanation; SVG visual acceptance separate"
+      }
     },
     "am2:4": {
-      "stem": "部・課・係の階層を表すモデルA～Cについて正しい説明は？",
+      "stem": "部・課・係の階層を表すモデルA～Cについて正しい説明は？ 組織レベルとは階層内の位置であり、モデルBの {階層} は親子関係の循環を禁止する制約を示す。",
       "options": {
         "ア": "全モデルで階層追加時に変更不要",
         "イ": "全モデルで複数親を表現不能",
@@ -149,7 +170,7 @@
       "explanation": "親子を関連表で管理するだけでは循環を防止できない。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "uml",
@@ -275,7 +296,14 @@
           }
         }
       ],
-      "needsDiagramReview": true
+      "needsDiagramReview": true,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 4,
+        "reviewedOn": "2026-11-24",
+        "scope": "stem, choices, logical answer and explanation; SVG visual acceptance separate"
+      }
     },
     "am2:5": {
       "stem": "主キーaの表A、主キーbの表Bの関連を実装する適切な方法は？",
@@ -289,7 +317,7 @@
       "explanation": "1対1ではどちらに外部キーを置いてもよいが、一意性が必要。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -309,10 +337,17 @@
           ],
           "rows": []
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 5,
+        "reviewedOn": "2026-11-24",
+        "scope": "stem, choices, logical answer and explanation; SVG visual acceptance separate"
+      }
     },
     "am2:6": {
-      "stem": "医師・診療科・診察・患者の表定義から多重度を選ぶ。",
+      "stem": "次の4表について、医師―診療科―診察―患者の順に関係の多重度を示したものを選ぶ。表中の主キーと外部キーを手掛かりにする。",
       "options": {
         "ア": "多:1、多:1、1:多",
         "イ": "多:1、1:多、多:1",
@@ -323,7 +358,7 @@
       "explanation": "診療科を参照する医師・診察、および患者を参照する診察が多側。",
       "sourcePage": 6,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -563,6 +598,13 @@
             ]
           }
         ]
+      },
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 6,
+        "reviewedOn": "2026-11-24",
+        "scope": "stem, choices, logical answer and explanation; SVG visual acceptance separate"
       }
     },
     "am2:7": {
@@ -577,7 +619,14 @@
       "explanation": "候補キーは各行を一意に識別する最小属性集合。",
       "sourcePage": 6,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 6,
+        "reviewedOn": "2026-11-24",
+        "scope": "stem, choices, logical answer and explanation; SVG visual acceptance separate"
+      }
     },
     "am2:8": {
       "stem": "正規化の分解について適切なのは？",
