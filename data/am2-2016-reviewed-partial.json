@@ -70,6 +70,73 @@
       "sourcePage": 3,
       "adapted": true,
       "needsSourceReview": true
+    },
+    "am2:3": {
+      "stem": "R(A,B,C)でA→B、B→Cが成立するとき、導出不能な関数従属は？",
+      "options": {
+        "ア": "ABC→AB",
+        "イ": "AC→AB",
+        "ウ": "AC→ABC",
+        "エ": "BC→AC"
+      },
+      "answer": "エ",
+      "explanation": "BとCからAを導く規則が存在しない。",
+      "sourcePage": 4,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:4": {
+      "stem": "部・課・係の階層を表すモデルA～Cについて正しい説明は？",
+      "options": {
+        "ア": "全モデルで階層追加時に変更不要",
+        "イ": "全モデルで複数親を表現不能",
+        "ウ": "モデルBでは子コードを外部キーにする",
+        "エ": "モデルCには循環禁止制約が必要"
+      },
+      "answer": "エ",
+      "explanation": "親子を関連表で管理するだけでは循環を防止できない。",
+      "sourcePage": 4,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "モデルの要約",
+          "headers": [
+            "モデル",
+            "構造"
+          ],
+          "rows": [
+            [
+              "A",
+              "部1対多課、課1対多係"
+            ],
+            [
+              "B",
+              "組織の自己関連、親0..1、子多、循環禁止"
+            ],
+            [
+              "C",
+              "組織構造に親・子の組織コードを保持"
+            ]
+          ]
+        }
+      ],
+      "needsDiagramReview": true
+    },
+    "am2:5": {
+      "stem": "主キーaの表A、主キーbの表Bの関連を実装する適切な方法は？",
+      "options": {
+        "ア": "1対1ならどちら側にも外部キーを置ける",
+        "イ": "1対多ならAにbを置く",
+        "ウ": "多対多なら中間表に片方だけの外部キーを置く",
+        "エ": "多対多なら双方に相手の外部キーを置く"
+      },
+      "answer": "ア",
+      "explanation": "1対1ではどちらに外部キーを置いてもよいが、一意性が必要。",
+      "sourcePage": 5,
+      "adapted": true,
+      "needsSourceReview": true
     }
   }
 }
