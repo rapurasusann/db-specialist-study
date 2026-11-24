@@ -8,19 +8,21 @@
     "am2:1": {
       "stem": "CAP定理の説明を選ぶ。",
       "options": {
-        "ア": "最終的整合性の説明",
-        "イ": "ACIDの一貫性の説明",
-        "ウ": "直列化可能性の説明",
+        "ア": "可用性を優先し、最終的に整合した状態に収束させる",
+        "イ": "トランザクションでデータの矛盾を防ぐ",
+        "ウ": "並行実行と直列実行の結果を等価にする",
         "エ": "分断時に整合性と可用性を同時に保証できない"
       },
       "answer": "エ",
       "explanation": "ネットワーク分断が起きると、一貫した応答を優先するか、応答を継続するかの選択が必要になる。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 3,
+        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
       }
     },
     "am2:2": {
@@ -35,10 +37,12 @@
       "explanation": "シャーディングはデータを分割して複数ノードに配置する。複製とは異なる。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 3,
+        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
       }
     },
     "am2:3": {
@@ -53,10 +57,12 @@
       "explanation": "実装方式ではなく、業務の実体と関連を表現する。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 4,
+        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
       }
     },
     "am2:4": {
@@ -71,14 +77,16 @@
       "explanation": "木の高さは件数の対数に比例する。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 4,
+        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
       }
     },
     "am2:5": {
-      "stem": "従業員が0個以上のプログラム言語を使える。言語表の列と主キーは？",
+      "stem": "従業員が0個以上のプログラム言語を使える。言語表の列と主キーは？ 従業員表には従業員番号（主キー）と氏名を保持する。選択肢は属性／主キーの順。",
       "options": {
         "ア": "氏名・言語／氏名",
         "イ": "従業員番号・言語／言語",
@@ -89,10 +97,12 @@
       "explanation": "従業員と言語の組合せをキーとし、言語を使えない人は言語表に行を持たない。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_qs.pdf",
+        "page": 4,
+        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
       }
     },
     "am2:6": {
