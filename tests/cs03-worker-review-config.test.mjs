@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
-import {inspectCs03WorkerReviewConfig,inspectCs03WorkerReviewTemplate} from '../scripts/cs03-worker-review-config.mjs';
+import {inspectCs03WorkerReviewConfig,inspectCs03WorkerReviewTemplate,inspectCs03BrowserWorkerReviewTemplate} from '../scripts/cs03-worker-review-config.mjs';
 const path=fileURLToPath(new URL('../docs/cs03-worker-config-review-only.json.example',import.meta.url));
 const template=JSON.parse(readFileSync(path,'utf8'));
 test('review-only template has disabled public routes and no misleading CPU override',()=>{
@@ -30,4 +30,12 @@ test('review-only Worker template targets the guarded default export, not the ba
   assert.ok(inspectCs03WorkerReviewConfig({...template,main}).includes('GUARDED_WORKER_ENTRYPOINT_REQUIRED'));
  }
  assert.ok(inspectCs03WorkerReviewConfig({...template,name:'cs03-public'}).includes('REVIEW_ONLY_WORKER_NAME_REQUIRED'));
+});
+
+test('browser JWT review template is disabled and distinct from the Access worker',()=>{
+ const browser=JSON.parse(readFileSync(new URL('../docs/cs03-browser-worker-config-review-only.json.example',import.meta.url),'utf8'));
+ assert.deepEqual(inspectCs03BrowserWorkerReviewTemplate(),[]);
+ assert.notDeepEqual(inspectCs03WorkerReviewConfig(browser),[]);
+ for(const change of [{workers_dev:true},{preview_urls:true},{routes:['example.com/*']},{main:template.main},{name:template.name},{vars:{CS03_BROWSER_JWT_MODE:'isolated-review-only'}},{durable_objects:{bindings:[]}}])
+  assert.notDeepEqual(inspectCs03WorkerReviewConfig({...browser,...change},{browser:true}),[]);
 });
