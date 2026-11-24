@@ -17,10 +17,14 @@
       "explanation": "分断が起きた場合、一貫性と可用性を同時に保証できない。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:2": {
-      "stem": "毎秒20件、1件当たりバッファ・ログとも10kB消費する。バッファ480MB、ログ240MB。バッファ満杯またはログ切替でチェックポイントを実施しバッファを初期化する。1時間に何回発生するか（1MB=1000kB）？",
+      "stem": "毎秒20件、1件当たりバッファ・ログとも10kB消費する。バッファ480MB、ログ240MB。バッファ満杯またはログ切替でチェックポイントを実施しバッファを初期化する。1時間に何回発生するか（1MB=1000kB）？ 計測開始時点でバッファとログは空で、処理速度は一定とする。",
       "options": {
         "ア": "1.5",
         "イ": "2",
@@ -28,10 +32,14 @@
         "エ": "6"
       },
       "answer": "ウ",
-      "explanation": "ログは毎秒200kB増え、1200秒で切り替わる。バッファ満杯より先に発生するので3600÷1200=3回。",
+      "explanation": "1秒当たり20×10=200kB。ログが満杯になるのは240,000÷200=1,200秒後、バッファは2,400秒後。ログ切替が先に発生し、そのたびにバッファが初期化されるので、1時間では3,600÷1,200=3回。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:3": {
       "stem": "部・課・係の階層を表す三つのモデルの説明として適切なものは？",
@@ -170,7 +178,11 @@
             ]
           }
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:4": {
       "stem": "プロパティグラフではエッジが二つのノードを結び、プロパティはノード又はエッジの一方に所属する。適切な例は？",
@@ -568,10 +580,14 @@
             ]
           }
         ]
+      },
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
       }
     },
     "am2:5": {
-      "stem": "医師、診療科、診察、患者の表定義から多重度を選ぶ。",
+      "stem": "医師―診療科―診察―患者の順に、表定義から多重度を判断する。正しい組合せは？",
       "options": {
         "ア": "多:1、多:1、1:多",
         "イ": "多:1、1:多、多:1",
@@ -834,6 +850,10 @@
             ]
           }
         ]
+      },
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
       }
     },
     "am2:6": {
@@ -1030,6 +1050,10 @@
             ]
           }
         ]
+      },
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
       }
     },
     "am2:7": {
@@ -1044,7 +1068,11 @@
       "explanation": "第3正規形への合成では無損失性と関数従属性保存を両立できる。",
       "sourcePage": 7,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:8": {
       "stem": "3NFでも許される関数従属は？",
@@ -1058,7 +1086,11 @@
       "explanation": "右辺が候補キーの構成属性なら3NFでも許容される場合がある。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:9": {
       "stem": "未確定値は読まないが、同じ行の再読取りで値が変わり得る隔離水準は？",
@@ -1072,7 +1104,11 @@
       "explanation": "確定済みデータだけを読むが、反復不能読取りは起こり得る。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:10": {
       "stem": "下のスケジュールでT1の確定直前の待ちグラフのaは？ 読取りは共有、更新は専有ロックを使い、確定まで保持する。矢印は待つ側から待たれる側。",
@@ -1211,18 +1247,22 @@
             }
           ]
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "reason": "Wait graph and schedule must be independently compared with official page."
+      }
     },
     "am2:11": {
       "stem": "FE取得者全員についてAPの有無を併記する左外部結合の条件は？",
       "options": {
-        "ア": "ONで社員一致とFE・APを指定し、WHEREで左側FE",
-        "イ": "同じONでWHEREは左側資格非NULL",
-        "ウ": "同じONでWHEREは右側AP",
-        "エ": "ONは社員一致、WHEREで左FEと右AP"
+        "ア": "SQL 1",
+        "イ": "SQL 2",
+        "ウ": "SQL 3",
+        "エ": "SQL 4"
       },
       "answer": "ア",
-      "explanation": "右側のAP条件をONに置くことでAPなしのFE取得者も残る。",
+      "explanation": "右表のAP条件をONに指定すると、APがない社員も左外部結合で残る。WHEREで左表のFE取得者に絞り込む。右表のAP条件をWHEREに置くとNULLの行が除外される。",
       "sourcePage": 10,
       "adapted": true,
       "needsSourceReview": true,
@@ -1299,7 +1339,37 @@
           "type": "sql",
           "text": "SELECT C1.社員コード, C1.資格 AS 資格1, C2.資格 AS 資格2\nFROM 社員取得資格 C1 LEFT OUTER JOIN 社員取得資格 C2\n[a]"
         }
-      ]
+      ],
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "sql",
+            "text": "ON C1.社員コード = C2.社員コード AND C1.資格 = 'FE' AND C2.資格 = 'AP'\nWHERE C1.資格 = 'FE'"
+          }
+        ],
+        "イ": [
+          {
+            "type": "sql",
+            "text": "ON C1.社員コード = C2.社員コード AND C1.資格 = 'FE' AND C2.資格 = 'AP'\nWHERE C1.資格 IS NOT NULL"
+          }
+        ],
+        "ウ": [
+          {
+            "type": "sql",
+            "text": "ON C1.社員コード = C2.社員コード AND C1.資格 = 'FE' AND C2.資格 = 'AP'\nWHERE C2.資格 = 'AP'"
+          }
+        ],
+        "エ": [
+          {
+            "type": "sql",
+            "text": "ON C1.社員コード = C2.社員コード\nWHERE C1.資格 = 'FE' AND C2.資格 = 'AP'"
+          }
+        ]
+      },
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:12": {
       "stem": "和両立するR、Sの共通部分と等しい式は？",
@@ -1313,7 +1383,11 @@
       "explanation": "RからR固有の要素を除けば共通部分だけが残る。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:13": {
       "stem": "n個の属性から選べる射影の数は？ 空集合と全属性も含める。",
@@ -1327,10 +1401,14 @@
       "explanation": "属性ごとに選択するか否かの2通りがある。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:14": {
-      "stem": "会員別・項目別に最大行番号の値を採用し、会員名と最終購入日を横持ちにする。SQL中の三つの空欄に共通する集約関数は？",
+      "stem": "会員別・項目別に最大行番号の値を採用し、会員名と最終購入日を横持ちにする。SQL中の三つの空欄に共通する集約関数は？ 行番号は表全体で一意とする。",
       "options": {
         "ア": "COUNT",
         "イ": "DISTINCT",
@@ -1421,7 +1499,11 @@
           "type": "sql",
           "text": "SELECT 会員番号,\n [a](CASE WHEN 項目名='会員名' THEN 項目値 END) AS 会員名,\n [a](CASE WHEN 項目名='最終購入年月日' THEN 項目値 END) AS 最終購入年月日\nFROM (SELECT 会員番号, 項目名, 項目値 FROM 会員項目\n WHERE 行番号 IN (SELECT [a](行番号) FROM 会員項目 GROUP BY 会員番号, 項目名)) T\nGROUP BY 会員番号 ORDER BY 会員番号"
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:15": {
       "stem": "分散DBの2相コミットで調整役が行う正しい処理は？",
@@ -1435,7 +1517,11 @@
       "explanation": "準備相と確定相を分ける。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:16": {
       "stem": "各n行の表を単純な入れ子ループで結合するときの計算量は？",
@@ -1449,7 +1535,11 @@
       "explanation": "各外側行について内側のn行を調べる。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:17": {
       "stem": "別々の計算機にある同程度の行数の表を結合する際、通信量削減に適する方式は？",
@@ -1463,7 +1553,11 @@
       "explanation": "結合キー等を先に交換して転送対象行を絞る。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:18": {
       "stem": "MVCCの特徴は？",
@@ -1477,7 +1571,11 @@
       "explanation": "複数の版を保持して読取りと更新の競合を減らす。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:19": {
       "stem": "CEPの特徴は？",
@@ -1491,7 +1589,11 @@
       "explanation": "連続したイベントをリアルタイムに評価する。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:20": {
       "stem": "メール本文に共通鍵暗号、鍵の配送に公開鍵暗号を使う仕組みは？",
@@ -1505,7 +1607,11 @@
       "explanation": "S/MIMEはメールの暗号化や署名を提供する。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:21": {
       "stem": "ベイジアン迷惑メールフィルタはどう判定する？",
@@ -1519,7 +1625,11 @@
       "explanation": "学習した特徴から迷惑メールである確率を推定する。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:22": {
       "stem": "キャッシュメモリの適切な説明は？",
@@ -1533,7 +1643,11 @@
       "explanation": "高速なキャッシュで主記憶アクセスを減らす。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:23": {
       "stem": "ロードバランサの特徴は？",
@@ -1547,7 +1661,11 @@
       "explanation": "障害中のサーバへの振り分けを避ける。",
       "sourcePage": 16,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:24": {
       "stem": "SOAで形式変換・振り分け・非同期連携を提供するものは？",
@@ -1561,7 +1679,11 @@
       "explanation": "ESBはサービス間の連携を仲介する。",
       "sourcePage": 16,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:25": {
       "stem": "DTCP-IPによるコンテンツ保護の特徴は？",
@@ -1575,7 +1697,11 @@
       "explanation": "IPネットワーク上の保護されたコンテンツ伝送に使われる。",
       "sourcePage": 16,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     }
   },
   "pendingDiagramQuestions": [
