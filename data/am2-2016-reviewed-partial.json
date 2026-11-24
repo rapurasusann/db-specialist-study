@@ -629,7 +629,7 @@
       }
     },
     "am2:8": {
-      "stem": "正規化の分解について適切なのは？",
+      "stem": "第1正規形から第5正規形までの正規化に関する説明で適切なのは？",
       "options": {
         "ア": "全分解で従属性保存",
         "イ": "全分解で無損失",
@@ -640,41 +640,114 @@
       "explanation": "3NF合成では無損失性と従属性保存を両立できる。",
       "sourcePage": 7,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 7,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:9": {
-      "stem": "TBL1のCOL1がTBL2のCOL1に存在する行を重複なしで取得するIN検索と等価なのは？",
+      "stem": "次のINを用いたSQLと同じ結果になるSQLを選ぶ。",
       "options": {
-        "ア": "UNION",
-        "イ": "同じCOL1を比較するEXISTS",
-        "ウ": "COL1とCOL2を両方比較する結合",
-        "エ": "左外部結合"
+        "ア": "SQL A",
+        "イ": "SQL B",
+        "ウ": "SQL C",
+        "エ": "SQL D"
       },
       "answer": "イ",
       "explanation": "EXISTSでCOL1の一致を確認すれば同じ行を選択できる。",
       "sourcePage": 7,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "sql",
           "text": "SELECT DISTINCT TBL1.COL1 FROM TBL1 WHERE COL1 IN (SELECT COL1 FROM TBL2)"
         }
-      ]
+      ],
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "sql",
+            "text": "SELECT COL1 FROM TBL1 UNION SELECT COL1 FROM TBL2"
+          }
+        ],
+        "イ": [
+          {
+            "type": "sql",
+            "text": "SELECT DISTINCT a.COL1 FROM TBL1 a WHERE EXISTS (SELECT 1 FROM TBL2 b WHERE a.COL1 = b.COL1)"
+          }
+        ],
+        "ウ": [
+          {
+            "type": "sql",
+            "text": "SELECT DISTINCT a.COL1 FROM TBL1 a JOIN TBL2 b ON a.COL1 = b.COL1 AND a.COL2 = b.COL2"
+          }
+        ],
+        "エ": [
+          {
+            "type": "sql",
+            "text": "SELECT DISTINCT a.COL1 FROM TBL1 a LEFT JOIN TBL2 b ON a.COL1 = b.COL1"
+          }
+        ]
+      },
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 7,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:10": {
-      "stem": "基底表が更新可能なとき、更新可能なビューは？",
+      "stem": "すべての基底表が更新可能であるとき、次のビュー定義のうち更新可能なものを選ぶ。SQLは学習用に識別子を変更している。",
       "options": {
-        "ア": "DISTINCTを使う",
-        "イ": "GROUP BYを使う",
-        "ウ": "単一表をWHEREで絞る",
-        "エ": "複数表とHAVINGを使う"
+        "ア": "ビュー V1",
+        "イ": "ビュー V2",
+        "ウ": "ビュー V3",
+        "エ": "ビュー V4"
       },
       "answer": "ウ",
       "explanation": "単一表の単純な選択・射影なら更新を基底表に対応付けられる。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "sql",
+            "text": "CREATE VIEW V1 AS SELECT DISTINCT supplier_id, product_id FROM delivery"
+          }
+        ],
+        "イ": [
+          {
+            "type": "sql",
+            "text": "CREATE VIEW V2 AS SELECT supplier_id, product_id FROM delivery GROUP BY supplier_id, product_id"
+          }
+        ],
+        "ウ": [
+          {
+            "type": "sql",
+            "text": "CREATE VIEW V3 AS SELECT supplier_id, rank, address FROM supplier WHERE rank > 15"
+          }
+        ],
+        "エ": [
+          {
+            "type": "sql",
+            "text": "CREATE VIEW V4 AS SELECT s.address, s.rank, p.warehouse FROM supplier s, product p HAVING s.rank > 15"
+          }
+        ]
+      },
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 8,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:11": {
       "stem": "等結合に限定される結合アルゴリズムは？",
@@ -688,7 +761,14 @@
       "explanation": "等しいキーのハッシュ値を利用する。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 8,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:12": {
       "stem": "関係代数の直積とは？",
@@ -702,7 +782,14 @@
       "explanation": "m行とn行ならm×n行を生成する。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 9,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:13": {
       "stem": "デッドロック検出に使うものは？",
@@ -716,7 +803,14 @@
       "explanation": "循環した待ち関係を検出する。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 9,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:14": {
       "stem": "2相コミットの手順は？",
@@ -730,7 +824,14 @@
       "explanation": "準備相で全参加者の同意を得てから確定する。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 9,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:15": {
       "stem": "和集合演算が成立する必要十分条件は？",
@@ -744,7 +845,14 @@
       "explanation": "和両立には属性数と対応するドメインの一致が必要。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 10,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:16": {
       "stem": "WALの目的は？",
@@ -758,7 +866,14 @@
       "explanation": "データより先にログを永続化し、確定済み変更を復元できるようにする。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 10,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:17": {
       "stem": "原子性の説明は？",
@@ -772,7 +887,14 @@
       "explanation": "トランザクションは全成功または全取消。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 10,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:18": {
       "stem": "移動透過性とは？",
@@ -786,10 +908,17 @@
       "explanation": "格納先を移しても利用方法を変えずに済む。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 11,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:19": {
-      "stem": "a=全適合件数、b=検索結果中の適合件数、c=全検索結果件数。再現率と精度は？",
+      "stem": "情報検索の評価指標について、aは蓄積データ中の適合件数、bは検索結果中の適合件数、cは検索結果全体の件数とする。再現率と精度の順に正しい組合せは？",
       "options": {
         "ア": "a/b, b/c",
         "イ": "b/a, b/c",
@@ -800,7 +929,14 @@
       "explanation": "再現率は適合全体に対する取得割合、精度は取得結果中の適合割合。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 11,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:20": {
       "stem": "従量課金クラウドに対するEDoSの目的は？",
@@ -814,7 +950,14 @@
       "explanation": "サービスの利用料金増加を狙う攻撃。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 12,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:21": {
       "stem": "DNSの非公開情報の一括取得を防ぐ設定は？",
@@ -828,7 +971,14 @@
       "explanation": "許可されたセカンダリ等にだけゾーン転送を認める。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 12,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:22": {
       "stem": "ブロック単位のストライピングと分散パリティを使用するRAIDは？",
@@ -842,7 +992,14 @@
       "explanation": "RAID5ではパリティを複数ディスクに分散する。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 12,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:23": {
       "stem": "サーバ1台とクライアント3台のうち、サーバと最低1台のクライアントが稼働すれば利用可能。独立な停止確率がサーバa、各クライアントbの場合、利用不能確率は？",
@@ -856,7 +1013,14 @@
       "explanation": "利用可能確率は(1−a)(1−b³)。その余事象を求める。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:24": {
       "stem": "フェールセーフの例は？",
@@ -870,7 +1034,14 @@
       "explanation": "故障時に安全側に移行する設計。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     },
     "am2:25": {
       "stem": "XPのプラクティスは？",
@@ -884,7 +1055,14 @@
       "explanation": "二人でコードを作成・レビューする。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted question and choices to official booklet page image, and answer to official answer sheet; browser acceptance separate."
+      }
     }
   },
   "pendingDiagramQuestions": [
