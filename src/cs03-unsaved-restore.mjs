@@ -1,3 +1,4 @@
+import {CS03_MAX_CATALOG_RECORDS} from './cs03-learning-record-id.mjs';
 // Explicit JSON-backup recovery into account-specific review drafts only.
 // Never writes to Neon, legacy device progress, or browser storage.
 export async function restoreCs03UnsavedBackup({auto,jsonText,confirmRestore}={}){
@@ -13,7 +14,7 @@ export async function restoreCs03UnsavedBackup({auto,jsonText,confirmRestore}={}
  const before=auto.state();
  if(!before.active||before.userId!==backup.userId)throw Error('BACKUP_ACCOUNT_MISMATCH');
  const count=Object.keys(backup.records).length;
- if(count<1||count>1600)throw Error('BACKUP_RECORDS_INVALID');
+ if(count<1||count>CS03_MAX_CATALOG_RECORDS)throw Error('BACKUP_RECORDS_INVALID');
  const approved=await confirmRestore(count);
  if(approved!==true)return {restored:0,cancelled:true};
  const after=auto.state();
