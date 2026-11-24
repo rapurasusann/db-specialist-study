@@ -178,17 +178,17 @@
           "classes": [
             [
               "部",
-              50,
+              60,
               85
             ],
             [
               "課",
-              175,
+              220,
               85
             ],
             [
               "係",
-              300,
+              380,
               85
             ]
           ],
@@ -255,12 +255,12 @@
           "classes": [
             [
               "組織",
-              75,
+              90,
               85
             ],
             [
               "組織構造",
-              275,
+              310,
               85
             ]
           ],
@@ -303,6 +303,13 @@
         "page": 4,
         "reviewedOn": "2026-11-24",
         "scope": "stem, choices, logical answer and explanation; SVG visual acceptance separate"
+      },
+      "diagramReview": {
+        "status": "source-semantics-compared-browser-pending",
+        "reviewedOn": "2026-11-24",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_qs.pdf",
+        "page": 4,
+        "scope": "IPA PDF page rendered and visually compared in this review; SVG appearance and exact routing remain pending."
       }
     },
     "am2:5": {
