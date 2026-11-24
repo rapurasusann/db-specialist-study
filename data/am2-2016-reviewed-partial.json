@@ -20,40 +20,92 @@
       "needsSourceReview": true,
       "figures": [
         {
-          "type": "table",
-          "title": "UMLの関連と多重度",
-          "headers": [
-            "クラス",
-            "多重度",
-            "クラス",
-            "多重度"
-          ],
-          "rows": [
+          "type": "uml",
+          "title": "商品・倉庫のデータモデル",
+          "classes": [
             [
               "商品",
-              "1",
+              45,
+              145
+            ],
+            [
               "在庫商品",
-              "1..*"
+              175,
+              145
             ],
             [
               "倉庫",
-              "1",
-              "在庫商品",
-              "0..*"
+              305,
+              145
             ],
             [
-              "在庫商品",
-              "1",
               "入庫",
-              "1..*"
+              105,
+              45
             ],
             [
-              "在庫商品",
-              "1",
               "出庫",
-              "0..*"
+              245,
+              45
             ]
-          ]
+          ],
+          "links": [
+            {
+              "kind": "association",
+              "from": "商品",
+              "to": "在庫商品",
+              "fromLabel": "1",
+              "toLabel": "1..*",
+              "label": "",
+              "offset": 0
+            },
+            {
+              "kind": "association",
+              "from": "在庫商品",
+              "to": "倉庫",
+              "fromLabel": "0..*",
+              "toLabel": "1",
+              "label": "格納先",
+              "offset": 0
+            },
+            {
+              "kind": "association",
+              "from": "入庫",
+              "to": "在庫商品",
+              "fromLabel": "1..*",
+              "toLabel": "1",
+              "label": "",
+              "offset": 0
+            },
+            {
+              "kind": "association",
+              "from": "出庫",
+              "to": "在庫商品",
+              "fromLabel": "0..*",
+              "toLabel": "1",
+              "label": "",
+              "offset": 0
+            }
+          ],
+          "attributes": {
+            "商品": [
+              "商品コード"
+            ],
+            "在庫商品": [
+              "/在庫数量"
+            ],
+            "倉庫": [
+              "倉庫番号"
+            ],
+            "入庫": [
+              "入庫年月日",
+              "数量"
+            ],
+            "出庫": [
+              "出庫年月日",
+              "数量"
+            ]
+          }
         }
       ]
     },
@@ -100,26 +152,127 @@
       "needsSourceReview": true,
       "figures": [
         {
-          "type": "table",
-          "title": "モデルの要約",
-          "headers": [
-            "モデル",
-            "構造"
-          ],
-          "rows": [
+          "type": "uml",
+          "title": "モデルA",
+          "classes": [
             [
-              "A",
-              "部1対多課、課1対多係"
+              "部",
+              50,
+              85
             ],
             [
-              "B",
-              "組織の自己関連、親0..1、子多、循環禁止"
+              "課",
+              175,
+              85
             ],
             [
-              "C",
-              "組織構造に親・子の組織コードを保持"
+              "係",
+              300,
+              85
             ]
-          ]
+          ],
+          "links": [
+            {
+              "kind": "association",
+              "from": "部",
+              "to": "課",
+              "fromLabel": "1",
+              "toLabel": "*",
+              "label": "親・子",
+              "offset": 0
+            },
+            {
+              "kind": "association",
+              "from": "課",
+              "to": "係",
+              "fromLabel": "1",
+              "toLabel": "*",
+              "label": "親・子",
+              "offset": 0
+            }
+          ],
+          "attributes": {
+            "部": [
+              "部コード"
+            ],
+            "課": [
+              "課コード"
+            ],
+            "係": [
+              "係コード"
+            ]
+          }
+        },
+        {
+          "type": "uml",
+          "title": "モデルB {階層}",
+          "classes": [
+            [
+              "組織",
+              175,
+              95
+            ]
+          ],
+          "links": [
+            {
+              "kind": "self",
+              "from": "組織",
+              "fromLabel": "0..1 親",
+              "toLabel": "* 子"
+            }
+          ],
+          "attributes": {
+            "組織": [
+              "組織コード",
+              "組織レベル"
+            ]
+          }
+        },
+        {
+          "type": "uml",
+          "title": "モデルC",
+          "classes": [
+            [
+              "組織",
+              75,
+              85
+            ],
+            [
+              "組織構造",
+              275,
+              85
+            ]
+          ],
+          "links": [
+            {
+              "kind": "association",
+              "from": "組織",
+              "to": "組織構造",
+              "fromLabel": "1",
+              "toLabel": "*",
+              "label": "親",
+              "offset": -12
+            },
+            {
+              "kind": "association",
+              "from": "組織",
+              "to": "組織構造",
+              "fromLabel": "1",
+              "toLabel": "*",
+              "label": "子",
+              "offset": 12
+            }
+          ],
+          "attributes": {
+            "組織": [
+              "組織コード",
+              "組織レベル"
+            ],
+            "組織構造": [
+              "親組織コード",
+              "子組織コード"
+            ]
+          }
         }
       ],
       "needsDiagramReview": true
@@ -136,7 +289,27 @@
       "explanation": "1対1ではどちらに外部キーを置いてもよいが、一意性が必要。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "A",
+          "headers": [
+            "a（主キー）",
+            "その他の列"
+          ],
+          "rows": []
+        },
+        {
+          "type": "table",
+          "title": "B",
+          "headers": [
+            "b（主キー）",
+            "その他の列"
+          ],
+          "rows": []
+        }
+      ]
     },
     "am2:6": {
       "stem": "医師・診療科・診察・患者の表定義から多重度を選ぶ。",
@@ -667,7 +840,7 @@
   },
   "pendingDiagramQuestions": [
     1,
-    4,
-    5
-  ]
+    4
+  ],
+  "pendingDiagramNote": "Data revised against IPA page images; browser rendering still untested."
 }
