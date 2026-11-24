@@ -31,7 +31,27 @@
       "explanation": "1対1ならいずれかに一意性を保証する外部キーを置ける。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "A",
+          "headers": [
+            "a（主キー）",
+            "その他の列"
+          ],
+          "rows": []
+        },
+        {
+          "type": "table",
+          "title": "B",
+          "headers": [
+            "b（主キー）",
+            "その他の列"
+          ],
+          "rows": []
+        }
+      ]
     },
     "am2:3": {
       "stem": "R(A,B,C,D,E)でA→BC、CD→Eが成立する場合の候補キーは？",
@@ -114,6 +134,46 @@
               "商品名",
               "文字列",
               "ノート02"
+            ],
+            [
+              2,
+              "…",
+              "…",
+              "…"
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "title": "商品情報",
+          "headers": [
+            "ID",
+            "商品名",
+            "商品番号",
+            "価格",
+            "サイズ"
+          ],
+          "rows": [
+            [
+              1,
+              "ライト01",
+              "L001",
+              400,
+              ""
+            ],
+            [
+              2,
+              "ノート02",
+              "N001",
+              120,
+              "A4"
+            ],
+            [
+              "…",
+              "",
+              "",
+              "",
+              ""
             ]
           ]
         },
@@ -468,8 +528,6 @@
       "needsSourceReview": true
     }
   },
-  "pendingDiagramQuestions": [
-    2,
-    7
-  ]
+  "pendingDiagramQuestions": [],
+  "pendingDiagramNote": "Data revised against IPA page images; browser rendering still untested."
 }
