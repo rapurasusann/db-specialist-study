@@ -1,7 +1,8 @@
+import {validCs03RecordId,CS03_MAX_CATALOG_RECORDS} from './cs03-learning-record-id.mjs';
 // CS-03 browser-side auth/progress coordinator. No secrets in source or storage.
 // Inject the Managed Neon Auth vanilla client and fixed HTTPS API base at integration.
 const USER_ID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const RECORD_ID=/^\d{4}:(am1|am2|pm1|pm2):\d{1,3}$/;
+
 function appError(message){return new Error(message);}
 function checkResult(result) {
  if(result?.error)throw appError('AUTH_REQUEST_FAILED');
@@ -13,7 +14,7 @@ function identity(session){
  return user;
 }
 function checkRecord(id,data){
- if(!RECORD_ID.test(id)||!data||typeof data!=='object'||Array.isArray(data))throw appError('INVALID_RECORD');
+ if(!validCs03RecordId(id)||!data||typeof data!=='object'||Array.isArray(data))throw appError('INVALID_RECORD');
  if(new TextEncoder().encode(JSON.stringify(data)).length>16000)throw appError('RECORD_TOO_LARGE');
 }
 export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage,wait=ms=>new Promise(resolve=>setTimeout(resolve,ms))}){
@@ -91,7 +92,7 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
   return pullFor((await session()).id,questionId);
  }
  async function pullFor(userId,questionId){
-  if(!RECORD_ID.test(questionId))throw appError('INVALID_RECORD');
+  if(!validCs03RecordId(questionId))throw appError('INVALID_RECORD');
   const examCode='db';
   const value=await request(userId,'GET','progress?examCode='+examCode+'&questionId='+encodeURIComponent(questionId));
   if((await session()).id!==userId)throw appError('ACCOUNT_CHANGED');
@@ -107,9 +108,9 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
   const records={};
   let cursor=null;
   const seen=new Set();
-  // An account is bounded to 4 years x 4 exams x 100 questions by the UI.
+  // An account is bounded to 10 years x 4 exams x 100 questions plus 250 study exercises.
   // Abort rather than silently returning a partial view.
-  const maxRecords=1600,maxQuotaWaits=180;
+  const maxRecords=CS03_MAX_CATALOG_RECORDS,maxQuotaWaits=180;
   let quotaWaits=0;
   for(let page=0;page<maxRecords;page++){
    const path='progress?examCode=db&limit=100'+(cursor?'&cursor='+encodeURIComponent(cursor):'');
@@ -127,7 +128,7 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
    }
    if(!value||!Array.isArray(value.records)||value.records.length>100)throw appError('PROGRESS_LIST_INVALID');
    for(const row of value.records){
-    if(!RECORD_ID.test(row?.question_id??'')||!Number.isSafeInteger(row.revision)||row.revision<1 ||
+    if(!validCs03RecordId(row?.question_id??'')||!Number.isSafeInteger(row.revision)||row.revision<1 ||
        !row.data||typeof row.data!=='object'||Array.isArray(row.data)||
        new TextEncoder().encode(JSON.stringify(row.data)).length>16384 ||
        Object.hasOwn(records,row.question_id))throw appError('PROGRESS_LIST_INVALID');
@@ -141,7 +142,7 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
     // Return an isolated snapshot; never merge into legacy progress or another user's cache.
     return structuredClone(records);
    }
-   if(typeof next!=='string'||!RECORD_ID.test(next)||seen.has(next)||value.records.length===0||
+   if(typeof next!=='string'||!validCs03RecordId(next)||seen.has(next)||value.records.length===0||
       value.records.at(-1).question_id!==next)throw appError('PROGRESS_LIST_INVALID');
    seen.add(next);cursor=next;
   }
