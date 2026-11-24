@@ -19,7 +19,9 @@ export function mountCs03AccountPanel(root,account,options={}) {
  const restoreUnsaved=root.querySelector('[data-cs03="restore-unsaved"]');
  const discardUnsaved=root.querySelector('[data-cs03="discard-unsaved"]');
  const recordStatus=root.querySelector('[data-cs03="record-status"]');
- let busy=false,signedIn=false;
+ const retry=root.querySelector('[data-cs03="retry-sync"]');
+ let busy=false,signedIn=false,ready=false;
+ async function activate(user){ready=false;showUser(user);if(options.onSignedIn)await options.onSignedIn(user);ready=true;updateButtons();}
  function updateButtons(){
   signup.disabled=busy||signedIn;
   login.disabled=busy||signedIn;
@@ -27,18 +29,19 @@ export function mountCs03AccountPanel(root,account,options={}) {
   email.disabled=busy||signedIn;
   name.disabled=busy||signedIn;
   password.disabled=busy||signedIn;
-  if(load)load.disabled=busy||!signedIn;
-  if(listAll)listAll.disabled=busy||!signedIn;
-  if(compare)compare.disabled=busy||!signedIn;
-  if(transfer)transfer.disabled=busy||!signedIn;
-  if(exportUnsaved)exportUnsaved.disabled=busy||!signedIn;
-  if(restoreFile)restoreFile.disabled=busy||!signedIn;
-  if(restoreUnsaved)restoreUnsaved.disabled=busy||!signedIn;
-  if(discardUnsaved)discardUnsaved.disabled=busy||!signedIn;
+  if(retry)retry.disabled=busy||!signedIn||ready;
+  if(load)load.disabled=busy||!ready;
+  if(listAll)listAll.disabled=busy||!ready;
+  if(compare)compare.disabled=busy||!ready;
+  if(transfer)transfer.disabled=busy||!ready;
+  if(exportUnsaved)exportUnsaved.disabled=busy||!ready;
+  if(restoreFile)restoreFile.disabled=busy||!ready;
+  if(restoreUnsaved)restoreUnsaved.disabled=busy||!ready;
+  if(discardUnsaved)discardUnsaved.disabled=busy||!ready;
  }
  function message(text){status.textContent=text;}
  function showUser(user){
-  signedIn=Boolean(user?.id);
+  signedIn=Boolean(user?.id);if(!signedIn)ready=false;
   identity.textContent=signedIn?'ログイン中：'+(user.email||'アカウント確認済み'):'未ログイン';
   updateButtons();
  }
@@ -50,6 +53,8 @@ export function mountCs03AccountPanel(root,account,options={}) {
    const kind=String(error?.message||'');
    message(kind==='SIGN_IN_REQUIRED'?'ログインしてください。':
      kind==='CREDENTIALS_REQUIRED'?'入力内容を確認してください。':
+     kind==='PROGRESS_LIST_CANCELLED'?'履歴取得を中断しました。途中のデータは反映していません。必要に応じて再試行してください。':
+     kind==='PROGRESS_LIST_TIMEOUT'?'履歴取得が10分を超えたため中止しました。途中のデータは反映していません。再試行してください。':
      '操作に失敗しました。認証情報と通信状態を確認してください。');
   }finally{busy=false;password.value='';updateButtons();}
  }
@@ -59,10 +64,10 @@ export function mountCs03AccountPanel(root,account,options={}) {
  }));
  login.addEventListener('click',()=>run(async()=>{
   const user=await account.signIn({email:email.value.trim(),password:password.value});
-  showUser(user);
-  if(options.onSignedIn)await options.onSignedIn(user);
+  await activate(user);
   message('ログインしました。既存の端末内履歴は自動で統合しません。');
  }));
+ if(retry)retry.addEventListener('click',()=>run(async()=>{await activate(await account.session());message('アカウント履歴を取得しました。');}));
  logout.addEventListener('click',()=>run(async()=>{
   if(options.onBeforeSignOut)await options.onBeforeSignOut();
   await account.signOut();
@@ -128,11 +133,10 @@ export function mountCs03AccountPanel(root,account,options={}) {
  showUser(null);message('アカウント機能の試験用画面です。自動同期は準備中です。');
  return {
   refresh:()=>run(async()=>{
-   try{const user=await account.session();showUser(user);
-    if(options.onSignedIn)await options.onSignedIn(user);
-    message('ログイン状態を確認しました。');}
-   catch{if(options.onSignedOut)await options.onSignedOut();
-    showUser(null);message('ログインしていません。');}
+   let user;
+   try{user=await account.session();}
+   catch{if(options.onSignedOut)await options.onSignedOut();showUser(null);message('ログインしていません。');return;}
+   await activate(user);message('ログイン状態を確認しました。');
   })
  };
 }
