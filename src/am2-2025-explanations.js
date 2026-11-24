@@ -36,4 +36,13 @@
     if (!transcribed[key]) throw new Error('Missing AM2 question: ' + key);
     transcribed[key].explanation = explanation;
   }
+  // Preserve paragraph and list-like line breaks in the expanded explanations.
+  // This modifies only CSSOM styling, not the hashed inline script or the CSP.
+  if (typeof document !== 'undefined') {
+    const answerHint = document.getElementById('answerHint');
+    if (answerHint) {
+      answerHint.style.whiteSpace = 'pre-line';
+      answerHint.style.lineHeight = '1.85';
+    }
+  }
 })();
