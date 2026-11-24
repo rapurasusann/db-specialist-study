@@ -205,7 +205,7 @@
         "エ"
       ],
       "answerEvidence": "https://shiza-lab.com/wp-content/uploads/2025/07/db-2021-1-am2-ans.pdf",
-      "answerVerification": "2026-11-24: official PDF opened and screenshot inspected; kana glyphs absent in both text and image. Third-party copy at https://shiza-lab.com/wp-content/uploads/2025/07/db-2021-1-am2-ans.pdf read successfully; 25/25 match. Official verification remains open."
+      "answerVerification": "2026-11-24: IPA direct PDF text extraction and page screenshot omit Japanese glyphs in retrieval environment. Third-party PDF copy https://shiza-lab.com/wp-content/uploads/2025/07/db-2021-1-am2-ans.pdf extracted answers match 25/25. Direct official answer verification remains pending."
     },
     {
       "year": 2022,
