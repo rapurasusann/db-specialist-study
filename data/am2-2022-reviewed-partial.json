@@ -17,14 +17,16 @@
       "explanation": "BASEの最終的整合性では一時的な差異を許容し、更新が伝播すると一致する。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 3,
+        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
       }
     },
     "am2:2": {
-      "stem": "社員には必ず一つの入社年がある。入社者がいない年も存在する。社員側a、年側bの多重度は？",
+      "stem": "社員には必ず一つの入社年がある。入社者がいない年も存在する。社員側a、年側bの多重度は？ 年クラスには入社者がいない年も含め、毎年のインスタンスが存在する。",
       "options": {
         "ア": "0..*／0..1",
         "イ": "0..*／1",
@@ -35,7 +37,7 @@
       "explanation": "一つの年に社員は0人以上、一人の社員には年が必ず一つ対応する。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "uml",
@@ -64,8 +66,10 @@
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 4,
+        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
       }
     },
     "am2:3": {
@@ -77,13 +81,15 @@
         "エ": "{A,B,E}"
       },
       "answer": "ア",
-      "explanation": "AからCを追加できるがDがないためEは導出できない。",
+      "explanation": "初期集合{A,B}にA→Cを適用するとCを追加できる。Dを導く従属性がないので、CD→Eは適用できず、閉包は{A,B,C}。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_qs.pdf",
+        "page": 4,
+        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
       }
     },
     "am2:4": {
