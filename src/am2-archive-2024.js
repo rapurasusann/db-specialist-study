@@ -1486,7 +1486,8 @@ const uml=f.type==='uml';
 const nodes=(uml?f.classes.map(([id,x,y])=>({id,x,y})):f.nodes).map(n=>{
  const attrs=uml?(f.attributes?.[n.id]||[]):[];
  const half=uml?Math.max(37,...[n.id,...attrs].map(v=>Array.from(String(v)).length*5+5)):15;
- return {...n,attrs,half,height:uml?15+attrs.length*7:14};
+ const diamond=uml&&(f.diamondNodes||[]).includes(n.id);
+ return {...n,attrs,diamond,half:diamond?12:half,height:diamond?9:uml?15+attrs.length*7:14};
 });
 const map=new Map(nodes.map(n=>[n.id,n]));
 const labels=[];
@@ -1504,7 +1505,9 @@ for(const e of uml?f.links:f.edges){
  vector(svg,'line',attrs);
  if(uml){const sign=(Number(e.offset)||0)>0?1:-1;const yy=sign*5;labels.push([x1+(x2-x1)*.14,y1+(y2-y1)*.14+yy,e.fromLabel],[x2-(x2-x1)*.14,y2-(y2-y1)*.14+yy,e.toLabel],[(x1+x2)/2,(y1+y2)/2+sign*12,e.label]);}
 }
+for(const e of f.associationClasses||[]){const a=map.get(e.from),b=map.get(e.to),c=map.get(e.classId);if(!a||!b||!c)continue;const [x1,y1,x2,y2]=endpoints(a,b,Number(e.offset)||0);const x=(x1+x2)/2,y=(y1+y2)/2;const [cx,cy]=boundary(c,x-c.x,y-c.y);vector(svg,'line',{x1:x,y1:y,x2:cx,y2:cy,stroke:'#263747','stroke-width':1.3,'stroke-dasharray':'4 3'});}
 for(const n of nodes){
+ if(n.diamond){vector(svg,'polygon',{points:[[n.x-n.half,n.y],[n.x,n.y-n.height],[n.x+n.half,n.y],[n.x,n.y+n.height]].map(p=>p.join(',')).join(' '),fill:'white',stroke:'#263747'});continue;}
  if(uml||f.shape==='rect'){vector(svg,'rect',{x:n.x-n.half,y:n.y-n.height,width:n.half*2,height:n.height*2,fill:'white',stroke:'#263747'});if(n.attrs.length){const y=n.y-n.height+22;vector(svg,'line',{x1:n.x-n.half,y1:y,x2:n.x+n.half,y2:y,stroke:'#263747'});label(n.x,y-8,n.id);n.attrs.forEach((v,i)=>label(n.x-n.half+4,y+11+i*14,v,'start'));}else label(n.x,n.y+3,n.id);}
  else {vector(svg,'circle',{cx:n.x,cy:n.y,r:14,fill:'white',stroke:'#263747'});label(n.x,n.y+3,n.id);}
 }
