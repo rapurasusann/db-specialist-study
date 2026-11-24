@@ -18,7 +18,7 @@ const subset=()=>termQuestions.filter(q=>q.category===category);
 const current=()=>subset()[index];
 function saveResult(question,correct){
  const previous=records[question.id]||{};
- records[question.id]={attempts:Math.min(100000,(Number(previous.attempts)||0)+1),correct};
+ records[question.id]={attempts:Math.min(100000,(Number(previous.attempts)||0)+1),correct,streak:correct?Math.min(100000,(Number(previous.streak)||0)+1):0,updatedAt:new Date().toISOString()};
  try{localStorage.setItem(recordsKey,JSON.stringify(records))}catch{/* questions remain usable without storage */}
 }
 function render(){
@@ -105,6 +105,7 @@ button.addEventListener('click',showTerms);
 $('viewStudy').addEventListener('click',leaveTerms);
 $('viewDashboard').addEventListener('click',leaveTerms);
 // Open a matching vocabulary question when linked from a past-exam question.
+window.DBStudyOpenTerm=id=>{const q=termQuestions.find(x=>x.id===id);if(!q)return false;category=q.category;index=termQuestions.filter(x=>x.category===category).findIndex(x=>x.id===id);button.click();return true};
 const targetId = new URLSearchParams(window.location.search).get('term');
 if(targetId){
  const target=termQuestions.find(q=>q.id===targetId);
