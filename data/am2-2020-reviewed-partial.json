@@ -88,7 +88,11 @@
             }
           ]
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:2": {
       "stem": "BASE型の分散NoSQLで更新が他ノードに伝播する場合の特徴は？",
@@ -102,7 +106,11 @@
       "explanation": "最終的整合性では一時的な差異が許容される。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:3": {
       "stem": "R(A,B,C,D,E)、A→BC、CD→Eの候補キーは？",
@@ -116,7 +124,11 @@
       "explanation": "ADからBとCを得て、CDからEを得る。AとDのどちらも省けない。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:4": {
       "stem": "DBMSのログの目的として適切なのは？",
@@ -130,7 +142,11 @@
       "explanation": "REDOは更新後情報を用いて確定した更新を再現する。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:5": {
       "stem": "第2正規形だが第3正規形ではない表を選ぶ。講義名→教員、所属コード→勤務地とする。",
@@ -141,7 +157,7 @@
         "エ": "社員番号が主キー、身長・体重・複数趣味"
       },
       "answer": "ウ",
-      "explanation": "社員番号→所属コード→勤務地という推移的従属がある。",
+      "explanation": "主キーが単一属性なので部分関数従属はない。社員番号→所属コード→勤務地の推移的関数従属があるため、第3正規形ではない。",
       "sourcePage": 5,
       "adapted": true,
       "needsSourceReview": true,
@@ -226,6 +242,10 @@
             ]
           }
         ]
+      },
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
       }
     },
     "am2:6": {
@@ -260,7 +280,11 @@
           ],
           "rows": []
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:7": {
       "stem": "完全外部結合でR.IDとS.IDのうちNULLでない方を返す関数は？",
@@ -355,7 +379,11 @@
             ]
           ]
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:8": {
       "stem": "社員表に対して下記NOT EXISTSを実行した結果は？",
@@ -421,7 +449,11 @@
           "type": "sql",
           "text": "SELECT 社員コード FROM 社員 X\nWHERE NOT EXISTS (SELECT * FROM 社員 Y WHERE X.社員コード=Y.上司)"
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:9": {
       "stem": "関係代数の直積は何を返す？",
@@ -435,18 +467,22 @@
       "explanation": "Rがm行、Sがn行なら直積はm×n行になる。",
       "sourcePage": 7,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:10": {
       "stem": "男女それぞれの最年長者を除くSQLで、生年月日 > (副問合せ) の副問合せは？",
       "options": {
-        "ア": "性別別MINをGROUP BY",
-        "イ": "生年月日比較又は性別一致でMIN",
-        "ウ": "外側と性別一致でMIN",
-        "エ": "未定義別名S2でGROUP BY"
+        "ア": "SQL 1",
+        "イ": "SQL 2",
+        "ウ": "SQL 3",
+        "エ": "SQL 4"
       },
       "answer": "ウ",
-      "explanation": "相関副問合せで同じ性別の最小生年月日を求める。",
+      "explanation": "外側の社員と同じ性別に絞った副問合せで最小の生年月日を求める。それより後に生まれた社員だけを選ぶので、性別ごとの最年長者（同年齢・同生年月日の該当者を含む）が除外される。",
       "sourcePage": 8,
       "adapted": true,
       "needsSourceReview": true,
@@ -455,7 +491,37 @@
           "type": "sql",
           "text": "社員（社員番号［主キー］、社員名、性別、生年月日）\nSELECT 社員番号, 社員名 FROM 社員 AS S1\nWHERE 生年月日 > ([a])"
         }
-      ]
+      ],
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 社員 AS S2 GROUP BY S2.性別"
+          }
+        ],
+        "イ": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 社員 AS S2 WHERE S1.生年月日 > S2.生年月日 OR S1.性別 = S2.性別"
+          }
+        ],
+        "ウ": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 社員 AS S2 WHERE S1.性別 = S2.性別"
+          }
+        ],
+        "エ": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 社員 GROUP BY S2.性別"
+          }
+        ]
+      },
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:11": {
       "stem": "直列化可能性とは？",
@@ -469,7 +535,11 @@
       "explanation": "実際の実行順が並行でも、直列実行と同じ結果なら直列化可能。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:12": {
       "stem": "トランザクションの一部だけを取り消すための設定は？",
@@ -483,7 +553,11 @@
       "explanation": "SAVEPOINTを設定し、ROLLBACK TOでその地点まで戻せる。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:13": {
       "stem": "ハッシュ格納方式とは？",
@@ -497,7 +571,11 @@
       "explanation": "ハッシュ関数で格納位置を決める。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:14": {
       "stem": "楽観的同時実行制御の特徴は？",
@@ -511,7 +589,11 @@
       "explanation": "競合が少ないと仮定し、確定前に検証する。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:15": {
       "stem": "CEPの特徴は？",
@@ -525,7 +607,11 @@
       "explanation": "連続するイベントを監視・評価する。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:16": {
       "stem": "キーごとに一つの値を格納する分散向きNoSQLは？",
@@ -539,7 +625,11 @@
       "explanation": "キーと値の組を基本単位とする。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:17": {
       "stem": "OLAPで集計軸を商品・販売チャネルから商品・顧客タイプへ切り替える操作は？",
@@ -553,7 +643,11 @@
       "explanation": "この設問でのダイスは分析の観点を切り替える操作。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:18": {
       "stem": "分散DBで結合に必要な列だけ送り、合致結果を戻す方式は？",
@@ -567,7 +661,11 @@
       "explanation": "半結合で転送するデータ量を減らす。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:19": {
       "stem": "エクスプロイトコードとは？",
@@ -581,7 +679,11 @@
       "explanation": "脆弱性を利用するコードを指す。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:20": {
       "stem": "デジタル証明書について適切なのは？",
@@ -595,7 +697,11 @@
       "explanation": "証明書は公開鍵と主体の結び付きを認証する。署名には認証局の秘密鍵を使う。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:21": {
       "stem": "マルチベクトル型DDoSの特徴は？",
@@ -609,7 +715,11 @@
       "explanation": "複数の攻撃手法を組み合わせる点が特徴。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:22": {
       "stem": "電気泳動型電子ペーパーの原理は？",
@@ -623,7 +733,11 @@
       "explanation": "電界で粒子を移動させて表示を変える。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:23": {
       "stem": "HAクラスタで心拍が途絶えた際の処理順序は？ 1:ディスク心拍確認、2:ドライブ専有権確保、3:ネットワーク確認、4:本番系停止。",
@@ -637,7 +751,11 @@
       "explanation": "通信とディスク心拍で障害を確認してから専有権を確保する。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "needs-source-review",
+        "reason": "HA fencing order depends on original scenario; do not infer universal sequence."
+      }
     },
     "am2:24": {
       "stem": "BPMN導入の効果は？",
@@ -651,7 +769,11 @@
       "explanation": "BPMNは業務プロセスの標準的な図記法。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     },
     "am2:25": {
       "stem": "ユースケース駆動開発の利点は？",
@@ -665,7 +787,11 @@
       "explanation": "ユースケースを単位に実装・試験の状況を追跡できる。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+      }
     }
   },
   "pendingDiagramNote": "Structured figures staged; source and browser final review pending."
