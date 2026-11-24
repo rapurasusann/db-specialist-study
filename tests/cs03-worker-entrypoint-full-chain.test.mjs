@@ -174,7 +174,7 @@ test('browser JWT entrypoint: preflight is strict, unauthenticated and forged JW
  const h=setup(),token=await signedToken(),forged=await generateKeyPair('EdDSA');
  const preflight=new Request('https://candidate.invalid/progress',{method:'OPTIONS',headers:{
   origin:ORIGIN,'access-control-request-method':'GET',
-  'access-control-request-headers':'authorization, content-type'
+  'access-control-request-headers':'authorization'
  }});
  Object.defineProperty(preflight,'cf',{value:{colo:'NRT'}});
  const options=await h.browserEntry.fetch(preflight,h.env);
