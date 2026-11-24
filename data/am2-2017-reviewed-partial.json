@@ -18,6 +18,106 @@
       "sourcePage": 3,
       "adapted": true,
       "needsSourceReview": true
+    },
+    "am2:2": {
+      "stem": "勘定と会計取引を移動表で結ぶ。現金の2017年4月30日現在の残高を求める方法は？",
+      "options": {
+        "ア": "期首残高を含めず移動金額を合計",
+        "イ": "期首残高に対象日までの移動金額を加算し勘定別に集約",
+        "ウ": "残高列を直接取得し結合条件を省略",
+        "エ": "残高列を直接取得し取引番号の結合を省略"
+      },
+      "answer": "イ",
+      "explanation": "残高は期首残高と対象日までの増減額の合計。勘定科目と取引番号で結合する。",
+      "sourcePage": 4,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "表定義",
+          "headers": [
+            "表",
+            "主キー",
+            "その他"
+          ],
+          "rows": [
+            [
+              "勘定",
+              "勘定科目",
+              "期首残高"
+            ],
+            [
+              "会計取引",
+              "取引番号",
+              "取引日"
+            ],
+            [
+              "移動",
+              "勘定科目・取引番号",
+              "金額"
+            ]
+          ]
+        }
+      ],
+      "needsDiagramReview": true
+    },
+    "am2:3": {
+      "stem": "検査項目が人によって異なり、標準値は項目別の最新版だけ、測定値は日時付きで保存する。適切なモデルは？",
+      "options": {
+        "ア": "人と検査項目を1対多で結び測定情報も項目に保存",
+        "イ": "人と検査項目の間に検査値を置き双方から1対多で関連付ける",
+        "ウ": "人と検査値の多対多の関連クラスを検査項目とする",
+        "エ": "人から検査項目へ1対多、項目から検査値へ多対1"
+      },
+      "answer": "イ",
+      "explanation": "検査項目の標準値と個人別の測定履歴を分離する。",
+      "sourcePage": 5,
+      "adapted": true,
+      "needsSourceReview": true,
+      "needsDiagramReview": true
+    },
+    "am2:4": {
+      "stem": "R(A,B,C,D,E)でAB→C、BC→D、D→AEが成立する。候補キーの全組合せは？",
+      "options": {
+        "ア": "ABC",
+        "イ": "AB、BC",
+        "ウ": "AB、BC、BD",
+        "エ": "BC、CD"
+      },
+      "answer": "ウ",
+      "explanation": "Bは他の属性から導出できない。AB、BC、BDはいずれも全属性を導出できる最小集合。",
+      "sourcePage": 5,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:5": {
+      "stem": "実体Aが存在しなくなると関連する実体Bも存在できない。Bを何と呼ぶ？",
+      "options": {
+        "ア": "仮想実体",
+        "イ": "強実体",
+        "ウ": "弱実体",
+        "エ": "正実体"
+      },
+      "answer": "ウ",
+      "explanation": "弱実体は他の実体に存在を依存する。",
+      "sourcePage": 6,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:6": {
+      "stem": "DBMSのログに関する正しい説明は？",
+      "options": {
+        "ア": "取消用に更新後情報を保存",
+        "イ": "媒体障害復旧用に更新前情報を保存",
+        "ウ": "取消後の取引再実行用に更新後情報を保存",
+        "エ": "ロールフォワード用に更新後情報を保存"
+      },
+      "answer": "エ",
+      "explanation": "更新後情報を用いて確定済みの変更を再現する。",
+      "sourcePage": 6,
+      "adapted": true,
+      "needsSourceReview": true
     }
   }
 }
