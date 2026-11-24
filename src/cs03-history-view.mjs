@@ -1,6 +1,7 @@
+import {validCs03RecordId} from './cs03-learning-record-id.mjs';
 // CS-03 isolated, read-only account progress view.
 // Renders as text nodes only. Never updates the legacy study DOM or storage.
-const KEY=/^20\d{2}:(am1|am2|pm1|pm2):(?:[1-9]|[1-9]\d|100)$/;
+
 const LEVELS={unseen:'未学習',review:'要復習',learning:'学習中',mastered:'習得済み'};
 export function clearCs03HistoryView(root){
  if(!root)throw Error('HISTORY_VIEW_ROOT_REQUIRED');
@@ -13,7 +14,7 @@ export function renderCs03HistoryView(root,listing,{maxRows=100}={}){
  // Validate every record before exposing any of it to the screen.
  const entries=Object.entries(listing.records).sort(([a],[b])=>a.localeCompare(b,'en'));
  for(const [id,record] of entries){
-  if(!KEY.test(id)||!record||!record.data||typeof record.data!=='object'||Array.isArray(record.data))
+  if(!validCs03RecordId(id)||!record||!record.data||typeof record.data!=='object'||Array.isArray(record.data))
    throw Error('HISTORY_VIEW_INVALID');
  }
  const doc=root.ownerDocument;
