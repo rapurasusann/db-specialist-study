@@ -20,10 +20,11 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 3,
-        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:2": {
@@ -41,10 +42,11 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 3,
-        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:4": {
@@ -62,10 +64,11 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 5,
-        "scope": "2026-11-24: visible official PDF screenshot compared with adapted question and choices; browser acceptance separate."
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:5": {
@@ -83,10 +86,11 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 5,
-        "scope": "2026-11-24: visible official PDF screenshot compared with adapted question and choices; browser acceptance separate."
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:3": {
@@ -451,11 +455,13 @@
       "sourceVisualReviewed": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 4,
-        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
-      }
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
+      },
+      "needsDiagramReview": true
     },
     "am2:6": {
       "stem": "階層化された組織の任意の階層に従業員が所属でき、兼務は不可とする。適切な関係は？",
@@ -661,10 +667,11 @@
       },
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 6,
-        "scope": "2026-11-24: visible official PDF screenshot compared with adapted question and choices; browser acceptance separate."
+        "reviewedOn": "2026-11-24",
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       },
       "needsDiagramReview": true,
       "diagramReview": {
@@ -763,11 +770,11 @@
       "sourceVisualReviewed": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 7,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:8": {
@@ -903,11 +910,11 @@
       "sourceVisualReviewed": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 8,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:9": {
@@ -1173,11 +1180,11 @@
       "sourceVisualReviewed": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 9,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:10": {
@@ -1226,17 +1233,17 @@
         ]
       },
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 10,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:11": {
       "stem": "二つの関係が和両立でなくても実行できる演算は？",
       "options": {
-        "ア": "積集合",
+        "ア": "共通集合",
         "イ": "差集合",
         "ウ": "直積",
         "エ": "和集合"
@@ -1247,11 +1254,11 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 10,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:12": {
@@ -1268,11 +1275,11 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 11,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:13": {
@@ -1376,11 +1383,11 @@
       "sourceVisualReviewed": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 11,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:14": {
@@ -1431,11 +1438,11 @@
       "sourceVisualReviewed": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 12,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:15": {
@@ -1452,11 +1459,11 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 12,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:16": {
@@ -1473,11 +1480,11 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 13,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:17": {
@@ -1494,11 +1501,11 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 13,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:18": {
@@ -1515,11 +1522,11 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 13,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:19": {
@@ -1536,11 +1543,11 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 14,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:20": {
@@ -1557,18 +1564,18 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 14,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:21": {
       "stem": "ブロックチェーンで改ざん検出に用いる基本技術は？",
       "options": {
-        "ア": "RADIUS",
-        "イ": "SPF",
+        "ア": "RADIUSを必須とし参加者認証を一元管理する",
+        "イ": "SPFを必須とし参加者間のメール送信元を検証する",
         "ウ": "通信暗号化に必須の楕円曲線暗号",
         "エ": "ハッシュ関数"
       },
@@ -1578,11 +1585,11 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 14,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:22": {
@@ -1599,18 +1606,18 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 15,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:23": {
       "stem": "Webサーバのセッション共有型負荷分散はどれか？",
       "options": {
-        "ア": "単一サーバ内の部品二重化",
-        "イ": "待機サーバへの手動切替",
+        "ア": "部品を二重化した単一サーバ内で処理を分担し、故障時も継続する",
+        "イ": "待機サーバへの手動切替でセッションを引き継ぎ復旧する",
         "ウ": "共通領域を使う複数サーバで処理を分け、故障時もセッションを引き継ぐ",
         "エ": "故障サーバを切り離し、新規セッションを開始する"
       },
@@ -1620,11 +1627,11 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 15,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:24": {
@@ -1641,11 +1648,11 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 16,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     },
     "am2:25": {
@@ -1662,11 +1669,11 @@
       "adapted": true,
       "needsSourceReview": false,
       "contentReview": {
-        "status": "adapted-content-compared",
+        "status": "adapted-semantics-compared",
         "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
         "page": 16,
         "reviewedOn": "2026-11-24",
-        "scope": "Visible official PDF screenshot compared to adapted topic, choices and answer logic. Not verbatim transcription; browser acceptance separate."
+        "scope": "Official PDF screenshot actually retrieved and inspected; paraphrased question semantics and choices compared. Exact visual fidelity and official answer table verification separate."
       }
     }
   },
