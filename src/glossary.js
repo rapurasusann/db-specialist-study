@@ -67,11 +67,13 @@
     const currentId = (typeof year !== 'undefined' && typeof courseId !== 'undefined' && typeof number !== 'undefined')
       ? String(year) + ':' + String(courseId) + ':' + String(number) : null;
     const applicable = entries.filter(item => !item.questionIds || (currentId && item.questionIds.includes(currentId)));
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+    const used = new Set();
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT, {
       acceptNode(node) {
+        if (node.nodeType === 1) return node.matches('.glossary-term') ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP;
         const parent = node.parentElement;
         if (!node.nodeValue || !node.nodeValue.trim() || !parent ||
-          parent.closest('.glossary-term,script,style,textarea,button,a')) {
+          parent.closest('.glossary-term,script,style,textarea,button,a,svg,pre,table,.source')) {
           return NodeFilter.FILTER_REJECT;
         }
         return applicable.some(item => node.nodeValue.includes(item.phrase))
@@ -82,13 +84,17 @@
     while (walker.nextNode()) nodes.push(walker.currentNode);
     for (const node of nodes) {
       if (!node.parentNode) continue;
+      if (node.nodeType === 1) { used.add(node.dataset.glossaryId); continue; }
       const text = node.nodeValue;
       const fragment = document.createDocumentFragment();
-      let pos = 0;
+      let pos = 0, changed = false;
       while (pos < text.length) {
         let best = null, at = text.length;
         for (const item of applicable) {
-          const ix = text.indexOf(item.phrase, pos);
+          if (used.has(item.id || item.phrase)) continue;
+          let ix = text.indexOf(item.phrase, pos);
+          // Do not match ASCII terms inside longer identifiers (IN inside JOIN, etc.).
+          while (ix >= 0 && ((/^[A-Za-z0-9_]/.test(item.phrase) && /[A-Za-z0-9_]/.test(text[ix-1] || '')) || (/[A-Za-z0-9_]$/.test(item.phrase) && /[A-Za-z0-9_]/.test(text[ix+item.phrase.length] || '')))) ix = text.indexOf(item.phrase, ix+1);
           if (ix >= 0 && (ix < at || (ix === at && best && item.phrase.length > best.phrase.length))) {
             at = ix; best = item;
           }
@@ -100,12 +106,15 @@
         button.className = 'glossary-term';
         button.textContent = best.phrase;
         button.dataset.glossaryDefinition = best.definition;
+        button.dataset.glossaryId = best.id || best.phrase;
+        used.add(button.dataset.glossaryId);
+        changed = true;
         button.setAttribute('aria-label', best.phrase + '：用語の説明を表示');
         fragment.append(button);
         pos = at + best.phrase.length;
       }
       fragment.append(document.createTextNode(text.slice(pos)));
-      node.parentNode.replaceChild(fragment, node);
+      if (changed) node.parentNode.replaceChild(fragment, node);
     }
   }
 
