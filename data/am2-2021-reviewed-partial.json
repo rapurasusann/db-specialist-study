@@ -201,7 +201,7 @@
       "explanation": "外部キーを持つ医師・診察が多側になる。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -459,8 +459,10 @@
         ]
       },
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 5,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:5": {
@@ -475,10 +477,12 @@
       "explanation": "第3正規形への合成では両方の性質を確保できる。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 5,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:6": {
@@ -493,7 +497,7 @@
       "explanation": "差集合を求め重複も除く。",
       "sourcePage": 6,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -531,10 +535,10 @@
         },
         {
           "type": "table",
-          "title": "当月仕入",
+          "title": "当月商品仕入合計",
           "headers": [
             "仕入先コード",
-            "金額"
+            "仕入合計金額"
           ],
           "rows": [
             [
@@ -550,11 +554,17 @@
               250000
             ]
           ]
+        },
+        {
+          "type": "sql",
+          "text": "SELECT 仕入先コード FROM 商品\nEXCEPT\nSELECT 仕入先コード FROM 当月商品仕入合計"
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 6,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:7": {
@@ -569,31 +579,33 @@
       "explanation": "READ COMMITTEDは確定済み値だけを読むが再読取り時の更新は許す。",
       "sourcePage": 6,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 6,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:8": {
-      "stem": "資格FE取得者を残し、APがあれば併記するLEFT JOINの条件は？",
+      "stem": "示された結果を得るため、左外部結合の空欄[a]に入る条件を選ぶ。",
       "options": {
-        "ア": "ONで社員一致・FE・AP、WHEREでFE",
-        "イ": "同じON、WHEREで左資格非NULL",
-        "ウ": "同じON、WHEREで右資格AP",
-        "エ": "ONで社員一致、WHEREでFEとAP"
+        "ア": "SQL 1",
+        "イ": "SQL 2",
+        "ウ": "SQL 3",
+        "エ": "SQL 4"
       },
       "answer": "ア",
       "explanation": "右側のAP条件はONに置き、左側FEだけをWHEREで絞る。",
       "sourcePage": 7,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
           "title": "社員取得資格",
           "headers": [
-            "社員",
+            "社員コード",
             "資格"
           ],
           "rows": [
@@ -635,7 +647,7 @@
           "type": "table",
           "title": "結果",
           "headers": [
-            "社員",
+            "社員コード",
             "資格1",
             "資格2"
           ],
@@ -656,11 +668,43 @@
               "NULL"
             ]
           ]
+        },
+        {
+          "type": "sql",
+          "text": "SELECT C1.社員コード, C1.資格 AS 資格1, C2.資格 AS 資格2\nFROM 社員取得資格 C1 LEFT OUTER JOIN 社員取得資格 C2\n[a]"
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 7,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
+      },
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "sql",
+            "text": "ON C1.社員コード = C2.社員コード AND C1.資格 = 'FE' AND C2.資格 = 'AP'\nWHERE C1.資格 = 'FE'"
+          }
+        ],
+        "イ": [
+          {
+            "type": "sql",
+            "text": "ON C1.社員コード = C2.社員コード AND C1.資格 = 'FE' AND C2.資格 = 'AP'\nWHERE C1.資格 IS NOT NULL"
+          }
+        ],
+        "ウ": [
+          {
+            "type": "sql",
+            "text": "ON C1.社員コード = C2.社員コード AND C1.資格 = 'FE' AND C2.資格 = 'AP'\nWHERE C2.資格 = 'AP'"
+          }
+        ],
+        "エ": [
+          {
+            "type": "sql",
+            "text": "ON C1.社員コード = C2.社員コード\nWHERE C1.資格 = 'FE' AND C2.資格 = 'AP'"
+          }
+        ]
       }
     },
     "am2:9": {
@@ -675,14 +719,16 @@
       "explanation": "各属性を含めるか否かの2択がn個ある。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 8,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:10": {
-      "stem": "会員項目の最新行番号を選び、CASEで横持ちに変換するとき共通して使う集約は？",
+      "stem": "会員の属性は複数行で管理し、行番号は追加順に1ずつ増加する。同じ会員・項目の最新行を採用する。示された結果を得るSQLの三つの[a]に共通する語は？",
       "options": {
         "ア": "COUNT",
         "イ": "DISTINCT",
@@ -693,7 +739,7 @@
       "explanation": "最大行番号を選び、CASEの非NULL値をMAXで取り出す。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -742,11 +788,43 @@
               "情報次郎"
             ]
           ]
+        },
+        {
+          "type": "table",
+          "title": "結果",
+          "headers": [
+            "会員番号",
+            "会員名",
+            "最終購入年月日"
+          ],
+          "rows": [
+            [
+              "0111",
+              "情報太郎",
+              "2021-02-05"
+            ],
+            [
+              "0112",
+              "情報花子",
+              "2021-02-01"
+            ],
+            [
+              "0113",
+              "情報次郎",
+              "NULL"
+            ]
+          ]
+        },
+        {
+          "type": "sql",
+          "text": "SELECT 会員番号,\n [a](CASE WHEN 項目名='会員名' THEN 項目値 END) AS 会員名,\n [a](CASE WHEN 項目名='最終購入年月日' THEN 項目値 END) AS 最終購入年月日\nFROM (SELECT 会員番号, 項目名, 項目値 FROM 会員項目\n WHERE 行番号 IN (SELECT [a](行番号) FROM 会員項目 GROUP BY 会員番号, 項目名)) T\nGROUP BY 会員番号 ORDER BY 会員番号"
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 9,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:11": {
@@ -761,10 +839,12 @@
       "explanation": "直積は異なる属性構成でも実行できる。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 10,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:12": {
@@ -779,10 +859,12 @@
       "explanation": "準備済み参加者は最終決定を受け取れないと待つことがある。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 10,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:13": {
@@ -797,14 +879,16 @@
       "explanation": "取得相と解放相を分離する。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 11,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:14": {
-      "stem": "行aの共有ロックと表全体の専有ロックの関係は？",
+      "stem": "二つのトランザクションX、Yの間で成立するロックの説明は？",
       "options": {
         "ア": "別行bの専有も不可",
         "イ": "表全体の専有は不可",
@@ -815,10 +899,12 @@
       "explanation": "表全体への専有ロックはその表の既存行ロックと競合する。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 11,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:15": {
@@ -833,10 +919,12 @@
       "explanation": "外側のn行それぞれに内側n行を比較する。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 11,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:16": {
@@ -851,10 +939,12 @@
       "explanation": "読取りが適切な旧版を参照できる。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 12,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:17": {
@@ -869,10 +959,12 @@
       "explanation": "IndexedDBはブラウザ内で構造化データを保存するAPI。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 12,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:18": {
@@ -887,14 +979,16 @@
       "explanation": "RDDは分散データ集合で変換・処理を行える。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 13,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:19": {
-      "stem": "インシデント対応の順序は？",
+      "stem": "JPCERT/CCのインシデントハンドリングマニュアル（2015年11月26日）に沿った対応順序は？",
       "options": {
         "ア": "対応→検知→分類",
         "イ": "対応→分類→検知",
@@ -905,10 +999,12 @@
       "explanation": "検知後に優先度を判断して対応する。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 13,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:20": {
@@ -923,10 +1019,12 @@
       "explanation": "メールの特徴から迷惑メールの確率を推定する。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 13,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:21": {
@@ -941,10 +1039,12 @@
       "explanation": "ネットワーク・トランスポート層の情報で通過を制御する。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 14,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:22": {
@@ -959,10 +1059,12 @@
       "explanation": "通常のハミング符号は1ビット訂正に用いられる。全体パリティを追加した拡張ハミング符号は1ビット訂正・2ビット検出（SECDED）が可能。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 14,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:23": {
@@ -977,10 +1079,12 @@
       "explanation": "総負荷は0.6n台分。停止後の許容処理能力は0.8(n−8)台分。0.6n≤0.8(n−8)を解くと0.2n≥6.4、n≥32。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 14,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:24": {
@@ -995,10 +1099,12 @@
       "explanation": "利用方法を理解しやすくすることは使用性向上に直結する。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 15,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     },
     "am2:25": {
@@ -1013,10 +1119,12 @@
       "explanation": "複数の既存サービスを組み合わせる。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+        "page": 15,
+        "scope": "IPA PDF page image inspected; adapted wording and answer logic compared. Browser and exact figure fidelity pending."
       }
     }
   },
