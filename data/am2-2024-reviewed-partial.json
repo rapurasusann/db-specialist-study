@@ -1,0 +1,68 @@
+{
+  "year": 2024,
+  "source": "IPA 令和6年度秋期 データベーススペシャリスト試験 午前Ⅱ（学習用要約）",
+  "questionUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+  "answerUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_ans.pdf",
+  "status": "partial-review-only",
+  "questions": {
+    "am2:1": {
+      "stem": "SQLのシーケンスについて正しい説明はどれか。",
+      "options": {
+        "ア": "循環する連番は定義できない。",
+        "イ": "現在値を範囲内の別の整数に変更できない。",
+        "ウ": "負の増分は指定できない。",
+        "エ": "トランザクションをロールバックしても取得による現在値の変化は戻らない。"
+      },
+      "answer": "エ",
+      "explanation": "シーケンスは一意な番号を発行する仕組みで、通常のトランザクションの巻戻しとは独立して進む。CYCLE、負の増分、現在値の変更も可能。",
+      "sourcePage": 3,
+      "verifiedAgainstSource": true,
+      "adapted": true
+    },
+    "am2:2": {
+      "stem": "クライアントサーバ方式でストアドプロシージャを使う場合、不適切な説明はどれか。",
+      "options": {
+        "ア": "機密データの処理を特定の手続に限定して安全性を高められる。",
+        "イ": "共通処理を手続として保存して標準化できる。",
+        "ウ": "細かいアクセスごとに手続化すれば処理性能が向上する。",
+        "エ": "複数のSQLを一度の手続呼出しで実行して通信回数を減らせる。"
+      },
+      "answer": "ウ",
+      "explanation": "細分化によって呼出しや通信が増えることがあり、性能向上は保証されない。複数のSQLをまとめることで通信を削減できる。",
+      "sourcePage": 3,
+      "verifiedAgainstSource": true,
+      "adapted": true
+    },
+    "am2:4": {
+      "stem": "転置インデックスの説明として適切なものはどれか。",
+      "options": {
+        "ア": "SQL関数の評価結果を索引にする。",
+        "イ": "上位ノードから葉ノードへのポインタを使う。",
+        "ウ": "単語からその単語が含まれる文書を参照できるようにする。",
+        "エ": "物理的に並べ替えた実データを索引にする。"
+      },
+      "answer": "ウ",
+      "explanation": "転置インデックスは単語をキーに、その単語を含む文書の一覧を引ける構造。全文検索で使われる。",
+      "sourcePage": 5,
+      "verifiedAgainstSource": true,
+      "adapted": true
+    },
+    "am2:5": {
+      "stem": "多くの属性から成る複合主キーを扱いやすくする対応はどれか。",
+      "options": {
+        "ア": "属性を一つ選び主キーにして残りを外部キーにする。",
+        "イ": "属性を一つ選び主キーにして残りを代替キーにする。",
+        "ウ": "連番などの新しい列を主キーとし代理キーにする。",
+        "エ": "連番などを主キーとし、元の複合キーを外部キーにする。"
+      },
+      "answer": "ウ",
+      "explanation": "代理キーは業務上の意味を持たない人工的な識別子。元の複合キーの一意性は別途UNIQUE制約などで維持する。",
+      "sourcePage": 5,
+      "verifiedAgainstSource": true,
+      "adapted": true
+    }
+  },
+  "pendingDiagramQuestions": [
+    3
+  ]
+}
