@@ -1119,10 +1119,10 @@
         "エ": "T4"
       },
       "answer": "イ",
-      "explanation": "T4はT2を、T2とT3はT1を待つ。したがってaはT2。",
+      "explanation": "T4のB更新はT2の共有ロックを待つ。T2のC更新とT3のA更新はT1の共有ロックを待つ。したがってb=T4、a=T2、c=T3、d=T1。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -1249,8 +1249,11 @@
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "reason": "Wait graph and schedule must be independently compared with official page."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 9,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared visible official page screenshot with adapted stem, options and answer logic; browser acceptance separate."
       }
     },
     "am2:11": {
