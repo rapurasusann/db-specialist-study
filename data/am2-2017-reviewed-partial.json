@@ -866,7 +866,14 @@
       "explanation": "暗号化された遠隔操作を提供する。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 15,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official question PDF screenshot inspected; adapted wording and choices compared. Official answer sheet acceptance separate."
+      }
     },
     "am2:22": {
       "stem": "メモリのデータ誤りを自動訂正できる方式は？",
@@ -880,10 +887,17 @@
       "explanation": "誤り訂正符号を使う。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 15,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official question PDF screenshot inspected; adapted wording and choices compared. Official answer sheet acceptance separate."
+      }
     },
     "am2:23": {
-      "stem": "HAのフェールオーバー手順を選ぶ。1:ディスク心拍確認、2:ドライブ専有、3:ネットワーク確認、4:本番系停止。",
+      "stem": "HAクラスタで本番系から待機系へのハートビートが一定時間途絶えた。次の処理をどの順序で行うか。①待機系がディスクのハートビート記録を調べ、通信負荷による遅延か確認する。②待機系が本番系の論理ドライブの専有権を取得しロックする。③待機系が接続先スイッチを通じてネットワークの正常性を調べる。④本番系が自らOSを強制終了する。",
       "options": {
         "ア": "1→2→3→4",
         "イ": "2→3→1→4",
@@ -891,13 +905,16 @@
         "エ": "3→2→1→4"
       },
       "answer": "ウ",
-      "explanation": "ネットワークとディスク心拍を確認後に専有を行う。",
+      "explanation": "まず通信経路の正常性を確認し、ディスクの記録から本番系の状態を確認する。その後、ドライブを専有し、本番系を停止する。この設問の条件では③→①→②→④。",
       "sourcePage": 16,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "needs-source-review",
-        "reason": "Failure detection and fencing sequence requires original scenario; abbreviated stem may not uniquely determine answer."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 16,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official question PDF screenshot inspected; adapted wording and choices compared. Official answer sheet acceptance separate."
       }
     },
     "am2:24": {
@@ -912,7 +929,14 @@
       "explanation": "機能適合性は必要な機能が提供される度合い。残りは別の品質特性の説明。",
       "sourcePage": 17,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 17,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official question PDF screenshot inspected; adapted wording and choices compared. Official answer sheet acceptance separate."
+      }
     },
     "am2:25": {
       "stem": "リファクタリングとは？",
@@ -926,7 +950,14 @@
       "explanation": "機能を変えずに可読性や保守性を改善する。",
       "sourcePage": 17,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 17,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official question PDF screenshot inspected; adapted wording and choices compared. Official answer sheet acceptance separate."
+      }
     }
   },
   "pendingDiagramQuestions": [
