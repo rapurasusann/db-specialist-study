@@ -21,18 +21,21 @@ export async function checkAbsent({account,token,fetcher=fetch}){
  if(body.result.some(x=>x.id===NAME))throw Error('WORKER_ALREADY_EXISTS');
  return true;
 }
-async function main(){
+export const ALLOWED_CHANGES=new Set(['docs/CS03_ISOLATED_DEPLOYMENT_APPROVAL.md','docs/CS03_HANDOFF_20261125.md','docs/CS03_DARK_DEPLOY_EXECUTION_20261125.md','scripts/cs03-dark-preflight.mjs','tests/cs03-dark-preflight.test.mjs','scripts/cs03-dark-dry-run.mjs','tests/cs03-dark-dry-run.test.mjs']);
+export function validateChanges(paths,status){if(paths.some(p=>!ALLOWED_CHANGES.has(p)))throw Error('DEPLOYMENT_SOURCE_CHANGED');if(status)throw Error('WORKTREE_DIRTY');}
+export async function localPreflight(expectedHead){
  const root=fileURLToPath(new URL('../',import.meta.url));
  const git=(...args)=>execFileSync('git',args,{cwd:root,encoding:'utf8',stdio:['ignore','pipe','ignore']}).trim();
  const head=git('rev-parse','HEAD');
- if(!/^[a-f0-9]{40}$/.test(head))throw Error('HEAD_INVALID');
+ if(!/^[a-f0-9]{40}$/.test(expectedHead??'')||head!==expectedHead)throw Error('HEAD_MISMATCH');
  git('merge-base','--is-ancestor',BASE,head);
- // Only documentation and this preflight/test may differ from the tested deployment source.
- const allowed=new Set(['scripts/cs03-dark-preflight.mjs','tests/cs03-dark-preflight.test.mjs']);
- const changed=git('diff','--name-only',BASE,head).split('\n').filter(Boolean);
- if(changed.some(p=>!p.startsWith('docs/')&&!allowed.has(p)))throw Error('DEPLOYMENT_SOURCE_CHANGED');
- if(git('status','--porcelain','--untracked-files=no'))throw Error('TRACKED_WORKTREE_DIRTY');
- validateConfig(JSON.parse(await readFile(new URL('../'+CONFIG,import.meta.url),'utf8')));
+ validateChanges(git('diff','--no-renames','--name-only',BASE,head).split('\n').filter(Boolean),git('status','--porcelain','--untracked-files=all'));
+ const config=JSON.parse(await readFile(new URL('../'+CONFIG,import.meta.url),'utf8'));
+ validateConfig(config);
+ return {root,head,config};
+}
+async function main(){
+ const {head}=await localPreflight(process.argv[2]);
  await checkAbsent({account:process.env.CLOUDFLARE_ACCOUNT_ID,token:process.env.CS03_CF_READ_TOKEN});
  console.log('CS03_DARK_READONLY_PREFLIGHT_PASS HEAD='+head+' WORKER_ABSENT=YES DEPLOYED=NO');
 }
