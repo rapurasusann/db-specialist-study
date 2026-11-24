@@ -3,7 +3,7 @@
   "source": "IPA 令和6年度秋期 データベーススペシャリスト試験 午前Ⅱ（学習用要約）",
   "questionUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
   "answerUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_ans.pdf",
-  "status": "all-25-adapted-review-only",
+  "status": "all-25-adapted-figures-staged",
   "questions": {
     "am2:1": {
       "stem": "SQLのシーケンスについて正しい説明はどれか。",
@@ -419,7 +419,196 @@
       "explanation": "組織の自己関連で階層を表し、所属関係は組織側1、従業員側多とする。",
       "sourcePage": 6,
       "adapted": true,
-      "sourceVisualReviewed": true
+      "sourceVisualReviewed": true,
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "uml",
+            "classes": [
+              [
+                "組織",
+                100,
+                55
+              ],
+              [
+                "上位組織",
+                40,
+                145
+              ],
+              [
+                "末端組織",
+                160,
+                145
+              ],
+              [
+                "従業員",
+                285,
+                145
+              ]
+            ],
+            "links": [
+              {
+                "kind": "inherit",
+                "from": "上位組織",
+                "to": "組織"
+              },
+              {
+                "kind": "inherit",
+                "from": "末端組織",
+                "to": "組織"
+              },
+              {
+                "kind": "association",
+                "from": "上位組織",
+                "to": "組織",
+                "fromLabel": "0..1 上位",
+                "toLabel": "1..* 下位"
+              },
+              {
+                "kind": "association",
+                "from": "末端組織",
+                "to": "従業員",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": "所属する"
+              }
+            ]
+          }
+        ],
+        "イ": [
+          {
+            "type": "uml",
+            "classes": [
+              [
+                "組織",
+                100,
+                55
+              ],
+              [
+                "従業員",
+                260,
+                55
+              ],
+              [
+                "上位組織",
+                40,
+                145
+              ],
+              [
+                "末端組織",
+                160,
+                145
+              ]
+            ],
+            "links": [
+              {
+                "kind": "self",
+                "from": "組織",
+                "fromLabel": "0..1 上位",
+                "toLabel": "* 下位"
+              },
+              {
+                "kind": "inherit",
+                "from": "上位組織",
+                "to": "組織"
+              },
+              {
+                "kind": "inherit",
+                "from": "末端組織",
+                "to": "組織"
+              },
+              {
+                "kind": "association",
+                "from": "組織",
+                "to": "従業員",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": "所属する"
+              }
+            ]
+          }
+        ],
+        "ウ": [
+          {
+            "type": "uml",
+            "classes": [
+              [
+                "組織",
+                100,
+                55
+              ],
+              [
+                "従業員",
+                260,
+                55
+              ],
+              [
+                "上位組織",
+                40,
+                145
+              ],
+              [
+                "末端組織",
+                160,
+                145
+              ]
+            ],
+            "links": [
+              {
+                "kind": "inherit",
+                "from": "上位組織",
+                "to": "組織"
+              },
+              {
+                "kind": "inherit",
+                "from": "末端組織",
+                "to": "組織"
+              },
+              {
+                "kind": "association",
+                "from": "組織",
+                "to": "従業員",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": "所属する"
+              }
+            ]
+          }
+        ],
+        "エ": [
+          {
+            "type": "uml",
+            "classes": [
+              [
+                "組織",
+                100,
+                55
+              ],
+              [
+                "従業員",
+                260,
+                55
+              ]
+            ],
+            "links": [
+              {
+                "kind": "self",
+                "from": "組織",
+                "fromLabel": "0..1 上位",
+                "toLabel": "* 下位"
+              },
+              {
+                "kind": "association",
+                "from": "組織",
+                "to": "従業員",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": "所属する"
+              }
+            ]
+          }
+        ]
+      }
     },
     "am2:7": {
       "stem": "商品表と商品別売上実績表に対し、次のSQLを実行したときの売上平均金額を求める。",
@@ -1246,8 +1435,6 @@
       "needsSourceReview": true
     }
   },
-  "pendingDiagramQuestions": [
-    6
-  ],
-  "pendingDiagramNote": "Six questions have structured figure/table data; Q6 UML rendering remains. No UI integration yet."
+  "pendingDiagramQuestions": [],
+  "pendingDiagramNote": "All seven questions have structured figure data; renderer and source review pending."
 }
