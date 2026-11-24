@@ -73,24 +73,356 @@
       "explanation": "葉を分割したら親から新しい葉にも到達できるようにし、葉のキー順の連結を維持する。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true
+      "figures": [
+        {
+          "type": "graph",
+          "title": "分割前",
+          "nodes": [
+            {
+              "id": "A",
+              "x": 150,
+              "y": 24
+            },
+            {
+              "id": "B",
+              "x": 35,
+              "y": 95
+            },
+            {
+              "id": "C",
+              "x": 150,
+              "y": 95
+            },
+            {
+              "id": "D",
+              "x": 265,
+              "y": 95
+            }
+          ],
+          "edges": [
+            {
+              "from": "A",
+              "to": "B",
+              "bidirectional": false
+            },
+            {
+              "from": "A",
+              "to": "C",
+              "bidirectional": false
+            },
+            {
+              "from": "A",
+              "to": "D",
+              "bidirectional": false
+            },
+            {
+              "from": "B",
+              "to": "C",
+              "bidirectional": true
+            },
+            {
+              "from": "C",
+              "to": "D",
+              "bidirectional": true
+            }
+          ],
+          "shape": "rect"
+        }
+      ],
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "graph",
+            "title": "ア",
+            "nodes": [
+              {
+                "id": "A",
+                "x": 150,
+                "y": 24
+              },
+              {
+                "id": "B",
+                "x": 35,
+                "y": 95
+              },
+              {
+                "id": "C1",
+                "x": 111.66666666666667,
+                "y": 95
+              },
+              {
+                "id": "C2",
+                "x": 188.33333333333334,
+                "y": 95
+              },
+              {
+                "id": "D",
+                "x": 265,
+                "y": 95
+              }
+            ],
+            "edges": [
+              {
+                "from": "A",
+                "to": "B",
+                "bidirectional": false
+              },
+              {
+                "from": "A",
+                "to": "C1",
+                "bidirectional": false
+              },
+              {
+                "from": "A",
+                "to": "D",
+                "bidirectional": false
+              },
+              {
+                "from": "B",
+                "to": "C1",
+                "bidirectional": true
+              },
+              {
+                "from": "C1",
+                "to": "C2",
+                "bidirectional": true
+              },
+              {
+                "from": "C2",
+                "to": "D",
+                "bidirectional": true
+              }
+            ],
+            "shape": "rect"
+          }
+        ],
+        "イ": [
+          {
+            "type": "graph",
+            "title": "イ",
+            "nodes": [
+              {
+                "id": "A",
+                "x": 150,
+                "y": 24
+              },
+              {
+                "id": "B",
+                "x": 35,
+                "y": 95
+              },
+              {
+                "id": "C1",
+                "x": 111.66666666666667,
+                "y": 95
+              },
+              {
+                "id": "C2",
+                "x": 188.33333333333334,
+                "y": 95
+              },
+              {
+                "id": "D",
+                "x": 265,
+                "y": 95
+              }
+            ],
+            "edges": [
+              {
+                "from": "A",
+                "to": "B",
+                "bidirectional": false
+              },
+              {
+                "from": "A",
+                "to": "C1",
+                "bidirectional": false
+              },
+              {
+                "from": "A",
+                "to": "C2",
+                "bidirectional": false
+              },
+              {
+                "from": "A",
+                "to": "D",
+                "bidirectional": false
+              },
+              {
+                "from": "B",
+                "to": "C1",
+                "bidirectional": true
+              },
+              {
+                "from": "C1",
+                "to": "C2",
+                "bidirectional": true
+              },
+              {
+                "from": "C2",
+                "to": "D",
+                "bidirectional": true
+              }
+            ],
+            "shape": "rect"
+          }
+        ],
+        "ウ": [
+          {
+            "type": "graph",
+            "title": "ウ",
+            "nodes": [
+              {
+                "id": "A",
+                "x": 150,
+                "y": 24
+              },
+              {
+                "id": "B",
+                "x": 35,
+                "y": 95
+              },
+              {
+                "id": "C1",
+                "x": 111.66666666666667,
+                "y": 95
+              },
+              {
+                "id": "D",
+                "x": 188.33333333333334,
+                "y": 95
+              },
+              {
+                "id": "C2",
+                "x": 265,
+                "y": 95
+              }
+            ],
+            "edges": [
+              {
+                "from": "A",
+                "to": "B",
+                "bidirectional": false
+              },
+              {
+                "from": "A",
+                "to": "C1",
+                "bidirectional": false
+              },
+              {
+                "from": "A",
+                "to": "D",
+                "bidirectional": false
+              },
+              {
+                "from": "A",
+                "to": "C2",
+                "bidirectional": false
+              },
+              {
+                "from": "B",
+                "to": "C1",
+                "bidirectional": true
+              },
+              {
+                "from": "C1",
+                "to": "D",
+                "bidirectional": true
+              },
+              {
+                "from": "D",
+                "to": "C2",
+                "bidirectional": true
+              }
+            ],
+            "shape": "rect"
+          }
+        ],
+        "エ": [
+          {
+            "type": "graph",
+            "title": "エ",
+            "nodes": [
+              {
+                "id": "A",
+                "x": 150,
+                "y": 24
+              },
+              {
+                "id": "B",
+                "x": 35,
+                "y": 95
+              },
+              {
+                "id": "C1",
+                "x": 150,
+                "y": 95
+              },
+              {
+                "id": "D",
+                "x": 265,
+                "y": 95
+              },
+              {
+                "id": "C2",
+                "x": 150,
+                "y": 155
+              }
+            ],
+            "edges": [
+              {
+                "from": "A",
+                "to": "B",
+                "bidirectional": false
+              },
+              {
+                "from": "A",
+                "to": "C1",
+                "bidirectional": false
+              },
+              {
+                "from": "A",
+                "to": "D",
+                "bidirectional": false
+              },
+              {
+                "from": "B",
+                "to": "C1",
+                "bidirectional": true
+              },
+              {
+                "from": "C1",
+                "to": "D",
+                "bidirectional": true
+              },
+              {
+                "from": "C1",
+                "to": "C2",
+                "bidirectional": true
+              }
+            ],
+            "shape": "rect"
+          }
+        ]
+      },
+      "sourceVisualReviewed": true
     },
     "am2:6": {
       "stem": "階層化された組織の任意の階層に従業員が所属でき、兼務は不可とする。適切な関係は？",
       "options": {
         "ア": "末端組織だけに所属できる",
-        "イ": "組織の自己関連があり、従業員は複数組織に所属できる",
-        "ウ": "自己関連なしで従業員が複数組織に所属できる",
+        "イ": "組織の自己関連あり。上位・末端組織に分類し、従業員側1・組織側多の所属関係",
+        "ウ": "組織の自己関連なし。上位・末端組織に分類し、従業員側1・組織側多の所属関係",
         "エ": "組織は自己関連で階層を表し、従業員は一つの組織に所属する"
       },
       "answer": "エ",
       "explanation": "組織の自己関連で階層を表し、所属関係は組織側1、従業員側多とする。",
       "sourcePage": 6,
       "adapted": true,
-      "needsSourceReview": true
+      "sourceVisualReviewed": true
     },
     "am2:7": {
-      "stem": "ランクAの商品3件に左外部結合すると、売上は50、NULL、250になる。AVG(売上)は？",
+      "stem": "商品表と商品別売上実績表に対し、次のSQLを実行したときの売上平均金額を求める。",
       "options": {
         "ア": "100",
         "イ": "150",
@@ -101,7 +433,80 @@
       "explanation": "AVGはNULLを分母にも分子にも含めない。(50+250)/2=150。",
       "sourcePage": 7,
       "adapted": true,
-      "needsSourceReview": true
+      "figures": [
+        {
+          "type": "table",
+          "title": "商品",
+          "headers": [
+            "商品コード",
+            "商品名",
+            "商品ランク"
+          ],
+          "rows": [
+            [
+              "S001",
+              "PPP",
+              "A"
+            ],
+            [
+              "S002",
+              "QQQ",
+              "A"
+            ],
+            [
+              "S003",
+              "RRR",
+              "A"
+            ],
+            [
+              "S004",
+              "SSS",
+              "B"
+            ],
+            [
+              "S005",
+              "TTT",
+              "C"
+            ],
+            [
+              "S006",
+              "UUU",
+              "C"
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "title": "商品別売上実績",
+          "headers": [
+            "商品コード",
+            "売上合計金額"
+          ],
+          "rows": [
+            [
+              "S001",
+              50
+            ],
+            [
+              "S003",
+              250
+            ],
+            [
+              "S004",
+              350
+            ],
+            [
+              "S006",
+              450
+            ]
+          ]
+        },
+        {
+          "type": "sql",
+          "text": "SELECT AVG(売上合計金額) AS 売上平均金額\nFROM 商品 LEFT OUTER JOIN 商品別売上実績\nON 商品.商品コード = 商品別売上実績.商品コード\nWHERE 商品ランク = 'A'"
+        }
+      ],
+      "sourceVisualReviewed": true
     },
     "am2:8": {
       "stem": "親子関係が NULL→A、A→B、A→C、B→D、B→E、C→F、F→G の隣接リストから葉を求める。SELECT 子ノード FROM 隣接リスト と SELECT 親ノード FROM 隣接リスト の間に置く演算は？",
@@ -115,10 +520,128 @@
       "explanation": "全子ノードから親として現れるノードを除くとD、E、Gが残る。EXCEPTは差集合。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true
+      "figures": [
+        {
+          "type": "graph",
+          "title": "ツリー構造",
+          "nodes": [
+            {
+              "id": "A",
+              "x": 150,
+              "y": 24
+            },
+            {
+              "id": "B",
+              "x": 80,
+              "y": 70
+            },
+            {
+              "id": "C",
+              "x": 220,
+              "y": 70
+            },
+            {
+              "id": "D",
+              "x": 35,
+              "y": 120
+            },
+            {
+              "id": "E",
+              "x": 120,
+              "y": 120
+            },
+            {
+              "id": "F",
+              "x": 220,
+              "y": 120
+            },
+            {
+              "id": "G",
+              "x": 220,
+              "y": 170
+            }
+          ],
+          "edges": [
+            {
+              "from": "A",
+              "to": "B",
+              "bidirectional": false
+            },
+            {
+              "from": "A",
+              "to": "C",
+              "bidirectional": false
+            },
+            {
+              "from": "B",
+              "to": "D",
+              "bidirectional": false
+            },
+            {
+              "from": "B",
+              "to": "E",
+              "bidirectional": false
+            },
+            {
+              "from": "C",
+              "to": "F",
+              "bidirectional": false
+            },
+            {
+              "from": "F",
+              "to": "G",
+              "bidirectional": false
+            }
+          ],
+          "shape": "circle"
+        },
+        {
+          "type": "table",
+          "title": "隣接リスト",
+          "headers": [
+            "親ノード",
+            "子ノード"
+          ],
+          "rows": [
+            [
+              "NULL",
+              "A"
+            ],
+            [
+              "A",
+              "B"
+            ],
+            [
+              "A",
+              "C"
+            ],
+            [
+              "B",
+              "D"
+            ],
+            [
+              "B",
+              "E"
+            ],
+            [
+              "C",
+              "F"
+            ],
+            [
+              "F",
+              "G"
+            ]
+          ]
+        },
+        {
+          "type": "sql",
+          "text": "SELECT 子ノード FROM 隣接リスト\n[ a ]\nSELECT 親ノード FROM 隣接リスト"
+        }
+      ],
+      "sourceVisualReviewed": true
     },
     "am2:9": {
-      "stem": "商品S01・S02・S03の納品件数は順に2、2、1。商品番号で商品表と納品表を等結合する。結果の行数と商品番号列数は？",
+      "stem": "商品表と納品表を商品番号で等結合した結果を選ぶ。",
       "options": {
         "ア": "3行、1列",
         "イ": "3行、2列",
@@ -129,7 +652,255 @@
       "explanation": "等結合は条件に一致する全組合せを残し、結合列を自動で一つにまとめない。自然結合との違いに注意。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true
+      "figures": [
+        {
+          "type": "table",
+          "title": "商品",
+          "headers": [
+            "商品番号",
+            "商品名",
+            "価格"
+          ],
+          "rows": [
+            [
+              "S01",
+              "ボールペン",
+              150
+            ],
+            [
+              "S02",
+              "消しゴム",
+              80
+            ],
+            [
+              "S03",
+              "クリップ",
+              200
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "title": "納品",
+          "headers": [
+            "商品番号",
+            "顧客番号",
+            "納品数"
+          ],
+          "rows": [
+            [
+              "S01",
+              "C01",
+              10
+            ],
+            [
+              "S01",
+              "C02",
+              30
+            ],
+            [
+              "S02",
+              "C02",
+              20
+            ],
+            [
+              "S02",
+              "C03",
+              40
+            ],
+            [
+              "S03",
+              "C03",
+              60
+            ]
+          ]
+        }
+      ],
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "table",
+            "title": "ア",
+            "headers": [
+              "商品番号",
+              "商品名",
+              "価格",
+              "顧客番号",
+              "納品数"
+            ],
+            "rows": [
+              [
+                "S01",
+                "ボールペン",
+                150,
+                "C01",
+                10
+              ],
+              [
+                "S02",
+                "消しゴム",
+                80,
+                "C02",
+                20
+              ],
+              [
+                "S03",
+                "クリップ",
+                200,
+                "C03",
+                60
+              ]
+            ]
+          }
+        ],
+        "イ": [
+          {
+            "type": "table",
+            "title": "イ",
+            "headers": [
+              "商品番号",
+              "商品名",
+              "価格",
+              "商品番号",
+              "顧客番号",
+              "納品数"
+            ],
+            "rows": [
+              [
+                "S01",
+                "ボールペン",
+                150,
+                "S01",
+                "C01",
+                10
+              ],
+              [
+                "S02",
+                "消しゴム",
+                80,
+                "S02",
+                "C02",
+                20
+              ],
+              [
+                "S03",
+                "クリップ",
+                200,
+                "S03",
+                "C03",
+                60
+              ]
+            ]
+          }
+        ],
+        "ウ": [
+          {
+            "type": "table",
+            "title": "ウ",
+            "headers": [
+              "商品番号",
+              "商品名",
+              "価格",
+              "顧客番号",
+              "納品数"
+            ],
+            "rows": [
+              [
+                "S01",
+                "ボールペン",
+                150,
+                "C01",
+                10
+              ],
+              [
+                "S01",
+                "ボールペン",
+                150,
+                "C02",
+                30
+              ],
+              [
+                "S02",
+                "消しゴム",
+                80,
+                "C02",
+                20
+              ],
+              [
+                "S02",
+                "消しゴム",
+                80,
+                "C03",
+                40
+              ],
+              [
+                "S03",
+                "クリップ",
+                200,
+                "C03",
+                60
+              ]
+            ]
+          }
+        ],
+        "エ": [
+          {
+            "type": "table",
+            "title": "エ",
+            "headers": [
+              "商品番号",
+              "商品名",
+              "価格",
+              "商品番号",
+              "顧客番号",
+              "納品数"
+            ],
+            "rows": [
+              [
+                "S01",
+                "ボールペン",
+                150,
+                "S01",
+                "C01",
+                10
+              ],
+              [
+                "S01",
+                "ボールペン",
+                150,
+                "S01",
+                "C02",
+                30
+              ],
+              [
+                "S02",
+                "消しゴム",
+                80,
+                "S02",
+                "C02",
+                20
+              ],
+              [
+                "S02",
+                "消しゴム",
+                80,
+                "S02",
+                "C03",
+                40
+              ],
+              [
+                "S03",
+                "クリップ",
+                200,
+                "S03",
+                "C03",
+                60
+              ]
+            ]
+          }
+        ]
+      },
+      "sourceVisualReviewed": true
     },
     "am2:10": {
       "stem": "従業員表をS1として、男女それぞれの最年長者を除くため WHERE 生年月日 > (副問合せ) とする。適切な副問合せは？",
@@ -185,7 +956,93 @@
       "explanation": "B→D→C→Bが循環し、FもDの解放を待つため停止する。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "figures": [
+        {
+          "type": "graph",
+          "title": "待ちグラフ",
+          "nodes": [
+            {
+              "id": "A",
+              "x": 25,
+              "y": 65
+            },
+            {
+              "id": "B",
+              "x": 90,
+              "y": 25
+            },
+            {
+              "id": "C",
+              "x": 90,
+              "y": 105
+            },
+            {
+              "id": "D",
+              "x": 160,
+              "y": 65
+            },
+            {
+              "id": "E",
+              "x": 230,
+              "y": 25
+            },
+            {
+              "id": "F",
+              "x": 230,
+              "y": 105
+            },
+            {
+              "id": "G",
+              "x": 295,
+              "y": 65
+            }
+          ],
+          "edges": [
+            {
+              "from": "B",
+              "to": "D",
+              "bidirectional": false
+            },
+            {
+              "from": "D",
+              "to": "C",
+              "bidirectional": false
+            },
+            {
+              "from": "C",
+              "to": "B",
+              "bidirectional": false
+            },
+            {
+              "from": "C",
+              "to": "A",
+              "bidirectional": false
+            },
+            {
+              "from": "D",
+              "to": "E",
+              "bidirectional": false
+            },
+            {
+              "from": "E",
+              "to": "G",
+              "bidirectional": false
+            },
+            {
+              "from": "F",
+              "to": "D",
+              "bidirectional": false
+            },
+            {
+              "from": "F",
+              "to": "E",
+              "bidirectional": false
+            }
+          ],
+          "shape": "circle"
+        }
+      ],
+      "sourceVisualReviewed": true
     },
     "am2:14": {
       "stem": "PがXを4から5へ更新し未コミット。READ COMMITTEDでQが読む場合、単版二相ロック方式とMVCC方式の動作の組合せは？",
@@ -199,7 +1056,40 @@
       "explanation": "単版のロック方式は更新ロックの解放まで待つ。MVCCは確定済みの旧版4を参照できる。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "figures": [
+        {
+          "type": "table",
+          "title": "Qの挙動",
+          "headers": [
+            "選択肢",
+            "単版2相ロック",
+            "MVCC"
+          ],
+          "rows": [
+            [
+              "ア",
+              "待機後5",
+              "待たず4"
+            ],
+            [
+              "イ",
+              "待機後5",
+              "待たず5"
+            ],
+            [
+              "ウ",
+              "待たず4",
+              "待たず5"
+            ],
+            [
+              "エ",
+              "待たず5",
+              "待たず4"
+            ]
+          ]
+        }
+      ],
+      "sourceVisualReviewed": true
     },
     "am2:15": {
       "stem": "不整合検索異状に該当する例は？",
@@ -357,13 +1247,7 @@
     }
   },
   "pendingDiagramQuestions": [
-    3,
-    6,
-    7,
-    8,
-    9,
-    13,
-    14
+    6
   ],
-  "pendingDiagramNote": "Text-equivalent adaptations available; original tables and diagrams not yet reproduced in UI."
+  "pendingDiagramNote": "Six questions have structured figure/table data; Q6 UML rendering remains. No UI integration yet."
 }
