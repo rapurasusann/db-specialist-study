@@ -4,14 +4,14 @@ const assert=require('node:assert/strict');
 const {createProgressHandler}=require('../src/progress-api');
 const A='a1111111-1111-4111-8111-111111111111';
 const B='b2222222-2222-4222-8222-222222222222';
-function mockDb({noRows=false,throwOnSelect=false}={}) {
+function mockDb({noRows=false,throwOnSelect=false,listRows}={}) {
   const calls=[];
   const client={
     query:async(sql,values)=>{
       calls.push({sql,values});
       if(throwOnSelect&&/^SELECT data/.test(sql))throw new Error('secret database failure');
       if(/^SELECT data/.test(sql))return {rows:noRows?[]:[{revision:1,data:{ok:true}}]};
-      if(/^SELECT question_id, data, revision/.test(sql))return {rows:noRows?[]:[{question_id:'2025:am2:1',data:{level:'learning'},revision:1},{question_id:'2025:am2:2',data:{level:'review'},revision:2}]};
+      if(/^SELECT question_id, data, revision/.test(sql))return {rows:listRows??(noRows?[]:[{question_id:'2025:am2:1',data:{level:'learning'},revision:1},{question_id:'2025:am2:2',data:{level:'review'},revision:2}])};
       if(/^INSERT INTO|^UPDATE public.study_progress/.test(sql))return {rows:noRows?[]:[{revision:1,data:{ok:true}}]};
       return {rows:[]};
     },
@@ -141,4 +141,27 @@ test('untrusted list input is rejected without database access',async()=>{
   assert.equal((await handle(req('GET','valid-a',undefined,query))).status,400,query);
   assert.equal(calls.length,0,query);
  }
+});
+
+test('list byte budget splits multibyte rows without skipping the first unreturned row',async()=>{
+ const rows=Array.from({length:5},(_,i)=>({question_id:'2025:am2:'+(i+1),data:{text:'漢'.repeat(5300)},revision:1,updated_at:'2026-11-24T00:00:00Z'}));
+ const {handle}=setup({listRows:rows});
+ const res=await handle(req('GET','valid-a',undefined,'?examCode=db&limit=100'));
+ assert.equal(res.status,200);
+ const raw=await res.text();
+ assert.ok(Buffer.byteLength(raw,'utf8')<=60000);
+ const page=JSON.parse(raw).data;
+ assert.deepEqual(page.records,rows.slice(0,3));
+ assert.equal(page.nextCursor,rows[2].question_id);
+ const second=setup({listRows:rows.slice(3)});
+ const next=await second.handle(req('GET','valid-a',undefined,'?examCode=db&limit=100&cursor='+encodeURIComponent(page.nextCursor)));
+ assert.deepEqual((await next.json()).data,{records:rows.slice(3),nextCursor:null});
+ assert.deepEqual(second.calls.find(c=>/^SELECT question_id/.test(c.sql)).values,[A,'db',page.nextCursor,101]);
+});
+test('single unfit stored row fails closed instead of emitting empty nonterminal page',async()=>{
+ const {handle,calls}=setup({listRows:[{question_id:'2025:am2:1',data:{text:'x'.repeat(60000)},revision:1}]});
+ const res=await handle(req('GET','valid-a',undefined,'?examCode=db&limit=100'));
+ assert.equal(res.status,503);
+ assert.deepEqual(await res.json(),{error:'Service Unavailable'});
+ assert.equal(calls.at(-2).sql,'ROLLBACK');
 });

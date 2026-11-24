@@ -38,8 +38,21 @@ function createPgProgressStore(pool) {
         const {rows}=await client.query(
           'SELECT question_id, data, revision, updated_at FROM public.study_progress WHERE user_id=$1 AND exam_code=$2 AND question_id>$3 ORDER BY question_id LIMIT $4',
           [userId,examCode,cursor??'',limit+1]);
-        const records=rows.slice(0,limit);
-        return {records,nextCursor:rows.length>limit?records.at(-1).question_id:null};
+        // Budget the actual JSON response envelope, including UTF-8 metadata and cursor.
+        // The Worker retains its independent 65,536-byte hard limit.
+        const records=[];
+        let nextCursor=null;
+        for(let i=0;i<Math.min(limit,rows.length);i++){
+          const candidate=[...records,rows[i]];
+          const cursorAfter=i+1<rows.length?rows[i].question_id:null;
+          if(Buffer.byteLength(JSON.stringify({data:{records:candidate,nextCursor:cursorAfter}}),'utf8')>60000){
+            if(records.length===0)throw Error('SERVICE_UNAVAILABLE');
+            return {records,nextCursor:records.at(-1).question_id};
+          }
+          records.push(rows[i]);
+          nextCursor=cursorAfter;
+        }
+        return {records,nextCursor};
       });
     },
     write({userId,examCode,questionId,data,revision}) {

@@ -20,3 +20,6 @@ Client must retain a single account-bound in-memory snapshot and cursor across b
 - Existing gateway oversize rejection remains effective. Run local suites after PC returns; no new test execution claimed.
 
 Next: inspect actual upstream list producer and UI snapshot consumer, then implement producer/client changes and regression tests together. Keep cloud configuration, public URLs, CSP, main and Actions untouched. Release remains NO-GO.
+
+## 15:00 producer implementation (unexecuted)
+The Neon adapter delegates to server/cs03-runtime.mjs and src/progress-api.js. The existing authenticated transaction selects ordered rows with limit+1. The producer now measures the serialized UTF-8 envelope against 60,000 bytes, returns the last emitted cursor on a split, and fails closed if the first row cannot fit. Added API regression cases for multibyte splitting, continuation and oversized stored row. Existing JWT, RLS transaction, SQL ordering and Worker hard cap remain unchanged. Client quota recovery and page bound are still outstanding; do not deploy this partial change. No local tests run, no cloud changes.
