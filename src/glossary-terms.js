@@ -123,11 +123,11 @@ window.DBStudyGlossaryTerms = Object.freeze([
   Object.freeze({"id":"serializable","term":"SERIALIZABLE","definition":"並行取引を直列実行と等価にする最も強い標準隔離水準。"}),
   Object.freeze({"id":"shared-lock","term":"共有ロック","definition":"複数の取引による読み取りを許しつつ競合する更新を制限するロック。"}),
   Object.freeze({"id":"exclusive-lock","term":"専有ロック","definition":"他の競合するアクセスを制限するロック。","aliases":["排他ロック"]}),
-  Object.freeze({"id":"waitgraph","term":"待ちグラフ","definition":"取引間の資源待ちを有向辺で示すグラフ。"}),
+  Object.freeze({"id":"waitgraph","term":"待ちグラフ","definition":"取引間の資源待ちを有向辺で示すグラフ。","aliases":["待ち関係"]}),
   Object.freeze({"id":"aggregate","term":"集約関数","definition":"複数行の値をまとめ、合計・件数・平均などを求める関数。"}),
   Object.freeze({"id":"semijoin","term":"セミジョイン","definition":"一方の関係のうち他方と結合可能な行だけを得る演算。"}),
   Object.freeze({"id":"smime","term":"S/MIME","definition":"電子メールの暗号化や電子署名のための標準。"}),
-  Object.freeze({"id":"bayesian","term":"ベイジアンフィルタ","definition":"学習済みの特徴から確率的に分類するフィルタ。","aliases":["ベイジアンフィルター"]}),
+  Object.freeze({"id":"bayesian","term":"ベイジアンフィルタ","definition":"学習済みの特徴から確率的に分類するフィルタ。","aliases":["ベイジアンフィルター","ベイジアン迷惑メールフィルタ"]}),
   Object.freeze({"id":"loadbalancer","term":"ロードバランサ","definition":"複数サーバへ処理要求を分散する装置やソフトウェア。","aliases":["負荷分散"]}),
   Object.freeze({"id":"soa","term":"SOA","definition":"業務機能をサービスとして組み合わせる設計方式。"}),
   Object.freeze({"id":"esb","term":"ESB","definition":"サービス間のメッセージ連携や変換などを仲介する基盤。"}),
@@ -170,5 +170,11 @@ window.DBStudyGlossaryTerms = Object.freeze([
   Object.freeze({"id":"er","term":"ER図","definition":"実体とその関連を表すデータモデルの図。","aliases":["ERモデル"]}),
   Object.freeze({"id":"inherit","term":"継承","definition":"クラスの属性や振る舞いを別のクラスが引き継ぐ仕組み。"}),
   Object.freeze({"id":"testcoverage","term":"カバレージ","definition":"テストで実行・確認した対象の割合。"}),
-  Object.freeze({"id":"quality","term":"保守性","definition":"ソフトウェアを修正・改善・検証する際の容易さ。"})
+  Object.freeze({"id":"quality","term":"保守性","definition":"ソフトウェアを修正・改善・検証する際の容易さ。"}),
+  Object.freeze({"id":"cp","term":"CP重視","definition":"CAP定理の分断時に可用性より整合性を優先する方針。"}),
+  Object.freeze({"id":"ap","term":"AP重視","definition":"CAP定理の分断時に整合性より可用性を優先する方針。"}),
+  Object.freeze({"id":"epaper","term":"電気泳動型電子ペーパー","definition":"電界で帯電粒子を移動させ表示を変える電子ペーパー。"}),
+  Object.freeze({"id":"usability","term":"使用性","definition":"利用者が目的を達成する際の使いやすさに関する品質特性。"}),
+  Object.freeze({"id":"integrationtest","term":"結合試験","definition":"複数の構成要素を組み合わせ、連携が正しいか確認する試験。"}),
+  Object.freeze({"id":"password","term":"固定長パスワード","definition":"文字数を一定にしたパスワード。各位置で選べる文字数の累乗が組合せ数になる。"})
 ]);
