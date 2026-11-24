@@ -14,7 +14,7 @@
         "エ": "文字列検索ができる"
       },
       "answer": "イ",
-      "explanation": "Binary Large Objectは画像などの大きなバイナリデータを保存する型。",
+      "explanation": "Binary Large Objectは画像などの大きなバイナリデータを保存する型。\n\n画像・音声・文書などのバイト列を格納する型。文字列の検索や大小比較が自由に行えることを意味しない。",
       "sourcePage": 3,
       "adapted": true,
       "needsSourceReview": false,
@@ -35,7 +35,7 @@
         "エ": "多対多なら双方に相手の外部キーを置く"
       },
       "answer": "ア",
-      "explanation": "1対1ならいずれかに一意性を保証する外部キーを置ける。",
+      "explanation": "1対1ならいずれかに一意性を保証する外部キーを置ける。\n\n参照列をUNIQUEにしないと複数の行が同じ親を指せるため、1対1を保証できない。",
       "sourcePage": 3,
       "adapted": true,
       "needsSourceReview": false,
@@ -76,7 +76,7 @@
         "エ": "CD"
       },
       "answer": "ウ",
-      "explanation": "ADの閉包は全属性。AもDも他の属性から導出できず、両方必要。",
+      "explanation": "ADの閉包は全属性。AもDも他の属性から導出できず、両方必要。\n\nADからA→BCでB,Cが得られ、CD→EでEも得られる。AとDは右辺に現れないので省けない。",
       "sourcePage": 3,
       "adapted": true,
       "needsSourceReview": false,
@@ -97,7 +97,7 @@
         "エ": "CURSOR B OF A1"
       },
       "answer": "イ",
-      "explanation": "CURRENT OFにはカーソル名を指定する。",
+      "explanation": "CURRENT OFにはカーソル名を指定する。\n\nWHERE CURRENT OF BはカーソルBの現在行を指定する。単に主キーの値を記述する方式とは異なる。",
       "sourcePage": 5,
       "adapted": true,
       "needsSourceReview": false,
@@ -124,7 +124,7 @@
         "エ": "UNIQUE (項目名, 値)"
       },
       "answer": "イ",
-      "explanation": "IDと項目名の組合せを一意にする。値を含めると異なる値の重複を許してしまう。",
+      "explanation": "IDと項目名の組合せを一意にする。値を含めると異なる値の重複を許してしまう。\n\n例えば(商品1,色,赤)と(商品1,色,青)はIDと項目名が同じ。値までUNIQUEに含めると両方が登録できてしまう。",
       "sourcePage": 6,
       "adapted": true,
       "needsSourceReview": false,
@@ -227,7 +227,7 @@
         "エ": "全従属の右辺が非キー"
       },
       "answer": "イ",
-      "explanation": "非キー属性の推移的従属を除く。",
+      "explanation": "非キー属性の推移的従属を除く。\n\n例えば社員番号→部署コード→部署名なら部署名を部署表へ分離する。部分従属の除去は第2正規形。",
       "sourcePage": 4,
       "adapted": true,
       "needsSourceReview": false,
@@ -248,7 +248,7 @@
         "エ": "S003,S006"
       },
       "answer": "ウ",
-      "explanation": "部下を持たない社員を抽出する。",
+      "explanation": "部下を持たない社員を抽出する。\n\n外側の社員について、その社員を上司とする行が存在するかを内側で調べる。NOT EXISTSは存在しない社員を残す。",
       "sourcePage": 4,
       "adapted": true,
       "needsSourceReview": false,
@@ -321,7 +321,7 @@
         "エ": "B2 LEFT OUTER JOIN 部品 B1"
       },
       "answer": "イ",
-      "explanation": "検索対象B1を左に置く。",
+      "explanation": "検索対象B1を左に置く。\n\n親がない対象部品も結果に残す必要がある。INNER JOINでは参照先がない行が消える。",
       "sourcePage": 7,
       "adapted": true,
       "needsSourceReview": false,
@@ -348,7 +348,7 @@
         "エ": "直積・選択"
       },
       "answer": "エ",
-      "explanation": "全組合せから一致行を選ぶ。",
+      "explanation": "全組合せから一致行を選ぶ。\n\n直積で全組合せを作り、選択で結合属性が等しい行を残す。射影はその後に必要列を選ぶ演算。",
       "sourcePage": 7,
       "adapted": true,
       "needsSourceReview": false,
@@ -369,7 +369,7 @@
         "エ": "SQL 4"
       },
       "answer": "ウ",
-      "explanation": "同じ性別の最小生年月日と比較する。",
+      "explanation": "同じ性別の最小生年月日と比較する。\n\n同じ性別のMIN(生年月日)を求め、外側の生年月日がそれより後なら残す。日付の小さい方が年長。",
       "sourcePage": 8,
       "adapted": true,
       "needsSourceReview": false,
@@ -422,7 +422,7 @@
         "エ": "並行結果がある逐次実行結果と等しい"
       },
       "answer": "エ",
-      "explanation": "結果の等価性を意味する。",
+      "explanation": "結果の等価性を意味する。\n\n例えばA→Bの順に実行した結果と等価なら、途中でAとBが交互に実行されても直列化可能。",
       "sourcePage": 8,
       "adapted": true,
       "needsSourceReview": false,
@@ -443,7 +443,7 @@
         "エ": "ビューは導出表の一形態"
       },
       "answer": "エ",
-      "explanation": "ビューは問合せに基づく仮想表。",
+      "explanation": "ビューは問合せに基づく仮想表。\n\nビューは問い合わせで定義される表。必ず別の物理データとして保存するわけではない。",
       "sourcePage": 9,
       "adapted": true,
       "needsSourceReview": false,
@@ -464,7 +464,7 @@
         "エ": "独立した1相で整合性保証"
       },
       "answer": "イ",
-      "explanation": "準備済み参加者が決定待ちになることがある。",
+      "explanation": "準備済み参加者が決定待ちになることがある。\n\n準備完了した参加者は、全体の決定を知らないまま独断で確定・取消すると不整合になるため待機する場合がある。",
       "sourcePage": 9,
       "adapted": true,
       "needsSourceReview": false,
@@ -485,7 +485,7 @@
         "エ": "SERIALIZABLE"
       },
       "answer": "エ",
-      "explanation": "表単位のロックはファントムも防ぐ。",
+      "explanation": "表単位のロックはファントムも防ぐ。\n\n表全体の適切なロックは条件に合う新規行の挿入も制限できる。行だけをロックするとファントムが残る場合がある。",
       "sourcePage": 10,
       "adapted": true,
       "needsSourceReview": false,
@@ -506,7 +506,7 @@
         "エ": "異なる値が少ない列ではビットマップが有利"
       },
       "answer": "エ",
-      "explanation": "低カーディナリティの列に適する。",
+      "explanation": "低カーディナリティの列に適する。\n\n性別など少数の値を持つ列ではビット集合を使うと条件のAND・ORを効率的に処理できる。頻繁な更新には注意。",
       "sourcePage": 10,
       "adapted": true,
       "needsSourceReview": false,
@@ -527,7 +527,7 @@
         "エ": "待ちグラフ"
       },
       "answer": "エ",
-      "explanation": "循環待ちを検出する。",
+      "explanation": "循環待ちを検出する。\n\nA→B→Aのような循環を探す。一方向に待っているだけなら、相手が完了すれば処理を再開できる。",
       "sourcePage": 10,
       "adapted": true,
       "needsSourceReview": false,
@@ -548,7 +548,7 @@
         "エ": "減／減"
       },
       "answer": "エ",
-      "explanation": "整合性向上と並行性低下の傾向がある。",
+      "explanation": "整合性向上と並行性低下の傾向がある。\n\n強い隔離性は待機や再試行を増やし得る。ただしMVCCなど実装により性能への影響は異なる。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": false,
@@ -569,7 +569,7 @@
         "エ": "他処理から独立"
       },
       "answer": "ウ",
-      "explanation": "不可分な処理単位を保証する。",
+      "explanation": "不可分な処理単位を保証する。\n\n振替で出金・入金の片方だけを確定させない。全体成功か全体取消が原子性。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": false,
@@ -590,7 +590,7 @@
         "エ": "ロールアップ"
       },
       "answer": "ア",
-      "explanation": "分析の観点を変更する。",
+      "explanation": "分析の観点を変更する。\n\n分析軸を変更して別の切り口で集計する。ドリルダウンはより細かい階層への掘り下げ。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": false,
@@ -611,7 +611,7 @@
         "エ": "大きな応答送信"
       },
       "answer": "イ",
-      "explanation": "キャッシュで処理できない問合せによるサービス妨害。",
+      "explanation": "キャッシュで処理できない問合せによるサービス妨害。\n\n存在しない名前への問い合わせはキャッシュで吸収しにくく、権威DNSへ負荷が集中する。",
       "sourcePage": 12,
       "adapted": true,
       "needsSourceReview": false,
@@ -632,7 +632,7 @@
         "エ": "log₂n"
       },
       "answer": "イ",
-      "explanation": "各人が公開鍵・秘密鍵を一つずつ持つ。",
+      "explanation": "各人が公開鍵・秘密鍵を一つずつ持つ。\n\n公開鍵方式では各人が鍵ペアを持つので2n。通信相手の組ごとに共通鍵を持つ場合のn(n−1)/2とは異なる。",
       "sourcePage": 12,
       "adapted": true,
       "needsSourceReview": false,
@@ -653,7 +653,7 @@
         "エ": "20,80,50"
       },
       "answer": "エ",
-      "explanation": "この問題の計算モデルではヒット率×キャッシュ時間＋ミス率×主記憶時間。ア34、イ28、ウ29、エ26 ns。",
+      "explanation": "この問題の計算モデルではヒット率×キャッシュ時間＋ミス率×主記憶時間。ア34、イ28、ウ29、エ26 ns。\n\nア=0.6×10+0.4×70=34、イ=0.7×10+0.3×70=28、ウ=0.7×20+0.3×50=29、エ=0.8×20+0.2×50=26。ミス時間にキャッシュ確認を加算するモデルなら式が変わる。",
       "sourcePage": 12,
       "adapted": true,
       "needsSourceReview": false,
@@ -674,7 +674,7 @@
         "エ": "利用者が個別障害を意識せず利用可能"
       },
       "answer": "エ",
-      "explanation": "障害を利用者から隠す性質。",
+      "explanation": "障害を利用者から隠す性質。\n\n例えば一台の障害を別の機器への切替で吸収する。格納場所の移動を隠す性質とは区別する。",
       "sourcePage": 13,
       "adapted": true,
       "needsSourceReview": false,
@@ -695,7 +695,7 @@
         "エ": "モデルベーステスト"
       },
       "answer": "ウ",
-      "explanation": "学習・設計・実行を並行して行う。",
+      "explanation": "学習・設計・実行を並行して行う。\n\n探索中に得た知識で次のテストを変える。事前にすべての手順を固定するテストとは異なる。",
       "sourcePage": 13,
       "adapted": true,
       "needsSourceReview": false,
@@ -716,7 +716,7 @@
         "エ": "実装前にテスト作成"
       },
       "answer": "エ",
-      "explanation": "失敗するテストを先に書く。",
+      "explanation": "失敗するテストを先に書く。\n\n失敗するテスト→最小限の実装→整理というサイクル。実装後にまとめてテストを書く方法ではない。",
       "sourcePage": 13,
       "adapted": true,
       "needsSourceReview": false,
