@@ -171,3 +171,18 @@ test('account change during PUT response rejects stale cache update',async()=>{
  await assert.rejects(job,/ACCOUNT_CHANGED/);
  assert.equal(storage.map.size,0);
 });
+
+test('conflict refresh never follows a newly selected account',async()=>{
+ let active=A,checks=0,conflict=false;const calls=[],storage=memory();
+ const auth={signUp:{email:async()=>({data:{}})},signIn:{email:async()=>({data:{}})},
+  signOut:async()=>({data:{}}),getSession:async()=>{
+   if(conflict && ++checks===2)active=B;
+   return {data:{user:{id:active}}};
+  },token:async()=>({data:{token:active===A?'jwt-a':'jwt-b'}})};
+ const client=createCs03AccountClient({authClient:auth,apiUrl:'https://api.example.invalid/',storage,
+  fetcher:async(url,opt)=>{calls.push(opt.method);conflict=true;
+   return Response.json({error:'Conflict'},{status:409});}});
+ await assert.rejects(client.save('2025:am2:4',{level:'review'}),/ACCOUNT_CHANGED/);
+ assert.deepEqual(calls,['PUT']);
+ assert.equal(storage.map.size,0);
+});
