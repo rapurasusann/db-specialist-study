@@ -24,10 +24,15 @@ if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
    // Only allow the exact isolated Managed Auth instance.
    if(cfg.authUrl!=='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech/cs03_auth_sandbox/auth')
     throw Error('AUTH_TARGET_MISMATCH');
+   const cancel=root.querySelector('[data-cs03="cancel-sync"]');
+   const syncProgress=root.querySelector('[data-cs03="sync-progress"]');
+   if(!cancel||!syncProgress)throw Error('SYNC_CONTROLS_MISSING');
    const client=createCs03AccountClient({
     authClient:createAuthClient(cfg.authUrl),apiUrl:cfg.apiUrl,
-    storage:window.localStorage
+    storage:window.localStorage,
+    onListStatus:({phase,received})=>{const active=phase!=='idle';cancel.hidden=!active;cancel.disabled=!active;syncProgress.textContent=phase==='quota-wait'?'通信制限のため60秒待機中（取得済み '+received+' 件）':active?'履歴取得中：'+received+' 件（全件取得後に反映）':'';}
    });
+   cancel.addEventListener('click',()=>{if(client.cancelListProgress()){cancel.disabled=true;syncProgress.textContent='中断処理中…';}});
    root.hidden=false;
    const scoped=createCs03ScopedProgress({account:client});
    const auto=createCs03StudyAutoSync({session:createCs03CrossBrowserSession({account:client}),
