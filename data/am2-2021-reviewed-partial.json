@@ -1,0 +1,599 @@
+{
+  "year": 2021,
+  "source": "IPA 令和3年度秋期 DB午前Ⅱ（学習用要約）",
+  "questionUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
+  "answerUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_ans.pdf",
+  "status": "adapted-review-only",
+  "answerVerification": "Matches staged answer key and independently solved from official question screenshots; official answer glyphs still unavailable",
+  "pendingDiagramQuestions": [
+    2,
+    4
+  ],
+  "questions": {
+    "am2:1": {
+      "stem": "CAP定理が示す分散システムの制約は？",
+      "options": {
+        "ア": "最終的整合性",
+        "イ": "トランザクションの一貫性",
+        "ウ": "直列化可能性",
+        "エ": "分断時の整合性と可用性の両立限界"
+      },
+      "answer": "エ",
+      "explanation": "分断が発生すると強い整合性と可用性を同時に保証できない。",
+      "sourcePage": 3,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:2": {
+      "stem": "組織階層を表す3モデルについて正しい説明は？",
+      "options": {
+        "ア": "全モデルで階層追加時に変更不要",
+        "イ": "全モデルで複数親を表現不能",
+        "ウ": "Bでは親が子コードを外部キーに持つ",
+        "エ": "Cでは循環を防ぐ制約が必要"
+      },
+      "answer": "エ",
+      "explanation": "関連表を使うCでは循環を防止する制約が別途必要。",
+      "sourcePage": 4,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "モデルの構造（要約）",
+          "headers": [
+            "モデル",
+            "構造"
+          ],
+          "rows": [
+            [
+              "A",
+              "部1―多課1―多係"
+            ],
+            [
+              "B",
+              "組織の自己関連：親0..1、子多、階層制約"
+            ],
+            [
+              "C",
+              "組織と組織構造（親組織コード・子組織コード）の2関連"
+            ]
+          ]
+        }
+      ]
+    },
+    "am2:3": {
+      "stem": "R(A,B,C)の候補キーがABとAC、従属がAB→CとC→Bの場合、最高の正規形は？",
+      "options": {
+        "ア": "1NF",
+        "イ": "2NF",
+        "ウ": "3NF",
+        "エ": "BCNF"
+      },
+      "answer": "ウ",
+      "explanation": "Bは候補キーの構成属性なので3NFを満たすが、CはスーパーキーでないためBCNFを満たさない。",
+      "sourcePage": 4,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:4": {
+      "stem": "医師・診療科・診察・患者の関係として正しい多重度は？",
+      "options": {
+        "ア": "多:1、多:1、1:多",
+        "イ": "多:1、1:多、多:1",
+        "ウ": "1:多、多:1、1:多",
+        "エ": "1:多、1:多、多:1"
+      },
+      "answer": "イ",
+      "explanation": "外部キーを持つ医師・診察が多側になる。",
+      "sourcePage": 5,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "表定義",
+          "headers": [
+            "表",
+            "主キー",
+            "外部キー"
+          ],
+          "rows": [
+            [
+              "医師",
+              "医師番号",
+              "診療科コード"
+            ],
+            [
+              "診療科",
+              "診療科コード",
+              "なし"
+            ],
+            [
+              "診察",
+              "診療科コード＋患者番号＋診察日時",
+              "診療科コード、患者番号"
+            ],
+            [
+              "患者",
+              "患者番号",
+              "なし"
+            ]
+          ]
+        }
+      ]
+    },
+    "am2:5": {
+      "stem": "正規化に関する適切な説明は？",
+      "options": {
+        "ア": "全分解で従属性保存",
+        "イ": "全分解で無損失",
+        "ウ": "3NFへの無損失かつ従属性保存の分解が可能",
+        "エ": "4NFから5NFでは自明な多値従属を保存"
+      },
+      "answer": "ウ",
+      "explanation": "第3正規形への合成では両方の性質を確保できる。",
+      "sourcePage": 5,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:6": {
+      "stem": "商品表の仕入先コードから当月仕入実績の仕入先コードをEXCEPTで除くと？",
+      "options": {
+        "ア": "K01,K01,K03",
+        "イ": "K01,K03",
+        "ウ": "K02,K02,K04",
+        "エ": "K02,K04"
+      },
+      "answer": "エ",
+      "explanation": "差集合を求め重複も除く。",
+      "sourcePage": 6,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "商品",
+          "headers": [
+            "商品コード",
+            "仕入先コード"
+          ],
+          "rows": [
+            [
+              "S001",
+              "K01"
+            ],
+            [
+              "S002",
+              "K01"
+            ],
+            [
+              "S003",
+              "K02"
+            ],
+            [
+              "S004",
+              "K02"
+            ],
+            [
+              "S005",
+              "K03"
+            ],
+            [
+              "S006",
+              "K04"
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "title": "当月仕入",
+          "headers": [
+            "仕入先コード",
+            "金額"
+          ],
+          "rows": [
+            [
+              "K01",
+              150000
+            ],
+            [
+              "K03",
+              100000
+            ],
+            [
+              "K05",
+              250000
+            ]
+          ]
+        }
+      ]
+    },
+    "am2:7": {
+      "stem": "ダーティリードは防ぐが反復読取りの一致は保証しない隔離水準は？",
+      "options": {
+        "ア": "READ COMMITTED",
+        "イ": "READ UNCOMMITTED",
+        "ウ": "REPEATABLE READ",
+        "エ": "SERIALIZABLE"
+      },
+      "answer": "ア",
+      "explanation": "READ COMMITTEDは確定済み値だけを読むが再読取り時の更新は許す。",
+      "sourcePage": 6,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:8": {
+      "stem": "資格FE取得者を残し、APがあれば併記するLEFT JOINの条件は？",
+      "options": {
+        "ア": "ONで社員一致・FE・AP、WHEREでFE",
+        "イ": "同じON、WHEREで左資格非NULL",
+        "ウ": "同じON、WHEREで右資格AP",
+        "エ": "ONで社員一致、WHEREでFEとAP"
+      },
+      "answer": "ア",
+      "explanation": "右側のAP条件はONに置き、左側FEだけをWHEREで絞る。",
+      "sourcePage": 7,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "社員取得資格",
+          "headers": [
+            "社員",
+            "資格"
+          ],
+          "rows": [
+            [
+              "S001",
+              "FE"
+            ],
+            [
+              "S001",
+              "AP"
+            ],
+            [
+              "S001",
+              "DB"
+            ],
+            [
+              "S002",
+              "FE"
+            ],
+            [
+              "S002",
+              "SM"
+            ],
+            [
+              "S003",
+              "FE"
+            ],
+            [
+              "S004",
+              "AP"
+            ],
+            [
+              "S005",
+              "NULL"
+            ]
+          ]
+        },
+        {
+          "type": "table",
+          "title": "結果",
+          "headers": [
+            "社員",
+            "資格1",
+            "資格2"
+          ],
+          "rows": [
+            [
+              "S001",
+              "FE",
+              "AP"
+            ],
+            [
+              "S002",
+              "FE",
+              "NULL"
+            ],
+            [
+              "S003",
+              "FE",
+              "NULL"
+            ]
+          ]
+        }
+      ]
+    },
+    "am2:9": {
+      "stem": "n属性の関係の射影は空集合と全属性を含め何通り？",
+      "options": {
+        "ア": "log₂n",
+        "イ": "n",
+        "ウ": "2n",
+        "エ": "2ⁿ"
+      },
+      "answer": "エ",
+      "explanation": "各属性を含めるか否かの2択がn個ある。",
+      "sourcePage": 8,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:10": {
+      "stem": "会員項目の最新行番号を選び、CASEで横持ちに変換するとき共通して使う集約は？",
+      "options": {
+        "ア": "COUNT",
+        "イ": "DISTINCT",
+        "ウ": "MAX",
+        "エ": "MIN"
+      },
+      "answer": "ウ",
+      "explanation": "最大行番号を選び、CASEの非NULL値をMAXで取り出す。",
+      "sourcePage": 9,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "会員項目",
+          "headers": [
+            "行番号",
+            "会員番号",
+            "項目名",
+            "項目値"
+          ],
+          "rows": [
+            [
+              1,
+              "0111",
+              "会員名",
+              "情報太郎"
+            ],
+            [
+              2,
+              "0111",
+              "最終購入年月日",
+              "2021-02-05"
+            ],
+            [
+              3,
+              "0112",
+              "会員名",
+              "情報花子"
+            ],
+            [
+              4,
+              "0112",
+              "最終購入年月日",
+              "2021-01-30"
+            ],
+            [
+              5,
+              "0112",
+              "最終購入年月日",
+              "2021-02-01"
+            ],
+            [
+              6,
+              "0113",
+              "会員名",
+              "情報次郎"
+            ]
+          ]
+        }
+      ]
+    },
+    "am2:11": {
+      "stem": "和両立が不要な関係演算は？",
+      "options": {
+        "ア": "共通集合",
+        "イ": "差集合",
+        "ウ": "直積",
+        "エ": "和集合"
+      },
+      "answer": "ウ",
+      "explanation": "直積は異なる属性構成でも実行できる。",
+      "sourcePage": 10,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:12": {
+      "stem": "分散DBの2相コミットの性質は？",
+      "options": {
+        "ア": "参加者ごとに異なる確定指示",
+        "イ": "主サイトの指示が届かず確定判断不能の場合がある",
+        "ウ": "一部取消でも全体確定可能",
+        "エ": "独立した1相コミットで一貫性保証"
+      },
+      "answer": "イ",
+      "explanation": "準備済み参加者は最終決定を受け取れないと待つことがある。",
+      "sourcePage": 10,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:13": {
+      "stem": "2相ロックの規則は？",
+      "options": {
+        "ア": "デッドロックなし",
+        "イ": "開始順コミット",
+        "ウ": "全解除後のみコミット",
+        "エ": "必要なロックを取得し終えてから解除"
+      },
+      "answer": "エ",
+      "explanation": "取得相と解放相を分離する。",
+      "sourcePage": 11,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:14": {
+      "stem": "行aの共有ロックと表全体の専有ロックの関係は？",
+      "options": {
+        "ア": "別行bの専有も不可",
+        "イ": "表全体の専有は不可",
+        "ウ": "表共有と表専有は両立",
+        "エ": "表専有と他者の行専有は両立"
+      },
+      "answer": "イ",
+      "explanation": "表全体への専有ロックはその表の既存行ロックと競合する。",
+      "sourcePage": 11,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:15": {
+      "stem": "各n行の2表を単純な入れ子ループで結合する計算量は？",
+      "options": {
+        "ア": "O(log n)",
+        "イ": "O(n)",
+        "ウ": "O(n log n)",
+        "エ": "O(n²)"
+      },
+      "answer": "エ",
+      "explanation": "外側のn行それぞれに内側n行を比較する。",
+      "sourcePage": 11,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:16": {
+      "stem": "MVCCの特徴は？",
+      "options": {
+        "ア": "明示ロック不可",
+        "イ": "アプリが版を指定必須",
+        "ウ": "更新で新版を作り読取りの待ちを回避",
+        "エ": "デッドロックなし"
+      },
+      "answer": "ウ",
+      "explanation": "読取りが適切な旧版を参照できる。",
+      "sourcePage": 12,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:17": {
+      "stem": "Indexed Database APIの用途は？",
+      "options": {
+        "ア": "JavaのDB接続",
+        "イ": "埋込みSQL",
+        "ウ": "ブラウザ内ストレージのトランザクション",
+        "エ": "ストアドプロシージャ"
+      },
+      "answer": "ウ",
+      "explanation": "IndexedDBはブラウザ内で構造化データを保存するAPI。",
+      "sourcePage": 12,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:18": {
+      "stem": "Apache Sparkの特徴は？",
+      "options": {
+        "ア": "MapReduce型バッチ専用",
+        "イ": "RDDに変換を適用",
+        "ウ": "Pub/Subメッセージング",
+        "エ": "マスターなしKVS"
+      },
+      "answer": "イ",
+      "explanation": "RDDは分散データ集合で変換・処理を行える。",
+      "sourcePage": 13,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:19": {
+      "stem": "インシデント対応の順序は？",
+      "options": {
+        "ア": "対応→検知→分類",
+        "イ": "対応→分類→検知",
+        "ウ": "検知→対応→分類",
+        "エ": "検知→分類→対応"
+      },
+      "answer": "エ",
+      "explanation": "検知後に優先度を判断して対応する。",
+      "sourcePage": 13,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:20": {
+      "stem": "ベイジアンフィルタの仕組みは？",
+      "options": {
+        "ア": "許可リスト",
+        "イ": "送信サーバ検証",
+        "ウ": "中継サーバ一覧",
+        "エ": "分類済みメールから統計的に学習"
+      },
+      "answer": "エ",
+      "explanation": "メールの特徴から迷惑メールの確率を推定する。",
+      "sourcePage": 13,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:21": {
+      "stem": "パケットフィルタ型FWの主な判断材料は？",
+      "options": {
+        "ア": "POST本文",
+        "イ": "送受信IPとポート",
+        "ウ": "送信元MACのみ",
+        "エ": "URL"
+      },
+      "answer": "イ",
+      "explanation": "ネットワーク・トランスポート層の情報で通過を制御する。",
+      "sourcePage": 14,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:22": {
+      "stem": "ECCで1ビット訂正と2ビット検出に用いる符号は？",
+      "options": {
+        "ア": "偶数パリティ",
+        "イ": "垂直パリティ",
+        "ウ": "チェックサム",
+        "エ": "ハミング符号"
+      },
+      "answer": "エ",
+      "explanation": "拡張ハミング符号でSECDEDを実現する。",
+      "sourcePage": 14,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:23": {
+      "stem": "通常60%使用の同等サーバが8台停止しても残りを80%以下にする最小台数は？",
+      "options": {
+        "ア": "32",
+        "イ": "34",
+        "ウ": "36",
+        "エ": "40"
+      },
+      "answer": "ア",
+      "explanation": "0.6n≤0.8(n−8)よりn≥32。",
+      "sourcePage": 14,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:24": {
+      "stem": "使用性を改善する施策は？",
+      "options": {
+        "ア": "オンラインヘルプ充実",
+        "イ": "外部連携拡張",
+        "ウ": "機能追加",
+        "エ": "データ複製"
+      },
+      "answer": "ア",
+      "explanation": "利用方法を理解しやすくすることは使用性向上に直結する。",
+      "sourcePage": 15,
+      "adapted": true,
+      "needsSourceReview": true
+    },
+    "am2:25": {
+      "stem": "マッシュアップとは？",
+      "options": {
+        "ア": "既存コードから仕様抽出",
+        "イ": "既存コードを部品化",
+        "ウ": "クラスライブラリ利用",
+        "エ": "公開サービスを組み合わせ新サービス提供"
+      },
+      "answer": "エ",
+      "explanation": "複数の既存サービスを組み合わせる。",
+      "sourcePage": 15,
+      "adapted": true,
+      "needsSourceReview": true
+    }
+  }
+}
