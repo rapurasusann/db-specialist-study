@@ -1,8 +1,9 @@
+import {validCs03RecordId,CS03_MAX_CATALOG_RECORDS} from './cs03-learning-record-id.mjs';
 // Private-to-this-origin, per-account checkpoint of unsent study drafts.
 // Local browser storage is not encrypted and is NOT a substitute for JSON backups.
 // No tokens, email addresses, passwords, or server credentials are stored here.
 const USER=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const QUESTION=/^20\d{2}:(am1|am2|pm1|pm2):(?:[1-9]|[1-9]\d|100)$/;
+
 const FORMAT='cs03-unsaved-account-progress-v1';
 const PREFIX='db-study-cs03-unsaved-v1-';
 const MAX_BYTES=1100000;
@@ -10,11 +11,11 @@ function assertUser(id){if(!USER.test(id??''))throw Error('DRAFT_ACCOUNT_INVALID
 function cleanRows(records){
  if(!records||typeof records!=='object'||Array.isArray(records))throw Error('DRAFT_RECORDS_INVALID');
  const entries=Object.entries(records);
- if(entries.length>1600)throw Error('DRAFT_RECORDS_INVALID');
+ if(entries.length>CS03_MAX_CATALOG_RECORDS)throw Error('DRAFT_RECORDS_INVALID');
  const result=Object.create(null);
  let total=0;
  for(const [id,row] of entries){
-  if(!QUESTION.test(id)||!row||typeof row!=='object'||Array.isArray(row))
+  if(!validCs03RecordId(id)||!row||typeof row!=='object'||Array.isArray(row))
    throw Error('DRAFT_RECORD_INVALID');
   const copy=structuredClone(row);
   const json=JSON.stringify(copy);
