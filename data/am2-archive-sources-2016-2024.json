@@ -34,7 +34,7 @@
         "イ",
         "エ"
       ],
-      "answerVerification": "IPA official answer PDF text and page image checked 2026-11-24; all 25 match registered key"
+      "answerVerification": "Registered key comparison recorded previously; independently retrievable official PDF evidence not yet attached. Direct verification required before release."
     },
     {
       "year": 2017,
@@ -68,7 +68,7 @@
         "ア",
         "ア"
       ],
-      "answerVerification": "IPA official answer PDF text and page image checked 2026-11-24; all 25 match registered key"
+      "answerVerification": "Registered key comparison recorded previously; independently retrievable official PDF evidence not yet attached. Direct verification required before release."
     },
     {
       "year": 2018,
@@ -102,7 +102,7 @@
         "ウ",
         "エ"
       ],
-      "answerVerification": "IPA official answer PDF text and page image checked 2026-11-24; all 25 match registered key"
+      "answerVerification": "Registered key comparison recorded previously; independently retrievable official PDF evidence not yet attached. Direct verification required before release."
     },
     {
       "year": 2019,
@@ -170,7 +170,7 @@
         "イ",
         "エ"
       ],
-      "answerVerification": "IPA official answer PDF text and page image checked 2026-11-24; all 25 match registered key"
+      "answerVerification": "Registered key comparison recorded previously; independently retrievable official PDF evidence not yet attached. Direct verification required before release."
     },
     {
       "year": 2021,
@@ -205,7 +205,7 @@
         "エ"
       ],
       "answerEvidence": "https://shiza-lab.com/wp-content/uploads/2025/07/db-2021-1-am2-ans.pdf",
-      "answerVerification": "provisional: official PDF Japanese glyphs unavailable in retrieval renderer; copied IPA answer PDF text, official direct recheck pending"
+      "answerVerification": "2026-11-24: official PDF opened and screenshot inspected; kana glyphs absent in both text and image. Third-party copy at https://shiza-lab.com/wp-content/uploads/2025/07/db-2021-1-am2-ans.pdf read successfully; 25/25 match. Official verification remains open."
     },
     {
       "year": 2022,
@@ -239,7 +239,7 @@
         "イ",
         "イ"
       ],
-      "answerVerification": "IPA official answer PDF text and page image checked 2026-11-24; all 25 match registered key"
+      "answerVerification": "Registered key comparison recorded previously; independently retrievable official PDF evidence not yet attached. Direct verification required before release."
     },
     {
       "year": 2023,
@@ -273,7 +273,7 @@
         "エ",
         "エ"
       ],
-      "answerVerification": "IPA official answer PDF text and page image checked 2026-11-24; all 25 match registered key"
+      "answerVerification": "Registered key comparison recorded previously; independently retrievable official PDF evidence not yet attached. Direct verification required before release."
     },
     {
       "year": 2024,
@@ -307,7 +307,7 @@
         "ウ",
         "エ"
       ],
-      "answerVerification": "IPA official answer PDF text and page image checked 2026-11-24; all 25 match registered key"
+      "answerVerification": "Registered key comparison recorded previously; independently retrievable official PDF evidence not yet attached. Direct verification required before release."
     }
   ],
   "pendingOfficialAnswerRecheck": [
