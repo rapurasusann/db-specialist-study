@@ -48,28 +48,6 @@
       "needsSourceReview": true,
       "figures": [
         {
-          "type": "table",
-          "title": "モデルの構造（要約）",
-          "headers": [
-            "モデル",
-            "関連"
-          ],
-          "rows": [
-            [
-              "A",
-              "部1―多課、課1―多係"
-            ],
-            [
-              "B",
-              "組織の自己関連：親0..1、子*、循環禁止"
-            ],
-            [
-              "C",
-              "組織構造に親組織コードと子組織コードを保持"
-            ]
-          ]
-        },
-        {
           "type": "uml",
           "title": "モデルA",
           "classes": [
@@ -96,7 +74,8 @@
               "to": "課",
               "fromLabel": "1",
               "toLabel": "*",
-              "label": ""
+              "label": "親・子",
+              "offset": 0
             },
             {
               "kind": "association",
@@ -104,18 +83,30 @@
               "to": "係",
               "fromLabel": "1",
               "toLabel": "*",
-              "label": ""
+              "label": "親・子",
+              "offset": 0
             }
-          ]
+          ],
+          "attributes": {
+            "部": [
+              "部コード"
+            ],
+            "課": [
+              "課コード"
+            ],
+            "係": [
+              "係コード"
+            ]
+          }
         },
         {
           "type": "uml",
-          "title": "モデルB（循環禁止）",
+          "title": "モデルB {階層}",
           "classes": [
             [
               "組織",
               175,
-              90
+              95
             ]
           ],
           "links": [
@@ -125,7 +116,13 @@
               "fromLabel": "0..1 親",
               "toLabel": "* 子"
             }
-          ]
+          ],
+          "attributes": {
+            "組織": [
+              "組織コード",
+              "組織レベル"
+            ]
+          }
         },
         {
           "type": "uml",
@@ -149,9 +146,29 @@
               "to": "組織構造",
               "fromLabel": "1",
               "toLabel": "*",
-              "label": "親・子それぞれの関連"
+              "label": "親",
+              "offset": -12
+            },
+            {
+              "kind": "association",
+              "from": "組織",
+              "to": "組織構造",
+              "fromLabel": "1",
+              "toLabel": "*",
+              "label": "子",
+              "offset": 12
             }
-          ]
+          ],
+          "attributes": {
+            "組織": [
+              "組織コード",
+              "組織レベル"
+            ],
+            "組織構造": [
+              "親組織コード",
+              "子組織コード"
+            ]
+          }
         }
       ]
     },
@@ -823,6 +840,13 @@
                 "toLabel": "*",
                 "label": "履修する"
               }
+            ],
+            "associationClasses": [
+              {
+                "from": "学生",
+                "to": "授業科目",
+                "classId": "学期"
+              }
             ]
           }
         ],
@@ -870,7 +894,7 @@
         "エ": [
           {
             "type": "uml",
-            "title": "エ（三項関連の概略）",
+            "title": "エ（三項関連）",
             "classes": [
               [
                 "学生",
@@ -918,6 +942,9 @@
                 "toLabel": "",
                 "label": ""
               }
+            ],
+            "diamondNodes": [
+              "履修"
             ]
           }
         ]
@@ -1474,5 +1501,5 @@
     4,
     6
   ],
-  "pendingDiagramNote": "Native draft diagrams added; association-class, ternary diamond and parallel associations require precise renderer before release."
+  "pendingDiagramNote": "Q3/Q6 renderer features applied. Q4 graph semantics and all original diagram fidelity/browser checks remain open."
 }
