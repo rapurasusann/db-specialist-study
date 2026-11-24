@@ -1,7 +1,7 @@
 /* IPA official DB Specialist afternoon booklets, indexed by examination year.
  * The source URLs below were checked against the IPA yearly exam directories on
- * 2026-11-24. 2016/2017 PM-I PDF URLs originate from the official linked archive,
- * though automatic PDF fetch failed; live download has not been validated.
+ * 2026-11-24. 2016/2017 PM-I PDF URLs originate from the official linked archive.
+ * 2016 PDF was fetched (24 pages); 2017 fetch timed out and awaits browser check.
  * These are BOOKLETS (3 PM-I questions / 2 PM-II questions), not split PDFs.
  * © IPA for the externally linked questions and answer booklets.
  * Never replace URLs with third-party copies or inferred endpoints.
