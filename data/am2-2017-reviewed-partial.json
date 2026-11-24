@@ -20,7 +20,7 @@
       "needsSourceReview": true
     },
     "am2:2": {
-      "stem": "勘定と会計取引を移動表で結ぶ。現金の2017年4月30日現在の残高を求める方法は？ 一つの会計取引に対応する移動金額の総和は0で、会計取引表は今期分だけを保持する。",
+      "stem": "勘定と会計取引を移動表で結ぶ。現金の2017年4月30日現在の残高を求める方法は？ 一つの会計取引に対応する移動金額の総和は0で、会計取引表は今期分だけを保持する。 期首残高と取引ごとの増減額から残高を計算する。",
       "options": {
         "ア": "期首残高を含めず移動金額を合計",
         "イ": "期首残高に対象日までの移動金額を加算し勘定別に集約",
@@ -619,12 +619,12 @@
       ]
     },
     "am2:11": {
-      "stem": "PCには番号1、2のスロットがあり、カードは最大1台のPCに取り付けられる。取付け表の制約は？",
+      "stem": "PCには番号1、2のスロットがあり、各スロットには最大1枚のメモリカードを取り付けられる。各カードは同時に最大1か所に取り付けられる。取付け表の空欄[a]に必要な制約は？",
       "options": {
-        "ア": "PK(PCID,スロット番号)",
-        "イ": "PK(PCID,スロット番号,カードID)",
-        "ウ": "PK(PCID,スロット番号) と UNIQUE(カードID)",
-        "エ": "PK(スロット番号,カードID) と UNIQUE(PCID)"
+        "ア": "PK(PCID, スロット番号)",
+        "イ": "PK(PCID, スロット番号, メモリカードID)",
+        "ウ": "PK(PCID, スロット番号) と UNIQUE(メモリカードID)",
+        "エ": "PK(スロット番号, メモリカードID) と UNIQUE(PCID)"
       },
       "answer": "ウ",
       "explanation": "スロットごとの一意性とカードの重複取付け禁止を両立する。",
@@ -694,7 +694,7 @@
         "エ": "S−(R−S)"
       },
       "answer": "ア",
-      "explanation": "RからR固有の要素を除く。",
+      "explanation": "R−SはRにだけ含まれる要素であり、これをRから除けばR∩Sになる。",
       "sourcePage": 11,
       "adapted": true,
       "needsSourceReview": true
@@ -827,7 +827,7 @@
       "needsSourceReview": true
     },
     "am2:19": {
-      "stem": "各n行の二表を単純な入れ子ループで結合する計算量は？",
+      "stem": "それぞれn行の二表を索引なしの単純な入れ子ループで結合するとき、比較回数のオーダは？",
       "options": {
         "ア": "O(2n)",
         "イ": "O(log n)",
@@ -894,7 +894,11 @@
       "explanation": "ネットワークとディスク心拍を確認後に専有を行う。",
       "sourcePage": 16,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "needs-source-review",
+        "reason": "Failure detection and fencing sequence requires original scenario; abbreviated stem may not uniquely determine answer."
+      }
     },
     "am2:24": {
       "stem": "JIS X 25010:2013の品質特性で正しい説明は？",
