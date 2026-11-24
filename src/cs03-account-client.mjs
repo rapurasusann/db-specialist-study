@@ -16,7 +16,7 @@ function checkRecord(id,data){
  if(!RECORD_ID.test(id)||!data||typeof data!=='object'||Array.isArray(data))throw appError('INVALID_RECORD');
  if(new TextEncoder().encode(JSON.stringify(data)).length>16000)throw appError('RECORD_TOO_LARGE');
 }
-export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage}){
+export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage,wait=ms=>new Promise(resolve=>setTimeout(resolve,ms))}){
  if(!authClient?.signUp?.email||!authClient?.signIn?.email||!authClient?.getSession||!authClient?.signOut||!authClient?.token)
   throw appError('AUTH_CLIENT_REQUIRED');
  let endpoint;
@@ -55,6 +55,7 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
   if((await session()).id!==userId)throw appError('ACCOUNT_CHANGED');
   if(!response.ok) {
    if(response.status===401)throw appError('SIGN_IN_REQUIRED');
+   if(response.status===429)throw appError('PROGRESS_RATE_LIMITED');
    if(response.status===409)throw appError('REVISION_CONFLICT');
    throw appError('PROGRESS_API_FAILED');
   }
@@ -108,15 +109,29 @@ export function createCs03AccountClient({authClient,apiUrl,fetcher=fetch,storage
   const seen=new Set();
   // An account is bounded to 4 years x 4 exams x 100 questions by the UI.
   // Abort rather than silently returning a partial view.
-  for(let page=0;page<80;page++){
+  const maxRecords=1600,maxQuotaWaits=180;
+  let quotaWaits=0;
+  for(let page=0;page<maxRecords;page++){
    const path='progress?examCode=db&limit=100'+(cursor?'&cursor='+encodeURIComponent(cursor):'');
-   const value=await request(user.id,'GET',path);
+   let value;
+   for(;;){
+    try{value=await request(user.id,'GET',path);break;}
+    catch(error){
+     if(error.message!=='PROGRESS_RATE_LIMITED')throw error;
+     if(quotaWaits>=maxQuotaWaits)throw appError('PROGRESS_LIST_QUOTA_LIMIT');
+     quotaWaits++;
+     // Gateway does not expose Retry-After. Keep the same cursor and wait a full window.
+     await wait(60000);
+     if((await session()).id!==user.id)throw appError('ACCOUNT_CHANGED');
+    }
+   }
    if(!value||!Array.isArray(value.records)||value.records.length>100)throw appError('PROGRESS_LIST_INVALID');
    for(const row of value.records){
     if(!RECORD_ID.test(row?.question_id??'')||!Number.isSafeInteger(row.revision)||row.revision<1 ||
        !row.data||typeof row.data!=='object'||Array.isArray(row.data)||
        new TextEncoder().encode(JSON.stringify(row.data)).length>16384 ||
        Object.hasOwn(records,row.question_id))throw appError('PROGRESS_LIST_INVALID');
+    if(Object.keys(records).length>=maxRecords)throw appError('PROGRESS_LIST_LIMIT');
     records[row.question_id]={data:structuredClone(row.data),revision:row.revision,updatedAt:row.updated_at};
    }
    const next=value.nextCursor;
