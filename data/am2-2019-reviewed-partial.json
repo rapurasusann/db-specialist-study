@@ -191,7 +191,7 @@
       }
     },
     "am2:4": {
-      "stem": "プロパティグラフではエッジが二つのノードを結び、プロパティはノード又はエッジの一方に所属する。適切な例は？",
+      "stem": "ノード間の関連にエッジを対応付け、プロパティのノード所属とエッジ所属は同時に成立しない。適切なオブジェクト図を選ぶ。",
       "options": {
         "ア": "二つのエッジをノードで結ぶ",
         "イ": "東京・新宿のノードを中央線のエッジで結び、所要時間14分をエッジの属性とする",
@@ -199,7 +199,7 @@
         "エ": "プロパティを関連の中心とする"
       },
       "answer": "イ",
-      "explanation": "エッジはノード間の関係であり、プロパティは一つの対象に所属する。",
+      "explanation": "イはノード間の関連にエッジが付属し、時間プロパティはそのエッジに所属する。アはエッジ同士の関連、ウは同一プロパティの複数ノードへの所属、エはプロパティを関連クラスにしているため不適切。",
       "sourcePage": 5,
       "adapted": true,
       "needsSourceReview": false,
@@ -265,7 +265,7 @@
               "classId": "エッジ"
             }
           ],
-          "title": "制約：二つの所属関係は同時には成立しない"
+          "title": "所属制約：ノード所属とエッジ所属は同時に成立しない"
         }
       ],
       "optionFigures": {
@@ -314,9 +314,6 @@
               "N01：ノード": [
                 "ノード名＝東京"
               ],
-              "N02：ノード": [
-                "ノード名＝新宿"
-              ],
               "E01：エッジ": [
                 "エッジ名＝中央線"
               ],
@@ -326,10 +323,6 @@
               "P01：プロパティ": [
                 "プロパティ名＝時間(分)",
                 "プロパティ値＝6"
-              ],
-              "P02：プロパティ": [
-                "プロパティ名＝時間(分)",
-                "プロパティ値＝12"
               ]
             },
             "associationClasses": [
@@ -392,16 +385,9 @@
               "E01：エッジ": [
                 "エッジ名＝中央線"
               ],
-              "E02：エッジ": [
-                "エッジ名＝山手線"
-              ],
               "P01：プロパティ": [
                 "プロパティ名＝時間(分)",
                 "プロパティ値＝14"
-              ],
-              "P02：プロパティ": [
-                "プロパティ名＝時間(分)",
-                "プロパティ値＝12"
               ]
             },
             "associationClasses": [
@@ -471,16 +457,9 @@
               "E01：エッジ": [
                 "エッジ名＝中央線"
               ],
-              "E02：エッジ": [
-                "エッジ名＝山手線"
-              ],
               "P01：プロパティ": [
                 "プロパティ名＝時間(分)",
                 "プロパティ値＝14"
-              ],
-              "P02：プロパティ": [
-                "プロパティ名＝時間(分)",
-                "プロパティ値＝12"
               ]
             },
             "associationClasses": [
@@ -593,6 +572,13 @@
         "page": 5,
         "reviewedOn": "2026-11-24",
         "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
+      },
+      "diagramReview": {
+        "status": "source-semantics-compared-browser-pending",
+        "reviewedOn": "2026-11-24",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 5,
+        "scope": "IPA PDF page rendered and visually compared in this review; SVG appearance and exact routing remain pending."
       }
     },
     "am2:5": {
@@ -604,7 +590,7 @@
         "エ": "1:多、1:多、多:1"
       },
       "answer": "イ",
-      "explanation": "外部キーを持つ医師・診察が多側になる。",
+      "explanation": "診療科コードを外部キーに持つ医師と診察は、診療科に対して多側になる。診察は患者番号も外部キーに持ち、患者に対して多側になる。したがって左から多対1、1対多、多対1。",
       "sourcePage": 6,
       "adapted": true,
       "needsSourceReview": false,
@@ -655,22 +641,22 @@
             "classes": [
               [
                 "医師",
-                40,
+                55,
                 80
               ],
               [
                 "診療科",
-                130,
+                195,
                 80
               ],
               [
                 "診察",
-                220,
+                335,
                 80
               ],
               [
                 "患者",
-                310,
+                475,
                 80
               ]
             ],
@@ -709,22 +695,22 @@
             "classes": [
               [
                 "医師",
-                40,
+                55,
                 80
               ],
               [
                 "診療科",
-                130,
+                195,
                 80
               ],
               [
                 "診察",
-                220,
+                335,
                 80
               ],
               [
                 "患者",
-                310,
+                475,
                 80
               ]
             ],
@@ -763,22 +749,22 @@
             "classes": [
               [
                 "医師",
-                40,
+                55,
                 80
               ],
               [
                 "診療科",
-                130,
+                195,
                 80
               ],
               [
                 "診察",
-                220,
+                335,
                 80
               ],
               [
                 "患者",
-                310,
+                475,
                 80
               ]
             ],
@@ -817,22 +803,22 @@
             "classes": [
               [
                 "医師",
-                40,
+                55,
                 80
               ],
               [
                 "診療科",
-                130,
+                195,
                 80
               ],
               [
                 "診察",
-                220,
+                335,
                 80
               ],
               [
                 "患者",
-                310,
+                475,
                 80
               ]
             ],
@@ -871,6 +857,13 @@
         "page": 6,
         "reviewedOn": "2026-11-24",
         "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
+      },
+      "diagramReview": {
+        "status": "source-semantics-compared-browser-pending",
+        "reviewedOn": "2026-11-24",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 6,
+        "scope": "IPA PDF page rendered and visually compared in this review; SVG appearance and exact routing remain pending."
       }
     },
     "am2:6": {
@@ -924,7 +917,7 @@
                 "to": "授業科目",
                 "fromLabel": "*",
                 "toLabel": "*",
-                "label": ""
+                "label": "履修する"
               }
             ]
           }
@@ -997,7 +990,7 @@
                 "to": "授業科目",
                 "fromLabel": "1",
                 "toLabel": "*",
-                "label": ""
+                "label": "履修する"
               },
               {
                 "kind": "association",
@@ -1074,6 +1067,13 @@
         "page": 7,
         "reviewedOn": "2026-11-24",
         "scope": "Official PDF page image visually inspected; adapted question, choices and answer logic compared. Exact diagram layout and browser acceptance separate."
+      },
+      "diagramReview": {
+        "status": "source-semantics-compared-browser-pending",
+        "reviewedOn": "2026-11-24",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
+        "page": 7,
+        "scope": "IPA PDF page rendered and visually compared in this review; SVG appearance and exact routing remain pending."
       }
     },
     "am2:7": {
