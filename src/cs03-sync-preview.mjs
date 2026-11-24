@@ -1,11 +1,12 @@
+import {validCs03RecordId} from './cs03-learning-record-id.mjs';
 // CS-03 read-only reconciliation preview for future cross-device progress.
 // Never writes to device storage or an account API. No timestamp-based silent merge.
-const ID=/^20\d{2}:(am1|am2|pm1|pm2):(?:[1-9]|[1-9]\d|100)$/;
+
 function source(value,name){
  if(!value||typeof value!=='object'||Array.isArray(value))throw Error('SYNC_PREVIEW_INVALID_'+name);
  const normalized=new Map();
  for(const [id,row] of Object.entries(value)){
-  if(!ID.test(id)||!row||typeof row!=='object'||Array.isArray(row))throw Error('SYNC_PREVIEW_INVALID_'+name);
+  if(!validCs03RecordId(id)||!row||typeof row!=='object'||Array.isArray(row))throw Error('SYNC_PREVIEW_INVALID_'+name);
   const data=name==='ACCOUNT'?row.data:row;
   if(!data||typeof data!=='object'||Array.isArray(data))throw Error('SYNC_PREVIEW_INVALID_'+name);
   if(Object.keys(data).some(k=>['__proto__','constructor','prototype'].includes(k)))throw Error('SYNC_PREVIEW_INVALID_'+name);
