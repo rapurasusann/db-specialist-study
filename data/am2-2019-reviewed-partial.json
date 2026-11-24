@@ -3,7 +3,7 @@
   "source": "IPA 平成31年度春期 データベーススペシャリスト試験 午前Ⅱ",
   "questionUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_qs.pdf",
   "answerUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_ans.pdf",
-  "status": "all-25-adapted-review-only",
+  "status": "all-25-adapted-preview",
   "questions": {
     "am2:1": {
       "stem": "分散DBで一貫性、可用性、分断耐性の三つを同時に保証できないことを示す定理は？",
@@ -68,6 +68,90 @@
               "組織構造に親組織コードと子組織コードを保持"
             ]
           ]
+        },
+        {
+          "type": "uml",
+          "title": "モデルA",
+          "classes": [
+            [
+              "部",
+              50,
+              85
+            ],
+            [
+              "課",
+              175,
+              85
+            ],
+            [
+              "係",
+              300,
+              85
+            ]
+          ],
+          "links": [
+            {
+              "kind": "association",
+              "from": "部",
+              "to": "課",
+              "fromLabel": "1",
+              "toLabel": "*",
+              "label": ""
+            },
+            {
+              "kind": "association",
+              "from": "課",
+              "to": "係",
+              "fromLabel": "1",
+              "toLabel": "*",
+              "label": ""
+            }
+          ]
+        },
+        {
+          "type": "uml",
+          "title": "モデルB（循環禁止）",
+          "classes": [
+            [
+              "組織",
+              175,
+              90
+            ]
+          ],
+          "links": [
+            {
+              "kind": "self",
+              "from": "組織",
+              "fromLabel": "0..1 親",
+              "toLabel": "* 子"
+            }
+          ]
+        },
+        {
+          "type": "uml",
+          "title": "モデルC",
+          "classes": [
+            [
+              "組織",
+              75,
+              85
+            ],
+            [
+              "組織構造",
+              275,
+              85
+            ]
+          ],
+          "links": [
+            {
+              "kind": "association",
+              "from": "組織",
+              "to": "組織構造",
+              "fromLabel": "1",
+              "toLabel": "*",
+              "label": "親・子それぞれの関連"
+            }
+          ]
         }
       ]
     },
@@ -84,7 +168,308 @@
       "sourcePage": 5,
       "adapted": true,
       "needsSourceReview": true,
-      "needsDiagramReview": true
+      "needsDiagramReview": true,
+      "figures": [
+        {
+          "type": "uml",
+          "title": "プロパティグラフ（関連の要約）",
+          "classes": [
+            [
+              "ノード",
+              65,
+              55
+            ],
+            [
+              "エッジ",
+              285,
+              55
+            ],
+            [
+              "プロパティ",
+              175,
+              155
+            ]
+          ],
+          "links": [
+            {
+              "kind": "association",
+              "from": "ノード",
+              "to": "エッジ",
+              "fromLabel": "0..*",
+              "toLabel": "0..*",
+              "label": ""
+            },
+            {
+              "kind": "association",
+              "from": "ノード",
+              "to": "プロパティ",
+              "fromLabel": "0..1",
+              "toLabel": "0..*",
+              "label": ""
+            },
+            {
+              "kind": "association",
+              "from": "エッジ",
+              "to": "プロパティ",
+              "fromLabel": "0..1",
+              "toLabel": "0..*",
+              "label": ""
+            }
+          ]
+        }
+      ],
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "uml",
+            "title": "ア（概略）",
+            "classes": [
+              [
+                "中央線",
+                65,
+                30
+              ],
+              [
+                "山手線",
+                285,
+                30
+              ],
+              [
+                "東京",
+                175,
+                90
+              ],
+              [
+                "時間6分",
+                175,
+                155
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "中央線",
+                "to": "山手線",
+                "fromLabel": "",
+                "toLabel": "",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "中央線",
+                "to": "東京",
+                "fromLabel": "",
+                "toLabel": "",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "東京",
+                "to": "時間6分",
+                "fromLabel": "",
+                "toLabel": "",
+                "label": ""
+              }
+            ]
+          }
+        ],
+        "イ": [
+          {
+            "type": "uml",
+            "title": "イ（概略）",
+            "classes": [
+              [
+                "東京",
+                65,
+                30
+              ],
+              [
+                "新宿",
+                285,
+                30
+              ],
+              [
+                "中央線",
+                175,
+                90
+              ],
+              [
+                "時間14分",
+                175,
+                155
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "東京",
+                "to": "新宿",
+                "fromLabel": "",
+                "toLabel": "",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "東京",
+                "to": "中央線",
+                "fromLabel": "",
+                "toLabel": "",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "中央線",
+                "to": "時間14分",
+                "fromLabel": "",
+                "toLabel": "",
+                "label": ""
+              }
+            ]
+          }
+        ],
+        "ウ": [
+          {
+            "type": "uml",
+            "title": "ウ（概略）",
+            "classes": [
+              [
+                "東京",
+                65,
+                30
+              ],
+              [
+                "新宿",
+                285,
+                30
+              ],
+              [
+                "中央線",
+                175,
+                90
+              ],
+              [
+                "時間14分",
+                175,
+                155
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "東京",
+                "to": "新宿",
+                "fromLabel": "",
+                "toLabel": "",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "東京",
+                "to": "中央線",
+                "fromLabel": "",
+                "toLabel": "",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "東京",
+                "to": "時間14分",
+                "fromLabel": "",
+                "toLabel": "",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "新宿",
+                "to": "時間14分",
+                "fromLabel": "",
+                "toLabel": "",
+                "label": ""
+              }
+            ]
+          }
+        ],
+        "エ": [
+          {
+            "type": "uml",
+            "title": "エ（概略）",
+            "classes": [
+              [
+                "東京",
+                65,
+                65
+              ],
+              [
+                "新宿",
+                65,
+                130
+              ],
+              [
+                "中央線",
+                285,
+                65
+              ],
+              [
+                "山手線",
+                285,
+                130
+              ],
+              [
+                "時間14分",
+                175,
+                15
+              ],
+              [
+                "時間12分",
+                175,
+                185
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "東京",
+                "to": "新宿",
+                "fromLabel": "",
+                "toLabel": "",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "東京",
+                "to": "中央線",
+                "fromLabel": "",
+                "toLabel": "",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "新宿",
+                "to": "山手線",
+                "fromLabel": "",
+                "toLabel": "",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "東京",
+                "to": "時間14分",
+                "fromLabel": "",
+                "toLabel": "",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "新宿",
+                "to": "時間12分",
+                "fromLabel": "",
+                "toLabel": "",
+                "label": ""
+              }
+            ]
+          }
+        ]
+      }
     },
     "am2:5": {
       "stem": "医師、診療科、診察、患者の表定義から多重度を選ぶ。",
@@ -132,7 +517,225 @@
           ]
         }
       ],
-      "needsDiagramReview": true
+      "needsDiagramReview": true,
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "uml",
+            "title": "ア",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              }
+            ]
+          }
+        ],
+        "イ": [
+          {
+            "type": "uml",
+            "title": "イ",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              }
+            ]
+          }
+        ],
+        "ウ": [
+          {
+            "type": "uml",
+            "title": "ウ",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              }
+            ]
+          }
+        ],
+        "エ": [
+          {
+            "type": "uml",
+            "title": "エ",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              }
+            ]
+          }
+        ]
+      }
     },
     "am2:6": {
       "stem": "学生は学期が異なれば同じ科目を繰り返し履修できる。適切なモデルは？",
@@ -147,7 +750,178 @@
       "sourcePage": 7,
       "adapted": true,
       "needsSourceReview": true,
-      "needsDiagramReview": true
+      "needsDiagramReview": true,
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "uml",
+            "title": "ア",
+            "classes": [
+              [
+                "学期",
+                45,
+                80
+              ],
+              [
+                "学生",
+                175,
+                80
+              ],
+              [
+                "授業科目",
+                305,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "学期",
+                "to": "学生",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "学生",
+                "to": "授業科目",
+                "fromLabel": "*",
+                "toLabel": "*",
+                "label": ""
+              }
+            ]
+          }
+        ],
+        "イ": [
+          {
+            "type": "uml",
+            "title": "イ（関連クラス）",
+            "classes": [
+              [
+                "学生",
+                55,
+                60
+              ],
+              [
+                "授業科目",
+                295,
+                60
+              ],
+              [
+                "学期",
+                175,
+                145
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "学生",
+                "to": "授業科目",
+                "fromLabel": "*",
+                "toLabel": "*",
+                "label": "履修する"
+              }
+            ]
+          }
+        ],
+        "ウ": [
+          {
+            "type": "uml",
+            "title": "ウ",
+            "classes": [
+              [
+                "学生",
+                55,
+                60
+              ],
+              [
+                "授業科目",
+                295,
+                60
+              ],
+              [
+                "学期",
+                175,
+                145
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "学生",
+                "to": "授業科目",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "学生",
+                "to": "学期",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              }
+            ]
+          }
+        ],
+        "エ": [
+          {
+            "type": "uml",
+            "title": "エ（三項関連の概略）",
+            "classes": [
+              [
+                "学生",
+                55,
+                60
+              ],
+              [
+                "授業科目",
+                295,
+                60
+              ],
+              [
+                "学期",
+                175,
+                145
+              ],
+              [
+                "履修",
+                175,
+                60
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "学生",
+                "to": "履修",
+                "fromLabel": "*",
+                "toLabel": "",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "授業科目",
+                "to": "履修",
+                "fromLabel": "*",
+                "toLabel": "",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "学期",
+                "to": "履修",
+                "fromLabel": "*",
+                "toLabel": "",
+                "label": ""
+              }
+            ]
+          }
+        ]
+      }
     },
     "am2:7": {
       "stem": "正規化による分解について適切なのは？",
@@ -698,7 +1472,7 @@
   "pendingDiagramQuestions": [
     3,
     4,
-    5,
     6
-  ]
+  ],
+  "pendingDiagramNote": "Native draft diagrams added; association-class, ternary diamond and parallel associations require precise renderer before release."
 }
