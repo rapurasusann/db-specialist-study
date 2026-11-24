@@ -186,3 +186,30 @@ test('conflict refresh never follows a newly selected account',async()=>{
  assert.deepEqual(calls,['PUT']);
  assert.equal(storage.map.size,0);
 });
+
+test('list quota wait retries same cursor without publishing partial data',async()=>{
+ const storage=memory(),calls=[],waits=[];
+ const auth={signUp:{email:async()=>({data:{}})},signIn:{email:async()=>({data:{}})},signOut:async()=>({data:{}}),getSession:async()=>({data:{user:{id:A}}}),token:async()=>({data:{token:'jwt-a'}})};
+ const client=createCs03AccountClient({authClient:auth,apiUrl:'https://api.example.invalid/',storage,wait:async ms=>{waits.push(ms);assert.equal(storage.map.size,0);},fetcher:async url=>{
+  const cursor=new URL(url).searchParams.get('cursor');calls.push(cursor);
+  if(calls.length===2)return Response.json({error:'Too Many Requests'},{status:429});
+  return Response.json({data:{records:[{question_id:cursor?'2025:am2:2':'2025:am2:1',data:{level:'review'},revision:1}],nextCursor:cursor?null:'2025:am2:1'}});
+ }});
+ assert.equal(Object.keys(await client.listProgress()).length,2);
+ assert.deepEqual(calls,[null,'2025:am2:1','2025:am2:1']);
+ assert.deepEqual(waits,[60000]);assert.equal(storage.map.size,0);
+});
+test('list quota wait stops on account switch before another request',async()=>{
+ let active=A,calls=0;const storage=memory();
+ const auth={signUp:{email:async()=>({data:{}})},signIn:{email:async()=>({data:{}})},signOut:async()=>({data:{}}),getSession:async()=>({data:{user:{id:active}}}),token:async()=>({data:{token:'jwt-a'}})};
+ const client=createCs03AccountClient({authClient:auth,apiUrl:'https://api.example.invalid/',storage,wait:async()=>{active=B;},fetcher:async()=>{calls++;return Response.json({error:'Too Many Requests'},{status:429});}});
+ await assert.rejects(client.listProgress(),/ACCOUNT_CHANGED/);
+ assert.equal(calls,1);assert.equal(storage.map.size,0);
+});
+test('list quota retries have a finite budget',async()=>{
+ let calls=0,waits=0;
+ const auth={signUp:{email:async()=>({data:{}})},signIn:{email:async()=>({data:{}})},signOut:async()=>({data:{}}),getSession:async()=>({data:{user:{id:A}}}),token:async()=>({data:{token:'jwt-a'}})};
+ const client=createCs03AccountClient({authClient:auth,apiUrl:'https://api.example.invalid/',wait:async()=>{waits++;},fetcher:async()=>{calls++;return Response.json({error:'Too Many Requests'},{status:429});}});
+ await assert.rejects(client.listProgress(),/PROGRESS_LIST_QUOTA_LIMIT/);
+ assert.equal(calls,181);assert.equal(waits,180);
+});
