@@ -1,3 +1,4 @@
+import {validCs03RecordId,CS03_MAX_CATALOG_RECORDS} from './cs03-learning-record-id.mjs';
 // Connects study UI events with an authenticated account session.
 // A caller must explicitly enter account mode and open a remote question before edits.
 // No references to legacy localStorage or unowned device progress.
@@ -7,7 +8,7 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
  (draftStore!==null&&(!draftStore||typeof draftStore.load!=='function'||typeof draftStore.replace!=='function'))||
  (tabOwnership!==null&&(!tabOwnership||typeof tabOwnership.acquire!=='function'||typeof tabOwnership.relinquish!=='function')))
  throw Error('AUTO_SYNC_DEPENDENCIES_REQUIRED');
- const ID=/^20\d{2}:(am1|am2|pm1|pm2):(?:[1-9]|[1-9]\d|100)$/;
+
  let epoch=0,active=false,owner=null;
  const opened=new Set(),pending=new Map(),queue=new Map(),blocked=new Set(),journal=new Map();
  const copy=value=>structuredClone(value);
@@ -18,7 +19,7 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
   journal.clear();for(const [id,row] of next)journal.set(id,row);
  }
  function validate(id,data){
-  if(!ID.test(id))throw Error('INVALID_RECORD');
+  if(!validCs03RecordId(id))throw Error('INVALID_RECORD');
   if(data!==undefined&&(!data||typeof data!=='object'||Array.isArray(data)))throw Error('INVALID_RECORD');
  }
  function current(mark){if(!active||mark!==epoch)throw Error('ACCOUNT_SESSION_CHANGED');}
@@ -125,7 +126,7 @@ export function createCs03StudyAutoSync({session,onRemote=()=>{},onStatus=()=>{}
   const rows=backup.records;
   if(!rows||typeof rows!=='object'||Array.isArray(rows))throw Error('BACKUP_RECORDS_INVALID');
   const entries=Object.entries(rows);
-  if(entries.length<1||entries.length>1600)throw Error('BACKUP_RECORDS_INVALID');
+  if(entries.length<1||entries.length>CS03_MAX_CATALOG_RECORDS)throw Error('BACKUP_RECORDS_INVALID');
   const snapshot=[];
   let totalBytes=0;
   for(const [id,data] of entries){
