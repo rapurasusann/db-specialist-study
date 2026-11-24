@@ -1,0 +1,126 @@
+# CS-03 クラウド同期・隔離デプロイ判定（2026-11-23）
+判定：**NO-GO（配置禁止）**。この文書は承認票ではなく、読み取りによる事実確認記録。
+
+## 現在の確認結果
+- 既存の実Neon Auth・DB直接接続による隔離試験は過去にPASS（2026-11-19、`docs/CS03_PROGRESS_API_20261117.md`）。一方、最新のブラウザ→公開HTTPS API→Neon DBの接続試験は未実施。
+- Neon `certification-study` / 非defaultブランチ `br-snowy-truth-a162pmdt`（2026-11-23時点 Ready）に登録済みNeon Functionsは0件。
+- `functions/cs03-progress.mjs` は `x-secret` を要求する。`src/cs03-account-client.mjs` はJWTを送るが `x-secret` は送らない。この秘密をブラウザに入れてはならない。
+- GitHub Pagesの本番プレビューは既定OFF。CSPは `connect-src 'self'` で外部API通信を禁止。現行CSPを単に緩めても安全な接続経路は完成しない。
+
+## 未完了ゲート
+1. **信頼できる中継サービス**: ブラウザJWTを中継し、サーバー側でのみ秘密を追加する仕組み。中継自体が適切な認証、オリジン検査、サイズ制限をすること。
+2. **濫用・費用制限**: 未認証・不正署名・過剰アクセスをDB接続より前で遮断し、全体／IP／本人別レート制限、リクエストサイズ上限、観測と停止手順、無料枠上限を合意すること。CORSと`Origin`判定だけでは呼び出し回数を制限できない。
+3. **API到達とCORS整合**: `/progress` のルーティング、Browser→Gateway→隔離Functionの正常・拒否系。ローカル試験のOriginと公開ページのOriginを混同しない。
+4. **アカウント保存の復旧**: 失敗時のJSON退避は実装・模擬ブラウザPASS。ただしバックアップからの安全な復元、ページ再読込時の未保存データ保護は未完。
+5. **独立した承認**: 追加費用の見込みがなく、隔離以外へ設定が漏れないことを確認してから、配置・実通信・新規テストユーザー作成の個別実施判断を行う。
+
+## 禁止事項
+- 本番`main`、production DB、公開版設定の変更禁止
+- セキュリティ用秘密やDB接続文字列をJavaScript、GitHub、ログへ置かない
+- ネイティブNeon Function URLをブラウザから直接使わない
+- 追加料金契約、Neon Functions配置、GitHub Actionsをこのチェックだけで開始しない
+
+判定を再確認するコマンド：`node scripts/cs03-predeploy-guard.mjs --report`（読取専用・停止条件を出力）。
+`npm run check:cs03-deploy` はNO-GO中に失敗するのが正常。ゲートが揃ってもデプロイ実行を自動許可しない。
+
+
+## 2026-11-23 最新の合格結果・残課題（追記）
+
+**判定：NO-GOのまま。** 既存の「ブラウザ→公開HTTPS API→Neon DB未実施」は現在も正しいが、下記のローカル模擬通信と隔離DBへの直接実アクセスは別々に合格済みとなった。
+
+| 確認対象 | 判定 | 根拠・制約 |
+|---|---|---|
+| 隔離DB cs03_auth_sandbox へのAPI専用ロール接続 | PASS | 開発PCで認証と権限を確認。接続文字列は非公開 |
+| 隔離DBの一時INSERT/SELECT/UPDATEとアカウントA/BのRLS分離 | PASS | CS03_LIVE_ACCEPTANCE_PASS、ROLLBACK送信と対象テスト行不在を確認。Git 8908524 |
+| ブラウザ用クライアント→Worker候補→DO→Neon Functionアダプタ | **ローカル模擬PASS** | tests/cs03-worker-entrypoint-full-chain.test.mjs 4/4 PASS、Git fb9b8fb。Worker、DO、上流ストアは実クラウドではない |
+| 隔離Neon Functionsのクラウド配置 | **未実施** | Neon APIで隔離ブランチ br-snowy-truth-a162pmdt のFunction一覧を再確認、**0件** |
+| Cloudflareの実経路・Worker・DO配置、fail-closed実測 | **未実施** | 本番ルート/公開URLを作成せず、プレビュー無効を維持 |
+| アカウント全体のFree枠消費と課金設定、既存サービスとの共用量 | **未確定** | 過去のダッシュボード観測は一時点のみ。実配置前に再確認 |
+| 実際のブラウザHTTPS→Cloudflare→隔離Neon Function→DB | **未実施** | Function 0件、隔離Workerルート未配置につき検証不可 |
+| 保存失敗時の再読込を越えた復旧・バックアップ取込み | **未完了** | JSON退避と模擬試験は実施済みだが安全な復元処理は未合格 |
+
+### 次に閉じるべき工程（承認前作業と実クラウド作業を分離）
+1. **ソース・構成の承認前整理：** WorkerアダプタとNeon FunctionのURL/認証設定の整合、秘密管理、固定接続先、Cloudflareで実際に保証できる接続元情報を評価。request.cf だけを本物のCloudflare経路だとみなさない。テスト鍵・機密情報は設定ファイルに含めない。
+2. **無料運用条件の審査：** Cloudflare FreeとNeon Freeの当該アカウントの現在の利用量、Worker/DO共用枠、失敗時の閉鎖、警告と停止・切戻し手順を実証する。一般的な無料枠数値だけでゼロ追加料金を保証しない。
+3. **学習データ復旧：** 再読込時の未保存データ保持、バックアップからの安全な取込み、競合時に古いデータで上書きしない処理を完了する。
+4. **実クラウドの隔離検証：** 上記の安全条件を満たしたあと、**別途明示的に承認された場合に限り**、隔離Function/Workerの配置と本物のHTTPS経路の正負テストを実施。課金契約・本番切替を含めない。
+5. **公開判定：** 実クラウド証跡と運用上限の受入、公開用CSP/CORSの確認、独立承認が揃うまでNO-GOを維持する。
+
+この追記は実クラウドの検証済み証明でもリリース承認でもない。既存のデプロイ停止ガードと公開ページのプレビューOFFは維持する。合格済みテストは、関連コードや設定が変更されない限り再実行しない。
+
+## 2026-11-23 復元・確認待ち破棄のローカル試験結果
+
+開発PCでコミット `428e30db3ca27ef68bbde50c94e2f14ae788ea6a` に対し `node --test tests/cs03-study-auto-sync.test.mjs tests/cs03-account-ui.test.mjs` を実行。**26 tests / 26 pass / 0 fail**、`CS03_DRAFT_DISCARD_TEST_PASS` の成功ログを操作者が提示した。JSONバックアップ復元、ユーザー分離、未保存記録の確認待ち管理、破棄操作と画面操作の範囲を確認。新規の実DB/Cloudflare通信はしていない。
+
+**未完了：** 確認待ち記録は現状メモリ保持のため、ブラウザ再読み込み・タブ閉鎖・クラッシュで失われ得る。手動バックアップと破棄前の確認はデータ永続化の証拠ではない。実クラウドデプロイは禁止、公開判定はNO-GO。
+
+## 2026-11-23 ページ離脱警告と未保存チェックポイント
+
+開発PCで commit `3516429a25370b7bad67d42430c04501e4f0b673` に対し `node --test tests/cs03-unsaved-navigation-guard.test.mjs` を実行し、**3/3 PASS**、`CS03_NAVIGATION_GUARD_TEST_PASS` を確認した。通常のタブ終了/再読み込み時の警告であり、クラッシュ時のデータ保持ではない。
+
+この不足に対し、次の **未検証の候補実装** を追加した：
+- `src/cs03-draft-store.mjs`: アカウントUUIDごとに分離した端末内チェックポイント。形式・識別子・件数・容量を検証し、破損時は自動削除しない
+- `src/cs03-study-auto-sync.mjs`: ネットワーク送信前に未保存データを永続化し、成功応答の後にチェックポイントを解除。再ログイン時は確認待ちとして読み戻し、**自動送信しない**。保存失敗時には送信を中止
+- `src/cs03-account-entry.mjs`: 既定OFFの隔離プレビューに限り上記を接続。再発見した下書き件数を通知
+- `tests/cs03-draft-store-reload.test.mjs`: 保存成功、保存失敗と再読込、別アカウント、明示破棄、ローカル容量エラー、破損データ、手動復元の専用試験
+
+**未完了・注意点**：追加した実装はまだ開発PCでのテスト合格を確認していない。localStorageは暗号化されず、端末の利用者や同一オリジンで動くスクリプトから読み取り得る。ブラウザ設定による容量制限・消去、プライベートモード、別端末への移動、同一アカウントの複数タブ間競合、電源断直前の永続化は保証できない。特に複数タブが同じアカウントのチェックポイントを同時更新する競合対策は未実装のため公開前の評価が必要。JSONバックアップを併用する設計。既定プレビューOFF・本番デプロイ禁止・NO-GOを維持する。
+
+## 2026-11-23 再読み込み後の未保存データ復旧テスト — 22/22 PASS
+
+操作者はコミット `fc632c07372f8892757cecb9da0cb2c1464a4a2d` を開発PCでチェックアウトし、`node --check src/cs03-account-entry.mjs` および `node --test tests/cs03-draft-store-reload.test.mjs tests/cs03-study-auto-sync.test.mjs` を実行した。報告された結果は **22 tests / 22 pass / 0 fail**、`CS03_DRAFT_PERSISTENCE_TEST_PASS`。失敗時の端末内チェックポイント、再読込後の確認待ち復元、アカウント分離、破損データ拒否、端末内保存失敗時の送信停止、明示破棄を含む。
+
+この範囲は**受入済み**とし、関係する実装変更がない限り同じテストを繰り返さない。**残課題**は同一アカウントを開いた複数タブでの同時更新と端末ストレージの意図せぬ消去・容量制限への対処。端末内チェックポイントはlocalStorageに平文で保存されるため、端末共有や同一オリジンの他のスクリプトに対する秘匿を保証しない。独立したJSONバックアップが必要。Cloudflare/Neon実経路と公開可否は引き続き **NO-GO**。
+
+
+## 2026-11-23 同一アカウント複数タブの単一編集者制御
+
+**候補実装・未受入（ローカルテスト待ち）**：Web Locks API（exclusive, ifAvailable）で同一オリジン・同一アカウントUUIDの編集者を**同時に1タブだけ**に制限する。2つ目のタブは `CS03_ACCOUNT_OPEN_IN_ANOTHER_TAB` でアカウント編集モードに入れない。別アカウントには別ロックを使用。ログアウト時やタブ終了時にはブラウザ管理のロックが解放される。Web Locks非対応環境では危険なlocalStorage自作リースで代用せず、プレビューを安全側で停止。
+
+変更：`src/cs03-tab-ownership.mjs` のロック管理、`src/cs03-study-auto-sync.mjs` のログイン時獲得・失敗時/ログアウト時解放、`src/cs03-account-entry.mjs` の既定OFFプレビュー配線。専用検証：`tests/cs03-tab-ownership.test.mjs`（同一アカウントの多重ログイン拒否・既存下書き保持、別アカウントの独立動作、API未対応で停止、認証後失敗時の解放）。
+
+この仕組みは**2タブ同時編集を許可する方式ではない**。同一ブラウザ同一オリジンの更新済みコードを対象とするもので、異なるブラウザ/端末、旧バージョンのページ、ブラウザプロファイルをまたぐ単一編集者制御ではない。異なる端末間はサーバーのrevision競合検出が必要。Web Locksの実ブラウザ試験と全般的な公開受入は未完了。Cloudflare/Neon実デプロイ禁止とNO-GOを維持する。
+
+## 2026-11-23 同一アカウント複数タブのローカルテスト合格記録
+
+開発PCでcommit `3528874a0c40cf978ff35084fcbf88de7972818f` をチェックアウトし、`node --check src/cs03-account-entry.mjs`、`node --check src/cs03-study-auto-sync.mjs`、`node --test tests/cs03-tab-ownership.test.mjs` を実行した。操作者のログにより **4 tests / 4 pass / 0 fail**、`CS03_MULTI_TAB_TEST_PASS` を確認。
+
+検証範囲はWeb Locks模擬実装での同一アカウント二重編集拒否、未保存下書きの保護、別アカウントの独立動作、Web Locks未対応時の停止、失敗後のロック解放。**Chrome等の実ブラウザでの2タブ動作は未検証**。異なるブラウザ・プロファイル・端末間はサーバー側revision競合検出の範囲。実クラウド接続・デプロイは未実施、**NO-GO継続**。合格済み4件の再実行は関連変更時のみ。
+
+
+## 2026-11-23 実Chromium複数タブ試験のローカル起動条件
+
+**試験コード追加済み・実行結果待ち。** `scripts/cs03-real-browser-two-tabs.mjs` は独立したloopback-only（127.0.0.1、OS割当ポート）HTTPサーバーから最低限のHTMLと検証対象ESモジュールのみを配信する。アプリの `cs03-config.js` を変更せず、外部通信を拒否し、実クラウドAPIや本番データには接続しない。
+
+同一Playwright BrowserContextの2ページで、ネイティブ `navigator.locks` を利用して同一UUIDの多重アカウント編集拒否、タブAの保存失敗時の下書き保持、タブAの終了後にタブBがロック取得可能であること、復旧した下書きを自動送信しないことを確認する。Web Locks非対応、外部リクエスト、ページエラー、検査失敗はPASSにしない。
+
+開発PCに以前存在を確認した `Wordbook/node_modules/playwright` を `PLAYWRIGHT_MODULE_PATH` に指定する。新規インストール・GitHub Actions・クラウド配備は禁止。**実ChromiumでPASSが得られるまでは未受入、NO-GO。**
+
+## 2026-11-23 実Chromium複数タブ初回試験の部分合格・停止
+
+操作者はコミット `c9862149b2e748630d95e8203855a0f9b7111274` の `scripts/cs03-real-browser-two-tabs.mjs` を開発PCで実行。`REAL_WEB_LOCKS_AVAILABLE=PASS`、`TAB_A_LOGGED_IN=PASS`、`TAB_B_SAME_ACCOUNT_REJECTED=PASS`、`TAB_B_CANNOT_CLEAR_A_DRAFT=PASS` を確認。続くタブA終了・タブBのロック再取得の区間で `CS03_REAL_BROWSER_TWO_TABS=FAIL`、`FAIL_CLASS=BROWSER_OR_ENVIRONMENT_ERROR`。後続の `TAB_B_REACQUIRES_AFTER_A_CLOSE` と `RECOVERED_DRAFT_IS_REVIEW_ONLY` は **未評価**、実ブラウザの全件合格を宣言しない。
+
+調査用に試験スクリプトのみ変更し、失敗段階 `FAIL_PHASE`、匿名化した例外分類 `FAIL_REASON`、タブAのclose完了表示を追加（コミット `f58bc1c`）。本番設定・クラウド・DB操作はなく、再実行対象は本実ブラウザ試験のみ。
+
+
+## 2026-11-23 実Chromium複数タブ試験の全項目PASS
+
+操作者が commit `37aa5ff6589b9310b36fd34d9da3e61bc5c48a5e` を開発PCでチェックアウトし、ローカル専用 `scripts/cs03-real-browser-two-tabs.mjs` を実際の Chromium / Playwright で実行した。
+
+**実行結果：`CS03_REAL_BROWSER_TWO_TABS=PASS`**。出力により `REAL_WEB_LOCKS_AVAILABLE`、`TAB_A_LOGGED_IN`、`TAB_B_SAME_ACCOUNT_REJECTED`、`TAB_B_CANNOT_CLEAR_A_DRAFT`、`TAB_A_CLOSED`、`TAB_B_REACQUIRES_AFTER_A_CLOSE`、`RECOVERED_DRAFT_IS_REVIEW_ONLY`、`NO_EXTERNAL_REQUESTS`、`NO_PAGE_ERRORS` のすべてが PASS した。
+
+前回の `BROWSER_OR_ENVIRONMENT_ERROR` は再現していない。ただし、当該失敗の根本原因が確定したことを意味しない。同じプログラムのコード修正なしでの全件PASSとして受入証跡を記録する。
+
+**受入範囲**：同一 Chromium BrowserContext の2タブ、同一オリジン・同一アカウントの Web Locks 排他、タブ終了後の取得、共有 localStorage に残った下書きの確認待ち復元。**未受入**：異なるブラウザ/プロファイル/端末間の排他、実Neon Functions/Cloudflareのネットワーク経路、公開用CSP/CORS、アカウント課金・無料枠、実クラウドへのデプロイ。公開判定は引き続き **NO-GO**。合格済み試験の再実行は関係コード変更時や独立受入が必要な場合のみ。
+
+## 2026-11-23 workerd追加否定系（11件・未実行）
+
+既存のworkerd-localのJWT署名検証、GET/PUT、DOクォータ、無効JWT、Origin不一致、429については合格済み。重複を避けるため `local/cs03-workerd-negative-check.mjs` を追加した。**11個の新しい確認**：認証ヘッダー欠落、JWT issuer不一致、audience不一致、期限切れJWT、Origin欠落、未対応HTTP method、未対応path、PUTの不正content-type、20KB超過PUT、未許可OPTIONS、許可OPTIONS。すべて `127.0.0.1:8790` のローカル専用workerd向け。テスト専用署名鍵と模擬ストアだけを使用し、Neon/Cloudflareへの外部接続なし。**開発PC実行待ちのためPASSは未宣言。**
+
+実行時は `local/wrangler.cs03-auth-do.json` で `wrangler dev --local --port 8790` を使用し、**必ず `--local` を明示**する。Wrangler初回ログインや新規パッケージ取得を促す方法を採用しない。先にローカルサーバーの起動を確認し、別ウィンドウから上記否定系のみ実行する。共有Cloudflareアカウントと専用Cloudflareアカウントのどちらにもデプロイしない。公開判定 **NO-GO** 維持。
+
+## 2026-11-23 workerd追加否定系11/11 PASS
+
+操作者は開発PCでコミット `d57deec1ae24d9c254c36ead795b9238ac7344ce` をチェックアウトし、npmキャッシュに残存する **Wrangler 4.166.0** を再利用してローカルworkerdを起動。別PowerShellで `node local/cs03-workerd-negative-check.mjs` を実行した。提出ログから、**NEG_MISSING_AUTH、NEG_WRONG_ISSUER、NEG_WRONG_AUDIENCE、NEG_EXPIRED_JWT、NEG_MISSING_ORIGIN、NEG_WRONG_HTTP_METHOD、NEG_WRONG_PATH、NEG_BAD_PUT_CONTENT_TYPE、NEG_LARGE_PUT_BODY、NEG_INVALID_PREFLIGHT_METHOD、NEG_VALID_PREFLIGHT の11件すべてPASS**、`CS03_WORKERD_NEGATIVE_ONLY_PASS`、`CS03_WORKERD_NEGATIVE_TEST_PASS` を確認した。
+
+**受入範囲**：127.0.0.1:8790 のローカルworkerdテストハーネス、テスト用EdDSA署名鍵、模擬上流、SQLite DO。これらの結果は実CloudflareアカウントでのWorker配置・実Neon Function通信・実本番トラフィック制限を意味しない。Cloudflareアカウント分離と無料枠確認済みであっても、隔離Worker/Functionの配置承認、実route fail-closed、秘密値一致、DOのクラウド使用量受入、公開用CSP/CORSは未完了。**NO-GO継続**。同一コードの11件は変更なしなら再試験不要。

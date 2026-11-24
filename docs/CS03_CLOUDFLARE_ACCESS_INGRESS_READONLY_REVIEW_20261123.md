@@ -1,0 +1,116 @@
+# CS-03 Cloudflare Accessによる隔離試験Ingress（読み取り仕様レビュー、2026-11-23）
+
+**判定：設計候補特定、実Cloudflareアカウント未検証、配置・秘密登録・試験URL作成NO-GO。** この文書は承認を意味しない。
+
+## 1. 調査対象と現在分かる状態
+- 対象：Cloudflare **Certification-Study** 専用アカウントのWorkers FreeとDurable Objects。TsumuTango/ParkWaitの別アカウント・ドメイン・Workerは対象外。
+- 既存証跡では専用アカウントのWorkers Free Active、支払方法なし、Worker/DOデプロイなし。ただし **2026-11-23時点のCloudflare実アカウントに接続して最新利用量・plan・Billing・Access有効化状況を確認できるコネクタがない**。従って実アカウント側のFree/利用量/支払/Access可否は**OPEN**。画面証拠を新規に取得したと記載しない。
+- Neon側は専用`quiet-mouse-39990305`の非default branch `br-snowy-truth-a162pmdt`、Functions 0件（当日の読み取り）、Neon実配置は独立承認まで禁止。
+- アプリは`cs03-config.js`で`previewEnabled:false`、公開URLなし、GitHub Pages/CSP変更なし。ローカルNeon経路試験29/29 PASSはクラウド検証ではない。
+
+## 2. 推奨する試験用Ingress候補
+
+**Cloudflare Accessで、対象Worker全体（production workers.devおよびpreviewへの到達を含む）を先に保護する方式**を候補とする。
+
+- 公式仕様：Cloudflare Accessは**Worker実行前**にAccess Policyを確認して非許可利用者を遮断。Worker単位の保護ならroute/custom domain/workers.dev/previewすべてを一括で対象にできる（単なるhostname単位保護より経路抜けが起こりにくい）。資料：https://developers.cloudflare.com/workers/configuration/cloudflare-access/ 、https://developers.cloudflare.com/changelog/post/2026-08-14-workers-access/ 。
+- **重要**：Accessは公開到達可能なURLへの認証ゲートであり、存在しないURLを使う「完全非公開」ではない。既存の`workers_dev:false`と`preview_urls:false`で公開経路がゼロのままなら実ブラウザ/HTTP試験はできない。将来一時的なURLを作成する場合は、**Accessポリシー先行設定・対象Worker保護・許可者明示・拒否受入・アクセスのない別経路不存在を確認**し、公開URLを有効にする別承認が必要。
+- 事前にCloudflare Zero Trustの利用可否・契約料金/利用者数・Access appの設定権限を実アカウントで確認する必要がある。無料利用を仮定して勝手に有効化しない。
+- Worker側はJWT（Neon Auth署名）、`CS03_QUOTA` DOで上流アクセス前に認可/全体・IP・ユーザー制限、`CS03_GATEWAY_SECRET`をNeonの`CS03_ORIGIN_SECRET`と整合させる。Neon Functionの直URLはAccessが守らないため**Function側でも共有秘密/JWT/Origin拒否を強制**。
+- Accessの許可対象は**試験担当者1名を想定した最小範囲**とし、email domain全体・組織全員の無条件許可はしない。Access Service Tokensを使う場合は認証形式と秘密保存・失効の設計を別途審査する。
+
+## 3. Fail closedと料金
+- Cloudflare公式 https://developers.cloudflare.com/workers/platform/limits/ はWorkers Free **100,000 req/日（00:00 UTC更新）**、CPU上限などを示す。Free上限到達時、**Worker routes** の`Fail open`はWorkerを迂回しうるため禁止、`Fail closed`はCloudflare 1027を返す。**具体的なルート形態ごとに適用可否・設定値・動作を検証する必要がある**。Access単独でコスト上限やWorker失敗時の認証不迂回を保証するとは断定しない。
+- Durable Objects FreeはWorkerと別の資源・上限がある。構成・実数値・課金ルール・停止方法を本番アカウントで実確認するまで、**運営者が追加料金ゼロを保証できる状態ではない**。有料プラン・支払い登録・無条件オートアップグレード禁止。
+- プレビューをOFFのままにしても、作ったFunctionの直URLへはアクセスされうる。**外部接続可能なFunctionを作れば攻撃面とFree使用量が増える**ため、配置と秘密登録は個別承認の対象。
+
+## 4. 受入・停止・切戻し手順（実行前計画）
+1. **先行条件**：CloudflareアカウントID/対象の読取、plan/料金/請求情報の非機密な証拠、Access利用可能性、既存ルート一覧の照合。Neon隔離FunctionのURLと上流 secret の安全な設定経路、DOの容量制限・429/503試験方式。
+2. **Ingress作成前条件**：第三者からの未認証アクセスがAccessで拒否される、WorkerからNeon側の秘密なし直リクエストも401で拒否される、Worker routingの上限時動作が**Fail closed**と検証できる。これを設定/現物の監査証拠とし、許可者は限定。
+3. **試験時の停止トリガー**：予期しない2xx、プラン課金・利用量の増加、403/401回避、Worker/DOからNeonの直URL/他環境へ流出、DPA/認証の不一致が出た場合、通信試験を中止。手動でAccessの許可を外し、対象Workerの一時公開経路を閉じ、Neonの直URL対策を別に実施する。Accessだけの停止はNeonを止めない。
+4. **切戻し対象**：**今回新規の専用Worker/Access policy/DO/Neon Function**に限定。既存ドメイン・既存プロジェクトの変更/DB削除はしない。削除は破壊的なので独立に許可された時だけ。
+5. **再開条件**：ブロック理由と使用量・ログを確認し、実配置/公開を改めて個別承認。失敗時にJWT・Quotaを省略して続行しない。
+
+## 5. C01/C02の判定と次の手順
+
+| ゲート | 判定 | 解決に必要な次の事実 |
+|---|---|---|
+| C01: 専用Cloudflare実アカウント最新確認 | **OPEN** | Workers Free/DO/Zero Trustの使用・請求・支払い設定・Access可否を実アカウントのダッシュボード等から読み取る（秘密・カード番号不要） |
+| C02: 限定Ingressの方式設計 | **CONDITIONAL** | Cloudflare AccessのWorker全体保護を候補化。事前のAccess有効化・未認証拒否・公開経路全列挙・fail-closed実証が必要 |
+| C03: Neon Function初回配置 | **OPEN** | NeonはFunction 0件。独立した配置承認後のみ |
+| 公開判定 | **NO-GO** | クラウド実証後に改めてリリース判定 |
+
+**今回：公式情報とGitHub記録の読み取りだけ。Cloudflare/Neonへの書き込み、Secrets、GitHub Actions、route切替、Workers/DO作成、課金変更は行っていない。**
+
+## 6. Certification-StudyのWorkers画面確認（ユーザー提出：2026-11-23）
+
+ユーザー提出のCloudflareダッシュボード画像（Certification-Studyアカウント、Workers & Pages日本語表示）を目視確認。画面右側に**本日のリクエスト 0 / 100,000**、**今日の観測可能性イベント 0 / 200,000**が表示。中央に**プロジェクトが見つかりませんでした**／まだプロジェクトを作成していない旨が表示されている。**Cloudflareへのアクセス**カードには「ゼロトラストを設定する」ボタンがあり、現時点でCloudflare Accessの設定済み／利用可能なプラン／料金／ポリシーは確認できない。
+
+**画面の範囲**：Worker/Pages側でアプリ0件・当日使用量0を確認したが、Durable Objectsの実使用量/実配置の全容、Workers Freeの契約内容・課金状況、支払方法の登録有無、Zero Trust/Accessのアクティベーション状況は画像から断定できない。画面内にCloudflareアカウントIDが含まれていたため、この記録では再掲しない。
+
+**C01の進捗**：専用アカウント、Workersの当日リクエスト数、当日観測イベント、Worker/Pages 0件の証拠は収集済み。**Billing / 支払い設定とDO / AccessはOPEN**。
+
+**次の確認**：対象Certification-StudyのBilling画面でプラン・請求・支払方法の有無を確認し、Zero Trust/Accessについては設定開始せずプランや利用可否を調査する。カード番号やメールなどの秘匿情報は共有不要。Cloudflare/Neonへ書込・公開切替・課金変更なし、**NO-GO維持**。
+
+## 7. Certification-Studyの請求画面確認（ユーザー提出：2026-11-23）
+
+ユーザー提出のCloudflareアカウントBilling画面（アカウント名Certification-Study）を目視確認。契約済み製品一覧に**Workers Free（アクティブ）**が表示され、右側の支払い方法には **No payment method on file** と表示。上位Workersプランは「アップグレード」の案内のみで、有料契約済みとは表示されていない。前回のWorkers & Pages画面ではプロジェクト0件、本日のWorkersリクエスト0/100,000、観測可能性イベント0/200,000だった。
+
+**判定**：C01の「対象アカウント」「Workers Freeプラン」「未登録の支払い方法」「Workers当日使用量」は画像証拠で確認済み。**Cloudflare Access / Zero Trustの有効化・料金・利用可否、Durable Objectsの使用量・機能プラン、具体的なWorker実Ingressとfail-closedは未確認**。請求書や課金対象使用量の全件をこの画像から確認したわけではないので、既発行請求の有無・総額の断定はしない。支払い方法未登録を将来の無料保証とは扱わない。画面に含まれるメールアドレス等の個人情報は記録に転記しない。
+
+**次の工程**：Zero Trust/Accessが専用アカウントで利用可能かを設定変更なしで確認。その後Durable Objectsの利用量と無料枠を確認。**Accessの有効化／プラン変更／支払方法登録／Worker/DOの配置／秘密登録はしない**。実クラウド配置・公開NO-GO維持。
+
+## 8. Zero Trustプラン選択画面の証拠（ユーザー提出：2026-11-23）
+
+Cloudflare Zero Trustのプラン選択画面のユーザー提出スクリーンショットを目視確認。左に**ゼロトラストフリー 0ドル/席/月**、最大50席の案内。中央に**ゼロトラストスタンダード 1席あたり月額7ドル**、右にエンタープライズ（カスタム料金）が表示されている。**画面はプラン選択前**のため、Free契約の有効化やAccess Policyの作成、Worker保護の実装・確認が済んだとは扱わない。
+
+**C02判定：Freeプラン候補の料金表示は確認済み**。専用アカウント上のFree有効化後の具体的な利用条件、支払方法要求の有無、実際にWorker全体にAccessを適用できる権限／機能は引き続きOPEN。運営者が個別に承認するまではプラン選択・規約同意・有効化をしない。Worker/DO/Neonの配置、公開経路・課金変更は一切していない。**NO-GO維持**。
+
+## 9. Zero Trust Free有効化完了画面（ユーザー提出：2026-11-23）
+
+ユーザー提出のCloudflare注文完了画面に **Activate Zero Trust Free / Purchase complete / The subscription is active and you can begin using the service** と表示されている。Order summaryには **Zero Trust Free: Free**、**Protect up to 50 users at no cost**、**Due today*: $0/month** が表示される。一方、細則に **Additional usage beyond included allowance billed monthly** が表示されているため、無料枠を超えても請求されないとは断定しない。支払方法の有無や追加利用枠、支払条件が現在も変更されていないかはこの画像のみで再検証できない。
+
+**状態**：Zero Trust Freeの有効化が完了したことは画像証拠で確認。Cloudflare Accessのアプリ作成、対象Worker保護ポリシー、許可ユーザーの登録、拒否試験、Durable Objects利用状況の確認は**未実施**。この画面は契約完了画面であり、AccessがWorkerを保護中という意味ではない。既存のCloudflare Worker/DO・Neon Function配置、公開URL変更は行っていない。
+
+**次の操作**：表示された **Continue to Zero Trust** を押し、Accessの概要/設定状態を読む。**有料機能選択、支払方法登録、Accessアプリ・ポリシー作成、Worker公開は次の独立承認まで行わない**。実クラウド配置・一般公開NO-GO維持。
+
+## 10. Cloudflare One初期画面（ユーザー提出：2026-11-23）
+
+Zero Trust Free有効化後に表示されたCloudflare OneのDashboard（Discover）をユーザーのスクリーンショットで確認。アカウントは**Certification-Study**、右側Account detailsに**Plan: Zero Trust Free**、**User permissions: Super Administrator - All Privileges**、Team nameは生成済みと表示される。Recommendationsには**Protect an application with Access**が未完了項目として表示され、画面にはAccessで保護したアプリの設定完了・許可ルールの証拠は見えない。**Accessが設定済みとは判定しない**。アカウント固有team nameの文字列は記録しない。
+
+**次に行うこと**：Recommendationsの**Protect an application with Access**を開いて画面内容・アプリ種別を読み取る（設定保存・ポリシー有効化なし）。Cloudflare WorkerへのAccess統合はWorker本体・課金・入口が承認されるまで実際には作らない。他の推薦項目（VPN、WARP、DNSフィルタ、トンネルなど）は本工程対象外。**Zero Trust Free契約完了、Accessポリシー未確認、実クラウド配置・一般公開NO-GO**。
+
+## 11. Cloudflare Access Applications画面（ユーザー提出：2026-11-23）
+
+ユーザー提出画面を確認。対象アカウントはCertification-Study。左のZero Trust > Access controls > Applicationsが選択され、画面上部には**Create new application**、本文には**Add an application**がある。Self-hosted / SaaS / Private network / Infrastructureの必要条件の案内が表示され、下部には**Add an identity provider (IdP)**、**Create an Access rule group**の推奨表示がある。**既存アプリの一覧は見えず、Accessアプリ未作成と思われるが、単一画面だけでは別管理画面に構成が無いことまでは断定できない**。Worker全体を保護する設定が可能かどうかも、この画面では未検証。
+
+**次の手順**：Create new applicationをクリックして種類選択画面を**確認するだけ**。Applicationを作成・保存しない。Identity providerの追加、Access policy変更、Worker公開、支払い方法追加、Neonの実配置は個別承認が必要。現時点の公開判定**NO-GO**。
+
+## 12. Accessアプリ作成種別の画面確認（ユーザー提出：2026-11-23）
+
+ユーザー提出の「Add an application」ダイアログを確認。上部で**Self-hosted and private**が選択され、下位項目に**Private destinations / Workers / Public DNS / Service auth**が表示。現時点の選択は**Public DNS**であり、Workers向けの設定詳細は**未確認**。ダイアログの表示のみでアプリケーション作成・Access Policyの保存は行われていない。
+
+次は**Workers**タブを選択して表示内容を読み取る。Workerが存在しない現段階では保護対象を設定したと見なさない。**公開・実クラウド配置NO-GO**を維持。
+
+## 13. Access Workersタブ選択確認（ユーザー提出：2026-11-23）
+
+ユーザーの次のスクリーンショットでは「Add an application」ダイアログの**Self-hosted and private > Workers**が選択状態。モーダルの表示領域が途中で切れており、Workersタブ固有の詳細・適用条件・入力欄や設定保存ボタンは見えない。Worker全体の保護やAccess Policyが設定されたと判断しない。次はダイアログ内をスクロールして**読み取りのみ**を続ける。**実クラウド配置・公開NO-GO**を維持。
+
+
+## 14. Cloudflare初期状態の確認終了・Accessの非配備ガード（2026-11-23）
+
+ユーザー提出済みスクリーンショット（Certification-Study）で**Workers Free有効／支払方法未登録／Worker・Pages 0件／Workers当日0/100,000／Zero Trust Free有効化済み／Access管理画面表示可能／Durable Objects一覧0件、当日リクエスト0、SQL/KV利用0**を確認。初期状態のスクリーンショット再提出は求めない。これは**画面を確認した時点の事実**であり、将来の料金ゼロやAccess保護済みを証明しない。クラウド管理画面には今回書き込まない。
+
+Cloudflare Workers Accessの公式文書（2026年11月2日更新、https://developers.cloudflare.com/workers/configuration/cloudflare-access/ ）には、**単一Workerのproduction+preview全体を保護するWorker-level Access**（destination type `worker`）があり、単一のhostnameやpreview-onlyよりこの用途に適する。Worker作成前は実Worker IDもないため、**現段階ではAccess app/policyを作成しない**。HTTP入口を後で一時的に作る場合も、事前に当該Worker全体への認証が生きていることを実拒否検証し、Worker経路のFree上限でfail openを許さず、別のhostnameの優先Access policyが無いことを確認する。Neon Functionは別URLなのでNeon直のsecret/JWT検証は不可欠。
+
+**オフライン検査を追加**：
+- `docs/cs03-access-ingress-review-only.json`：Worker/Access未作成、レビュー専用、NO-GO、`workersDev:false`・`previewUrls:false`・ルート無し、認可担当者1名、広域許可無し、`single-worker-all-traffic`、直アクセス・failClosed・DO実証未完という状態のみを記録。
+- `scripts/cs03-access-ingress-review.mjs`：上記の状態を静的検査。意図しない公開経路、`Fail open`、preview-only/hostname-only、全員許可、承認済み・実証済みと偽った値を拒否。
+- `tests/cs03-access-ingress-review.test.mjs`：6件のオフライン負試験。**実行待ち**。この検査はCloudflareで認証を有効にせず、現物のAccess制御や無料枠を証明しない。
+
+**残る工程**： (1) この6件を開発PCで実行し、(2) 運用者が承認対象のWorker ID・限定Access policy・実HTTP入口・環境secret投入/失効・受入失敗時の停止操作を確定、(3) 独立承認後に隔離試験を実施する。Neon Function/Worker/DO新規配備、Access登録、公開URL/CSP変更、課金変更、GitHub Actions、main統合は**未実施**。公開判定**NO-GO**。
+
+## 15. 開発PC Access静的検査：6/6 PASS（2026-11-23）
+
+操作者が開発PCでコミット `49bded4f6e619a4f1fd7c472080174a92fda23b3` をチェックアウトして `node --test tests/cs03-access-ingress-review.test.mjs` を実行。提出ログは **6 tests / 6 pass / 0 fail** と `CS03_ACCESS_REVIEW_TEST_PASS`。レビュー専用NO-GO維持、不特定多数・広域ドメイン許可拒否、Worker全体以外のAccess契約拒否、公開URL・Fail open拒否、実検証済みと偽るフラグ拒否、対象アカウント不一致拒否をローカルで確認。関連コード変更まで再実行不要。
+
+**ここで実証していないこと**：実Cloudflare Accessルールの稼働、Worker/DOの配備や実通信、Neon秘密・DB接続、無料枠超過時の実挙動。本番公開・実配置は引き続き **NO-GO**。ユーザーは確認の繰り返しによる長期化を懸念。今後はローカル仕様監査をこれ以上細分化せず、承認が必要な最小クラウド試験の条件を束ねて示し、実同期に到達することを優先する。

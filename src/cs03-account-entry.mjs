@@ -1,0 +1,136 @@
+// CS-03 UI is opt-in and stays disabled until isolated preview config is ready.
+// This script does not contain credentials and does not change legacy progress.
+const cfg=window.DB_STUDY_CS03;
+if(cfg?.previewEnabled===true && cfg?.authUrl && cfg?.apiUrl){
+ const root=document.getElementById('cs03AccountPanel');
+ if(root){
+  try{
+   const {createAuthClient}=await import('@neon/auth');
+   const {createCs03AccountClient}=await import('./cs03-account-client.mjs');
+   const {mountCs03AccountPanel}=await import('./cs03-account-ui.mjs');
+   const {createCs03ScopedProgress}=await import('./cs03-scoped-progress.mjs');
+   const {createCs03ManualTransfer}=await import('./cs03-manual-transfer.mjs');
+   const {renderCs03HistoryView,clearCs03HistoryView}=await import('./cs03-history-view.mjs');
+   const {previewCs03Sync}=await import('./cs03-sync-preview.mjs');
+   const {createCs03StudyHint}=await import('./cs03-study-hint.mjs');
+   const {createCs03CrossBrowserSession}=await import('./cs03-cross-browser-session.mjs');
+   const {createCs03StudyAutoSync}=await import('./cs03-study-auto-sync.mjs');
+   const {exportCs03UnsavedBackup}=await import('./cs03-unsaved-export.mjs');
+   const {restoreCs03UnsavedBackup}=await import('./cs03-unsaved-restore.mjs');
+   const {attachCs03UnsavedNavigationGuard}=await import('./cs03-unsaved-navigation-guard.mjs');
+   const {createCs03DraftStore}=await import('./cs03-draft-store.mjs');
+   const {createCs03TabOwnership}=await import('./cs03-tab-ownership.mjs');
+   // Only allow the exact isolated Managed Auth instance.
+   if(cfg.authUrl!=='https://ep-dawn-dew-a11prveg.neonauth.ap-southeast-1.aws.neon.tech/cs03_auth_sandbox/auth')
+    throw Error('AUTH_TARGET_MISMATCH');
+   const client=createCs03AccountClient({
+    authClient:createAuthClient(cfg.authUrl),apiUrl:cfg.apiUrl,
+    storage:window.localStorage
+   });
+   root.hidden=false;
+   const scoped=createCs03ScopedProgress({account:client});
+   const auto=createCs03StudyAutoSync({session:createCs03CrossBrowserSession({account:client}),
+    draftStore:createCs03DraftStore({storage:window.localStorage}),
+    tabOwnership:createCs03TabOwnership({locks:window.navigator?.locks})});
+   attachCs03UnsavedNavigationGuard({auto,windowRef:window});
+   const page=window.CS03_STUDY_PAGE;
+   if(!page)throw Error('STUDY_PAGE_BRIDGE_REQUIRED');
+   const historyRoot=root.querySelector('[data-cs03="history-list"]');
+   if(!historyRoot)throw Error('HISTORY_VIEW_MISSING');
+   clearCs03HistoryView(historyRoot);
+   const studyRoot=document.getElementById('cs03StudyHint');
+   if(!studyRoot)throw Error('STUDY_HINT_ROOT_MISSING');
+   const studyHint=createCs03StudyHint({root:studyRoot,selectedId:()=>window.CS03_SELECTED_QUESTION.read()});
+   Object.defineProperty(window,'CS03_STUDY_HINT',{value:studyHint,configurable:false,writable:false});
+   const manual=createCs03ManualTransfer({scoped,
+    readLegacy:id=>window.CS03_SELECTED_QUESTION.readLegacy(id),
+    confirmTransfer:id=>window.confirm(id+' の端末内履歴1件をログイン中のアカウントにコピーしますか？\n既存の端末内履歴は残ります。')
+   });
+   const ui=mountCs03AccountPanel(root,client,{
+    onSignedIn:async()=>{
+     studyHint.clear();clearCs03HistoryView(historyRoot);
+     await scoped.bind();
+     const listing=await auto.login();
+     try{
+      page.activate(listing,auto);
+      const restored=auto.state().blocked.length;
+      if(restored)window.alert(restored+'件の未保存記録をこの端末から再発見しました。自動送信せず確認待ちにしました。必要に応じてJSONを書き出してください。');
+     }
+     catch(error){if(!auto.state().pending.length)auto.logout();throw error;}
+    },
+    onBeforeSignOut:async()=>{
+     const state=auto.state();
+     if(state.pending.length||state.blocked.length||state.inFlight?.length)
+      throw Error('UNSAVED_ACCOUNT_PROGRESS');
+    },
+    onSignedOut:()=>{
+     page.deactivate();auto.logout();
+     studyHint.clear();scoped.unbind();clearCs03HistoryView(historyRoot);
+    },
+    onExportUnsaved:async()=>exportCs03UnsavedBackup({auto}),
+    onRestoreUnsaved:async jsonText=>{
+     const result=await restoreCs03UnsavedBackup({
+      auto,jsonText,
+      confirmRestore:count=>window.confirm(
+       count+'件のバックアップを現在のアカウントの確認待ち記録として読み込みますか？\\n'+
+       'サーバーへの送信や既存データの上書きは行いません。確認待ちの間はログアウトできません。')
+     });
+     return result.cancelled?'復元をキャンセルしました。':
+      'バックアップ '+result.restored+'件を確認待ちとして読み込みました。サーバーには送信していません。';
+    },
+    onDiscardUnsaved:async()=>{
+     const current=auto.state();
+     if(!current.active||current.inFlight.length||!current.pending.length)
+      throw Error('NO_REVIEW_DRAFTS');
+     const ids=[...current.pending].sort();
+     // Explicitly warn that drafts only exist in memory. No automatic upload.
+     const accepted=window.confirm(
+      ids.length+'件の未保存記録を、この画面から破棄しますか？\\n'+
+      '元のJSONバックアップを安全に保管したことを確認してください。'+
+      'バックアップがない場合、記録は失われます。'+
+      'Neonの保存済みデータと端末内学習履歴は削除されません。');
+     if(!accepted)return '確認待ち記録の破棄をキャンセルしました。';
+     const result=auto.discardPending({userId:current.userId,questionIds:ids});
+     return result.discarded+'件の確認待ち記録をこの画面から破棄しました。サーバーの記録は変更していません。';
+    },
+    onListProgress:async()=>{
+     clearCs03HistoryView(historyRoot);
+     const listing=await scoped.list();
+     const display=renderCs03HistoryView(historyRoot,listing);
+     const records=Object.values(listing.records);
+     const learned=records.filter(r=>r.data?.level&&r.data.level!=='unseen').length;
+     return 'アカウント履歴 '+records.length+'件（学習済み '+learned+'件、表示 '+display.shown+'件）。端末内履歴は変更しません。';
+    },
+    onCompareProgress:async()=>{
+     // Always fetch fresh account records. Never import a device record or write to either store.
+     const listing=await scoped.list();
+     const deviceRecords=window.CS03_SELECTED_QUESTION?.readLegacySnapshot();
+     if(!deviceRecords)throw Error('DEVICE_SNAPSHOT_UNAVAILABLE');
+     const preview=previewCs03Sync({deviceRecords,accountListing:listing});
+     const n=preview.counts;
+     return '比較結果：端末のみ '+n.deviceOnly+'件／アカウントのみ '+n.accountOnly+'件／両方にある問題 '+n.conflicts+'件。自動上書き・自動統合は行っていません。';
+    },
+    onTransferProgress:async()=>{
+     const id=window.CS03_SELECTED_QUESTION?.read();
+     if(!id)throw Error('SELECTED_QUESTION_UNAVAILABLE');
+     const result=await manual.transfer(id);
+     return result.copied?id+'：アカウントへの保存が完了しました。':'保存をキャンセルしました。';
+    },
+    onLoadProgress:async()=>{
+     const id=window.CS03_SELECTED_QUESTION?.read();
+     if(!id)throw Error('SELECTED_QUESTION_UNAVAILABLE');
+     const value=await scoped.pull(id);
+     studyHint.clear();
+     if(value)studyHint.show(id,value);
+     if(!value)return id+'：アカウントの履歴はまだありません。';
+     const labels={unseen:'未学習',review:'要復習',learning:'学習中',mastered:'習得済み'};
+     return id+'：'+(labels[value.level]||'記録あり')+'（閲覧のみ。端末内履歴には反映しません）';
+    }
+   });
+   await ui.refresh();
+  }catch{
+   // Fail closed. Existing local learning remains accessible.
+   root.hidden=true;
+  }
+ }
+}

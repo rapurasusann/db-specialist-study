@@ -1,0 +1,20 @@
+{
+  "kind": "CS03_ACCESS_INGRESS_REVIEW_ONLY",
+  "deploymentApproved": false,
+  "release": "NO-GO",
+  "accountType": "Certification-Study",
+  "workerCreated": false,
+  "accessPolicyCreated": false,
+  "accessScope": "single-worker-all-traffic",
+  "accessDestination": "worker",
+  "authenticatedTesters": 1,
+  "allowEveryone": false,
+  "allowEmailDomain": false,
+  "workersDev": false,
+  "previewUrls": false,
+  "routes": [],
+  "cloudflareFailOpen": false,
+  "failClosedVerified": false,
+  "neonDirectAccessVerified": false,
+  "durableQuotaVerified": false
+}
