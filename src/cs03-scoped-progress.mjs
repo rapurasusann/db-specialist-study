@@ -1,7 +1,8 @@
+import {validCs03RecordId} from './cs03-learning-record-id.mjs';
 // CS-03 account-scoped learning coordinator.
 // Never imports unowned legacy records or silently merges them into an account.
 const UUID=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const KEY=/^20\d{2}:(am1|am2|pm1|pm2):(?:[1-9]|[1-9]\d|100)$/;
+
 export function createCs03ScopedProgress({account}) {
  if(!account || !['session','pull','save','readLocal'].every(name=>typeof account[name]==='function'))
   throw new Error('ACCOUNT_PROGRESS_REQUIRED');
@@ -25,13 +26,13 @@ export function createCs03ScopedProgress({account}) {
   const records=account.readLocal(boundUser);
   const output={};
   for(const [id,row] of Object.entries(records??{})){
-   if(KEY.test(id)&&row?.data&&typeof row.data==='object'&&!Array.isArray(row.data))
+   if(validCs03RecordId(id)&&row?.data&&typeof row.data==='object'&&!Array.isArray(row.data))
     output[id]=structuredClone(row.data);
   }
   return output;
  }
  async function pull(id){
-  if(!KEY.test(id))throw new Error('INVALID_RECORD');
+  if(!validCs03RecordId(id))throw new Error('INVALID_RECORD');
   await verifyBound();
   const result=await account.pull(id);
   await verifyBound();
@@ -40,7 +41,7 @@ export function createCs03ScopedProgress({account}) {
   return result?.data?structuredClone(result.data):null;
  }
  async function save(id,data){
-  if(!KEY.test(id)||!data||typeof data!=='object'||Array.isArray(data))
+  if(!validCs03RecordId(id)||!data||typeof data!=='object'||Array.isArray(data))
    throw new Error('INVALID_RECORD');
   await verifyBound();
   // Save is permitted only after the caller explicitly loaded this question.
@@ -65,7 +66,7 @@ export function createCs03ScopedProgress({account}) {
   if(!snapshot||typeof snapshot!=='object'||Array.isArray(snapshot))throw Error('INVALID_PROGRESS_LIST');
   const out={};
   for(const [id,record] of Object.entries(snapshot)){
-    if(!KEY.test(id)||!record?.data||typeof record.data!=='object'||Array.isArray(record.data))
+    if(!validCs03RecordId(id)||!record?.data||typeof record.data!=='object'||Array.isArray(record.data))
       throw Error('INVALID_PROGRESS_LIST');
     out[id]=structuredClone(record);
   }
