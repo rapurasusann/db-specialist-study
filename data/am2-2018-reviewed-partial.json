@@ -17,7 +17,14 @@
       "explanation": "Binary Large Objectは画像などの大きなバイナリデータを保存する型。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 3,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:2": {
       "stem": "主キーaを持つA表と主キーbを持つB表の関連を実装する適切な方法は？",
@@ -31,7 +38,7 @@
       "explanation": "1対1ならいずれかに一意性を保証する外部キーを置ける。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -51,7 +58,14 @@
           ],
           "rows": []
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 3,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:3": {
       "stem": "R(A,B,C,D,E)でA→BC、CD→Eが成立する場合の候補キーは？",
@@ -65,10 +79,17 @@
       "explanation": "ADの閉包は全属性。AもDも他の属性から導出できず、両方必要。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 3,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:6": {
-      "stem": "表A(A1,A2,A3)のカーソルBが指す行をUPDATEするWHERE句は？",
+      "stem": "主キーがA1である表A(A1,A2,A3)について、カーソルBが現在指している行を更新するSQLの空欄を選ぶ。",
       "options": {
         "ア": "CURRENT OF A1",
         "イ": "CURRENT OF B",
@@ -79,13 +100,20 @@
       "explanation": "CURRENT OFにはカーソル名を指定する。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "sql",
           "text": "UPDATE A SET A2 = 1, A3 = 2\nWHERE [a]"
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 5,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:7": {
       "stem": "商品IDごとに項目名と値を行として保存する表で、同一商品の同じ項目に異なる値を登録できないようにする制約は？",
@@ -99,7 +127,7 @@
       "explanation": "IDと項目名の組合せを一意にする。値を含めると異なる値の重複を許してしまう。",
       "sourcePage": 6,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -181,7 +209,14 @@
           "type": "sql",
           "text": "CREATE TABLE 管理項目 (\n ID INTEGER NOT NULL,\n 項目名 VARCHAR(20) NOT NULL,\n データ型 VARCHAR(10) NOT NULL,\n 値 VARCHAR(100) NOT NULL,\n [a]\n)"
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 6,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:4": {
       "stem": "第2正規形から第3正規形になる条件は？",
@@ -195,7 +230,14 @@
       "explanation": "非キー属性の推移的従属を除く。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 4,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:5": {
       "stem": "社員表のNOT EXISTSで得られる社員コードは？",
@@ -209,7 +251,7 @@
       "explanation": "部下を持たない社員を抽出する。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -261,10 +303,17 @@
           "type": "sql",
           "text": "SELECT 社員コード FROM 社員 X WHERE NOT EXISTS (SELECT * FROM 社員 Y WHERE X.社員コード = Y.上司)"
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 4,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:8": {
-      "stem": "名称にN11を含む部品を親部品がなくても取得する結合は？",
+      "stem": "部品表（主キー：部品番号、その他：部品名・親部品番号）から、名称にN11を含む部品とその親部品の情報を取得する。親部品番号が未設定でも対象部品を取得し、親情報をNULLとするには、SQLの空欄に何を入れるか。",
       "options": {
         "ア": "B1 INNER JOIN 部品 B2",
         "イ": "B1 LEFT OUTER JOIN 部品 B2",
@@ -275,13 +324,20 @@
       "explanation": "検索対象B1を左に置く。",
       "sourcePage": 7,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "sql",
           "text": "SELECT B1.部品番号, B1.部品名, B2.部品番号 AS 親部品番号, B2.部品名 AS 親部品名 FROM 部品 [a] ON B1.親部品番号 = B2.部品番号 WHERE B1.部品名 LIKE '%N11%'"
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 7,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:9": {
       "stem": "等結合を構成する演算は？",
@@ -295,27 +351,67 @@
       "explanation": "全組合せから一致行を選ぶ。",
       "sourcePage": 7,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 7,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:10": {
-      "stem": "男女別の最年長者を除く副問合せは？",
+      "stem": "社員表（社員番号が主キー、社員名・性別・生年月日を保持）から、性別ごとの最年長者を除いて取得するSQLの空欄を選ぶ。",
       "options": {
-        "ア": "性別でGROUP BYしMIN",
-        "イ": "日付比較または性別一致でMIN",
-        "ウ": "外側と性別一致でMIN",
-        "エ": "未定義別名でGROUP BY"
+        "ア": "SQL 1",
+        "イ": "SQL 2",
+        "ウ": "SQL 3",
+        "エ": "SQL 4"
       },
       "answer": "ウ",
       "explanation": "同じ性別の最小生年月日と比較する。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "sql",
           "text": "SELECT 社員番号, 社員名 FROM 社員 AS S1 WHERE 生年月日 > ([a])"
         }
-      ]
+      ],
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 社員 AS S2 GROUP BY S2.性別"
+          }
+        ],
+        "イ": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 社員 AS S2 WHERE S1.生年月日 > S2.生年月日 OR S1.性別 = S2.性別"
+          }
+        ],
+        "ウ": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 社員 AS S2 WHERE S1.性別 = S2.性別"
+          }
+        ],
+        "エ": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 社員 GROUP BY S2.性別"
+          }
+        ]
+      },
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 8,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:11": {
       "stem": "直列化可能性とは？",
@@ -329,7 +425,14 @@
       "explanation": "結果の等価性を意味する。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 8,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:12": {
       "stem": "導出表の説明は？",
@@ -343,7 +446,14 @@
       "explanation": "ビューは問合せに基づく仮想表。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 9,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:13": {
       "stem": "分散コミット制御の説明は？",
@@ -357,7 +467,14 @@
       "explanation": "準備済み参加者が決定待ちになることがある。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 9,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:14": {
       "stem": "厳格な2相ロックと表ロックで実現する隔離水準は？",
@@ -371,7 +488,14 @@
       "explanation": "表単位のロックはファントムも防ぐ。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 10,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:15": {
       "stem": "B+木とビットマップ索引の比較で適切なのは？",
@@ -385,7 +509,14 @@
       "explanation": "低カーディナリティの列に適する。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 10,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:16": {
       "stem": "デッドロック検出のデータ構造は？",
@@ -399,10 +530,17 @@
       "explanation": "循環待ちを検出する。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 10,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:17": {
-      "stem": "隔離水準を高めた場合の不整合読取り件数／処理件数の傾向は？",
+      "stem": "トランザクションの隔離水準を高めると、不整合なデータを読むトランザクション数と、単位時間あたりの処理可能数は一般にどう変化するか。選択肢はこの順に示す。",
       "options": {
         "ア": "増／増",
         "イ": "増／減",
@@ -413,7 +551,14 @@
       "explanation": "整合性向上と並行性低下の傾向がある。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 11,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:18": {
       "stem": "原子性の説明は？",
@@ -427,7 +572,14 @@
       "explanation": "不可分な処理単位を保証する。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 11,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:19": {
       "stem": "OLAPの集計軸を商品・販売チャネルから商品・顧客タイプへ変更する操作は？",
@@ -441,7 +593,14 @@
       "explanation": "分析の観点を変更する。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 11,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:20": {
       "stem": "DNS水責め攻撃の特徴は？",
@@ -455,7 +614,14 @@
       "explanation": "キャッシュで処理できない問合せによるサービス妨害。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 12,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:21": {
       "stem": "n人が公開鍵暗号で相互通信する際の鍵総数は？",
@@ -469,10 +635,17 @@
       "explanation": "各人が公開鍵・秘密鍵を一つずつ持つ。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 12,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:22": {
-      "stem": "キャッシュ時間(ns)・ヒット率(%)・主記憶時間(ns)の組合せで平均時間が最小なのは？",
+      "stem": "各選択肢はキャッシュアクセス時間（ns）、ヒット率（%）、主記憶アクセス時間（ns）の順。実効アクセス時間が最小となる組合せは？",
       "options": {
         "ア": "10,60,70",
         "イ": "10,70,70",
@@ -480,10 +653,17 @@
         "エ": "20,80,50"
       },
       "answer": "エ",
-      "explanation": "加重平均は順に34、28、29、26ns。",
+      "explanation": "この問題の計算モデルではヒット率×キャッシュ時間＋ミス率×主記憶時間。ア34、イ28、ウ29、エ26 ns。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 12,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:23": {
       "stem": "分散処理の障害透過性とは？",
@@ -497,7 +677,14 @@
       "explanation": "障害を利用者から隠す性質。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:24": {
       "stem": "動作を学習しつつ経験に基づき次のテストを計画する方法は？",
@@ -511,7 +698,14 @@
       "explanation": "学習・設計・実行を並行して行う。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     },
     "am2:25": {
       "stem": "XPのテスト駆動開発の特徴は？",
@@ -525,7 +719,14 @@
       "explanation": "失敗するテストを先に書く。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Official page image inspected; adapted stem, choices and answer logic compared. Browser acceptance and official answer sheet verification separate."
+      }
     }
   },
   "pendingDiagramQuestions": [],
