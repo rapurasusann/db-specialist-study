@@ -7,95 +7,98 @@
   "pendingDiagramQuestions": [],
   "questions": {
     "am2:1": {
-      "stem": "複製DB間の通信が分断した場合、CAPのCP重視とAP重視での動作は？",
+      "stem": "二つのDBが互いのデータを複製する構成を考える。各サーバは自身のDBへの更新・参照を処理し、更新内容を他方に通知する。サーバ間通信が分断され更新通知が届かなくなった場合、CP重視とAP重視での動作の組合せは？",
       "options": {
-        "ア": "片側停止／両側停止",
-        "イ": "片側停止／両側継続",
-        "ウ": "両側継続／片側停止",
+        "ア": "片側のみ継続／両側停止",
+        "イ": "片側のみ継続／両側継続",
+        "ウ": "両側継続／片側のみ継続",
         "エ": "両側継続／両側停止"
       },
       "answer": "イ",
       "explanation": "CPでは整合性を守るため片側の処理を制限し、APでは一時的な不一致を許容して両側を稼働させる。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "uml",
-          "title": "複製構成",
+          "title": "冗長構成（学習用再構成）",
           "classes": [
             [
-              "端末1",
-              80,
-              25
+              "クライアント1",
+              85,
+              30
             ],
             [
-              "端末2",
-              265,
-              25
+              "クライアント2",
+              285,
+              30
             ],
             [
               "サーバ1",
-              80,
-              95
+              85,
+              100
             ],
             [
               "サーバ2",
-              265,
-              95
+              285,
+              100
             ],
             [
               "DB1",
-              80,
-              165
+              85,
+              175
             ],
             [
               "DB2",
-              265,
-              165
+              285,
+              175
             ]
           ],
           "links": [
             {
               "kind": "association",
-              "from": "端末1",
+              "from": "クライアント1",
               "to": "サーバ1",
-              "label": ""
+              "label": "要求"
             },
             {
               "kind": "association",
-              "from": "端末2",
+              "from": "クライアント2",
               "to": "サーバ2",
-              "label": ""
+              "label": "要求"
+            },
+            {
+              "kind": "association",
+              "from": "サーバ1",
+              "to": "サーバ2",
+              "bidirectional": true,
+              "label": "更新通知"
             },
             {
               "kind": "association",
               "from": "サーバ1",
               "to": "DB1",
-              "label": ""
+              "label": "更新・参照"
             },
             {
               "kind": "association",
               "from": "サーバ2",
               "to": "DB2",
-              "label": ""
-            },
-            {
-              "kind": "association",
-              "from": "サーバ1",
-              "to": "サーバ2",
-              "label": "更新通知"
+              "label": "更新・参照"
             }
           ]
         }
       ],
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_db_am2_qs.pdf",
+        "page": 3,
+        "scope": "Compared actual IPA PDF screenshot in current pass; browser visual acceptance and exact diagram fidelity remain pending."
       }
     },
     "am2:2": {
-      "stem": "BASE型の分散NoSQLで更新が他ノードに伝播する場合の特徴は？",
+      "stem": "ネットワーク上に分散した複数ノードを持ち、一つのノードの更新を他の全ノードへ伝えるBASE型NoSQLの特徴は？",
       "options": {
         "ア": "全ノードで2相コミット",
         "イ": "障害がなければ最終的に全ノードに反映",
@@ -106,10 +109,12 @@
       "explanation": "最終的整合性では一時的な差異が許容される。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_db_am2_qs.pdf",
+        "page": 4,
+        "scope": "Compared actual IPA PDF screenshot in current pass; browser visual acceptance and exact diagram fidelity remain pending."
       }
     },
     "am2:3": {
@@ -124,10 +129,12 @@
       "explanation": "ADからBとCを得て、CDからEを得る。AとDのどちらも省けない。",
       "sourcePage": 4,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_db_am2_qs.pdf",
+        "page": 4,
+        "scope": "Compared actual IPA PDF screenshot in current pass; browser visual acceptance and exact diagram fidelity remain pending."
       }
     },
     "am2:4": {
