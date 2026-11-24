@@ -189,103 +189,136 @@
       "figures": [
         {
           "type": "uml",
-          "title": "プロパティグラフ（関連の要約）",
           "classes": [
             [
               "ノード",
-              65,
-              55
+              80,
+              60
             ],
             [
               "エッジ",
-              285,
-              55
+              330,
+              60
             ],
             [
               "プロパティ",
-              175,
-              155
+              205,
+              200
             ]
           ],
           "links": [
             {
-              "kind": "association",
+              "kind": "self",
               "from": "ノード",
-              "to": "エッジ",
               "fromLabel": "0..*",
-              "toLabel": "0..*",
-              "label": ""
+              "toLabel": "0..*"
             },
             {
               "kind": "association",
               "from": "ノード",
               "to": "プロパティ",
               "fromLabel": "0..1",
-              "toLabel": "0..*",
-              "label": ""
+              "toLabel": "0..*"
             },
             {
               "kind": "association",
               "from": "エッジ",
               "to": "プロパティ",
               "fromLabel": "0..1",
-              "toLabel": "0..*",
-              "label": ""
+              "toLabel": "0..*"
             }
-          ]
+          ],
+          "attributes": {
+            "ノード": [
+              "ノード名"
+            ],
+            "エッジ": [
+              "エッジ名"
+            ],
+            "プロパティ": [
+              "プロパティ名",
+              "プロパティ値"
+            ]
+          },
+          "associationClasses": [
+            {
+              "from": "ノード",
+              "to": "ノード",
+              "classId": "エッジ"
+            }
+          ],
+          "title": "制約：二つの所属関係は同時には成立しない"
         }
       ],
       "optionFigures": {
         "ア": [
           {
             "type": "uml",
-            "title": "ア（概略）",
             "classes": [
               [
-                "中央線",
-                65,
-                30
+                "E01：エッジ",
+                85,
+                45
               ],
               [
-                "山手線",
-                285,
-                30
+                "E02：エッジ",
+                300,
+                45
               ],
               [
-                "東京",
-                175,
-                90
+                "N01：ノード",
+                192,
+                145
               ],
               [
-                "時間6分",
-                175,
-                155
+                "P01：プロパティ",
+                192,
+                250
               ]
             ],
             "links": [
               {
                 "kind": "association",
-                "from": "中央線",
-                "to": "山手線",
+                "from": "E01：エッジ",
+                "to": "E02：エッジ",
                 "fromLabel": "",
-                "toLabel": "",
-                "label": ""
+                "toLabel": ""
               },
               {
                 "kind": "association",
-                "from": "中央線",
-                "to": "東京",
+                "from": "N01：ノード",
+                "to": "P01：プロパティ",
                 "fromLabel": "",
-                "toLabel": "",
-                "label": ""
-              },
+                "toLabel": ""
+              }
+            ],
+            "attributes": {
+              "N01：ノード": [
+                "ノード名＝東京"
+              ],
+              "N02：ノード": [
+                "ノード名＝新宿"
+              ],
+              "E01：エッジ": [
+                "エッジ名＝中央線"
+              ],
+              "E02：エッジ": [
+                "エッジ名＝山手線"
+              ],
+              "P01：プロパティ": [
+                "プロパティ名＝時間(分)",
+                "プロパティ値＝6"
+              ],
+              "P02：プロパティ": [
+                "プロパティ名＝時間(分)",
+                "プロパティ値＝12"
+              ]
+            },
+            "associationClasses": [
               {
-                "kind": "association",
-                "from": "東京",
-                "to": "時間6分",
-                "fromLabel": "",
-                "toLabel": "",
-                "label": ""
+                "from": "E01：エッジ",
+                "to": "E02：エッジ",
+                "classId": "N01：ノード"
               }
             ]
           }
@@ -293,53 +326,71 @@
         "イ": [
           {
             "type": "uml",
-            "title": "イ（概略）",
             "classes": [
               [
-                "東京",
-                65,
-                30
+                "N01：ノード",
+                85,
+                45
               ],
               [
-                "新宿",
-                285,
-                30
+                "N02：ノード",
+                300,
+                45
               ],
               [
-                "中央線",
-                175,
-                90
+                "E01：エッジ",
+                192,
+                145
               ],
               [
-                "時間14分",
-                175,
-                155
+                "P01：プロパティ",
+                192,
+                250
               ]
             ],
             "links": [
               {
                 "kind": "association",
-                "from": "東京",
-                "to": "新宿",
+                "from": "N01：ノード",
+                "to": "N02：ノード",
                 "fromLabel": "",
-                "toLabel": "",
-                "label": ""
+                "toLabel": ""
               },
               {
                 "kind": "association",
-                "from": "東京",
-                "to": "中央線",
+                "from": "E01：エッジ",
+                "to": "P01：プロパティ",
                 "fromLabel": "",
-                "toLabel": "",
-                "label": ""
-              },
+                "toLabel": ""
+              }
+            ],
+            "attributes": {
+              "N01：ノード": [
+                "ノード名＝東京"
+              ],
+              "N02：ノード": [
+                "ノード名＝新宿"
+              ],
+              "E01：エッジ": [
+                "エッジ名＝中央線"
+              ],
+              "E02：エッジ": [
+                "エッジ名＝山手線"
+              ],
+              "P01：プロパティ": [
+                "プロパティ名＝時間(分)",
+                "プロパティ値＝14"
+              ],
+              "P02：プロパティ": [
+                "プロパティ名＝時間(分)",
+                "プロパティ値＝12"
+              ]
+            },
+            "associationClasses": [
               {
-                "kind": "association",
-                "from": "中央線",
-                "to": "時間14分",
-                "fromLabel": "",
-                "toLabel": "",
-                "label": ""
+                "from": "N01：ノード",
+                "to": "N02：ノード",
+                "classId": "E01：エッジ"
               }
             ]
           }
@@ -347,61 +398,78 @@
         "ウ": [
           {
             "type": "uml",
-            "title": "ウ（概略）",
             "classes": [
               [
-                "東京",
-                65,
-                30
+                "N01：ノード",
+                85,
+                45
               ],
               [
-                "新宿",
-                285,
-                30
+                "N02：ノード",
+                300,
+                45
               ],
               [
-                "中央線",
-                175,
-                90
+                "E01：エッジ",
+                192,
+                145
               ],
               [
-                "時間14分",
-                175,
-                155
+                "P01：プロパティ",
+                192,
+                250
               ]
             ],
             "links": [
               {
                 "kind": "association",
-                "from": "東京",
-                "to": "新宿",
+                "from": "N01：ノード",
+                "to": "N02：ノード",
                 "fromLabel": "",
-                "toLabel": "",
-                "label": ""
+                "toLabel": ""
               },
               {
                 "kind": "association",
-                "from": "東京",
-                "to": "中央線",
+                "from": "N01：ノード",
+                "to": "P01：プロパティ",
                 "fromLabel": "",
-                "toLabel": "",
-                "label": ""
+                "toLabel": ""
               },
               {
                 "kind": "association",
-                "from": "東京",
-                "to": "時間14分",
+                "from": "N02：ノード",
+                "to": "P01：プロパティ",
                 "fromLabel": "",
-                "toLabel": "",
-                "label": ""
-              },
+                "toLabel": ""
+              }
+            ],
+            "attributes": {
+              "N01：ノード": [
+                "ノード名＝東京"
+              ],
+              "N02：ノード": [
+                "ノード名＝新宿"
+              ],
+              "E01：エッジ": [
+                "エッジ名＝中央線"
+              ],
+              "E02：エッジ": [
+                "エッジ名＝山手線"
+              ],
+              "P01：プロパティ": [
+                "プロパティ名＝時間(分)",
+                "プロパティ値＝14"
+              ],
+              "P02：プロパティ": [
+                "プロパティ名＝時間(分)",
+                "プロパティ値＝12"
+              ]
+            },
+            "associationClasses": [
               {
-                "kind": "association",
-                "from": "新宿",
-                "to": "時間14分",
-                "fromLabel": "",
-                "toLabel": "",
-                "label": ""
+                "from": "N01：ノード",
+                "to": "N02：ノード",
+                "classId": "E01：エッジ"
               }
             ]
           }
@@ -409,79 +477,93 @@
         "エ": [
           {
             "type": "uml",
-            "title": "エ（概略）",
             "classes": [
               [
-                "東京",
-                65,
-                65
+                "P01：プロパティ",
+                192,
+                45
               ],
               [
-                "新宿",
-                65,
-                130
+                "N01：ノード",
+                85,
+                150
               ],
               [
-                "中央線",
-                285,
-                65
+                "E01：エッジ",
+                300,
+                150
               ],
               [
-                "山手線",
-                285,
-                130
+                "N02：ノード",
+                85,
+                245
               ],
               [
-                "時間14分",
-                175,
-                15
+                "E02：エッジ",
+                300,
+                245
               ],
               [
-                "時間12分",
-                175,
-                185
+                "P02：プロパティ",
+                192,
+                345
               ]
             ],
             "links": [
               {
                 "kind": "association",
-                "from": "東京",
-                "to": "新宿",
+                "from": "N01：ノード",
+                "to": "E01：エッジ",
                 "fromLabel": "",
-                "toLabel": "",
-                "label": ""
+                "toLabel": ""
               },
               {
                 "kind": "association",
-                "from": "東京",
-                "to": "中央線",
+                "from": "N01：ノード",
+                "to": "N02：ノード",
                 "fromLabel": "",
-                "toLabel": "",
-                "label": ""
+                "toLabel": ""
               },
               {
                 "kind": "association",
-                "from": "新宿",
-                "to": "山手線",
+                "from": "N02：ノード",
+                "to": "E02：エッジ",
                 "fromLabel": "",
-                "toLabel": "",
-                "label": ""
+                "toLabel": ""
+              }
+            ],
+            "attributes": {
+              "N01：ノード": [
+                "ノード名＝東京"
+              ],
+              "N02：ノード": [
+                "ノード名＝新宿"
+              ],
+              "E01：エッジ": [
+                "エッジ名＝中央線"
+              ],
+              "E02：エッジ": [
+                "エッジ名＝山手線"
+              ],
+              "P01：プロパティ": [
+                "プロパティ名＝時間(分)",
+                "プロパティ値＝14"
+              ],
+              "P02：プロパティ": [
+                "プロパティ名＝時間(分)",
+                "プロパティ値＝12"
+              ]
+            },
+            "associationClasses": [
+              {
+                "from": "N01：ノード",
+                "to": "E01：エッジ",
+                "classId": "P01：プロパティ"
               },
               {
-                "kind": "association",
-                "from": "東京",
-                "to": "時間14分",
-                "fromLabel": "",
-                "toLabel": "",
-                "label": ""
-              },
-              {
-                "kind": "association",
-                "from": "新宿",
-                "to": "時間12分",
-                "fromLabel": "",
-                "toLabel": "",
-                "label": ""
+                "from": "N02：ノード",
+                "to": "E02：エッジ",
+                "classId": "P02：プロパティ"
               }
             ]
           }
@@ -1501,5 +1583,5 @@
     4,
     6
   ],
-  "pendingDiagramNote": "Q3/Q6 renderer features applied. Q4 graph semantics and all original diagram fidelity/browser checks remain open."
+  "pendingDiagramNote": "Q4 object attributes and association-class links checked against official booklet page 5; self-association connector and exact layout still need browser review."
 }
