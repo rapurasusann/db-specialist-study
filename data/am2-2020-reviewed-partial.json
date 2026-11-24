@@ -733,14 +733,17 @@
       "explanation": "電界で粒子を移動させて表示を変える。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Checked registered adapted wording and answer logic; official source not independently retrieved in this pass."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared visible official page screenshot with adapted stem, options and answer logic; browser acceptance separate."
       }
     },
     "am2:23": {
-      "stem": "HAクラスタで心拍が途絶えた際の処理順序は？ 1:ディスク心拍確認、2:ドライブ専有権確保、3:ネットワーク確認、4:本番系停止。",
+      "stem": "本番系のハートビートが一定時間待機系に届かない場合、次の処理をどの順番で行うか。①待機系がディスクの心拍記録を確認し、通信負荷による遅延か調べる。②待機系が本番系の論理ドライブの専有権を取得してロックする。③待機系から接続スイッチを調べ、ネットワークの正常性を確認する。④本番系がOSを強制終了する。",
       "options": {
         "ア": "1→2→3→4",
         "イ": "2→3→1→4",
@@ -748,13 +751,16 @@
         "エ": "3→2→1→4"
       },
       "answer": "ウ",
-      "explanation": "通信とディスク心拍で障害を確認してから専有権を確保する。",
+      "explanation": "この設問では通信経路を確認し、ディスクの記録を確認してからドライブを専有し、本番系を停止する。実際のHA製品では実装によって手順が異なる。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "needs-source-review",
-        "reason": "HA fencing order depends on original scenario; do not infer universal sequence."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared visible official page screenshot with adapted stem, options and answer logic; browser acceptance separate."
       }
     },
     "am2:24": {
