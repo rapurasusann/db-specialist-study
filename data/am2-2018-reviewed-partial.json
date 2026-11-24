@@ -46,6 +46,82 @@
       "sourcePage": 3,
       "adapted": true,
       "needsSourceReview": true
+    },
+    "am2:6": {
+      "stem": "表A(A1,A2,A3)のカーソルBが指す行をUPDATEするWHERE句は？",
+      "options": {
+        "ア": "CURRENT OF A1",
+        "イ": "CURRENT OF B",
+        "ウ": "CURSOR B OF A",
+        "エ": "CURSOR B OF A1"
+      },
+      "answer": "イ",
+      "explanation": "CURRENT OFにはカーソル名を指定する。",
+      "sourcePage": 5,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "sql",
+          "text": "UPDATE A SET A2 = 1, A3 = 2\nWHERE [a]"
+        }
+      ]
+    },
+    "am2:7": {
+      "stem": "商品IDごとに項目名と値を行として保存する表で、同一商品の同じ項目に異なる値を登録できないようにする制約は？",
+      "options": {
+        "ア": "UNIQUE (ID)",
+        "イ": "UNIQUE (ID, 項目名)",
+        "ウ": "UNIQUE (ID, 項目名, 値)",
+        "エ": "UNIQUE (項目名, 値)"
+      },
+      "answer": "イ",
+      "explanation": "IDと項目名の組合せを一意にする。値を含めると異なる値の重複を許してしまう。",
+      "sourcePage": 6,
+      "adapted": true,
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "table",
+          "title": "管理項目",
+          "headers": [
+            "ID",
+            "項目名",
+            "データ型",
+            "値"
+          ],
+          "rows": [
+            [
+              1,
+              "商品名",
+              "文字列",
+              "ライト01"
+            ],
+            [
+              1,
+              "商品番号",
+              "文字列",
+              "L001"
+            ],
+            [
+              1,
+              "価格",
+              "数値",
+              "400"
+            ],
+            [
+              2,
+              "商品名",
+              "文字列",
+              "ノート02"
+            ]
+          ]
+        },
+        {
+          "type": "sql",
+          "text": "CREATE TABLE 管理項目 (\n ID INTEGER NOT NULL,\n 項目名 VARCHAR(20) NOT NULL,\n データ型 VARCHAR(10) NOT NULL,\n 値 VARCHAR(100) NOT NULL,\n [a]\n)"
+        }
+      ]
     }
   }
 }
