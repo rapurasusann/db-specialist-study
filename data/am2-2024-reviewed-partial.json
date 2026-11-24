@@ -14,10 +14,15 @@
         "エ": "トランザクションをロールバックしても取得による現在値の変化は戻らない。"
       },
       "answer": "エ",
-      "explanation": "シーケンスは一意な番号を発行する仕組みで、通常のトランザクションの巻戻しとは独立して進む。CYCLE、負の増分、現在値の変更も可能。",
+      "explanation": "シーケンスの番号取得は通常のトランザクションのロールバックで取り消されない。番号に欠番が生じることがある。また、シーケンス自体が一意性を常に保証するわけではなく、循環設定や再設定によって同じ値が発行される場合がある。",
       "sourcePage": 3,
       "verifiedAgainstSource": true,
-      "adapted": true
+      "adapted": true,
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:2": {
       "stem": "クライアントサーバ方式でストアドプロシージャを使う場合、不適切な説明はどれか。",
@@ -31,7 +36,12 @@
       "explanation": "細分化によって呼出しや通信が増えることがあり、性能向上は保証されない。複数のSQLをまとめることで通信を削減できる。",
       "sourcePage": 3,
       "verifiedAgainstSource": true,
-      "adapted": true
+      "adapted": true,
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:4": {
       "stem": "転置インデックスの説明として適切なものはどれか。",
@@ -45,7 +55,12 @@
       "explanation": "転置インデックスは単語をキーに、その単語を含む文書の一覧を引ける構造。全文検索で使われる。",
       "sourcePage": 5,
       "verifiedAgainstSource": true,
-      "adapted": true
+      "adapted": true,
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:5": {
       "stem": "多くの属性から成る複合主キーを扱いやすくする対応はどれか。",
@@ -59,7 +74,12 @@
       "explanation": "代理キーは業務上の意味を持たない人工的な識別子。元の複合キーの一意性は別途UNIQUE制約などで維持する。",
       "sourcePage": 5,
       "verifiedAgainstSource": true,
-      "adapted": true
+      "adapted": true,
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:3": {
       "stem": "B⁺木の葉CをC1とC2に分割する。親Aには空きがある。正しい分割後の構造は？",
@@ -405,7 +425,12 @@
           }
         ]
       },
-      "sourceVisualReviewed": true
+      "sourceVisualReviewed": true,
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:6": {
       "stem": "階層化された組織の任意の階層に従業員が所属でき、兼務は不可とする。適切な関係は？",
@@ -608,6 +633,11 @@
             ]
           }
         ]
+      },
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
       }
     },
     "am2:7": {
@@ -695,7 +725,12 @@
           "text": "SELECT AVG(売上合計金額) AS 売上平均金額\nFROM 商品 LEFT OUTER JOIN 商品別売上実績\nON 商品.商品コード = 商品別売上実績.商品コード\nWHERE 商品ランク = 'A'"
         }
       ],
-      "sourceVisualReviewed": true
+      "sourceVisualReviewed": true,
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:8": {
       "stem": "親子関係が NULL→A、A→B、A→C、B→D、B→E、C→F、F→G の隣接リストから葉を求める。SELECT 子ノード FROM 隣接リスト と SELECT 親ノード FROM 隣接リスト の間に置く演算は？",
@@ -827,7 +862,12 @@
           "text": "SELECT 子ノード FROM 隣接リスト\n[ a ]\nSELECT 親ノード FROM 隣接リスト"
         }
       ],
-      "sourceVisualReviewed": true
+      "sourceVisualReviewed": true,
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:9": {
       "stem": "商品表と納品表を商品番号で等結合した結果を選ぶ。",
@@ -1089,21 +1129,62 @@
           }
         ]
       },
-      "sourceVisualReviewed": true
+      "sourceVisualReviewed": true,
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:10": {
       "stem": "従業員表をS1として、男女それぞれの最年長者を除くため WHERE 生年月日 > (副問合せ) とする。適切な副問合せは？",
       "options": {
-        "ア": "MINを性別別にGROUP BYする",
-        "イ": "S1の生年月日がS2より後、又は性別一致の条件でMINを求める",
-        "ウ": "S1とS2の性別一致を条件にMINを求める",
-        "エ": "別名S2を定義せずS2.性別でGROUP BYする"
+        "ア": "SQL 1",
+        "イ": "SQL 2",
+        "ウ": "SQL 3",
+        "エ": "SQL 4"
       },
       "answer": "ウ",
-      "explanation": "同じ性別の最小生年月日を相関副問合せで一つ求め、それより後の日付の人だけを抽出する。",
+      "explanation": "同じ性別の最小生年月日を相関副問合せで求め、その日より後に生まれた人を選択する。最小日付に該当する人が複数いても全員除外される。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "figures": [
+        {
+          "type": "sql",
+          "text": "SELECT S1.従業員番号, S1.従業員名 FROM 従業員 AS S1\nWHERE S1.生年月日 > ([a])"
+        }
+      ],
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 従業員 AS S2 GROUP BY S2.性別"
+          }
+        ],
+        "イ": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 従業員 AS S2 WHERE S1.生年月日 > S2.生年月日 OR S1.性別 = S2.性別"
+          }
+        ],
+        "ウ": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 従業員 AS S2 WHERE S1.性別 = S2.性別"
+          }
+        ],
+        "エ": [
+          {
+            "type": "sql",
+            "text": "SELECT MIN(生年月日) FROM 従業員 GROUP BY S2.性別"
+          }
+        ]
+      },
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:11": {
       "stem": "二つの関係が和両立でなくても実行できる演算は？",
@@ -1117,7 +1198,11 @@
       "explanation": "直積は全行の組合せを作る。集合演算の和・差・積集合には対応する属性の互換性が必要。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:12": {
       "stem": "ダーティリードに当たる事象は？",
@@ -1131,7 +1216,11 @@
       "explanation": "確定前の値を読むのがダーティリード。アはファントム、イはノンリピータブルリード。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:13": {
       "stem": "待ち関係が B→D、D→C、C→B、C→A、D→E、E→G、F→D、F→E のとき、永久待ちになる処理は？",
@@ -1231,10 +1320,15 @@
           "shape": "circle"
         }
       ],
-      "sourceVisualReviewed": true
+      "sourceVisualReviewed": true,
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:14": {
-      "stem": "PがXを4から5へ更新し未コミット。READ COMMITTEDでQが読む場合、単版二相ロック方式とMVCC方式の動作の組合せは？",
+      "stem": "PがXを4から5へ更新し、まだコミットしていない。Pはその後コミットするものとする。READ COMMITTEDでQがXを読む場合、単版二相ロック方式とMVCC方式の動作の組合せは？",
       "options": {
         "ア": "前者は待って5、後者は待たず4",
         "イ": "前者は待って5、後者は待たず5",
@@ -1278,7 +1372,12 @@
           ]
         }
       ],
-      "sourceVisualReviewed": true
+      "sourceVisualReviewed": true,
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:15": {
       "stem": "不整合検索異状に該当する例は？",
@@ -1292,7 +1391,11 @@
       "explanation": "古いxに基づくyと新しいxの組合せが整合しなくなる。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:16": {
       "stem": "CEP（複合イベント処理）の特徴は？",
@@ -1306,7 +1409,11 @@
       "explanation": "CEPはイベントの流れを監視し、組合せや条件に応じてリアルタイム処理する。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:17": {
       "stem": "スタースキーマで取引実績を格納する表は？",
@@ -1320,7 +1427,11 @@
       "explanation": "ファクトは売上や数量などの実績、ディメンションは商品や日付など分析軸。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:18": {
       "stem": "データリネージとは？",
@@ -1334,10 +1445,14 @@
       "explanation": "データの流れと変換履歴を追跡し、原因調査や変更の影響分析に使う。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:19": {
-      "stem": "数字16桁よりも組合せ数を増やすには、95種類の文字を使う固定長パスワードは最短何桁か。log10(95)=1.98とする。",
+      "stem": "各位置で同じ文字を繰返し使用できる固定長パスワードについて、数字10種類の16桁より組合せ数を多くするには、95種類の文字を使う場合に最短何桁必要か。log10(95)=1.98とする。",
       "options": {
         "ア": "6",
         "イ": "7",
@@ -1348,7 +1463,11 @@
       "explanation": "95^n > 10^16なので1.98n>16。8桁は15.84、9桁は17.82となる。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:20": {
       "stem": "迷惑メール判定のベイジアンフィルターの仕組みは？",
@@ -1362,7 +1481,11 @@
       "explanation": "単語などの出現傾向から迷惑メールである確率を推定する。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:21": {
       "stem": "ブロックチェーンで改ざん検出に用いる基本技術は？",
@@ -1376,7 +1499,11 @@
       "explanation": "ブロックの内容や前のブロックとのつながりをハッシュ値で検証できる。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:22": {
       "stem": "RAID5を複数組ストライピングするRAID5+0の利点は？",
@@ -1390,7 +1517,11 @@
       "explanation": "複数グループで並列処理できる。パリティはグループごとに必要で、故障耐性もグループ単位で決まる。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:23": {
       "stem": "Webサーバのセッション共有型負荷分散はどれか？",
@@ -1404,7 +1535,11 @@
       "explanation": "セッション情報を共有することで別のサーバでも利用者の処理状態を継続できる。",
       "sourcePage": 15,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:24": {
       "stem": "組込み機器のプラットフォーム開発の利点は？",
@@ -1418,7 +1553,11 @@
       "explanation": "共通部品を再利用することで重複開発を減らす。機器固有の試験は依然必要。",
       "sourcePage": 16,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     },
     "am2:25": {
       "stem": "XPにおけるテスト駆動開発の特徴は？",
@@ -1432,7 +1571,11 @@
       "explanation": "失敗するテストを書き、最小限の実装で成功させ、リファクタリングする。",
       "sourcePage": 16,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": true,
+      "contentReview": {
+        "status": "internal-review-only",
+        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+      }
     }
   },
   "pendingDiagramQuestions": [],
