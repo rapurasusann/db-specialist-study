@@ -17,10 +17,17 @@
       "explanation": "概念は論理構造、内部は物理構造、外部は利用者ごとの見え方を表す。",
       "sourcePage": 3,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 3,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:2": {
-      "stem": "勘定と会計取引を移動表で結ぶ。現金の2017年4月30日現在の残高を求める方法は？ 一つの会計取引に対応する移動金額の総和は0で、会計取引表は今期分だけを保持する。 期首残高と取引ごとの増減額から残高を計算する。",
+      "stem": "会計取引の増減額は、残高を増やす場合は正、減らす場合は負とする。今期の取引だけが会計取引表にある。現金勘定の2017年4月30日時点の残高を求めるSQLの考え方として適切なものは？",
       "options": {
         "ア": "期首残高を含めず移動金額を合計",
         "イ": "期首残高に対象日までの移動金額を加算し勘定別に集約",
@@ -28,7 +35,7 @@
         "エ": "残高列を直接取得し取引番号の結合を省略"
       },
       "answer": "イ",
-      "explanation": "残高は期首残高と対象日までの増減額の合計。勘定科目と取引番号で結合する。",
+      "explanation": "勘定科目と取引番号で3表を結合し、現金かつ指定日以前の取引に絞る。期首残高に符号付き金額の合計を加える。",
       "sourcePage": 4,
       "adapted": true,
       "needsSourceReview": true,
@@ -110,10 +117,18 @@
           ]
         }
       ],
-      "needsDiagramReview": true
+      "needsDiagramReview": true,
+      "contentReview": {
+        "status": "partial",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 4,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate.",
+        "reason": "SQL options remain summarized rather than executable SQL."
+      }
     },
     "am2:3": {
-      "stem": "検査項目が人によって異なり、標準値は項目別の最新版だけ、測定値は日時付きで保存する。適切なモデルは？",
+      "stem": "検査項目は人ごとに異なり、事前に決まっていない場合もある。項目別の標準値は最新版のみ、測定値は測定日時とともに保持する。適切なUMLモデルは？",
       "options": {
         "ア": "人と検査項目を1対多で結び測定情報も項目に保存",
         "イ": "人と検査項目の間に検査値を置き双方から1対多で関連付ける",
@@ -124,7 +139,7 @@
       "explanation": "検査項目の標準値と個人別の測定履歴を分離する。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "needsDiagramReview": true,
       "optionFigures": {
         "ア": [
@@ -321,6 +336,13 @@
             }
           }
         ]
+      },
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 5,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
       }
     },
     "am2:4": {
@@ -335,7 +357,14 @@
       "explanation": "Bは他の属性から導出できない。AB、BC、BDはいずれも全属性を導出できる最小集合。",
       "sourcePage": 5,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 5,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:5": {
       "stem": "実体Aが存在しなくなると関連する実体Bも存在できない。Bを何と呼ぶ？",
@@ -349,7 +378,14 @@
       "explanation": "弱実体は他の実体に存在を依存する。",
       "sourcePage": 6,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 6,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:6": {
       "stem": "DBMSのログに関する正しい説明は？",
@@ -363,7 +399,14 @@
       "explanation": "更新後情報を用いて確定済みの変更を再現する。",
       "sourcePage": 6,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 6,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:7": {
       "stem": "講義名から担当教員、所属コードから勤務地が一意に決まる。第2正規形だが第3正規形でない表は？",
@@ -377,7 +420,7 @@
       "explanation": "社員番号から所属コードを経由して勤務地が決まる推移的従属がある。",
       "sourcePage": 7,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "optionFigures": {
         "ア": [
           {
@@ -459,10 +502,17 @@
             ]
           }
         ]
+      },
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 7,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
       }
     },
     "am2:8": {
-      "stem": "部署別に役職ごとの人数をCOUNTとCASEで集計する。空欄に入る式は？",
+      "stem": "社員表（社員コードが主キー、部署コード、社員名、役職）から部署別の主任・一般社員の人数を求める。SQLの空欄に入る式は？",
       "options": {
         "ア": "THEN 1 ELSE -1",
         "イ": "THEN 1 ELSE 0",
@@ -473,7 +523,7 @@
       "explanation": "COUNTはNULLを数えない。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "sql",
@@ -505,7 +555,14 @@
             ]
           ]
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 8,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:9": {
       "stem": "A=5、B=4、C=NULLのとき (A>C) OR (B>A) OR (C=A) の評価は？",
@@ -519,10 +576,17 @@
       "explanation": "不定 OR 偽 OR 不定は不定。",
       "sourcePage": 8,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 8,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:10": {
-      "stem": "出荷実績の合計が300以下の商品について月末在庫数を合計する。出荷なしの商品のSUMはNULLとする。結果は？",
+      "stem": "二つの表から定義したビューに対し、示されたSQLを実行すると結果はいくつになるか。",
       "options": {
         "ア": "400",
         "イ": "500",
@@ -533,7 +597,7 @@
       "explanation": "S001とS003が該当し100+300=400。",
       "sourcePage": 9,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -616,7 +680,14 @@
           "type": "sql",
           "text": "CREATE VIEW 商品別出荷実績 (商品コード, 出荷実績数, 月末在庫数)\nAS SELECT 月末商品在庫.商品コード, SUM(出荷数), 在庫数\nFROM 月末商品在庫 LEFT OUTER JOIN 当月商品出荷実績\nON 月末商品在庫.商品コード = 当月商品出荷実績.商品コード\nGROUP BY 月末商品在庫.商品コード, 在庫数;\n\nSELECT SUM(月末在庫数) AS 出荷商品在庫合計\nFROM 商品別出荷実績 WHERE 出荷実績数 <= 300"
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 9,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:11": {
       "stem": "PCには番号1、2のスロットがあり、各スロットには最大1枚のメモリカードを取り付けられる。各カードは同時に最大1か所に取り付けられる。取付け表の空欄[a]に必要な制約は？",
@@ -630,7 +701,7 @@
       "explanation": "スロットごとの一意性とカードの重複取付け禁止を両立する。",
       "sourcePage": 10,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "uml",
@@ -683,7 +754,14 @@
           "type": "sql",
           "text": "CREATE TABLE 取付け (\n PCID INTEGER NOT NULL FOREIGN KEY REFERENCES PC(PCID),\n スロット番号 INTEGER NOT NULL,\n メモリカードID INTEGER NOT NULL\n FOREIGN KEY REFERENCES メモリカード(メモリカードID),\n [a]\n CHECK(スロット番号 IN (1,2))\n)"
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 10,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:12": {
       "stem": "和両立のRとSで共通集合と等しい式は？",
@@ -697,7 +775,14 @@
       "explanation": "R−SはRにだけ含まれる要素であり、これをRから除けばR∩Sになる。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 11,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:13": {
       "stem": "n属性から選べる射影の総数は？ 空と全属性を含む。",
@@ -711,7 +796,14 @@
       "explanation": "各属性について選ぶか選ばないかの2択。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 11,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:14": {
       "stem": "分散DBの2相コミットで必要な処理は？",
@@ -725,7 +817,14 @@
       "explanation": "全参加者の準備を確認してから確定を決める。",
       "sourcePage": 11,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 11,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:15": {
       "stem": "2相ロック方式が保証する性質は？",
@@ -739,7 +838,14 @@
       "explanation": "取得相と解放相に分けることで競合直列化可能性を保証する。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 12,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:16": {
       "stem": "ACIDの正しい説明は？",
@@ -753,13 +859,20 @@
       "explanation": "一貫性は整合した状態を維持する性質。",
       "sourcePage": 12,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 12,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:17": {
       "stem": "合計点を求めた後、別取引が条件に合う受験者を追加して確定し、その後人数を集計したため平均がずれた。現象は？ 隔離性水準はREAD UNCOMMITTEDとする。",
       "options": {
-        "ア": "反復不能読取り",
-        "イ": "順次読取り",
+        "ア": "アンリピータブルリード（反復不能読取り）",
+        "イ": "シーケンシャルリード（順次読取り）",
         "ウ": "ダーティリード",
         "エ": "ファントムリード"
       },
@@ -767,7 +880,7 @@
       "explanation": "同じ検索条件で対象行の集合が変わった。",
       "sourcePage": 13,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "figures": [
         {
           "type": "table",
@@ -810,21 +923,35 @@
             ]
           ]
         }
-      ]
+      ],
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 13,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:18": {
-      "stem": "行aに共有ロックがある場合のロック競合として正しいものは？",
+      "stem": "RDBMSのロックについて、別々のトランザクションXとYの間で成立する説明は？",
       "options": {
-        "ア": "別行bの専有も不可",
-        "イ": "表全体の専有は不可",
-        "ウ": "表共有と表専有は両立",
-        "エ": "表専有と他取引の行専有は両立"
+        "ア": "Xが行aを共有ロックするとYは別行bを専有ロックできない",
+        "イ": "Xが行aを共有ロックするとYは表全体を専有ロックできない",
+        "ウ": "Xの表共有ロックとYの表専有ロックは両立する",
+        "エ": "Xの表専有ロックとYの行専有ロックは両立する"
       },
       "answer": "イ",
       "explanation": "表全体の専有は既存行ロックと競合する。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 14,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:19": {
       "stem": "それぞれn行の二表を索引なしの単純な入れ子ループで結合するとき、比較回数のオーダは？",
@@ -838,7 +965,14 @@
       "explanation": "外側の各行について内側n行を比較する。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 14,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:20": {
       "stem": "CSIRTの役割は？",
@@ -852,7 +986,14 @@
       "explanation": "組織のインシデント対応を担う。",
       "sourcePage": 14,
       "adapted": true,
-      "needsSourceReview": true
+      "needsSourceReview": false,
+      "contentReview": {
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_qs.pdf",
+        "page": 14,
+        "reviewedOn": "2026-11-24",
+        "scope": "Compared adapted wording, answer logic and available figure data with IPA question page image. Exact figure fidelity, browser acceptance and official answer evidence remain separate."
+      }
     },
     "am2:21": {
       "stem": "SSHの用途は？",
