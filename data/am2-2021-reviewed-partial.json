@@ -3,12 +3,9 @@
   "source": "IPA 令和3年度秋期 DB午前Ⅱ（学習用要約）",
   "questionUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_qs.pdf",
   "answerUrl": "https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000apad-att/2021r03a_db_am2_ans.pdf",
-  "status": "adapted-review-only",
+  "status": "all-25-adapted-figures-staged",
   "answerVerification": "Matches staged answer key and independently solved from official question screenshots; official answer glyphs still unavailable",
-  "pendingDiagramQuestions": [
-    2,
-    4
-  ],
+  "pendingDiagramQuestions": [],
   "questions": {
     "am2:1": {
       "stem": "CAP定理が示す分散システムの制約は？",
@@ -25,7 +22,7 @@
       "needsSourceReview": true
     },
     "am2:2": {
-      "stem": "組織階層を表す3モデルについて正しい説明は？",
+      "stem": "部・課・係の階層を表す3モデルについて、適切な解釈を選ぶ。親子は循環しないものとし、モデルBの階層制約は循環禁止を表す。",
       "options": {
         "ア": "全モデルで階層追加時に変更不要",
         "イ": "全モデルで複数親を表現不能",
@@ -39,24 +36,122 @@
       "needsSourceReview": true,
       "figures": [
         {
+          "type": "uml",
+          "title": "モデルA",
+          "classes": [
+            [
+              "部",
+              55,
+              80
+            ],
+            [
+              "課",
+              175,
+              80
+            ],
+            [
+              "係",
+              295,
+              80
+            ]
+          ],
+          "links": [
+            {
+              "kind": "association",
+              "from": "部",
+              "to": "課",
+              "fromLabel": "1",
+              "toLabel": "*",
+              "label": "親子"
+            },
+            {
+              "kind": "association",
+              "from": "課",
+              "to": "係",
+              "fromLabel": "1",
+              "toLabel": "*",
+              "label": "親子"
+            }
+          ]
+        },
+        {
+          "type": "uml",
+          "title": "モデルB（階層制約あり）",
+          "classes": [
+            [
+              "組織",
+              175,
+              90
+            ]
+          ],
+          "links": [
+            {
+              "kind": "self",
+              "from": "組織",
+              "fromLabel": "0..1 親",
+              "toLabel": "* 子"
+            }
+          ]
+        },
+        {
+          "type": "uml",
+          "title": "モデルC",
+          "classes": [
+            [
+              "組織",
+              80,
+              85
+            ],
+            [
+              "組織構造",
+              265,
+              85
+            ]
+          ],
+          "links": [
+            {
+              "kind": "association",
+              "from": "組織",
+              "to": "組織構造",
+              "fromLabel": "1",
+              "toLabel": "*",
+              "label": "親・子（各1対多）"
+            }
+          ]
+        },
+        {
           "type": "table",
-          "title": "モデルの構造（要約）",
+          "title": "各クラスの属性",
           "headers": [
             "モデル",
-            "構造"
+            "クラス",
+            "属性"
           ],
           "rows": [
             [
               "A",
-              "部1―多課1―多係"
+              "部",
+              "部コード"
             ],
             [
-              "B",
-              "組織の自己関連：親0..1、子多、階層制約"
+              "A",
+              "課",
+              "課コード"
+            ],
+            [
+              "A",
+              "係",
+              "係コード"
+            ],
+            [
+              "B・C",
+              "組織",
+              "組織コード、組織レベル"
             ],
             [
               "C",
-              "組織と組織構造（親組織コード・子組織コード）の2関連"
+              "組織構造",
+              "親組織コード、子組織コード"
             ]
           ]
         }
@@ -96,32 +191,255 @@
           "headers": [
             "表",
             "主キー",
+            "その他の属性",
             "外部キー"
           ],
           "rows": [
             [
               "医師",
               "医師番号",
+              "医師名",
               "診療科コード"
             ],
             [
               "診療科",
               "診療科コード",
+              "診療科名称",
               "なし"
             ],
             [
               "診察",
               "診療科コード＋患者番号＋診察日時",
+              "なし",
               "診療科コード、患者番号"
             ],
             [
               "患者",
               "患者番号",
+              "患者名",
               "なし"
             ]
           ]
         }
-      ]
+      ],
+      "optionFigures": {
+        "ア": [
+          {
+            "type": "uml",
+            "title": "ア",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              }
+            ]
+          }
+        ],
+        "イ": [
+          {
+            "type": "uml",
+            "title": "イ",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              }
+            ]
+          }
+        ],
+        "ウ": [
+          {
+            "type": "uml",
+            "title": "ウ",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              }
+            ]
+          }
+        ],
+        "エ": [
+          {
+            "type": "uml",
+            "title": "エ",
+            "classes": [
+              [
+                "医師",
+                40,
+                80
+              ],
+              [
+                "診療科",
+                130,
+                80
+              ],
+              [
+                "診察",
+                220,
+                80
+              ],
+              [
+                "患者",
+                310,
+                80
+              ]
+            ],
+            "links": [
+              {
+                "kind": "association",
+                "from": "医師",
+                "to": "診療科",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診療科",
+                "to": "診察",
+                "fromLabel": "1",
+                "toLabel": "*",
+                "label": ""
+              },
+              {
+                "kind": "association",
+                "from": "診察",
+                "to": "患者",
+                "fromLabel": "*",
+                "toLabel": "1",
+                "label": ""
+              }
+            ]
+          }
+        ]
+      }
     },
     "am2:5": {
       "stem": "正規化に関する適切な説明は？",
@@ -595,5 +913,6 @@
       "adapted": true,
       "needsSourceReview": true
     }
-  }
+  },
+  "pendingDiagramNote": "Q2/Q4 structured diagram data added; visual layout fidelity and remaining source review pending."
 }
