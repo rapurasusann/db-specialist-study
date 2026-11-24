@@ -18,10 +18,12 @@
       "sourcePage": 3,
       "verifiedAgainstSource": true,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 3,
+        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
       }
     },
     "am2:2": {
@@ -37,10 +39,12 @@
       "sourcePage": 3,
       "verifiedAgainstSource": true,
       "adapted": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 3,
+        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
       }
     },
     "am2:4": {
@@ -82,7 +86,7 @@
       }
     },
     "am2:3": {
-      "stem": "B⁺木の葉CをC1とC2に分割する。親Aには空きがある。正しい分割後の構造は？",
+      "stem": "B⁺木の葉CをC1とC2に分割する。親Aには空きがある。正しい分割後の構造は？ レコードを1件追加した結果として分割が発生したものとし、図中の矢印はノードへのポインタを示す。",
       "options": {
         "ア": "AはB・C1・Dを指し、葉の順序はB、C1、C2、D",
         "イ": "AはB・C1・C2・Dを指し、葉の順序はB、C1、C2、D",
@@ -426,10 +430,12 @@
         ]
       },
       "sourceVisualReviewed": true,
-      "needsSourceReview": true,
+      "needsSourceReview": false,
       "contentReview": {
-        "status": "internal-review-only",
-        "scope": "Draft wording and answer logic inspected; official original not independently retrieved in this pass. Retain publication hold."
+        "status": "adapted-content-compared",
+        "source": "https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_qs.pdf",
+        "page": 4,
+        "scope": "Compared visible official PDF page in current pass; exact diagram fidelity and browser acceptance separate."
       }
     },
     "am2:6": {
