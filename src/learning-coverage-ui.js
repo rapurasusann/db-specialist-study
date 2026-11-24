@@ -26,12 +26,12 @@ function state(item,records){
 function states(){const records={am2:progress,term:readRecords('db-study-terms-v1'),step:readRecords('db-study-step-up-v1')};return items().map(x=>state(x,records));}
 // Keep streaks in the original AM2 record. A changed answer in the same display
 // is not a second independent correct attempt. Existing manual mastery remains valid.
-let counted=false;
+let counted=false,answerSeen=false;
 const oldRenderStudy=renderStudy;
-renderStudy=function(){counted=false;return oldRenderStudy.apply(this,arguments)};
+renderStudy=function(){counted=false;answerSeen=false;return oldRenderStudy.apply(this,arguments)};
 const oldPut=put;
-put=function(update){if(courseId==='am2'&&typeof update.correct==='boolean'&&Object.hasOwn(update,'attempts')){
- const prev=rec();update={...update,streak:update.correct?(counted?(prev.correct===true?Number(prev.streak)||0:0):(Number(prev.streak)||0)+1):0};counted=true;
+put=function(update){if(update.seenAnswer===true)answerSeen=true;if(courseId==='am2'&&typeof update.correct==='boolean'&&Object.hasOwn(update,'attempts')){
+ const prev=rec();update={...update,streak:update.correct?(answerSeen?(Number(prev.streak)||0):counted?(prev.correct===true?Number(prev.streak)||0:0):(Number(prev.streak)||0)+1):0};counted=true;
  }return oldPut.call(this,update)};
 const box=document.createElement('div');box.id='learningOverview';box.innerHTML='<h2>学習網羅率・定着率</h2><p class="muted">2016～2025年度の午前Ⅱ・用語理解・ステップアップを集計。網羅率は解答・自己評価済みの割合。定着率は習得済み（午前Ⅱは自己評価または連続2回正解、用語は連続2回正解、記述は自己評価）の割合です。旧履歴の連続正解数は不明として扱います。実際の記憶定着を保証する指標ではありません。</p><div id="coverageRows" style="display:grid;gap:12px"></div><h2 style="margin-top:22px">ランダム学習</h2><p class="muted">選んだ範囲から重複なしで出題し、既存の学習画面に移動します。</p><div class="toolbar" id="randomGroups"></div><div class="toolbar separate"><label>出題方法 <select id="randomMode"><option value="weak">学習が必要な問題を優先</option><option value="unseen">未学習のみ</option><option value="wrong">不正解・要復習のみ</option><option value="review">定着確認（7日以上・日付不明）</option><option value="all">完全ランダム</option></select></label><label>問題数 <select id="randomCount"><option>10</option><option selected>20</option><option>50</option></select></label><button type="button" id="randomStart" class="primary">学習開始</button></div><p id="randomMessage" role="status" class="muted"></p>';
 byId('dashboard').prepend(box);
@@ -53,9 +53,10 @@ byId('randomStart').addEventListener('click',()=>{const selected=new Set([...byI
  if(mode==='weak'){const priority=x=>x.wrong?0:!x.seen?1:!x.mastered?2:3;xs.sort((a,b)=>priority(a)-priority(b));}
  queue=xs.slice(0,Number(byId('randomCount').value));position=0;byId('randomMessage').textContent=queue.length+'問を選びました。';show();
 });
-byId('randomBack').addEventListener('click',()=>{if(position>0){position--;show()}});
-byId('randomNext').addEventListener('click',()=>{if(position+1<queue.length){position++;show()}else stop()});
-byId('randomStop').addEventListener('click',stop);
+function gradeIfCurrent(){const item=queue[position];if(item?.group==='am2'&&year===item.y&&courseId==='am2'&&number===item.n&&!byId('study').classList.contains('hide'))gradeCurrentAnswer();}
+byId('randomBack').addEventListener('click',()=>{if(position>0){gradeIfCurrent();position--;show()}});
+byId('randomNext').addEventListener('click',()=>{gradeIfCurrent();if(position+1<queue.length){position++;show()}else stop()});
+byId('randomStop').addEventListener('click',()=>{gradeIfCurrent();stop()});
 byId('viewDashboard').addEventListener('click',refresh);window.addEventListener('storage',refresh);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refresh()});
 refresh();
