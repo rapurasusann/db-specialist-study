@@ -49,7 +49,7 @@ showQuestion=function(){
  const panel=document.getElementById('questionText'),q=questionData();
  if(!q){originalQuestion();return;}
  // The existing archive data is adapted, not verbatim. Never present it as the official question.
- if(q.originalTextVerified!==true){
+ if(Number(year)===2024 && q.originalTextVerified!==true){
   panel.replaceChildren();
   panel.classList.remove('hide');
   document.getElementById('missingQuestion').classList.add('hide');
@@ -60,7 +60,14 @@ showQuestion=function(){
   link.href=entries[year].courses[0].questionUrl+(Number.isInteger(q.sourcePage)&&q.sourcePage>0?'#page='+q.sourcePage:'');
   link.target='_blank';link.rel='noopener noreferrer';link.className='primaryLink';
   const source=el('div','出典：独立行政法人情報処理推進機構（IPA） '+year+'年度 データベーススペシャリスト試験 午前Ⅱ・問'+number+'。');
-  source.className='source';panel.append(title,note,link,source);
+  source.className='source';
+  const original=document.createElement('iframe');
+  original.title='IPA 2024年度 午前Ⅱ 問'+number+' 公式問題冊子';
+  original.src=link.href;
+  original.referrerPolicy='no-referrer';
+  original.style.cssText='width:100%;height:850px;border:1px solid #d7e2ed;border-radius:8px;background:white';
+  note.textContent='公式問題冊子の問'+number+'を読んで、右側で解答してください。原本が表示されない場合は下のリンクから開いてください。';
+  panel.append(title,note,link,original,source);
   return;
  }
  originalQuestion();
@@ -68,7 +75,7 @@ showQuestion=function(){
  if(title){let anchor=title;for(const f of q.figures||[]){const item=figure(f);anchor.insertAdjacentElement('afterend',item);anchor=item;}}
  const choices=Array.from(panel.querySelectorAll('.optionText'));
  for(let i=0;i<choices.length;i++){for(const f of q.optionFigures?.['アイウエ'[i]]||[])choices[i].append(figure(f));}
- const source=panel.querySelector('.source');if(source){source.textContent='出典：IPA '+year+'年度 午前Ⅱ・問'+number+'。';const link=el('a','公式原本PDF');link.href=entries[year].courses[0].questionUrl;link.target='_blank';link.rel='noopener noreferrer';source.append(' ',link);}
+ const source=panel.querySelector('.source');if(source){source.textContent='出典：IPA '+year+'年度 午前Ⅱ・問'+number+(q.originalTextVerified===true?'。':'（学習用要約・原文未照合）。');const link=el('a','公式原本PDF');link.href=entries[year].courses[0].questionUrl;link.target='_blank';link.rel='noopener noreferrer';source.append(' ',link);}
  document.getElementById('localViewer').classList.add('archive-hide-original');
 };
 const style=el('style','#localViewer.archive-hide-original{display:none!important}');document.head.append(style);const previous=showQuestion;showQuestion=function(){document.getElementById('localViewer').classList.remove('archive-hide-original');previous();if(Number(year)!==2025)document.getElementById('localViewer').classList.add('archive-hide-original');};
