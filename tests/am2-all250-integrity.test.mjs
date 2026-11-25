@@ -82,3 +82,22 @@ test('2025 official Q12 checkpoint chronology and Q23 parity premises are retain
   assert.ok(raid.includes(premise),'2025 Q23 premise: '+premise);
  }
 });
+
+test('2025 Q6 and Q9 retain complete structured official tables and SQL',()=>{
+ const data=year2025();
+ const q6=data.questions['am2:6'];
+ assert.equal(q6.figures.length,1);
+ assert.equal(q6.figures[0].type,'table');
+ assert.equal(q6.figures[0].headers.length,9);
+ assert.equal(q6.figures[0].rows.length,10);
+ assert.ok(q6.figures[0].rows.every(row=>row.length===9));
+ assert.deepEqual([...q6.figures[0].rows[0]],[ '1055','A7053','鈴木電気','2025-07-01','T035','テレビA','85000','10','850000']);
+ const q9=data.questions['am2:9'];
+ assert.deepEqual(Array.from(q9.figures, f=>f.type),['table','table','sql']);
+ assert.equal(q9.figures[0].rows.length,3);
+ assert.equal(q9.figures[1].rows.length,3);
+ assert.ok(q9.figures[0].rows.every(row=>row.length===4));
+ assert.ok(q9.figures[1].rows.every(row=>row.length===4));
+ assert.ok(q9.figures[2].text.includes('[ a ]') && q9.figures[2].text.includes('[ b ]') && q9.figures[2].text.includes('[ c ]'));
+ assert.ok(read('src/am2-archive-2024.js').includes("current?.figures?.length"),'2025 renderer includes structured figures');
+});
