@@ -1,9 +1,8 @@
 import {termQuestions} from './term-understanding-questions.js?v=20261125reading1';
 // Isolated vocabulary practice: never read or modify legacy question progress.
 const recordsKey='db-study-terms-v1';
-const button=document.createElement('button');
-button.id='viewTerms';button.type='button';button.textContent='単語理解';
-document.getElementById('viewStudy')?.insertAdjacentElement('afterend',button);
+const button=document.getElementById('viewTerms');
+if(!button)throw Error('TERM_NAVIGATION_MISSING');
 const panel=document.createElement('section');
 panel.id='termPractice';panel.hidden=true;panel.setAttribute('aria-label','単語理解');
 panel.innerHTML='<h2>単語理解</h2><div id="termMetrics" class="termMetrics" aria-live="polite"></div><div class="termPracticeLayout"><aside class="termSidebar"><h2>分野</h2><nav id="termCategories" aria-label="分野"></nav><label class="muted" for="termFilter">問題の絞り込み</label><select id="termFilter"><option value="all">すべての問題</option><option value="unseen">未学習のみ</option><option value="review">要復習のみ</option><option value="learning">学習中のみ</option><option value="mastered">習得済みのみ</option></select><p id="termSummary" class="muted"></p><nav id="termItems" aria-label="学ぶ用語"></nav><p class="muted">灰：未学習／赤：要復習／黄：学習中／緑：習得済み</p></aside><div class="termPracticeQuestion"><h2>問題文・選択肢</h2><p class="muted">正しい説明を選んでください。青い点線の用語はマウスを合わせるかタップすると解説が表示されます。</p><p class="muted" id="termPosition"></p><h3 id="termPrompt"></h3><div id="termChoices"></div><div id="termFeedback" role="status" aria-live="polite" hidden></div><div class="toolbar separate"><button type="button" id="termReveal">回答・解説を表示</button><button type="button" id="termPrev">前の問題</button><button type="button" id="termNext" class="primary">次の問題</button><button type="button" id="termReset">この用語をもう一度</button></div></div></div>';
@@ -125,3 +124,5 @@ if(targetId){
   showTerms();
  }
 }
+
+button.disabled=false;
