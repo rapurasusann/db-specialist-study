@@ -1,4 +1,4 @@
-import {termQuestions} from './term-understanding-questions.js?v=20261124ex1';
+import {termQuestions} from './term-understanding-questions.js?v=20261125reading1';
 // Isolated vocabulary practice: never read or modify legacy question progress.
 const recordsKey='db-study-terms-v1';
 const button=document.createElement('button');
