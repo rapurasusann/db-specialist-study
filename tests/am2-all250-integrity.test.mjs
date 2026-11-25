@@ -77,9 +77,13 @@ test('2025 official Q12 checkpoint chronology and Q23 parity premises are retain
  for(const label of ['T1：チェックポイント前に開始・コミット','T2：チェックポイント前に開始 → チェックポイント後にコミット','T3：チェックポイント後に開始','T4：チェックポイント前に開始','T5：チェックポイント後に開始・コミット','T6：チェックポイント後に開始']){
   assert.ok(timeline.includes(label),'2025 Q12 timeline: '+label);
  }
- const raid=data.questions['am2:23'].stem;
- for(const premise of ['磁気ディスク1｜Aₚ，B₁，Cₚ，D₁','磁気ディスク2｜A₁，Bₚ，C₁，Dₚ','磁気ディスク3｜A₂，B₂，C₂，D₂','磁気ディスク4｜Aᵥ，Bᵥ，Cᵥ，Dᵥ','Aₚ＝A₁⊕A₂','Aᵥ＝D₁⊕A₂']){
-  assert.ok(raid.includes(premise),'2025 Q23 premise: '+premise);
+ const raid=data.questions['am2:23'];
+ assert.deepEqual(Array.from(raid.figures,f=>f.type),['table','sql']);
+ assert.deepEqual(Array.from(raid.figures[0].headers),['磁気ディスク1','磁気ディスク2','磁気ディスク3','磁気ディスク4']);
+ assert.deepEqual(Array.from(raid.figures[0].rows,row=>Array.from(row)),[
+  ['Aₚ','A₁','A₂','Aᵥ'],['B₁','Bₚ','B₂','Bᵥ'],['Cₚ','C₁','C₂','Cᵥ'],['D₁','Dₚ','D₂','Dᵥ']]);
+ for(const premise of ['Aₚ＝A₁⊕A₂','Aᵥ＝D₁⊕A₂','Bᵥ＝A₁⊕B₂','Dₚ＝D₁⊕D₂']){
+  assert.ok(raid.figures[1].text.includes(premise),'2025 Q23 parity premise: '+premise);
  }
 });
 
@@ -115,4 +119,25 @@ test('2025 Q8 renders the official deferrable constraint premise as structured d
  assert.ok(transaction.text.includes('UPDATE システム担当者 SET 担当者番号 = 222 WHERE システム番号 = 1234;'));
  assert.ok(transaction.text.includes('UPDATE システム担当者 SET 担当者番号 = 111 WHERE システム番号 = 6789;'));
  assert.ok(transaction.text.endsWith('COMMIT;'));
+});
+
+test('2025 Q3 UML reproduces nodes, attributes and multiplicities',()=>{
+ const q=year2025().questions['am2:3'];
+ assert.equal(q.figures?.length,1);
+ const f=q.figures[0];
+ assert.equal(f.type,'uml');
+ assert.deepEqual(Array.from(f.classes,c=>c[0]).sort(),['商品','在庫商品','倉庫','入庫','出庫'].sort());
+ assert.deepEqual(Array.from(f.links,l=>l.from+'->'+l.to).sort(),[
+  '商品->在庫商品','在庫商品->倉庫','入庫->在庫商品','出庫->在庫商品'].sort());
+ for(const [from,to,fromLabel,toLabel] of [
+  ['商品','在庫商品','1','1..*'],
+  ['在庫商品','倉庫','0..*','1'],
+  ['入庫','在庫商品','1..*','1'],
+  ['出庫','在庫商品','0..*','1']]){
+  const edge=f.links.find(l=>l.from===from&&l.to===to);
+  assert.ok(edge);
+  assert.equal(edge.fromLabel,fromLabel);
+  assert.equal(edge.toLabel,toLabel);
+ }
+ assert.deepEqual(Array.from(f.attributes['在庫商品']),['/在庫数量']);
 });
