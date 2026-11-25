@@ -149,6 +149,47 @@
   window.addEventListener('scroll', close, true);
   window.addEventListener('resize', close);
 
+  // Shared safe text renderer for vocabulary practice. Each call may share a
+  // used set across question and choices; answer terms are excluded until reveal.
+  window.DBStudyRenderGlossaryText = function(target, text, options = {}) {
+    const used = options.used || new Set();
+    const excluded = String(options.exclude || '');
+    const canonical = s => s.normalize('NFKC').toLowerCase().replace(/[\s()（）]/g, '');
+    const normalized = canonical(excluded);
+    const blocked = new Set(entries.filter(e => normalized &&
+      (canonical(e.phrase) === normalized || (canonical(e.phrase).length >= 2 && normalized.includes(canonical(e.phrase))))).map(e => e.id || e.phrase));
+    const applicable = entries.filter(e => !e.questionIds && !blocked.has(e.id || e.phrase));
+    target.replaceChildren();
+    let pos = 0;
+    while (pos < text.length) {
+      let best = null, at = text.length;
+      for (const item of applicable) {
+        if (used.has(item.id || item.phrase)) continue;
+        let ix = text.indexOf(item.phrase, pos);
+        while (ix >= 0 && ((/^[A-Za-z0-9_]/.test(item.phrase) && /[A-Za-z0-9_]/.test(text[ix-1] || '')) || (/[A-Za-z0-9_]$/.test(item.phrase) && /[A-Za-z0-9_]/.test(text[ix+item.phrase.length] || '')))) ix = text.indexOf(item.phrase, ix+1);
+        if (ix >= 0 && (ix < at || (ix === at && best && item.phrase.length > best.phrase.length))) { at = ix; best = item; }
+      }
+      if (!best) break;
+      if (at > pos) target.append(document.createTextNode(text.slice(pos, at)));
+      const token = document.createElement('button');
+      token.type = 'button'; token.className = 'glossary-term';
+      token.textContent = best.phrase;
+      token.dataset.glossaryId = best.id || best.phrase;
+      token.dataset.glossaryDefinition = best.definition;
+      token.setAttribute('aria-label', best.phrase + '：用語の説明を表示');
+      token.addEventListener('pointerenter', e => { if (e.pointerType !== 'touch') show(token); });
+      token.addEventListener('pointerleave', e => { if (e.pointerType !== 'touch' && active === token) close(); });
+      token.addEventListener('focus', () => show(token));
+      token.addEventListener('blur', () => { if (active === token) close(); });
+      token.addEventListener('click', e => { e.stopPropagation(); show(token); });
+      used.add(token.dataset.glossaryId);
+      target.append(token);
+      pos = at + best.phrase.length;
+    }
+    target.append(document.createTextNode(text.slice(pos)));
+    if (active && !active.isConnected) close();
+    return used;
+  };
   const observer = new MutationObserver(annotate);
   observer.observe(root, { childList: true, subtree: true, characterData: true });
   annotate();

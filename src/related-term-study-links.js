@@ -1,4 +1,4 @@
-import {termQuestions} from './term-understanding-questions.js?v=20261124ex1';
+import {termQuestions} from './term-understanding-questions.js?v=20261125reading1';
 // Context-aware vocabulary links in the EXISTING past-question study screen.
 // Links use same-origin ?term=<known ID> and open without replacing the exam.
 const questionTerms=Object.freeze({
