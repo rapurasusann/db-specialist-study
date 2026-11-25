@@ -44,7 +44,33 @@ for(const n of nodes){
 for(const args of labels)label(...args);
 const left=Math.min(0,...nodes.map(n=>n.x-n.half-32)),top=Math.min(0,...nodes.map(n=>n.y-n.height-38)),right=Math.max(350,...nodes.map(n=>n.x+n.half+16)),bottom=Math.max(205,...nodes.map(n=>n.y+n.height+18));svg.setAttribute('viewBox',[left,top,right-left,bottom-top].join(' '));return svg;}
 function figure(f){const wrap=el('figure');wrap.style.cssText='margin:10px 0;max-width:100%;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';if(f.title)wrap.append(el('figcaption',f.title));if(f.type==='sql'){const pre=el('pre',f.text);pre.style.whiteSpace='pre-wrap';wrap.append(pre);}else if(f.type==='table'){const t=el('table');t.style.cssText='width:max-content;min-width:100%;white-space:nowrap;font-size:.85rem';const head=el('thead'),hr=el('tr');for(const h of f.headers){const th=el('th',h);th.scope='col';hr.append(th);}head.append(hr);t.append(head);const body=el('tbody');for(const row of f.rows){const tr=el('tr');for(const value of row)tr.append(el('td',value));body.append(tr);}t.append(body);wrap.append(t);}else if(f.type==='graph'||f.type==='uml')wrap.append(diagram(f));return wrap;}
-showQuestion=function(){originalQuestion();if(!isArchive())return;const panel=document.getElementById('questionText'),q=questionData();if(!q)return;const title=panel.querySelector('h3');if(title){let anchor=title;for(const f of q.figures||[]){const item=figure(f);anchor.insertAdjacentElement('afterend',item);anchor=item;}}const choices=Array.from(panel.querySelectorAll('.optionText'));for(let i=0;i<choices.length;i++){for(const f of q.optionFigures?.['アイウエ'[i]]||[])choices[i].append(figure(f));}const source=panel.querySelector('.source');if(source){source.textContent='出典：IPA '+year+'年度 午前Ⅱ・問'+number+'（学習用要約・図表再構成、原文最終照合前）。';const link=el('a','公式原本PDF');link.href=entries[year].courses[0].questionUrl;link.target='_blank';link.rel='noopener noreferrer';source.append(' ',link);}document.getElementById('localViewer').classList.add('archive-hide-original');};
+showQuestion=function(){
+ if(!isArchive()){originalQuestion();return;}
+ const panel=document.getElementById('questionText'),q=questionData();
+ if(!q){originalQuestion();return;}
+ // The existing archive data is adapted, not verbatim. Never present it as the official question.
+ if(q.originalTextVerified!==true){
+  panel.replaceChildren();
+  panel.classList.remove('hide');
+  document.getElementById('missingQuestion').classList.add('hide');
+  document.getElementById('localViewer').style.display='none';
+  const title=el('h3',year+'年度 午前Ⅱ・問'+number);
+  const note=el('p','この問題の原文テキストは未照合です。要約版は表示しません。公式問題冊子の問'+number+'を確認し、右側で解答してください。');
+  const link=el('a','IPA公式問題冊子を開く（問'+number+'）');
+  link.href=entries[year].courses[0].questionUrl+(Number.isInteger(q.sourcePage)&&q.sourcePage>0?'#page='+q.sourcePage:'');
+  link.target='_blank';link.rel='noopener noreferrer';link.className='primaryLink';
+  const source=el('div','出典：独立行政法人情報処理推進機構（IPA） '+year+'年度 データベーススペシャリスト試験 午前Ⅱ・問'+number+'。');
+  source.className='source';panel.append(title,note,link,source);
+  return;
+ }
+ originalQuestion();
+ const title=panel.querySelector('h3');
+ if(title){let anchor=title;for(const f of q.figures||[]){const item=figure(f);anchor.insertAdjacentElement('afterend',item);anchor=item;}}
+ const choices=Array.from(panel.querySelectorAll('.optionText'));
+ for(let i=0;i<choices.length;i++){for(const f of q.optionFigures?.['アイウエ'[i]]||[])choices[i].append(figure(f));}
+ const source=panel.querySelector('.source');if(source){source.textContent='出典：IPA '+year+'年度 午前Ⅱ・問'+number+'。';const link=el('a','公式原本PDF');link.href=entries[year].courses[0].questionUrl;link.target='_blank';link.rel='noopener noreferrer';source.append(' ',link);}
+ document.getElementById('localViewer').classList.add('archive-hide-original');
+};
 const style=el('style','#localViewer.archive-hide-original{display:none!important}');document.head.append(style);const previous=showQuestion;showQuestion=function(){document.getElementById('localViewer').classList.remove('archive-hide-original');previous();if(Number(year)!==2025)document.getElementById('localViewer').classList.add('archive-hide-original');};
 ensureYear();renderYears();renderMode();
 })();
