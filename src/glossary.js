@@ -158,7 +158,7 @@
     const normalized = canonical(excluded);
     const blocked = new Set(entries.filter(e => normalized &&
       (canonical(e.phrase) === normalized || (canonical(e.phrase).length >= 2 && normalized.includes(canonical(e.phrase))))).map(e => e.id || e.phrase));
-    const applicable = entries.filter(e => !e.questionIds && !blocked.has(e.id || e.phrase));
+    const applicable = entries.filter(e => (!e.questionIds || (options.questionId && e.questionIds.includes(options.questionId))) && !blocked.has(e.id || e.phrase));
     target.replaceChildren();
     let pos = 0;
     while (pos < text.length) {
