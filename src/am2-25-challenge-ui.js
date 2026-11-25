@@ -9,7 +9,7 @@ pane.style.cssText='grid-column:1/-1;border:2px solid #a5c4e4;border-radius:12px
 pane.innerHTML='<h2 style="margin:0 0 8px">過去問25問チャレンジ</h2><p id="quiz25Info" role="status" aria-live="polite"></p><p id="quiz25Detail" class="muted"></p><div class="toolbar"><button type="button" id="quiz25Submit" class="primary">この問題の解答を確定</button><button type="button" id="quiz25Next" hidden>次の問題へ</button><button type="button" id="quiz25Retry" hidden>間違えた問題だけ再出題</button><button type="button" id="quiz25New" hidden>新しい25問に挑戦</button><button type="button" id="quiz25Stop">終了して通常学習へ</button></div><div id="quiz25Summary" hidden aria-live="polite"></div>';
 byId('study').prepend(pane);
 const source=()=>eligibleQuestions(years,transcribed);
-let active=false,round=[],index=0,answers={},firstRate=null,lastBatch=[],used=new Set(),stage=1,completed=0;
+let active=false,finished=false,round=[],index=0,answers={},firstRate=null,lastBatch=[],used=new Set(),stage=1;
 function text(id,value){byId(id).textContent=value}
 function toggle(id,visible){byId(id).hidden=!visible}
 function lock(locked){
@@ -46,17 +46,18 @@ function showItem(){
 function beginBatch(){
  const pool=source();
  if(!pool.length){text('quiz25Info','出題可能な午前Ⅱの問題がありません');return}
- const picked=weightedSample(pool,progress,BATCH_SIZE,[...used]);
+ const avoided=new Set([...used,...lastBatch]);
+ const picked=weightedSample(pool,progress,BATCH_SIZE,[...avoided]);
  if(!picked.length)return;
  if(used.size+picked.length>=pool.length)used=new Set();
  for(const q of picked)used.add(q.id);
  lastBatch=picked.map(q=>q.id);
- round=picked;index=0;answers={};firstRate=null;stage=1;completed=0;active=true;showItem();
+ round=picked;index=0;answers={};firstRate=null;stage=1;active=true;finished=false;showItem();
 }
 function finishRound(){
  const result=roundSummary(round,answers);
  if(stage===1)firstRate=result.rate;
- completed+=result.correct;
+ finished=true;
  const first='最初の25問の正答率：'+firstRate+'%（'+Math.round(firstRate*round.length/100)+' / '+round.length+'問）';
  const retry='第'+stage+'ラウンドの正答率：'+result.rate+'%（'+result.correct+' / '+result.count+'問）';
  text('quiz25Info',stage===1?first:retry);
@@ -77,12 +78,12 @@ function finishRound(){
 }
 let pending=[];
 function resetToNormal(){
- active=false;round=[];answers={};pending=[];pane.hidden=true;
+ active=false;finished=false;round=[];answers={};pending=[];pane.hidden=true;
  lock(false);
  byId('viewStudy').click();
 }
 nav.addEventListener('click',()=>{
- if(active){showItem();return;}
+ if(active){if(finished){byId('viewStudy').click();pane.hidden=false;lock(true)}else showItem();return;}
  beginBatch();
 });
 byId('quiz25Submit').addEventListener('click',()=>{
@@ -109,7 +110,7 @@ byId('quiz25Next').addEventListener('click',()=>{
 });
 byId('quiz25Retry').addEventListener('click',()=>{
  if(!active||!pending.length)return;
- round=pending;pending=[];answers={};index=0;stage++;showItem();
+ round=pending;pending=[];answers={};index=0;stage++;finished=false;showItem();
 });
 byId('quiz25New').addEventListener('click',()=>{
  if(!active||pending.length)return;
