@@ -101,3 +101,18 @@ test('2025 Q6 and Q9 retain complete structured official tables and SQL',()=>{
  assert.ok(q9.figures[2].text.includes('[ a ]') && q9.figures[2].text.includes('[ b ]') && q9.figures[2].text.includes('[ c ]'));
  assert.ok(read('src/am2-archive-2024.js').includes("current?.figures?.length"),'2025 renderer includes structured figures');
 });
+
+test('2025 Q8 renders the official deferrable constraint premise as structured data',()=>{
+ const q=year2025().questions['am2:8'];
+ assert.deepEqual(Array.from(q.figures,f=>f.type),['sql','table','sql']);
+ const [ddl,staff,transaction]=q.figures;
+ assert.ok(ddl.text.includes('CONSTRAINT PK_システム番号 PRIMARY KEY(システム番号)'));
+ assert.ok(ddl.text.includes('CONSTRAINT UK_担当者番号 UNIQUE(担当者番号)'));
+ assert.ok(ddl.text.includes('DEFERRABLE INITIALLY IMMEDIATE'));
+ assert.deepEqual(Array.from(staff.headers),['システム番号','担当者番号']);
+ assert.deepEqual(Array.from(staff.rows,row=>Array.from(row)),[['1234','111'],['6789','222']]);
+ assert.ok(transaction.text.includes('SET CONSTRAINTS [ a ];'));
+ assert.ok(transaction.text.includes('UPDATE システム担当者 SET 担当者番号 = 222 WHERE システム番号 = 1234;'));
+ assert.ok(transaction.text.includes('UPDATE システム担当者 SET 担当者番号 = 111 WHERE システム番号 = 6789;'));
+ assert.ok(transaction.text.endsWith('COMMIT;'));
+});
