@@ -41,6 +41,8 @@ function showItem(){
   text('quiz25Detail',item.year+'年度 午前Ⅱ・問'+item.n+'　／　このラウンドの回答：'+answers[item.id]+'（'+(answers[item.id]===item.answer?'正解':'不正解')+'）');
  }
  for(const input of byId('choices').querySelectorAll('input'))input.disabled=done;
+ byId('reveal').disabled=!done;
+ for(const button of document.querySelectorAll('[data-level]'))button.disabled=true;
  byId('quiz25Next').textContent=index===round.length-1?'結果を見る':'次の問題へ';
 }
 function beginBatch(){
@@ -80,6 +82,8 @@ let pending=[];
 function resetToNormal(){
  active=false;finished=false;round=[];answers={};pending=[];pane.hidden=true;
  lock(false);
+ byId('reveal').disabled=false;
+ for(const button of document.querySelectorAll('[data-level]'))button.disabled=false;
  byId('viewStudy').click();
 }
 nav.addEventListener('click',()=>{
@@ -98,6 +102,7 @@ byId('quiz25Submit').addEventListener('click',()=>{
  answers[item.id]=sessionSelected;
  gradeCurrentAnswer(false);
  showAnswer=true;renderAnswer();
+ byId('reveal').disabled=false;
  for(const input of byId('choices').querySelectorAll('input'))input.disabled=true;
  text('quiz25Detail',item.year+'年度 午前Ⅱ・問'+item.n+'　／　'+(answers[item.id]===item.answer?'正解':'不正解')+'。正解：'+item.answer);
  toggle('quiz25Submit',false);toggle('quiz25Next',true);
