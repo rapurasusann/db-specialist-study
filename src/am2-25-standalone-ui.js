@@ -88,9 +88,17 @@ css.textContent=`
 #quiz25Screen .quiz25Card{min-width:0;border:1px solid #d5e2ed;border-radius:12px;background:#fff;padding:17px}
 #quiz25Screen .quiz25Card h3{margin-top:0}
 #quiz25Screen .quiz25Source{font-size:.86rem;color:#4c6478}
+/* The shared questionText pre-wrap also preserves template indentation.
+   Preserve whitespace only in actual question and option content. */
+#quiz25Screen .questionText{white-space:normal}
+#quiz25Screen .quiz25Source{margin:0 0 10px}
+#quiz25Screen #quiz25Title{margin:0 0 10px}
 #quiz25Screen .quiz25Stem{white-space:pre-wrap;line-height:1.8}
+#quiz25Screen #quiz25Figures:empty{display:none}
+#quiz25Screen #quiz25Original{margin-top:0}
+#quiz25Screen .questionpane{min-height:0}
 #quiz25Screen #quiz25Figures{overflow-x:auto}
-#quiz25Screen #quiz25Original{display:inline-block;margin-top:12px}
+#quiz25Screen #quiz25Original{display:inline-block;margin-top:0}
 #quiz25Screen #quiz25Choices{border:0;padding:0;min-width:0}
 #quiz25Screen .quiz25Option{display:inline-flex;align-items:center;gap:4px}
 #quiz25Screen .quiz25Option:has(input:checked){background:#e7f3fd;border-color:#267eb6}
