@@ -79,7 +79,7 @@ function finish(q,choice,record){
   renderText(row.lastElementChild,q.choices[i],used)
  });
  const f=$('termFeedback');
- renderText(f,(record?(choice===q.answer?'正解です。':'不正解です。正解は「'+'アイウエ'[q.answer]+'」です。'):'正解は「'+'アイウエ'[q.answer]+'」です。')+'\n\n'+q.explanation+(record?'':'\n\n※解説だけを表示した場合、学習の正答記録には加算しません。'),new Set());
+ renderText(f,(record?(choice===q.answer?'正解です。':'不正解です。正解は「'+'アイウエ'[q.answer]+'」です。'):'正解は「'+'アイウエ'[q.answer]+'」です。')+'\n\n'+(q.pronunciation?'読み方：'+q.pronunciation+'\n\n':'')+q.explanation+(record?'':'\n\n※解説だけを表示した場合、学習の正答記録には加算しません。'),new Set());
  f.hidden=false;updateProgress();
  // A question may leave the selected filter after answering; allow navigation
  // to the next matching question instead of trapping the learner.
