@@ -6,10 +6,10 @@ const pane=document.createElement('section');
 pane.id='quiz25Panel';
 pane.hidden=true;
 pane.style.cssText='grid-column:1/-1;border:2px solid #a5c4e4;border-radius:12px;padding:14px;background:#f4f9fe;margin-bottom:12px';
-pane.innerHTML='<h2 style="margin:0 0 8px">過去問25問チャレンジ</h2><p id="quiz25Info" role="status" aria-live="polite"></p><p id="quiz25Detail" class="muted"></p><div class="toolbar"><button type="button" id="quiz25Submit" class="primary">この問題の解答を確定</button><button type="button" id="quiz25Next" hidden>次の問題へ</button><button type="button" id="quiz25Retry" hidden>間違えた問題だけ再出題</button><button type="button" id="quiz25New" hidden>新しい25問に挑戦</button><button type="button" id="quiz25Stop">終了して通常学習へ</button></div><div id="quiz25Summary" hidden aria-live="polite"></div>';
+pane.innerHTML='<h2 style="margin:0 0 8px">過去問25問チャレンジ</h2><p id="quiz25Info" role="status" aria-live="polite"></p><p id="quiz25Detail" class="muted"></p><div class="toolbar"><button type="button" id="quiz25Submit" class="primary">この問題の解答を確定</button><button type="button" id="quiz25Back" hidden>前の問題へ</button><button type="button" id="quiz25Next">次の問題へ（未回答でも可）</button><button type="button" id="quiz25Retry" hidden>間違えた問題だけ再出題</button><button type="button" id="quiz25New" hidden>新しい25問に挑戦</button><button type="button" id="quiz25Stop">終了して通常学習へ</button></div><div id="quiz25Summary" hidden aria-live="polite"></div>';
 byId('study').prepend(pane);
 const source=()=>eligibleQuestions(years,transcribed);
-let active=false,finished=false,round=[],index=0,answers={},firstRate=null,lastBatch=[],used=new Set(),stage=1;
+let active=false,finished=false,round=[],index=0,answers={},drafts={},firstRate=null,lastBatch=[],used=new Set(),stage=1;
 function text(id,value){byId(id).textContent=value}
 function toggle(id,visible){byId(id).hidden=!visible}
 function lock(locked){
@@ -23,6 +23,10 @@ for(const id of ['courses','questions']){
   if(active){event.preventDefault();event.stopImmediatePropagation();}
  },true);
 }
+function rememberDraft(){
+ const item=round[index];
+ if(active&&!finished&&item&&!Object.hasOwn(answers,item.id)&&['ア','イ','ウ','エ'].includes(sessionSelected))drafts[item.id]=sessionSelected;
+}
 function showItem(){
  const item=round[index];
  if(!item)return;
@@ -31,10 +35,13 @@ function showItem(){
  byId('viewStudy').click();
  pane.hidden=false;
  lock(true);
+ if(!Object.hasOwn(answers,item.id)&&drafts[item.id]){
+  sessionSelected=drafts[item.id];renderAnswer();
+ }
  const done=Object.hasOwn(answers,item.id);
  text('quiz25Info','第'+stage+'ラウンド　'+(index+1)+' / '+round.length+'問　（回答済 '+Object.keys(answers).length+'問）');
  text('quiz25Detail',item.year+'年度 午前Ⅱ・問'+item.n+'　／　回答を確定すると正誤と解説を表示します');
- toggle('quiz25Submit',!done);toggle('quiz25Next',done);
+ toggle('quiz25Submit',!done);toggle('quiz25Next',true);toggle('quiz25Back',index>0);
  toggle('quiz25Retry',false);toggle('quiz25New',false);
  byId('quiz25Summary').hidden=true;
  if(done){
@@ -44,7 +51,7 @@ function showItem(){
  for(const input of byId('choices').querySelectorAll('input'))input.disabled=done;
  byId('reveal').disabled=!done;
  for(const button of document.querySelectorAll('[data-level]'))button.disabled=true;
- byId('quiz25Next').textContent=index===round.length-1?'結果を見る':'次の問題へ';
+ byId('quiz25Next').textContent=index===round.length-1?'結果を見る（未回答は復習対象）':'次の問題へ（未回答でも可）';
 }
 function beginBatch(){
  // Do not run two competing random-learning sessions at once.
@@ -57,16 +64,17 @@ function beginBatch(){
  if(used.size+picked.length>=pool.length)used=new Set();
  for(const q of picked)used.add(q.id);
  lastBatch=picked.map(q=>q.id);
- round=picked;index=0;answers={};firstRate=null;stage=1;active=true;finished=false;showItem();
+ round=picked;index=0;answers={};drafts={};firstRate=null;stage=1;active=true;finished=false;showItem();
 }
 function finishRound(){
  const result=roundSummary(round,answers);
+ const skipped=result.wrong.filter(q=>!Object.hasOwn(answers,q.id)).length;
  if(stage===1)firstRate=result.rate;
  finished=true;
  const first='最初の25問の正答率：'+firstRate+'%（'+Math.round(firstRate*round.length/100)+' / '+round.length+'問）';
  const retry='第'+stage+'ラウンドの正答率：'+result.rate+'%（'+result.correct+' / '+result.count+'問）';
  text('quiz25Info',stage===1?first:retry);
- text('quiz25Detail',result.wrong.length?'不正解の'+result.wrong.length+'問を繰り返し学習できます。':'このセットの全問を正解しました。新しい25問に進めます。');
+ text('quiz25Detail',result.wrong.length?'不正解・未回答の合計'+result.wrong.length+'問を再出題できます（未回答'+skipped+'問）。':'このセットの全問を正解しました。新しい25問に進めます。');
  const summary=byId('quiz25Summary');
  summary.hidden=false;
  summary.replaceChildren();
@@ -74,16 +82,16 @@ function finishRound(){
  p.textContent=stage===1?'初回正答率：'+result.rate+'%':first+' ／ 今回の再挑戦：'+result.rate+'%';
  summary.append(p);
  if(result.wrong.length){
-  const details=document.createElement('p');details.textContent='再出題対象：'+result.wrong.map(x=>x.year+'年度問'+x.n).join('、');summary.append(details);
+  const details=document.createElement('p');details.textContent='再出題対象：'+result.wrong.map(x=>x.year+'年度問'+x.n+(Object.hasOwn(answers,x.id)?'':'（未回答）')).join('、');summary.append(details);
  }
- toggle('quiz25Submit',false);toggle('quiz25Next',false);
+ toggle('quiz25Submit',false);toggle('quiz25Next',false);toggle('quiz25Back',false);
  toggle('quiz25Retry',result.wrong.length>0);toggle('quiz25New',result.wrong.length===0);
  // Store missed questions from the finished round without losing the answers for the summary.
  pending=result.wrong;
 }
 let pending=[];
 function resetToNormal(){
- active=false;finished=false;round=[];answers={};pending=[];pane.hidden=true;
+ active=false;finished=false;round=[];answers={};drafts={};pending=[];pane.hidden=true;
  lock(false);
  byId('reveal').disabled=false;
  for(const button of document.querySelectorAll('[data-level]'))button.disabled=false;
@@ -112,13 +120,18 @@ byId('quiz25Submit').addEventListener('click',()=>{
  byId('quiz25Next').textContent=index===round.length-1?'結果を見る':'次の問題へ';
  text('quiz25Info','第'+stage+'ラウンド　'+(index+1)+' / '+round.length+'問　（回答済 '+Object.keys(answers).length+'問）');
 });
+byId('quiz25Back').addEventListener('click',()=>{
+ if(!active||finished||index===0)return;
+ rememberDraft();index--;showItem();
+});
 byId('quiz25Next').addEventListener('click',()=>{
- if(!active||!round.length||!Object.hasOwn(answers,round[index].id))return;
+ if(!active||finished||!round.length)return;
+ rememberDraft();
  if(index+1<round.length){index++;showItem()}else finishRound();
 });
 byId('quiz25Retry').addEventListener('click',()=>{
  if(!active||!pending.length)return;
- round=pending;pending=[];answers={};index=0;stage++;finished=false;showItem();
+ round=pending;pending=[];answers={};drafts={};index=0;stage++;finished=false;showItem();
 });
 byId('quiz25New').addEventListener('click',()=>{
  if(!active||pending.length)return;
