@@ -97,6 +97,8 @@ $('termReset').addEventListener('click',render);
 $('termFilter').addEventListener('change',()=>{const qs=filtered();if(qs.length&&!qs.includes(current()))index=subset().indexOf(qs[0]);render()});
 const metrics=document.querySelector('.metrics');
 const showTerms=()=>{
+ const stepPanel=document.getElementById('stepUpPractice');if(stepPanel)stepPanel.hidden=true;
+ const stepButton=document.getElementById('viewStepUp');if(stepButton)stepButton.classList.remove('primary');
  panel.hidden=false;
  $('dashboard').classList.add('hide');
  $('study').classList.add('hide');

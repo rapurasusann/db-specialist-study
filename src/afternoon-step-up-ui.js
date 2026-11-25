@@ -32,7 +32,7 @@ function reveal(check){if(revealed)return;const q=current(),input=$('stepAnswer'
 $('stepCheck').addEventListener('click',()=>reveal(true));$('stepReveal').addEventListener('click',()=>reveal(false));for(const [id,status] of [['stepReview','review'],['stepLearning','learning'],['stepMastered','mastered']])$(id).addEventListener('click',()=>{save(status);$('stepFeedback').textContent+='\n\n自己評価を保存しました。';$('stepAssess').hidden=true});
 $('stepSelect').addEventListener('change',()=>{index=Number($('stepSelect').value);render()});$('stepPrev').addEventListener('click',()=>{if(index>0){index--;render()}});$('stepNext').addEventListener('click',()=>{if(index<subset().length-1){index++;render()}});
 const metrics=document.querySelector('.metrics');
-button.addEventListener('click',()=>{panel.hidden=false;$('termPractice').hidden=true;$('dashboard').classList.add('hide');$('study').classList.add('hide');metrics.hidden=true;for(const id of ['viewTerms','viewDashboard','viewStudy'])$(id).classList.remove('primary');button.classList.add('primary');render()});
+button.addEventListener('click',()=>{panel.hidden=false;const termPanel=$('termPractice');if(termPanel)termPanel.hidden=true;$('dashboard').classList.add('hide');$('study').classList.add('hide');metrics.hidden=true;for(const id of ['viewTerms','viewDashboard','viewStudy'])$(id).classList.remove('primary');button.classList.add('primary');render()});
 for(const id of ['viewTerms','viewDashboard','viewStudy'])$(id).addEventListener('click',()=>{panel.hidden=true;button.classList.remove('primary')});
 
 window.DBStudyOpenStep=id=>{const q=stepQuestions.find(x=>x.id===id);if(!q)return false;lv=q.lv;index=stepQuestions.filter(x=>x.lv===lv).findIndex(x=>x.id===id);button.click();return true};
