@@ -16,6 +16,7 @@ function lock(locked){
  byId('year').disabled=locked;
  byId('filter').disabled=locked;
  for(const id of ['grade','previous','next'])byId(id).disabled=locked;
+ if(byId('randomStart'))byId('randomStart').disabled=locked;
 }
 for(const id of ['courses','questions']){
  byId(id).addEventListener('click',event=>{
@@ -46,6 +47,8 @@ function showItem(){
  byId('quiz25Next').textContent=index===round.length-1?'結果を見る':'次の問題へ';
 }
 function beginBatch(){
+ // Do not run two competing random-learning sessions at once.
+ if(byId('randomSession') && !byId('randomSession').hidden)byId('randomStop')?.click();
  const pool=source();
  if(!pool.length){text('quiz25Info','出題可能な午前Ⅱの問題がありません');return}
  const avoided=new Set([...used,...lastBatch]);
