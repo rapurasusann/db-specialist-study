@@ -12,14 +12,16 @@ function items(){
  for(let y=2016;y<=2025;y++){const c=years[y]?.courses?.find(x=>x.id==='am2');if(!c)continue;for(let n=1;n<=c.count;n++){const id=y+':am2:'+n;const q=years[y].questions?.['am2:'+n]||transcribed[id];if(q?.options)result.push({group:'am2',id,y,n,label:y+'年度 午前Ⅱ 問'+n});}}
  for(const q of termQuestions)result.push({group:'term',id:q.id,label:'用語：'+q.term});
  for(const q of stepQuestions)result.push({group:String(q.lv),id:q.id,label:'Lv.'+q.lv+' '+q.title});
- return result;
+ // A question is counted and queued only once per learning group.
+ return [...new Map(result.map(item=>[JSON.stringify([item.group,item.id]),item])).values()];
 }
 function state(item,records){
  const r=records[item.group==='am2'?'am2':item.group==='term'?'term':'step'][item.id]||{};
  const am=item.group==='am2',term=item.group==='term';
  const seen=am?(Number(r.attempts)>0||['review','learning','mastered'].includes(r.level)):term?Number(r.attempts)>0:['review','learning','mastered'].includes(r.status);
  const mastered=seen&&(am?(r.level==='mastered'||(r.correct===true&&Number(r.streak)>=2&&r.level!=='review')):term?(r.correct===true&&Number(r.streak)>=2):r.status==='mastered');
- const wrong=seen&&(am?(r.level==='review'||r.correct===false):term?r.correct===false:r.status==='review');
+ // Explicit AM2 self-assessment takes precedence over an older graded answer.
+ const wrong=seen&&(am?(r.level==='review'||(r.level!=='mastered'&&r.correct===false)):term?r.correct===false:r.status==='review');
  const stamp=Date.parse(r.updatedAt||'');
  return {...item,seen,mastered,wrong,due:seen&&(!Number.isFinite(stamp)||Date.now()-stamp>=7*day)};
 }
