@@ -141,3 +141,27 @@ test('2025 Q3 UML reproduces nodes, attributes and multiplicities',()=>{
  }
  assert.deepEqual(Array.from(f.attributes['在庫商品']),['/在庫数量']);
 });
+
+test('2025 Q4 and Q11 key underlines match the official schema diagrams',()=>{
+ const data=year2025();
+ const q4=data.questions['am2:4'];
+ const employee=q4.figures[0];
+ assert.equal(employee.type,'schema');
+ assert.deepEqual(Array.from(employee.columns,c=>[c.name,!!c.primary,!!c.foreign]),[
+  ['従業員番号',true,false],['氏名',false,false]]);
+ for(const [option,keys] of Object.entries({
+  'ア':['氏名［主キー］'],'イ':['プログラム言語［主キー］'],
+  'ウ':['従業員番号［主キー］'],'エ':['従業員番号［主キーの一部］','プログラム言語［主キーの一部］']})){
+  for(const key of keys)assert.ok(q4.options[option].includes(key),'Q4 '+option+' '+key);
+ }
+ const q11=data.questions['am2:11'];
+ assert.deepEqual(Array.from(q11.figures,f=>f.name),['注文','注文明細']);
+ assert.deepEqual(Array.from(q11.figures[0].columns,c=>[c.name,!!c.primary,!!c.foreign]),[
+  ['注文番号',true,false],['注文日',false,false],['顧客番号',false,true]]);
+ assert.deepEqual(Array.from(q11.figures[1].columns,c=>[c.name,!!c.primary,!!c.foreign]),[
+  ['注文番号',true,true],['明細番号',true,false],['商品番号',false,true],['数量',false,false]]);
+ const renderer=read('src/am2-archive-2024.js');
+ assert.ok(renderer.includes("f.type==='schema'"),'schema figure rendering branch present');
+ assert.ok(renderer.includes('underline dashed'),'foreign key dashed underline');
+ assert.ok(renderer.includes('underline solid'),'primary key solid underline');
+});
