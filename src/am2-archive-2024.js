@@ -43,7 +43,27 @@ for(const n of nodes){
 }
 for(const args of labels)label(...args);
 const left=Math.min(0,...nodes.map(n=>n.x-n.half-32)),top=Math.min(0,...nodes.map(n=>n.y-n.height-38)),right=Math.max(350,...nodes.map(n=>n.x+n.half+16)),bottom=Math.max(205,...nodes.map(n=>n.y+n.height+18));svg.setAttribute('viewBox',[left,top,right-left,bottom-top].join(' '));return svg;}
-function figure(f){const wrap=el('figure');wrap.style.cssText='margin:10px 0;max-width:100%;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';if(f.title)wrap.append(el('figcaption',f.title));if(f.type==='sql'){const pre=el('pre',f.text);pre.style.whiteSpace='pre-wrap';wrap.append(pre);}else if(f.type==='table'){const t=el('table');t.style.cssText='width:max-content;min-width:100%;white-space:nowrap;font-size:.85rem';const head=el('thead'),hr=el('tr');for(const h of f.headers){const th=el('th',h);th.scope='col';hr.append(th);}head.append(hr);t.append(head);const body=el('tbody');for(const row of f.rows){const tr=el('tr');for(const value of row)tr.append(el('td',value));body.append(tr);}t.append(body);wrap.append(t);}else if(f.type==='graph'||f.type==='uml')wrap.append(diagram(f));return wrap;}
+function figure(f){const wrap=el('figure');wrap.style.cssText='margin:10px 0;max-width:100%;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';if(f.title)wrap.append(el('figcaption',f.title));if(f.type==='sql'){const pre=el('pre',f.text);pre.style.whiteSpace='pre-wrap';wrap.append(pre);}else if(f.type==='table'){const t=el('table');t.style.cssText='width:max-content;min-width:100%;white-space:nowrap;font-size:.85rem';const head=el('thead'),hr=el('tr');for(const h of f.headers){const th=el('th',h);th.scope='col';hr.append(th);}head.append(hr);t.append(head);const body=el('tbody');for(const row of f.rows){const tr=el('tr');for(const value of row)tr.append(el('td',value));body.append(tr);}t.append(body);wrap.append(t);}else if(f.type==='schema'){
+ const t=el('table');t.style.cssText='width:max-content;min-width:100%;white-space:nowrap;font-size:.88rem';
+ const tr=el('tr');
+ for(const column of f.columns){
+  const td=el('td');const span=el('span',column.name);
+  span.style.display='inline-block';
+  if(column.primary&&column.foreign){
+   span.style.cssText='display:inline-block;text-decoration:underline solid;text-underline-offset:3px;border-bottom:1px dashed currentColor;padding-bottom:3px';
+  }else if(column.primary){
+   span.style.cssText='display:inline-block;text-decoration:underline solid;text-underline-offset:3px';
+  }else if(column.foreign){
+   span.style.cssText='display:inline-block;text-decoration:underline dashed;text-underline-offset:3px';
+  }
+  const designation=[column.primary?'主キー':null,column.foreign?'外部キー':null].filter(Boolean).join('・');
+  if(designation)span.setAttribute('aria-label',column.name+'（'+designation+'）');
+  td.append(span);tr.append(td);
+ }
+ t.append(tr);wrap.append(t);
+ const legend=el('p','実線の下線：主キー／破線の下線：外部キー');
+ legend.style.cssText='font-size:.75rem;margin:4px 0 0';wrap.append(legend);
+ }else if(f.type==='graph'||f.type==='uml')wrap.append(diagram(f));return wrap;}
 showQuestion=function(){
  if(!isArchive()){
   originalQuestion();
