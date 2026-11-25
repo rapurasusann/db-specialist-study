@@ -2,6 +2,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
 
 const read = path => readFileSync(new URL('../'+path, import.meta.url), 'utf8');
 const html=read('index.html');
@@ -58,5 +59,16 @@ test('module navigation reuses initial buttons and enables after setup',()=>{
   assert.ok(code.includes("getElementById('"+id+"')")||code.includes("$('"+id+"')"),path+' reuses button');
   assert.doesNotMatch(code,new RegExp("createElement\\('button'\\)\\s*;\\s*button\\.id='"+id+"'"),path+' must not duplicate button');
   assert.match(code,/button\.disabled=false;\s*$/,path+' enables after registration');
+ }
+});
+
+test('CSP inline script fingerprints match the current source',()=>{
+ const csp=html.match(/<meta http-equiv="Content-Security-Policy" content="([^"]+)">/)?.[1];
+ assert.ok(csp,'strict CSP present');
+ const scripts=[...html.matchAll(/<script(?![^>]*\\bsrc=)[^>]*>([\\s\\S]*?)<\\/script>/g)].map(x=>x[1]);
+ assert.equal(scripts.length,2,'expected exactly two inline scripts');
+ for(const source of scripts){
+  const hash=createHash('sha256').update(source,'utf8').digest('base64');
+  assert.ok(csp.includes("'sha256-"+hash+"'"),'CSP hash for inline script is current');
  }
 });
