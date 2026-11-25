@@ -93,7 +93,7 @@ test('2025 Q6 and Q9 retain complete structured official tables and SQL',()=>{
  assert.ok(q6.figures[0].rows.every(row=>row.length===9));
  assert.deepEqual([...q6.figures[0].rows[0]],[ '1055','A7053','鈴木電気','2025-07-01','T035','テレビA','85000','10','850000']);
  const q9=data.questions['am2:9'];
- assert.deepEqual(q9.figures.map(f=>f.type),['table','table','sql']);
+ assert.deepEqual(Array.from(q9.figures, f=>f.type),['table','table','sql']);
  assert.equal(q9.figures[0].rows.length,3);
  assert.equal(q9.figures[1].rows.length,3);
  assert.ok(q9.figures[0].rows.every(row=>row.length===4));
