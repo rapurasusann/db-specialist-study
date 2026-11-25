@@ -167,7 +167,8 @@ export const termQuestions=Object.freeze([
       "全てのトランザクションを必ず1件ずつ順番に実行する",
       "同じ検索条件では新しい行の出現も完全に防ぐ"
     ],
-    "explanation": "最も低い隔離性水準です。別の処理がまだCOMMITしていないデータを読む「ダーティリード」が許されます。後でROLLBACKされると、存在しないはずの値を読んだことになります。実際に選択できる水準や動作はDBMSによって異なります。"
+    "explanation": "最も低い隔離性水準です。別の処理がまだCOMMITしていないデータを読む「ダーティリード」が許されます。後でROLLBACKされると、存在しないはずの値を読んだことになります。実際に選択できる水準や動作はDBMSによって異なります。",
+    "pronunciation": "READ UNCOMMITTED：リード・アンコミッテッド"
   },
   {
     "id": "iso-rc",
@@ -180,7 +181,8 @@ export const termQuestions=Object.freeze([
       "COMMIT済みのデータを読み、ダーティリードを防ぐ",
       "新しい行が増えるファントムリードも必ず防ぐ"
     ],
-    "explanation": "未確定の変更は読みません。ただし1回目に読んだ後、別の処理が値を変更してCOMMITすると、2回目は違う値になる場合があります。これが「反復不能読取り」です。"
+    "explanation": "未確定の変更は読みません。ただし1回目に読んだ後、別の処理が値を変更してCOMMITすると、2回目は違う値になる場合があります。これが「反復不能読取り」です。",
+    "pronunciation": "READ COMMITTED：リード・コミッテッド／COMMIT：コミット"
   },
   {
     "id": "iso-rr",
@@ -193,7 +195,8 @@ export const termQuestions=Object.freeze([
       "COMMITした変更は必ず直ちに全トランザクションに見える",
       "全てのファントムリードを規格上必ず防ぐ"
     ],
-    "explanation": "READ COMMITTEDより強い隔離性水準です。ほかの処理が行を更新しても、同じトランザクション内で同じ行を再読して結果が変わる「反復不能読取り」を防ぎます。SQL標準の区分では、新しい条件一致行が現れる「ファントムリード」は起こり得ます。ただし実際の動作はDBMSごとに違います。"
+    "explanation": "READ COMMITTEDより強い隔離性水準です。ほかの処理が行を更新しても、同じトランザクション内で同じ行を再読して結果が変わる「反復不能読取り」を防ぎます。SQL標準の区分では、新しい条件一致行が現れる「ファントムリード」は起こり得ます。ただし実際の動作はDBMSごとに違います。",
+    "pronunciation": "REPEATABLE READ：リピータブル・リード"
   },
   {
     "id": "iso-ser",
@@ -206,7 +209,8 @@ export const termQuestions=Object.freeze([
       "COMMIT済みかどうかに関係なく読める水準",
       "並列処理した結果を、何らかの順番で直列実行した場合と同等にする水準"
     ],
-    "explanation": "最も強い標準的な隔離性水準です。複数の取引を同時に処理しても、ある順番で1件ずつ実行した場合と矛盾しない結果を保証します。衝突した処理は待機や再試行が必要になることもあります。"
+    "explanation": "最も強い標準的な隔離性水準です。複数の取引を同時に処理しても、ある順番で1件ずつ実行した場合と矛盾しない結果を保証します。衝突した処理は待機や再試行が必要になることもあります。",
+    "pronunciation": "SERIALIZABLE：シリアライザブル"
   },
   {
     "id": "iso-dirty",
@@ -219,7 +223,8 @@ export const termQuestions=Object.freeze([
       "検索条件に一致する新しい行が現れること",
       "読み取った後にその表を並べ替えること"
     ],
-    "explanation": "例：Aが残高100円を500円に変更したがまだCOMMITしていない。Bが500円を読む。その後AがROLLBACKすると、Bは確定していない値を読んだことになります。READ COMMITTED以上では防ぎます。"
+    "explanation": "例：Aが残高100円を500円に変更したがまだCOMMITしていない。Bが500円を読む。その後AがROLLBACKすると、Bは確定していない値を読んだことになります。READ COMMITTED以上では防ぎます。",
+    "pronunciation": "COMMIT：コミット"
   },
   {
     "id": "iso-nonrepeat",
@@ -271,7 +276,8 @@ export const termQuestions=Object.freeze([
       "テストを省き、レビューだけで品質を保証する",
       "ユーザーが本番で使いながら不具合を探す"
     ],
-    "explanation": "テストを先に書く→テストが失敗することを確かめる→通る最小の実装を書く→整理する、という短いサイクルを繰り返します。要求を細かく確認しながら作れます。"
+    "explanation": "テストを先に書く→テストが失敗することを確かめる→通る最小の実装を書く→整理する、という短いサイクルを繰り返します。要求を細かく確認しながら作れます。",
+    "pronunciation": "TDD：ティーディーディー／Test-Driven Development：テスト・ドリブン・デベロップメント"
   },
   {
     "id": "xp-ci",
@@ -284,7 +290,8 @@ export const termQuestions=Object.freeze([
       "変更を頻繁に統合し、自動ビルドやテストで問題を早く検出する",
       "完成したプログラムの運用監視だけを続ける"
     ],
-    "explanation": "変更したコードを小まめに共有ブランチなどへ統合し、ビルドやテストを実行します。統合時の衝突や不具合が大きくなる前に気づきやすくなります。 自動で本番公開すること自体はCIの必須条件ではない。"
+    "explanation": "変更したコードを小まめに共有ブランチなどへ統合し、ビルドやテストを実行します。統合時の衝突や不具合が大きくなる前に気づきやすくなります。 自動で本番公開すること自体はCIの必須条件ではない。",
+    "pronunciation": "CI：シーアイ／Continuous Integration：コンティニュアス・インテグレーション"
   },
   {
     "id": "xp-refactor",
@@ -414,7 +421,8 @@ export const termQuestions=Object.freeze([
       "鍵を交換せずハッシュを作る方式",
       "証明書の発行組織"
     ],
-    "explanation": "AESは広く利用される共通鍵ブロック暗号です。128・192・256ビットの鍵長を利用できます。安全な運用には鍵長だけでなくモードやnonceの扱いも重要です。"
+    "explanation": "AESは広く利用される共通鍵ブロック暗号です。128・192・256ビットの鍵長を利用できます。安全な運用には鍵長だけでなくモードやnonceの扱いも重要です。",
+    "pronunciation": "AES：エーイーエス／Advanced Encryption Standard：アドバンスト・エンクリプション・スタンダード"
   },
   {
     "id": "crypto-rsa",
@@ -427,7 +435,8 @@ export const termQuestions=Object.freeze([
       "データを圧縮する符号化方式",
       "整数の因数分解の困難さを利用する公開鍵暗号・署名方式"
     ],
-    "explanation": "RSAは公開鍵暗号やデジタル署名に利用される方式です。用途に適した安全なパディングなどが必要で、暗号化と署名は別の処理です。 AESは共通鍵方式であり、RSAとは鍵の使い方が異なる。"
+    "explanation": "RSAは公開鍵暗号やデジタル署名に利用される方式です。用途に適した安全なパディングなどが必要で、暗号化と署名は別の処理です。 AESは共通鍵方式であり、RSAとは鍵の使い方が異なる。",
+    "pronunciation": "RSA：アールエスエー"
   },
   {
     "id": "crypto-hash",
@@ -466,7 +475,8 @@ export const termQuestions=Object.freeze([
       "パスワードを暗号鍵なしで復号する",
       "乱数を生成せずに鍵交換する"
     ],
-    "explanation": "HMACは共有した秘密鍵を使い、データの改ざんや鍵を知らない者による偽造を検出します。鍵を共有する方式であり、公開鍵のデジタル署名とは異なります。"
+    "explanation": "HMACは共有した秘密鍵を使い、データの改ざんや鍵を知らない者による偽造を検出します。鍵を共有する方式であり、公開鍵のデジタル署名とは異なります。",
+    "pronunciation": "HMAC：エイチマック（エイチエムエーシーとも）"
   },
   {
     "id": "crypto-hybrid",
@@ -492,7 +502,8 @@ export const termQuestions=Object.freeze([
       "暗号文から元の文章を直接復号するハッシュ関数",
       "秘密鍵で文章に署名するアルゴリズム"
     ],
-    "explanation": "ECDHは楕円曲線上の鍵共有方式です。通信する2者がそれぞれの秘密情報と相手の公開情報から共通の秘密を導きます。ECDH単体では相手の本人確認を保証しないため認証との組合せが必要です。"
+    "explanation": "ECDHは楕円曲線上の鍵共有方式です。通信する2者がそれぞれの秘密情報と相手の公開情報から共通の秘密を導きます。ECDH単体では相手の本人確認を保証しないため認証との組合せが必要です。",
+    "pronunciation": "ECDH：イーシーディーエイチ／Elliptic Curve Diffie–Hellman：エリプティック・カーブ・ディフィー・ヘルマン"
   },
   {
     "id": "crypto-forward",
@@ -505,7 +516,8 @@ export const termQuestions=Object.freeze([
       "長期秘密鍵が後で漏れても過去の通信内容を解読されにくくする性質",
       "暗号化をやめて検証速度を高める性質"
     ],
-    "explanation": "通信ごとに一時的な鍵共有を使うことで、後日サーバーの長期秘密鍵が漏れても、記録されていた過去の通信を簡単には復号できないようにする性質です。"
+    "explanation": "通信ごとに一時的な鍵共有を使うことで、後日サーバーの長期秘密鍵が漏れても、記録されていた過去の通信を簡単には復号できないようにする性質です。",
+    "pronunciation": "Forward Secrecy：フォワード・シークレシー"
   },
   {
     "id": "crypto-nonce",
@@ -518,7 +530,8 @@ export const termQuestions=Object.freeze([
       "公開鍵を保存した証明書の名前",
       "ハッシュ値から元データを復元する鍵"
     ],
-    "explanation": "nonceは暗号方式に応じて再利用を避けるなどのルールがある値です。例えばAES-GCMでは同じ鍵でnonceを再利用すると安全性が大きく損なわれます。nonceは必ずしも秘密である必要はありません。"
+    "explanation": "nonceは暗号方式に応じて再利用を避けるなどのルールがある値です。例えばAES-GCMでは同じ鍵でnonceを再利用すると安全性が大きく損なわれます。nonceは必ずしも秘密である必要はありません。",
+    "pronunciation": "nonce：ノンス"
   },
   {
     "id": "crypto-salt",
@@ -531,7 +544,8 @@ export const termQuestions=Object.freeze([
       "乱数を使わず全員同一にするパスワード用の文字列",
       "パスワードハッシュなどに加える利用者ごとに異なる値"
     ],
-    "explanation": "ソルトは、同じパスワードでも異なる保存値を作り、事前計算された表による攻撃を難しくします。通常は秘密にする必要はありません。パスワード保存にはArgon2idなど専用の低速な方式も重要です。"
+    "explanation": "ソルトは、同じパスワードでも異なる保存値を作り、事前計算された表による攻撃を難しくします。通常は秘密にする必要はありません。パスワード保存にはArgon2idなど専用の低速な方式も重要です。",
+    "pronunciation": "salt：ソルト"
   },
   {
     "id": "crypto-aead",
@@ -544,7 +558,8 @@ export const termQuestions=Object.freeze([
       "機密性に加え、暗号文の改ざん検出も行う方式",
       "公開鍵証明書を自動発行する仕組み"
     ],
-    "explanation": "AEADはデータを秘密にするだけでなく、改ざんも検出できる方式です。AES-GCMなどが代表例です。暗号方式に指定されたnonceの使い方を守る必要があります。"
+    "explanation": "AEADはデータを秘密にするだけでなく、改ざんも検出できる方式です。AES-GCMなどが代表例です。暗号方式に指定されたnonceの使い方を守る必要があります。",
+    "pronunciation": "AEAD：エーイーエーディー"
   },
   {
     "id": "con-immediate",
@@ -557,7 +572,8 @@ export const termQuestions=Object.freeze([
       "トランザクションの変更を直ちに確定する",
       "他のトランザクションを自動で中止する"
     ],
-    "explanation": "IMMEDIATEは制約をすぐに検査するモードです。たとえばUNIQUE制約をIMMEDIATEで検査すると、SQL文の終了時点で重複があれば違反になります。COMMITを実行する意味ではありません。制約の種類・DBMSによって検査時点や切替可否が異なります。"
+    "explanation": "IMMEDIATEは制約をすぐに検査するモードです。たとえばUNIQUE制約をIMMEDIATEで検査すると、SQL文の終了時点で重複があれば違反になります。COMMITを実行する意味ではありません。制約の種類・DBMSによって検査時点や切替可否が異なります。",
+    "pronunciation": "IMMEDIATE：イミーディエット"
   },
   {
     "id": "con-deferred",
@@ -570,7 +586,8 @@ export const termQuestions=Object.freeze([
       "制約の検査を原則トランザクション終了時まで延期する",
       "トランザクションを開始できなくする"
     ],
-    "explanation": "DEFERREDは検査を延期します。例えば担当者番号を入れ替える処理で、一時的に同じ番号になっても、トランザクション終了時に重複がなくなっていれば許される場合があります。制約を無効にするわけではなく、最終的に違反が残ればCOMMITできません。対象は延期可能な制約に限られます。"
+    "explanation": "DEFERREDは検査を延期します。例えば担当者番号を入れ替える処理で、一時的に同じ番号になっても、トランザクション終了時に重複がなくなっていれば許される場合があります。制約を無効にするわけではなく、最終的に違反が残ればCOMMITできません。対象は延期可能な制約に限られます。",
+    "pronunciation": "DEFERRED：ディファード"
   },
   {
     "id": "con-deferrable",
@@ -583,7 +600,8 @@ export const termQuestions=Object.freeze([
       "制約をSQL文から削除する",
       "指定した値を常にNULLへ変更する"
     ],
-    "explanation": "DEFERRABLEは「検査を延期できる性質」を表す宣言です。DEFERRABLEで定義した対象制約は、SET CONSTRAINTSなどによってIMMEDIATE/DEFERREDへ切り替えられます。NOT DEFERRABLEの制約をSET CONSTRAINTSで後から延期可能にはできません。"
+    "explanation": "DEFERRABLEは「検査を延期できる性質」を表す宣言です。DEFERRABLEで定義した対象制約は、SET CONSTRAINTSなどによってIMMEDIATE/DEFERREDへ切り替えられます。NOT DEFERRABLEの制約をSET CONSTRAINTSで後から延期可能にはできません。",
+    "pronunciation": "DEFERRABLE：ディファラブル"
   },
   {
     "id": "con-set-constraints",
@@ -596,7 +614,8 @@ export const termQuestions=Object.freeze([
       "トランザクションを即座に確定する命令",
       "延期可能な制約の検査タイミングを指定する命令"
     ],
-    "explanation": "SET CONSTRAINTS 制約名 DEFERRED; と指定すると、DEFERRABLEとして定義された対象制約の検査をトランザクション終了まで延期できます。SET CONSTRAINTS 制約名 IMMEDIATE; は直ちに検査するモードに戻します。DBMSごとに対応範囲が異なります。"
+    "explanation": "SET CONSTRAINTS 制約名 DEFERRED; と指定すると、DEFERRABLEとして定義された対象制約の検査をトランザクション終了まで延期できます。SET CONSTRAINTS 制約名 IMMEDIATE; は直ちに検査するモードに戻します。DBMSごとに対応範囲が異なります。",
+    "pronunciation": "SET CONSTRAINTS：セット・コンストレインツ"
   },
   {
     "id": "con-initially-immediate",
@@ -609,7 +628,8 @@ export const termQuestions=Object.freeze([
       "すべての変更を最初にCOMMITする",
       "制約を必ずDEFERREDにする"
     ],
-    "explanation": "INITIALLY IMMEDIATEは初期状態で即時検査するという意味です。DEFERRABLE INITIALLY IMMEDIATEなら、最初は即時検査ですがトランザクション中にDEFERREDへ切り替えられます。 NOT DEFERRABLEとは異なり、延期可能な制約なら切替ができる。"
+    "explanation": "INITIALLY IMMEDIATEは初期状態で即時検査するという意味です。DEFERRABLE INITIALLY IMMEDIATEなら、最初は即時検査ですがトランザクション中にDEFERREDへ切り替えられます。 NOT DEFERRABLEとは異なり、延期可能な制約なら切替ができる。",
+    "pronunciation": "INITIALLY IMMEDIATE：イニシャリー・イミーディエット"
   },
   {
     "id": "con-initially-deferred",
@@ -622,7 +642,8 @@ export const termQuestions=Object.freeze([
       "トランザクション開始時の制約モードをDEFERREDにする",
       "検査する制約を永久に削除する"
     ],
-    "explanation": "DEFERRABLE INITIALLY DEFERREDは、最初からトランザクション終了時の制約検査を基本にする定義です。途中でSET CONSTRAINTS ... IMMEDIATEに変更することもできます。 INITIALLYは初期モード、DEFERRABLEは切替可能性を表す。"
+    "explanation": "DEFERRABLE INITIALLY DEFERREDは、最初からトランザクション終了時の制約検査を基本にする定義です。途中でSET CONSTRAINTS ... IMMEDIATEに変更することもできます。 INITIALLYは初期モード、DEFERRABLEは切替可能性を表す。",
+    "pronunciation": "INITIALLY DEFERRED：イニシャリー・ディファード"
   },
   {
     "id": "con-unique",
@@ -635,7 +656,8 @@ export const termQuestions=Object.freeze([
       "外部キーの参照先を自動削除する",
       "データを常に昇順に並べる"
     ],
-    "explanation": "UNIQUE制約は重複を防ぎます。担当者番号を交換するとき、途中のSQL文で番号が重複すると即時検査では違反になる場合があります。DEFERRABLEなUNIQUE制約で検査を延期すれば、最終的に重複がなくなる更新をまとめて実行できます。NULLの扱いはDBMS・設定によって異なります。"
+    "explanation": "UNIQUE制約は重複を防ぎます。担当者番号を交換するとき、途中のSQL文で番号が重複すると即時検査では違反になる場合があります。DEFERRABLEなUNIQUE制約で検査を延期すれば、最終的に重複がなくなる更新をまとめて実行できます。NULLの扱いはDBMS・設定によって異なります。",
+    "pronunciation": "UNIQUE：ユニーク"
   },
   {
     "id": "con-transaction",
@@ -648,7 +670,8 @@ export const termQuestions=Object.freeze([
       "SELECT文だけを記録するログ形式",
       "一連の更新をまとめ、COMMITで確定しROLLBACKで取り消す処理単位"
     ],
-    "explanation": "トランザクションは一連の処理をひとまとめに扱います。COMMITは確定、ROLLBACKは取り消しです。延期した制約の違反が終了時にも残れば、確定は失敗します。担当者番号の入れ替えのように、一時的な重複を許して最終状態を検査する処理で重要です。"
+    "explanation": "トランザクションは一連の処理をひとまとめに扱います。COMMITは確定、ROLLBACKは取り消しです。延期した制約の違反が終了時にも残れば、確定は失敗します。担当者番号の入れ替えのように、一時的な重複を許して最終状態を検査する処理で重要です。",
+    "pronunciation": "COMMIT：コミット／ROLLBACK：ロールバック"
   },
   {
     "id": "lq-data-standard",
@@ -687,7 +710,8 @@ export const termQuestions=Object.freeze([
       "障害が発生する平均間隔",
       "SQLの平均応答時間"
     ],
-    "explanation": "RPOが15分なら、障害発生時点から最大15分前までのデータを復元できることを目標とする。復旧に要する時間の目標はRTO。障害間隔やSQL応答時間とは別の指標。"
+    "explanation": "RPOが15分なら、障害発生時点から最大15分前までのデータを復元できることを目標とする。復旧に要する時間の目標はRTO。障害間隔やSQL応答時間とは別の指標。",
+    "pronunciation": "RPO：アールピーオー／Recovery Point Objective：リカバリー・ポイント・オブジェクティブ"
   },
   {
     "id": "lq-rto",
@@ -700,7 +724,8 @@ export const termQuestions=Object.freeze([
       "平均故障間隔",
       "障害後にサービスを復旧するまでの時間目標"
     ],
-    "explanation": "RTOが2時間なら障害後2時間以内のサービス復旧を目指す。RPOはどの時点のデータまで戻せるかを表す。バックアップ保持期間や故障間隔とは異なる。"
+    "explanation": "RTOが2時間なら障害後2時間以内のサービス復旧を目指す。RPOはどの時点のデータまで戻せるかを表す。バックアップ保持期間や故障間隔とは異なる。",
+    "pronunciation": "RTO：アールティーオー／Recovery Time Objective：リカバリー・タイム・オブジェクティブ"
   },
   {
     "id": "lq-etl",
@@ -713,7 +738,8 @@ export const termQuestions=Object.freeze([
       "データを抽出・変換・格納する処理",
       "DBの索引を再構築する処理"
     ],
-    "explanation": "Extract・Transform・Loadの略。例えば旧システムから顧客データを抽出し、住所や日付形式を変換して新DBへ格納する。暗号化や索引再構築そのものを指すわけではない。"
+    "explanation": "Extract・Transform・Loadの略。例えば旧システムから顧客データを抽出し、住所や日付形式を変換して新DBへ格納する。暗号化や索引再構築そのものを指すわけではない。",
+    "pronunciation": "ETL：イーティーエル／Extract・Transform・Load：エクストラクト・トランスフォーム・ロード"
   },
   {
     "id": "lq-reconcile",
@@ -739,7 +765,8 @@ export const termQuestions=Object.freeze([
       "整合性・性能・可用性・運用費などの要件に照らして選ぶ",
       "データ量に関係なく分散DBを採用する"
     ],
-    "explanation": "業務要件を先に整理し、必要なトランザクション保証、負荷、復旧目標、保守体制、費用を比較する。新しさや価格だけでは要件適合性を保証できない。"
+    "explanation": "業務要件を先に整理し、必要なトランザクション保証、負荷、復旧目標、保守体制、費用を比較する。新しさや価格だけでは要件適合性を保証できない。",
+    "pronunciation": "DBMS：ディービーエムエス／Database Management System：データベース・マネジメント・システム"
   },
   {
     "id": "lq-execution-plan",
@@ -752,7 +779,8 @@ export const termQuestions=Object.freeze([
       "利用者に割り当てた権限一覧",
       "表の論理設計書"
     ],
-    "explanation": "例えば全表走査か索引走査か、どの表を先に結合するかを調べる。EXPLAIN等で確認し、推定行数と実測値の差も性能分析に役立つ。バックアップや権限とは別の情報。"
+    "explanation": "例えば全表走査か索引走査か、どの表を先に結合するかを調べる。EXPLAIN等で確認し、推定行数と実測値の差も性能分析に役立つ。バックアップや権限とは別の情報。",
+    "pronunciation": "DBMS：ディービーエムエス／SQL：エスキューエル（シークェルとも）"
   },
   {
     "id": "lq-least-privilege",
@@ -830,7 +858,8 @@ export const termQuestions=Object.freeze([
       "データの復元を必ず保証する",
       "利用者の権限を自動的に増やす"
     ],
-    "explanation": "重要データへの参照や権限変更の記録は、不正操作の調査に役立つ。監査ログへのアクセスや改ざんも防ぐ必要がある。復元用ログや性能改善とは目的が異なる。"
+    "explanation": "重要データへの参照や権限変更の記録は、不正操作の調査に役立つ。監査ログへのアクセスや改ざんも防ぐ必要がある。復元用ログや性能改善とは目的が異なる。",
+    "pronunciation": "DB：ディービー"
   },
   {
     "id": "lq-db-boundary",
@@ -843,7 +872,8 @@ export const termQuestions=Object.freeze([
       "制約を無効にして全入力を受け付ける",
       "許容範囲の端とその直外の値を登録して制約の動作を確認する"
     ],
-    "explanation": "例えば数量が1以上100以下という制約なら、0、1、100、101を確認する。正常値だけでは境界条件の誤りを検出できない。"
+    "explanation": "例えば数量が1以上100以下という制約なら、0、1、100、101を確認する。正常値だけでは境界条件の誤りを検出できない。",
+    "pronunciation": "DB：ディービー"
   },
   {
     "id": "lq-monitor",
@@ -856,7 +886,8 @@ export const termQuestions=Object.freeze([
       "バックアップを監視の代わりにする",
       "CPU使用率だけで全障害を判断する"
     ],
-    "explanation": "例えば接続枯渇やディスク容量不足の兆候を早期に検出する。複数の指標と適切な通知条件が必要で、バックアップは復旧のための別の対策。"
+    "explanation": "例えば接続枯渇やディスク容量不足の兆候を早期に検出する。複数の指標と適切な通知条件が必要で、バックアップは復旧のための別の対策。",
+    "pronunciation": "DB：ディービー"
   },
   {
     "id": "lq-enterprise-plan",
@@ -869,7 +900,8 @@ export const termQuestions=Object.freeze([
       "全表を一度に削除する",
       "SQLの書式だけを統一する"
     ],
-    "explanation": "例えば部門別の顧客DBに重複があるなら、全社で共通化する範囲と段階的な移行計画を決める。個別部門の最適化だけでは全社の課題を解決できない。"
+    "explanation": "例えば部門別の顧客DBに重複があるなら、全社で共通化する範囲と段階的な移行計画を決める。個別部門の最適化だけでは全社の課題を解決できない。",
+    "pronunciation": "DB：ディービー"
   },
   {
     "id": "lq-current-analysis",
@@ -908,6 +940,7 @@ export const termQuestions=Object.freeze([
       "既存DBの影響を調べず列を追加する",
       "利用者への説明を行わない"
     ],
-    "explanation": "例えば新しい売上分析の要望では必要なデータ、参照権限、既存処理への負荷を確認し、ビューや集計用DBなどを提案する。権限の無条件付与や無計画な変更は避ける。"
+    "explanation": "例えば新しい売上分析の要望では必要なデータ、参照権限、既存処理への負荷を確認し、ビューや集計用DBなどを提案する。権限の無条件付与や無計画な変更は避ける。",
+    "pronunciation": "DB：ディービー"
   }
 ]);
