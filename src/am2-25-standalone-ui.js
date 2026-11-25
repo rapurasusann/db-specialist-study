@@ -19,29 +19,32 @@ screen.innerHTML=`
 <div id="quiz25Work">
  <div class="quiz25Meter"><div id="quiz25MeterFill"></div></div>
  <div class="quiz25Layout">
-  <aside class="quiz25Sidebar" aria-label="問題一覧">
+  <aside class="quiz25Sidebar panel" aria-label="問題一覧">
    <h3>問題一覧</h3>
-   <div id="quiz25Jump" class="quiz25Jump" role="group" aria-label="チャレンジの問題一覧"></div>
+   <div id="quiz25Jump" class="quiz25Jump qgrid" role="group" aria-label="チャレンジの問題一覧"></div>
    <p class="muted">灰色：未回答 ／ 青：選択中 ／ 緑：正解 ／ 赤：不正解</p>
   </aside>
   <div class="quiz25Main">
-  <div class="quiz25Columns">
-  <section class="quiz25Card">
-   <p class="quiz25Source" id="quiz25Source"></p>
-   <h3 id="quiz25Title"></h3>
-   <div id="quiz25Stem" class="quiz25Stem"></div>
-   <div id="quiz25Figures"></div>
-   <a id="quiz25Original" target="_blank" rel="noopener noreferrer">公式の問題冊子を開く</a>
-  </section>
-  <section class="quiz25Card quiz25AnswerCard">
-   <h3>解答を選択</h3>
+  <div class="quiz25Columns exam">
+  <div class="pdfpane questionpane">
+   <div class="pdfbar"><strong>問題文・選択肢</strong><a id="quiz25Original" target="_blank" rel="noopener noreferrer">公式原本PDF</a></div>
+   <div class="questionText">
+    <p class="quiz25Source" id="quiz25Source"></p>
+    <h3 id="quiz25Title"></h3>
+    <div id="quiz25Stem" class="quiz25Stem"></div>
+    <div id="quiz25Figures"></div>
+    <div id="quiz25OptionText"></div>
+   </div>
+  </div>
+  <div class="answer quiz25AnswerCard">
+   <h2>解答・理解度</h2>
    <fieldset id="quiz25Choices"><legend class="quiz25SrOnly">ア・イ・ウ・エから解答を選択</legend></fieldset>
    <button type="button" class="primary quiz25Submit" id="quiz25Submit">解答を確定して採点</button>
    <div id="quiz25Feedback" role="status" aria-live="polite" hidden></div>
    <p class="muted">未回答でも次へ進めます。問題番号からいつでも戻れます。</p>
-  </section>
+  </div>
  </div>
- <div class="quiz25Controls">
+ <div class="quiz25Controls bottom">
   <button type="button" id="quiz25Back">前の問題へ</button>
   <button type="button" class="primary" id="quiz25Next">次の問題へ</button>
  </div>
@@ -70,7 +73,7 @@ css.textContent=`
 #quiz25Screen .quiz25Sidebar h3{margin:0 0 12px}
 #quiz25Screen .quiz25Sidebar .muted{margin:12px 0 0;line-height:1.6}
 #quiz25Screen .quiz25Main{min-width:0}
-#quiz25Screen .quiz25Columns{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(270px,.85fr);gap:14px;margin-top:14px;align-items:start}
+#quiz25Screen .quiz25Columns{margin-top:0;align-items:start}
 #quiz25Screen .quiz25Card{min-width:0;border:1px solid #d5e2ed;border-radius:12px;background:#fff;padding:17px}
 #quiz25Screen .quiz25Card h3{margin-top:0}
 #quiz25Screen .quiz25Source{font-size:.86rem;color:#4c6478}
@@ -87,7 +90,7 @@ css.textContent=`
 #quiz25Screen #quiz25Feedback{background:#edf6ee;padding:13px;border:1px solid #b7d8c1;border-radius:9px;white-space:pre-wrap;line-height:1.7}
 #quiz25Screen #quiz25Feedback[hidden]{display:none}
 #quiz25Screen .quiz25Controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin:16px 0}
-#quiz25Screen .quiz25Jump{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+#quiz25Screen .quiz25Jump{margin-top:12px}
 #quiz25Screen .quiz25Jump button{min-width:0;min-height:43px;padding:7px 0}
 #quiz25Screen .quiz25Jump button.quiz25Here{outline:3px solid #224f7c;outline-offset:1px}
 #quiz25Screen .quiz25Jump button.quiz25Right{background:#d6f1df}
@@ -99,8 +102,8 @@ css.textContent=`
 #quiz25Screen .quiz25Score{font-size:1.55rem;font-weight:bold}
 #quiz25Screen .quiz25SrOnly{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
 #quiz25Screen .quiz25ChoiceFigure{max-width:100%;overflow-x:auto}
-@media(max-width:1050px){#quiz25Screen .quiz25Layout{grid-template-columns:220px minmax(0,1fr)}#quiz25Screen .quiz25Columns{grid-template-columns:1fr}}
-@media(max-width:800px){#quiz25Screen .quiz25Layout{grid-template-columns:1fr}#quiz25Screen .quiz25Sidebar{padding:12px}#quiz25Screen .quiz25Card{padding:12px}}
+@media(max-width:920px){#quiz25Screen .quiz25Layout{grid-template-columns:1fr}}
+@media(max-width:600px){#quiz25Screen .quiz25Sidebar{padding:12px}}
 `;
 document.head.append(css);
 $('study').after(screen);
@@ -140,7 +143,7 @@ function statusText(){
 function renderJump(){
  const list=$('quiz25Jump');list.replaceChildren();
  round.forEach((item,i)=>{
-  const btn=document.createElement('button');btn.type='button';btn.textContent=String(i+1);
+  const btn=document.createElement('button');btn.type='button';btn.className='qbtn';btn.textContent=String(i+1);
   btn.title=item.year+'年度・問'+item.n;
   if(i===position)btn.classList.add('quiz25Here');
   if(Object.hasOwn(answers,item.id))btn.classList.add(answers[item.id]===item.answer?'quiz25Right':'quiz25Wrong');
@@ -156,11 +159,24 @@ function renderQuestion(){
  const item=round[position],q=getQuestion(item);
  set('quiz25Source',item.year+'年度 午前Ⅱ ／ '+(position+1)+'問目（元の問'+item.n+'）');
  set('quiz25Title','問'+item.n);
- set('quiz25Stem',q?.stem||'問題文を読み込めませんでした');
+ const glossaryUsed=new Set();
+ const glossaryOptions={used:glossaryUsed,questionId:item.id};
+ const renderText=(target,value)=>{
+  if(typeof window.DBStudyRenderGlossaryText==='function')window.DBStudyRenderGlossaryText(target,value,glossaryOptions);
+  else target.textContent=value;
+ };
+ renderText($('quiz25Stem'),q?.stem||'問題文を読み込めませんでした');
  const figures=$('quiz25Figures');figures.replaceChildren();
  for(const figure of q?.figures||[])figures.append(renderChallengeFigure(figure));
  const url=years[item.year].courses.find(c=>c.id==='am2').questionUrl;
  $('quiz25Original').href=url+(Number.isInteger(q?.sourcePage)?'#page='+q.sourcePage:'');
+ const optionText=$('quiz25OptionText');optionText.replaceChildren();
+ for(const letter of ['ア','イ','ウ','エ']){
+  const row=document.createElement('div');row.className='optionText';
+  renderText(row,letter+'　'+(q?.options?.[letter]||'（図を参照）'));
+  for(const f of q?.optionFigures?.[letter]||[])row.append(renderChallengeFigure(f));
+  optionText.append(row);
+ }
  const options=$('quiz25Choices');options.replaceChildren();
  const locked=Object.hasOwn(answers,item.id);
  for(const letter of ['ア','イ','ウ','エ']){
@@ -169,12 +185,7 @@ function renderQuestion(){
   input.checked=(locked?answers[item.id]:drafts[item.id])===letter;
   input.addEventListener('change',()=>{drafts[item.id]=letter;renderJump()});
   const tag=document.createElement('b');tag.textContent=letter;
-  const body=document.createElement('span');body.textContent=q?.options?.[letter]||'（図を参照）';
-  label.append(input,tag,body);
-  for(const f of q?.optionFigures?.[letter]||[]){
-   const div=document.createElement('div');div.className='quiz25ChoiceFigure';div.append(renderChallengeFigure(f));label.append(div);
-   label.style.flexWrap='wrap';
-  }
+  label.append(input,tag);
   options.append(label);
  }
  $('quiz25Submit').disabled=locked||!q;
