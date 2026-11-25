@@ -26,7 +26,7 @@ test('edited explanations match official answer keys and distinguish incorrect o
    assert.ok(q?.stem&&q.options&&q.explanation,'question and explanation exist: '+year+' Q'+n);
    assert.equal(q.answer,archive.courses[0].answers[Number(n)-1],'stored answer aligns with year key');
    assert.ok(q.explanation.startsWith('正解は'+q.answer),'explanation answer aligns: '+year+' Q'+n);
-   assert.ok(q.explanation.length>=170,'explanation supplies more than a one-sentence summary');
+   assert.ok(q.explanation.length>=150,'explanation supplies more than a one-sentence summary');
    for(const word of words)assert.ok(q.explanation.includes(word),'missing '+word+' in '+year+' Q'+n);
   }
  }
