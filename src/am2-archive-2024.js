@@ -45,7 +45,19 @@ for(const args of labels)label(...args);
 const left=Math.min(0,...nodes.map(n=>n.x-n.half-32)),top=Math.min(0,...nodes.map(n=>n.y-n.height-38)),right=Math.max(350,...nodes.map(n=>n.x+n.half+16)),bottom=Math.max(205,...nodes.map(n=>n.y+n.height+18));svg.setAttribute('viewBox',[left,top,right-left,bottom-top].join(' '));return svg;}
 function figure(f){const wrap=el('figure');wrap.style.cssText='margin:10px 0;max-width:100%;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';if(f.title)wrap.append(el('figcaption',f.title));if(f.type==='sql'){const pre=el('pre',f.text);pre.style.whiteSpace='pre-wrap';wrap.append(pre);}else if(f.type==='table'){const t=el('table');t.style.cssText='width:max-content;min-width:100%;white-space:nowrap;font-size:.85rem';const head=el('thead'),hr=el('tr');for(const h of f.headers){const th=el('th',h);th.scope='col';hr.append(th);}head.append(hr);t.append(head);const body=el('tbody');for(const row of f.rows){const tr=el('tr');for(const value of row)tr.append(el('td',value));body.append(tr);}t.append(body);wrap.append(t);}else if(f.type==='graph'||f.type==='uml')wrap.append(diagram(f));return wrap;}
 showQuestion=function(){
- if(!isArchive()){originalQuestion();return;}
+ if(!isArchive()){
+  originalQuestion();
+  // 2025 official tables/SQL are represented as semantic figures, not embedded text or images.
+  if(Number(year)===2025 && courseId==='am2'){
+   const current=questionData(),panel=document.getElementById('questionText');
+   const heading=panel.querySelector('h3');
+   if(heading && current?.figures?.length){
+    let anchor=heading;
+    for(const f of current.figures){const item=figure(f);anchor.insertAdjacentElement('afterend',item);anchor=item;}
+   }
+  }
+  return;
+ }
  const panel=document.getElementById('questionText'),q=questionData();
  if(!q){originalQuestion();return;}
  // The existing archive data is adapted, not verbatim. Never present it as the official question.
