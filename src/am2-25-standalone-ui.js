@@ -18,7 +18,14 @@ screen.innerHTML=`
 </div>
 <div id="quiz25Work">
  <div class="quiz25Meter"><div id="quiz25MeterFill"></div></div>
- <div class="quiz25Columns">
+ <div class="quiz25Layout">
+  <aside class="quiz25Sidebar" aria-label="問題一覧">
+   <h3>問題一覧</h3>
+   <div id="quiz25Jump" class="quiz25Jump" role="group" aria-label="チャレンジの問題一覧"></div>
+   <p class="muted">灰色：未回答 ／ 青：選択中 ／ 緑：正解 ／ 赤：不正解</p>
+  </aside>
+  <div class="quiz25Main">
+  <div class="quiz25Columns">
   <section class="quiz25Card">
    <p class="quiz25Source" id="quiz25Source"></p>
    <h3 id="quiz25Title"></h3>
@@ -38,8 +45,8 @@ screen.innerHTML=`
   <button type="button" id="quiz25Back">前の問題へ</button>
   <button type="button" class="primary" id="quiz25Next">次の問題へ</button>
  </div>
- <h3>問題一覧</h3><div id="quiz25Jump" class="quiz25Jump" role="group" aria-label="チャレンジの問題一覧"></div>
- <p class="muted">灰色：未回答 ／ 青：選択中 ／ 緑：正解 ／ 赤：不正解</p>
+ </div>
+ </div>
 </div>
 <section id="quiz25Result" hidden aria-live="polite">
  <h3>チャレンジ結果</h3>
@@ -58,6 +65,11 @@ css.textContent=`
 #quiz25Screen .quiz25Top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:16px;background:#e9f4fd;border:1px solid #c6def1;border-radius:12px}
 #quiz25Screen .quiz25Top h2{margin:0}
 #quiz25Screen .quiz25Top p{margin:6px 0 0}
+#quiz25Screen .quiz25Layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:14px;margin-top:14px;align-items:start}
+#quiz25Screen .quiz25Sidebar{min-width:0;background:#fff;border:1px solid #d5e2ed;border-radius:12px;padding:15px}
+#quiz25Screen .quiz25Sidebar h3{margin:0 0 12px}
+#quiz25Screen .quiz25Sidebar .muted{margin:12px 0 0;line-height:1.6}
+#quiz25Screen .quiz25Main{min-width:0}
 #quiz25Screen .quiz25Columns{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(270px,.85fr);gap:14px;margin-top:14px;align-items:start}
 #quiz25Screen .quiz25Card{min-width:0;border:1px solid #d5e2ed;border-radius:12px;background:#fff;padding:17px}
 #quiz25Screen .quiz25Card h3{margin-top:0}
@@ -75,8 +87,8 @@ css.textContent=`
 #quiz25Screen #quiz25Feedback{background:#edf6ee;padding:13px;border:1px solid #b7d8c1;border-radius:9px;white-space:pre-wrap;line-height:1.7}
 #quiz25Screen #quiz25Feedback[hidden]{display:none}
 #quiz25Screen .quiz25Controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin:16px 0}
-#quiz25Screen .quiz25Jump{display:flex;flex-wrap:wrap;gap:7px}
-#quiz25Screen .quiz25Jump button{min-width:44px;min-height:43px}
+#quiz25Screen .quiz25Jump{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+#quiz25Screen .quiz25Jump button{min-width:0;min-height:43px;padding:7px 0}
 #quiz25Screen .quiz25Jump button.quiz25Here{outline:3px solid #224f7c;outline-offset:1px}
 #quiz25Screen .quiz25Jump button.quiz25Right{background:#d6f1df}
 #quiz25Screen .quiz25Jump button.quiz25Wrong{background:#fce1df}
@@ -87,7 +99,8 @@ css.textContent=`
 #quiz25Screen .quiz25Score{font-size:1.55rem;font-weight:bold}
 #quiz25Screen .quiz25SrOnly{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
 #quiz25Screen .quiz25ChoiceFigure{max-width:100%;overflow-x:auto}
-@media(max-width:800px){#quiz25Screen .quiz25Columns{grid-template-columns:1fr}#quiz25Screen .quiz25Card{padding:12px}}
+@media(max-width:1050px){#quiz25Screen .quiz25Layout{grid-template-columns:220px minmax(0,1fr)}#quiz25Screen .quiz25Columns{grid-template-columns:1fr}}
+@media(max-width:800px){#quiz25Screen .quiz25Layout{grid-template-columns:1fr}#quiz25Screen .quiz25Sidebar{padding:12px}#quiz25Screen .quiz25Card{padding:12px}}
 `;
 document.head.append(css);
 $('study').after(screen);
