@@ -1,7 +1,7 @@
 import {stepQuestions} from './afternoon-step-up-questions.js?v=20261124ex1';
 const $=id=>document.getElementById(id);
-const button=document.createElement('button');button.id='viewStepUp';button.type='button';button.textContent='午後試験ステップアップ';
-$('viewTerms').insertAdjacentElement('afterend',button);
+const button=$('viewStepUp');
+if(!button)throw Error('STEP_UP_NAVIGATION_MISSING');
 const panel=document.createElement('section');panel.id='stepUpPractice';panel.hidden=true;
 panel.innerHTML='<h2>午後試験ステップアップ学習</h2><p class="muted">オリジナル練習問題。Lv.1は既存の単語理解へ。Lv.2～5は各50問（5業務×10パターン）。記述式は模範解答との比較で学習します。</p><div class="toolbar" id="stepLevels"></div><p id="stepProgress" class="muted"></p><div class="toolbar"><label>問題 <select id="stepSelect"></select></label></div><h3 id="stepTitle"></h3><div id="stepPrompt" style="white-space:pre-wrap;line-height:1.8"></div><div id="stepDiagram"></div><label for="stepAnswer">解答</label><textarea id="stepAnswer" placeholder="解答を入力"></textarea><div class="toolbar separate"><button id="stepCheck" class="primary">判定・解説</button><button id="stepReveal">解答を見る</button></div><div id="stepFeedback" hidden role="status" style="background:#eef5fc;border-radius:9px;padding:12px;margin-top:12px;white-space:pre-wrap"></div><div id="stepLearningVisual" hidden></div><div id="stepAssess" class="toolbar separate" hidden><button id="stepReview">要復習</button><button id="stepLearning">学習中</button><button id="stepMastered">習得済み</button></div><div class="bottom"><button id="stepPrev">前の問題</button><button id="stepNext" class="primary">次の問題</button></div><p class="muted">履歴はこの端末内に保存。既存の過去問履歴・同期・バックアップとは別管理です。SQLの自動判定は登録した表記との比較であり、実行による等価性判定ではありません。</p>';
 $('study').insertAdjacentElement('afterend',panel);
@@ -36,3 +36,5 @@ button.addEventListener('click',()=>{panel.hidden=false;$('termPractice').hidden
 for(const id of ['viewTerms','viewDashboard','viewStudy'])$(id).addEventListener('click',()=>{panel.hidden=true;button.classList.remove('primary')});
 
 window.DBStudyOpenStep=id=>{const q=stepQuestions.find(x=>x.id===id);if(!q)return false;lv=q.lv;index=stepQuestions.filter(x=>x.lv===lv).findIndex(x=>x.id===id);button.click();return true};
+
+button.disabled=false;
