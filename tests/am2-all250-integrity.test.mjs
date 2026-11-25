@@ -73,10 +73,18 @@ test('2025 supplemental script loads after base data and before archive override
 
 test('2025 official Q12 checkpoint chronology and Q23 parity premises are retained',()=>{
  const data=year2025();
- const timeline=data.questions['am2:12'].stem;
- for(const label of ['T1：チェックポイント前に開始・コミット','T2：チェックポイント前に開始 → チェックポイント後にコミット','T3：チェックポイント後に開始','T4：チェックポイント前に開始','T5：チェックポイント後に開始・コミット','T6：チェックポイント後に開始']){
-  assert.ok(timeline.includes(label),'2025 Q12 timeline: '+label);
- }
+ const q12=data.questions['am2:12'];
+ assert.deepEqual(Array.from(q12.figures,f=>f.type),['table','table']);
+ const [counts,timeline]=q12.figures;
+ assert.deepEqual(Array.from(counts.rows,row=>Array.from(row)),[
+  ['T1，T2','10','20'],['T3，T4','100','0'],['T5，T6','20','10']]);
+ assert.deepEqual(Array.from(timeline.rows,row=>Array.from(row)),[
+  ['T1','チェックポイント前','チェックポイント前にコミット','コミット済み'],
+  ['T2','チェックポイント前','チェックポイント後にコミット','コミット済み'],
+  ['T3','チェックポイント後','コミット前に障害発生','未コミット'],
+  ['T4','チェックポイント前','コミット前に障害発生','未コミット'],
+  ['T5','チェックポイント後','障害発生前にコミット','コミット済み'],
+  ['T6','チェックポイント後','コミット前に障害発生','未コミット']]);
  const raid=data.questions['am2:23'];
  assert.deepEqual(Array.from(raid.figures,f=>f.type),['table','sql']);
  assert.deepEqual(Array.from(raid.figures[0].headers),['磁気ディスク1','磁気ディスク2','磁気ディスク3','磁気ディスク4']);
