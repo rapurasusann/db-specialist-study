@@ -32,3 +32,16 @@
 - L-09 OPEN: PC/スマホ実機未確認。
 - L-10 OPEN: 最終差分・公開判断未完了。
 既存試験の反復や件数目的の追加は不要。main・本番・CS-03変更なし。
+
+## 公式正解の照合追記
+2026-11-25、IPA公式PDFの正解表をテキスト・ページ画像で確認し、登録JSONの問番号ごとに比較。
+- 2016: 25/25 一致、差異 なし。https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000gn5o-att/2016h28h_db_am2_ans.pdf
+- 2017: 25/25 一致、差異 なし。https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fzx1-att/2017h29h_db_am2_ans.pdf
+- 2018: 25/25 一致、差異 なし。https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000fabr-att/2018h30h_db_am2_ans.pdf
+- 2019: 25/25 一致、差異 なし。https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000ddiw-att/2019h31h_db_am2_ans.pdf
+- 2020: 25/25 一致、差異 なし。https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt8000000d05l-att/2020r02o_db_am2_ans.pdf
+- 2022: 25/25 一致、差異 なし。https://www.ipa.go.jp/shiken/mondai-kaiotu/gmcbt80000008smf-att/2022r04a_db_am2_ans.pdf
+- 2023: 25/25 一致、差異 なし。https://www.ipa.go.jp/shiken/mondai-kaiotu/ps6vr70000010d6y-att/2023r05a_db_am2_ans.pdf
+- 2024: 25/25 一致、差異 なし。https://www.ipa.go.jp/shiken/mondai-kaiotu/m42obm000000afqx-att/2024r06a_db_am2_ans.pdf
+- 2021: PDFの日本語文字がテキスト・画像とも表示されず未照合。2025: 今回は公式PDF未取得。全件照合済みとは扱わない。
+- L-02: 未照合年度を明記。問題文・図・解説の意味の完全照合とは別。
