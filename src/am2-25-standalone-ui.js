@@ -18,28 +18,44 @@ screen.innerHTML=`
 </div>
 <div id="quiz25Work">
  <div class="quiz25Meter"><div id="quiz25MeterFill"></div></div>
- <div class="quiz25Columns">
-  <section class="quiz25Card">
-   <p class="quiz25Source" id="quiz25Source"></p>
-   <h3 id="quiz25Title"></h3>
-   <div id="quiz25Stem" class="quiz25Stem"></div>
-   <div id="quiz25Figures"></div>
-   <a id="quiz25Original" target="_blank" rel="noopener noreferrer">公式の問題冊子を開く</a>
-  </section>
-  <section class="quiz25Card quiz25AnswerCard">
-   <h3>解答を選択</h3>
-   <fieldset id="quiz25Choices"><legend class="quiz25SrOnly">ア・イ・ウ・エから解答を選択</legend></fieldset>
-   <button type="button" class="primary quiz25Submit" id="quiz25Submit">解答を確定して採点</button>
+ <div class="quiz25Layout">
+  <aside class="quiz25Sidebar panel" aria-label="問題一覧">
+   <h3>問題一覧</h3>
+   <div id="quiz25Jump" class="quiz25Jump qgrid" role="group" aria-label="チャレンジの問題一覧"></div>
+   <p class="muted">灰色：未回答 ／ 青：選択中 ／ 緑：正解 ／ 赤：不正解</p>
+  </aside>
+  <div class="quiz25Main">
+  <div class="quiz25Columns exam">
+  <div class="pdfpane questionpane">
+   <div class="pdfbar"><strong>問題文・選択肢</strong><a id="quiz25Original" target="_blank" rel="noopener noreferrer">公式原本PDF</a></div>
+   <div class="questionText">
+    <p class="quiz25Source" id="quiz25Source"></p>
+    <h3 id="quiz25Title"></h3>
+    <div id="quiz25Stem" class="quiz25Stem"></div>
+    <div id="quiz25Figures"></div>
+    <div id="quiz25OptionText"></div>
+   </div>
+  </div>
+  <div class="answer quiz25AnswerCard">
+   <h2>解答・理解度</h2>
+   <fieldset id="quiz25Choices" class="choice"><legend class="quiz25SrOnly">ア・イ・ウ・エから解答を選択</legend></fieldset>
+   <button type="button" class="primary quiz25Submit" id="quiz25Submit">解答を判定</button>
+   <div id="quiz25GradeResult" class="muted separate" role="status"></div>
+   <div class="toolbar separate"><button type="button" id="quiz25Reveal" class="primary">答えを見る</button><a id="quiz25OfficialAnswer" target="_blank" rel="noopener noreferrer">公式解答PDF</a></div>
    <div id="quiz25Feedback" role="status" aria-live="polite" hidden></div>
+   <h2 style="margin-top:18px">この問題の理解度</h2>
+   <div class="levels" id="quiz25Levels"><button type="button" data-quiz25-level="review">要復習</button><button type="button" data-quiz25-level="learning">学習中</button><button type="button" data-quiz25-level="mastered">習得済み</button></div>
+   <p class="muted" id="quiz25History"></p>
    <p class="muted">未回答でも次へ進めます。問題番号からいつでも戻れます。</p>
-  </section>
- </div>
- <div class="quiz25Controls">
+  
+ <div class="quiz25Controls bottom">
   <button type="button" id="quiz25Back">前の問題へ</button>
   <button type="button" class="primary" id="quiz25Next">次の問題へ</button>
  </div>
- <h3>問題一覧</h3><div id="quiz25Jump" class="quiz25Jump" role="group" aria-label="チャレンジの問題一覧"></div>
- <p class="muted">灰色：未回答 ／ 青：選択中 ／ 緑：正解 ／ 赤：不正解</p>
+ </div>
+ </div>
+ </div>
+ </div>
 </div>
 <section id="quiz25Result" hidden aria-live="polite">
  <h3>チャレンジ結果</h3>
@@ -50,7 +66,12 @@ screen.innerHTML=`
   <button type="button" class="primary" id="quiz25Retry" hidden>不正解・未回答のみ再出題</button>
   <button type="button" class="primary" id="quiz25New" hidden>新しい25問に挑戦</button>
  </div>
-</section>`;
+</section>
+<div id="quiz25Mobile" class="mobileStudyControls" role="group" aria-label="スマートフォン用の解答と問題移動" hidden>
+ <div class="mobileStudyHeader"><strong id="quiz25MobileQuestion"></strong><span id="quiz25MobileStatus" aria-live="polite"></span></div>
+ <div class="mobileStudyChoices" id="quiz25MobileChoices"></div>
+ <div class="mobileStudyNav"><button type="button" id="quiz25MobileBack">前の問題</button><button type="button" id="quiz25MobileReveal">解答を見る</button><button type="button" class="primary" id="quiz25MobileNext">次の問題</button></div>
+</div>`;
 const css=document.createElement('style');
 css.textContent=`
 #quiz25Screen[hidden],#quiz25Work[hidden],#quiz25Result[hidden]{display:none!important}
@@ -58,25 +79,30 @@ css.textContent=`
 #quiz25Screen .quiz25Top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:16px;background:#e9f4fd;border:1px solid #c6def1;border-radius:12px}
 #quiz25Screen .quiz25Top h2{margin:0}
 #quiz25Screen .quiz25Top p{margin:6px 0 0}
-#quiz25Screen .quiz25Columns{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(270px,.85fr);gap:14px;margin-top:14px;align-items:start}
+#quiz25Screen .quiz25Layout{display:grid;grid-template-columns:270px minmax(0,1fr);gap:14px;margin-top:14px;align-items:start}
+#quiz25Screen .quiz25Sidebar{min-width:0;background:#fff;border:1px solid #d5e2ed;border-radius:12px;padding:15px}
+#quiz25Screen .quiz25Sidebar h3{margin:0 0 12px}
+#quiz25Screen .quiz25Sidebar .muted{margin:12px 0 0;line-height:1.6}
+#quiz25Screen .quiz25Main{min-width:0}
+#quiz25Screen .quiz25Columns{margin-top:0;align-items:start}
 #quiz25Screen .quiz25Card{min-width:0;border:1px solid #d5e2ed;border-radius:12px;background:#fff;padding:17px}
 #quiz25Screen .quiz25Card h3{margin-top:0}
 #quiz25Screen .quiz25Source{font-size:.86rem;color:#4c6478}
 #quiz25Screen .quiz25Stem{white-space:pre-wrap;line-height:1.8}
 #quiz25Screen #quiz25Figures{overflow-x:auto}
 #quiz25Screen #quiz25Original{display:inline-block;margin-top:12px}
-#quiz25Screen #quiz25Choices{display:grid;gap:9px;border:0;padding:0;margin:0 0 16px;min-width:0}
-#quiz25Screen .quiz25Option{display:flex;align-items:flex-start;gap:9px;padding:12px;border:1px solid #c9d9e6;border-radius:9px;cursor:pointer;white-space:pre-wrap;line-height:1.65}
+#quiz25Screen #quiz25Choices{border:0;padding:0;min-width:0}
+#quiz25Screen .quiz25Option{display:inline-flex;align-items:center;gap:4px}
 #quiz25Screen .quiz25Option:has(input:checked){background:#e7f3fd;border-color:#267eb6}
 #quiz25Screen .quiz25Option:has(input:disabled){cursor:default}
 #quiz25Screen .quiz25Option input{margin-top:5px;flex-shrink:0}
 #quiz25Screen .quiz25Option b{min-width:1.3em}
-#quiz25Screen .quiz25Submit{width:100%}
+#quiz25Screen .quiz25Submit{width:auto}
 #quiz25Screen #quiz25Feedback{background:#edf6ee;padding:13px;border:1px solid #b7d8c1;border-radius:9px;white-space:pre-wrap;line-height:1.7}
 #quiz25Screen #quiz25Feedback[hidden]{display:none}
 #quiz25Screen .quiz25Controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:space-between;margin:16px 0}
-#quiz25Screen .quiz25Jump{display:flex;flex-wrap:wrap;gap:7px}
-#quiz25Screen .quiz25Jump button{min-width:44px;min-height:43px}
+#quiz25Screen .quiz25Jump{margin-top:12px}
+#quiz25Screen .quiz25Jump button{min-width:0;min-height:43px;padding:7px 0}
 #quiz25Screen .quiz25Jump button.quiz25Here{outline:3px solid #224f7c;outline-offset:1px}
 #quiz25Screen .quiz25Jump button.quiz25Right{background:#d6f1df}
 #quiz25Screen .quiz25Jump button.quiz25Wrong{background:#fce1df}
@@ -87,12 +113,17 @@ css.textContent=`
 #quiz25Screen .quiz25Score{font-size:1.55rem;font-weight:bold}
 #quiz25Screen .quiz25SrOnly{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
 #quiz25Screen .quiz25ChoiceFigure{max-width:100%;overflow-x:auto}
-@media(max-width:800px){#quiz25Screen .quiz25Columns{grid-template-columns:1fr}#quiz25Screen .quiz25Card{padding:12px}}
+#quiz25MobileQuestion{flex:none;color:#163a58}
+#quiz25MobileStatus{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#475569;text-align:right}
+@media(max-width:650px){#quiz25Screen:has(#quiz25Mobile:not([hidden])){padding-bottom:155px}}
+@media(max-width:920px){#quiz25Screen .quiz25Layout{grid-template-columns:1fr}}
+@media(max-width:600px){#quiz25Screen .quiz25Sidebar{padding:12px}}
 `;
 document.head.append(css);
 $('study').after(screen);
+window.DBStudyAttachChoiceElimination?.($('quiz25OptionText'));
 
-let active=false,complete=false,round=[],position=0,drafts={},answers={},stage=1,initialResult=null,retry=[],previous=[],used=new Set();
+let active=false,complete=false,round=[],position=0,drafts={},answers={},stage=1,initialResult=null,retry=[],previous=[],used=new Set(),revealed=new Set(),orders=new Map();
 const set=(id,value)=>{$(id).textContent=value};
 const show=(id,visible)=>{$(id).hidden=!visible};
 function recordAnswer(item,correct){
@@ -102,6 +133,28 @@ function recordAnswer(item,correct){
  save();
  renderMetrics();
 }
+function commitCurrent(){
+ const item=round[position],selected=item&&drafts[item.id];
+ if(!item||Object.hasOwn(answers,item.id)||!['ア','イ','ウ','エ'].includes(selected))return;
+ answers[item.id]=selected;recordAnswer(item,selected===item.answer);
+}
+function renderHistory(item){
+ const r=progress[item.id]||{};
+ set('quiz25History','現在：'+({review:'要復習',learning:'学習中',mastered:'習得済み'}[r.level]||'未学習')+(r.seenAnswer?' ／ 解答参照済み':''));
+ for(const b of $('quiz25Levels').querySelectorAll('button'))b.classList.toggle('sel',b.dataset.quiz25Level===r.level);
+}
+$('quiz25Reveal').addEventListener('click',()=>{
+ if(!active||complete)return;
+ const item=round[position];
+ if(revealed.has(item.id))revealed.delete(item.id);
+ else{revealed.add(item.id);progress[item.id]={...progress[item.id],seenAnswer:true,updatedAt:new Date().toISOString()};save();}
+ renderQuestion();
+});
+$('quiz25Levels').addEventListener('click',e=>{
+ const level=e.target.closest('button')?.dataset.quiz25Level;
+ if(!active||complete||!['review','learning','mastered'].includes(level))return;
+ const item=round[position];progress[item.id]={...progress[item.id],level,updatedAt:new Date().toISOString()};save();renderMetrics();renderHistory(item);
+});
 function getQuestion(item){
  return years[item.year]?.questions?.['am2:'+item.n]||transcribed[item.id]||null;
 }
@@ -112,7 +165,7 @@ function resetOtherScreens(){
  const metrics=document.querySelector('.metrics');if(metrics)metrics.hidden=true;
  const mobile=$('mobileStudyControls');if(mobile)mobile.hidden=true;
 }
-function hideScreen(){screen.hidden=true;active=false;complete=false;}
+function hideScreen(){screen.hidden=true;show('quiz25Mobile',false);active=false;complete=false;}
 function activate(){
  resetOtherScreens();
  screen.hidden=false;
@@ -127,12 +180,12 @@ function statusText(){
 function renderJump(){
  const list=$('quiz25Jump');list.replaceChildren();
  round.forEach((item,i)=>{
-  const btn=document.createElement('button');btn.type='button';btn.textContent=String(i+1);
+  const btn=document.createElement('button');btn.type='button';btn.className='qbtn unseen';btn.textContent=String(i+1);
   btn.title=item.year+'年度・問'+item.n;
   if(i===position)btn.classList.add('quiz25Here');
   if(Object.hasOwn(answers,item.id))btn.classList.add(answers[item.id]===item.answer?'quiz25Right':'quiz25Wrong');
   else if(drafts[item.id])btn.classList.add('quiz25Draft');
-  btn.addEventListener('click',()=>{position=i;renderQuestion();});
+  btn.addEventListener('click',()=>{if(position===i)return;position=i;renderQuestion();scrollQuestion();});
   list.append(btn);
  });
 }
@@ -143,37 +196,80 @@ function renderQuestion(){
  const item=round[position],q=getQuestion(item);
  set('quiz25Source',item.year+'年度 午前Ⅱ ／ '+(position+1)+'問目（元の問'+item.n+'）');
  set('quiz25Title','問'+item.n);
- set('quiz25Stem',q?.stem||'問題文を読み込めませんでした');
+ const glossaryUsed=new Set();
+ const glossaryOptions={used:glossaryUsed,questionId:item.id};
+ const renderText=(target,value)=>{
+  if(typeof window.DBStudyRenderGlossaryText==='function')window.DBStudyRenderGlossaryText(target,value,glossaryOptions);
+  else target.textContent=value;
+ };
+ renderText($('quiz25Stem'),q?.stem||'問題文を読み込めませんでした');
  const figures=$('quiz25Figures');figures.replaceChildren();
  for(const figure of q?.figures||[])figures.append(renderChallengeFigure(figure));
  const url=years[item.year].courses.find(c=>c.id==='am2').questionUrl;
  $('quiz25Original').href=url+(Number.isInteger(q?.sourcePage)?'#page='+q.sourcePage:'');
+ const optionText=$('quiz25OptionText');optionText.replaceChildren();
+ if(!orders.has(item.id)){
+  const order=['ア','イ','ウ','エ'];
+  if(Number(item.year)===2025)for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
+  orders.set(item.id,order);
+ }
+ const order=orders.get(item.id);
+ for(const letter of order){
+  const row=document.createElement('div');row.className='optionText';row.dataset.originalChoice=letter;
+  renderText(row,letter+'　'+(q?.options?.[letter]||'（図を参照）'));
+  for(const f of q?.optionFigures?.[letter]||[])row.append(renderChallengeFigure(f));
+  optionText.append(row);
+ }
  const options=$('quiz25Choices');options.replaceChildren();
  const locked=Object.hasOwn(answers,item.id);
- for(const letter of ['ア','イ','ウ','エ']){
+ for(const letter of order){
   const label=document.createElement('label');label.className='quiz25Option';
   const input=document.createElement('input');input.type='radio';input.name='quiz25Answer';input.value=letter;input.disabled=locked;
   input.checked=(locked?answers[item.id]:drafts[item.id])===letter;
-  input.addEventListener('change',()=>{drafts[item.id]=letter;renderJump()});
+  input.addEventListener('change',()=>{drafts[item.id]=letter;renderJump();renderMobile()});
   const tag=document.createElement('b');tag.textContent=letter;
-  const body=document.createElement('span');body.textContent=q?.options?.[letter]||'（図を参照）';
-  label.append(input,tag,body);
-  for(const f of q?.optionFigures?.[letter]||[]){
-   const div=document.createElement('div');div.className='quiz25ChoiceFigure';div.append(renderChallengeFigure(f));label.append(div);
-   label.style.flexWrap='wrap';
-  }
+  label.append(input,tag);
   options.append(label);
  }
  $('quiz25Submit').disabled=locked||!q;
- const feedback=$('quiz25Feedback');feedback.hidden=!locked;
- if(locked){
-  const correct=answers[item.id]===item.answer;
-  feedback.textContent=(correct?'正解':'不正解')+' ／ 正解：'+item.answer+'\n\n'+(q?.explanation||'公式解答と照合してください。');
- }else feedback.textContent='';
+ const feedback=$('quiz25Feedback');
+ const visible=revealed.has(item.id);
+ feedback.hidden=!visible;
+ feedback.textContent='正解：'+item.answer+'\n\n'+(q?.explanation||'公式解答と照合してください。');
+ set('quiz25GradeResult',locked?(answers[item.id]===item.answer?'正解':'不正解')+'。正解は '+item.answer+' です。':'');
+ set('quiz25Reveal',visible?'解答を閉じる':'答えを見る');
+ $('quiz25OfficialAnswer').href=years[item.year].courses.find(c=>c.id==='am2').answerUrl;
+ renderHistory(item);
  $('quiz25Back').disabled=position===0;
  $('quiz25Next').textContent=position===round.length-1?'結果を見る（未回答も含む）':'次の問題へ（未回答でも可）';
- statusText();renderJump();
+ statusText();renderJump();renderMobile();
 }
+function scrollQuestion(){
+ if(window.matchMedia('(max-width:650px)').matches)$('quiz25Source').scrollIntoView({behavior:'instant',block:'start'});
+}
+function renderMobile(){
+ const item=round[position];
+ if(!active||complete||screen.hidden||!item){show('quiz25Mobile',false);return;}
+ show('quiz25Mobile',true);
+ set('quiz25MobileQuestion',item.year+'年度 午前Ⅱ 問'+item.n);
+ const locked=Object.hasOwn(answers,item.id);
+ set('quiz25MobileStatus',locked?$('quiz25GradeResult').textContent:(drafts[item.id]?'「判定」で正誤を確認できます。':'ア・イ・ウ・エから選択してください。'));
+ const container=$('quiz25MobileChoices');container.replaceChildren();
+ for(const letter of orders.get(item.id)||['ア','イ','ウ','エ']){
+  const b=document.createElement('button');b.type='button';b.textContent=letter;
+  const selected=(locked?answers[item.id]:drafts[item.id])===letter;
+  b.classList.toggle('selected',selected);b.setAttribute('aria-pressed',String(selected));b.disabled=locked;
+  b.onclick=()=>Array.from($('quiz25Choices').querySelectorAll('input')).find(input=>input.value===letter)?.click();
+  container.append(b);
+ }
+ const grade=document.createElement('button');grade.type='button';grade.className='primary';grade.textContent='判定';grade.disabled=$('quiz25Submit').disabled;grade.onclick=()=>$('quiz25Submit').click();container.append(grade);
+ $('quiz25MobileBack').disabled=$('quiz25Back').disabled;
+ set('quiz25MobileNext',position===round.length-1?'結果を見る':'次の問題');
+ set('quiz25MobileReveal',revealed.has(item.id)?'解答を閉じる':'解答を見る');
+}
+$('quiz25MobileBack').onclick=()=>{$('quiz25Back').click();scrollQuestion();};
+$('quiz25MobileNext').onclick=()=>{$('quiz25Next').click();if(!complete)scrollQuestion();else $('quiz25Result').scrollIntoView({block:'start'});};
+$('quiz25MobileReveal').onclick=()=>{$('quiz25Reveal').click();if(revealed.has(round[position]?.id))$('quiz25Feedback').scrollIntoView({block:'start'});};
 function drawBatch(){
  const pool=eligibleQuestions(years,transcribed);
  if(!pool.length){set('quiz25Status','出題可能な問題がありません');return}
@@ -182,13 +278,13 @@ function drawBatch(){
  if(used.size+picked.length>=pool.length)used.clear();
  picked.forEach(q=>used.add(q.id));
  previous=picked.map(q=>q.id);
- round=picked;position=0;answers={};drafts={};stage=1;initialResult=null;retry=[];complete=false;active=true;
+ round=picked;position=0;answers={};drafts={};revealed.clear();orders.clear();stage=1;initialResult=null;retry=[];complete=false;active=true;
  renderQuestion();
 }
 function finish(){
  const result=roundSummary(round,answers);
  if(stage===1)initialResult=result;
- complete=true;retry=result.wrong;
+ complete=true;retry=result.wrong;show('quiz25Mobile',false);
  show('quiz25Work',false);show('quiz25Result',true);
  const skipped=result.wrong.filter(q=>!Object.hasOwn(answers,q.id)).length;
  set('quiz25Status','第'+stage+'ラウンド 完了');
@@ -205,20 +301,20 @@ $('quiz25Submit').addEventListener('click',()=>{
  if(Object.hasOwn(answers,item.id))return;
  const selected=drafts[item.id];
  if(!['ア','イ','ウ','エ'].includes(selected)){set('quiz25Status','選択肢を選んでから解答を確定してください。未回答で次へ進むこともできます。');return}
- answers[item.id]=selected;
- recordAnswer(item,selected===item.answer);
+ commitCurrent();
+ revealed.add(item.id);
  renderQuestion();
 });
-$('quiz25Back').addEventListener('click',()=>{if(!active||complete||position===0)return;position--;renderQuestion()});
-$('quiz25Next').addEventListener('click',()=>{if(!active||complete)return;if(position+1<round.length){position++;renderQuestion()}else finish()});
+$('quiz25Back').addEventListener('click',()=>{if(!active||complete||position===0)return;commitCurrent();position--;renderQuestion()});
+$('quiz25Next').addEventListener('click',()=>{if(!active||complete)return;commitCurrent();if(position+1<round.length){position++;renderQuestion()}else finish()});
 $('quiz25Retry').addEventListener('click',()=>{
  if(!active||!complete||!retry.length)return;
- round=retry;position=0;answers={};drafts={};retry=[];stage++;complete=false;renderQuestion();
+ round=retry;position=0;answers={};drafts={};revealed.clear();orders.clear();retry=[];stage++;complete=false;renderQuestion();
 });
 $('quiz25New').addEventListener('click',()=>{if(active&&complete&&!retry.length)drawBatch()});
 $('quiz25Exit').addEventListener('click',()=>{hideScreen();nav.classList.remove('primary');$('viewDashboard').click();const metrics=document.querySelector('.metrics');if(metrics)metrics.hidden=false;});
 nav.addEventListener('click',()=>{if(!active)drawBatch();else if(complete){activate();show('quiz25Work',false);show('quiz25Result',true)}else renderQuestion();});
 for(const id of ['viewDashboard','viewStudy','viewTerms','viewStepUp']){
- $(id)?.addEventListener('click',()=>{if(screen.hidden)return;screen.hidden=true;nav.classList.remove('primary');const metrics=document.querySelector('.metrics');if(metrics&&(id==='viewDashboard'||id==='viewStudy'))metrics.hidden=false;});
+ $(id)?.addEventListener('click',()=>{if(screen.hidden)return;screen.hidden=true;show('quiz25Mobile',false);nav.classList.remove('primary');const metrics=document.querySelector('.metrics');if(metrics&&(id==='viewDashboard'||id==='viewStudy'))metrics.hidden=false;});
 }
 nav.disabled=false;
