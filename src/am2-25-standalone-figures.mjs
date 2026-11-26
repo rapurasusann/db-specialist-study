@@ -18,7 +18,9 @@ const labels=[];
 function label(x,y,t,anchor='middle'){if(t)vector(svg,'text',{x,y,'font-size':10,'text-anchor':anchor,fill:'#172437'},t);}
 function boundary(n,dx,dy){const scale=Math.max(Math.abs(dx)/n.half,Math.abs(dy)/n.height,0.00001);return [n.x+dx/scale,n.y+dy/scale];}
 function endpoints(a,b,offset){return window.am2SharedVectorFigures.associationEndpoints(a,b,offset);}
+const merged=uml&&f.mergeInheritance?window.am2SharedVectorFigures.mergedInheritance(svg,nodes,f.links,id+'-triangle'):new Set();
 for(const e of uml?f.links:f.edges){
+ if(merged.has(e))continue;
  const a=map.get(e.from),b=map.get(e.to);if(!a)continue;
  if(e.kind==='self'){const left=a.x-a.half,top=a.y-a.height;const bend=Math.min(top-20,a.y-34);vector(svg,'path',{d:'M '+left+' '+a.y+' H '+(left-22)+' V '+bend+' H '+a.x+' V '+top,fill:'none',stroke:'#263747'});labels.push(...window.am2SharedVectorFigures.selfAssociationLabels(a,e));continue;}
  if(!b)continue;const [x1,y1,x2,y2]=endpoints(a,b,Number(e.offset)||0);
@@ -35,6 +37,7 @@ for(const e of uml?f.links:f.edges){
 }
 for(const target of f.incomingPointers||[]){const n=map.get(target);if(!n)throw Error('Unknown incoming pointer target');const top=n.y-n.height;vector(svg,'line',{x1:n.x,y1:top-24,x2:n.x,y2:top,stroke:'#263747','stroke-width':1.3,'marker-end':'url(#'+id+')'});}
 for(const e of f.associationClasses||[]){const a=map.get(e.from),b=map.get(e.to),c=map.get(e.classId);if(!a||!b||!c)continue;const [x1,y1,x2,y2]=endpoints(a,b,Number(e.offset)||0);const x=a.id===b.id?a.x-a.half/2-11:(x1+x2)/2,y=a.id===b.id?Math.min(a.y-a.height-20,a.y-34):(y1+y2)/2;const [cx,cy]=boundary(c,x-c.x,y-c.y);vector(svg,'line',{x1:x,y1:y,x2:cx,y2:cy,stroke:'#263747','stroke-width':1.3,'stroke-dasharray':'4 3'});}
+if(uml)window.am2SharedVectorFigures.ownershipConstraint(svg,nodes,f);
 for(const n of nodes){
  if(n.diamond){vector(svg,'polygon',{points:[[n.x-n.half,n.y],[n.x,n.y-n.height],[n.x+n.half,n.y],[n.x,n.y+n.height]].map(p=>p.join(',')).join(' '),fill:'white',stroke:'#263747'});continue;}
  if(uml||f.shape==='rect'){vector(svg,'rect',{x:n.x-n.half,y:n.y-n.height,width:n.half*2,height:n.height*2,fill:'white',stroke:'#263747'});if(n.attrs.length){const y=n.y-n.height+22;vector(svg,'line',{x1:n.x-n.half,y1:y,x2:n.x+n.half,y2:y,stroke:'#263747'});window.am2SharedVectorFigures.diagramNodeLabel(svg,f,n,y-8);n.attrs.forEach((v,i)=>label(n.x-n.half+4,y+11+i*14,v,'start'));}else window.am2SharedVectorFigures.diagramNodeLabel(svg,f,n,n.y+3);}
