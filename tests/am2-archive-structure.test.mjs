@@ -56,5 +56,7 @@ for(const y of years)test(y+' : 25 questions and figure references',()=>{
 });
 test('release readiness is not implied by structural tests',()=>{
  assert.ok(manifest.years.some(y=>!y.answerVerification||/pending|hold|recheck|required|open/i.test(y.answerVerification)));
- assert.ok(renderer.includes('原文最終照合前'));
+ assert.match(renderer,/originalTextVerified\s*===\s*true/);
+ assert.ok(renderer.includes('原文テキストは未照合です'));
+ assert.ok(renderer.includes('要約版は表示しません'));
 });
