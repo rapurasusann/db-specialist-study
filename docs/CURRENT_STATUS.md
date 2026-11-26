@@ -51,7 +51,7 @@
 | [午後試験転記](PM_2025_TRANSCRIPTION.md) | 過去の転記・図表・試験履歴 |
 | [SECURITY](../SECURITY.md) | セキュリティ方針 |
 
-CS-03は [隔離ブランチ引継ぎ](https://github.com/rapurasusann/db-specialist-study/blob/feat/cs03-cross-browser-sync-20261123/docs/CS03_HANDOFF_20261125.md) と [実行契約](https://github.com/rapurasusann/db-specialist-study/blob/feat/cs03-cross-browser-sync-20261123/docs/CS03_DARK_DEPLOY_EXECUTION_20261125.md) を入口とし、本番への混入を避ける。個別の承認・秘密情報・クラウド変更条件を上書きしない。
+CS-03は [全資料索引](https://github.com/rapurasusann/db-specialist-study/blob/feat/cs03-cross-browser-sync-20261123/docs/CS03_INDEX.md)、[隔離ブランチ引継ぎ](https://github.com/rapurasusann/db-specialist-study/blob/feat/cs03-cross-browser-sync-20261123/docs/CS03_HANDOFF_20261125.md) と [実行契約](https://github.com/rapurasusann/db-specialist-study/blob/feat/cs03-cross-browser-sync-20261123/docs/CS03_DARK_DEPLOY_EXECUTION_20261125.md) を入口とし、本番への混入を避ける。個別の承認・秘密情報・クラウド変更条件を上書きしない。
 
 ## 次の作業
 1. mainの学習機能と資料の実装差分を限定調査し、具体的な不足だけを列挙。
