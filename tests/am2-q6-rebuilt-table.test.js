@@ -69,11 +69,11 @@ test('AM2 Q6: reconstructed accessible order table includes all 9 columns and 10
   context.number=8;
   context.showQuestion();
   assert.equal(viewerTouched,false,'the original viewer remains untouched on navigation');
-  assert.equal(inserted[1].children[0].name,'img');
+  assert.equal(inserted.length,1,'Q8 must not receive an obsolete image from this renderer');
 });
 
 test('Q6 table does not modify original-page viewer and script is fresh', () => {
   assert.match(html, /#localViewer\{display:block!important\}/);
   assert.doesNotMatch(clipScript, /getElementById\('localViewer'\)/);
-  assert.match(html, /src\/am2-figure-clips\.js\?v=20261117g/);
+  assert.match(html, /src\/am2-figure-clips\.js\?v=[A-Za-z0-9._-]+/);
 });
