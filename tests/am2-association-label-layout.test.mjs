@@ -43,7 +43,33 @@ test('label renderer cache identifiers are updated together',()=>{
  const html=readFileSync(new URL('index.html',root),'utf8');
  const ui=readFileSync(new URL('src/am2-25-standalone-ui.js',root),'utf8');
  for(const file of ['am2-shared-vector-figures.js','am2-archive-2024.js','am2-25-standalone-ui.js']){
-  assert.ok(html.includes(file+'?v=20261126labels2'),file);
+  assert.ok(html.includes(file+'?v=20261126labels3'),file);
  }
- assert.ok(ui.includes('am2-25-standalone-figures.mjs?v=20261126labels2'));
+ assert.ok(ui.includes('am2-25-standalone-figures.mjs?v=20261126labels3'));
+});
+
+test('adaptive layout expands crowded classes without changing identities or dimensions',()=>{
+ const nodes=[{id:'A',x:30,y:30,half:37,height:15},{id:'B',x:90,y:30,half:37,height:15}];
+ const links=[{from:'A',to:'B',fromLabel:'1',toLabel:'*',label:'関連'}];
+ const before=JSON.stringify({nodes,links});
+ const result=api.layoutAssociationNodes(nodes,links);
+ assert.ok(result[1].x-result[0].x>60);
+ assert.equal(JSON.stringify({nodes,links}),before);
+ for(let i=0;i<nodes.length;i++){
+  assert.equal(result[i].id,nodes[i].id);
+  assert.equal(result[i].half,nodes[i].half);
+  assert.equal(result[i].height,nodes[i].height);
+ }
+ const labels=api.associationLabels(...api.associationEndpoints(result[0],result[1],0),links[0]);
+ const placed=api.placeAssociationLabels(labels,result);
+ assert.equal(placed.length,3);
+ assert.ok(placed.every(p=>p.resolved));
+});
+test('both rendering paths use the same adaptive node layout and endpoint geometry',()=>{
+ for(const file of ['src/am2-archive-2024.js','src/am2-25-standalone-figures.mjs']){
+  const source=readFileSync(new URL(file,root),'utf8');
+  assert.match(source,/layoutAssociationNodes\(nodes,f\.links\)/);
+  assert.match(source,/associationEndpoints\(a,b,offset\)/);
+  assert.match(source,/selfAssociationLabels\(a,e\)/);
+ }
 });
