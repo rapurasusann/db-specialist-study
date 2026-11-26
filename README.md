@@ -9,6 +9,6 @@
 - [学習品質の結果](docs/LEARNING_QUALITY_RESULT_20261125.md)
 - [午後試験の記録](docs/PM_2025_TRANSCRIPTION.md)
 - [セキュリティ方針](SECURITY.md)
-- [CS-03の隔離開発資料](https://github.com/rapurasusann/db-specialist-study/blob/feat/cs03-cross-browser-sync-20261123/docs/CS03_HANDOFF_20261125.md)
+- [CS-03の隔離開発資料](https://github.com/rapurasusann/db-specialist-study/blob/feat/cs03-cross-browser-sync-20261123/docs/CS03_INDEX.md)
 
 過去の資料にある未公開・Draft・進捗値は当時の記録です。最新判断は現行仕様・進捗を参照してください。
