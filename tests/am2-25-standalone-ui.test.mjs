@@ -51,7 +51,7 @@ test('navigation commits a selected answer once, skips unanswered and preserves 
  const handlers={};
  const $=id=>({addEventListener:(event,fn)=>{handlers[id]=fn}});
  const save=()=>saves++,renderMetrics=()=>{},renderQuestion=()=>renders++,finish=()=>{finished=true;complete=true};
- `+ui.slice(start,end)+'\\n'+nav.join('\\n')+`
+ `+ui.slice(start,end)+'\n'+nav.join('\n')+`
  return {drafts,answers,progress,handlers,state:()=>({position,saves,renders,finished})};
  `);
  const h=simulate([{id:'a',answer:'ア'},{id:'b',answer:'イ'},{id:'c',answer:'ウ'}]);
