@@ -2,7 +2,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {ACCOUNT,NAME,CONFIG,validateConfig,checkAbsent} from '../scripts/cs03-dark-preflight.mjs';
+import {ACCOUNT,NAME,CONFIG,validateConfig,checkAbsent,validateChanges,REVIEWED_DOC_BLOBS} from '../scripts/cs03-dark-preflight.mjs';
 const config=JSON.parse(await readFile(new URL('../'+CONFIG,import.meta.url),'utf8'));
 test('approved configuration passes',()=>validateConfig(config));
 for(const [name,mutate] of [
@@ -39,4 +39,14 @@ test('wrong account or missing token never calls API',async()=>{
  for(const [account,token] of [['wrong','test-only'],[ACCOUNT,'']]){
  await assert.rejects(checkAbsent({account,token,fetcher:async()=>assert.fail('unexpected call')}),/ACCOUNT_OR_READ_TOKEN_MISSING/);
  }
+});
+
+test('only exact reviewed documentation blobs are accepted',()=>{
+ const paths=Object.keys(REVIEWED_DOC_BLOBS);
+ validateChanges(paths,'',p=>REVIEWED_DOC_BLOBS[p]);
+ for(const p of paths)assert.throws(()=>validateChanges([p],'',()=> 'changed'),/DEPLOYMENT_SOURCE_CHANGED/);
+});
+test('unreviewed paths and dirty worktree remain blocked',()=>{
+ for(const p of ['docs/unreviewed.md','server/cs03-browser-jwt-entrypoint.mjs','package.json','docs/cs03-browser-worker-config-review-only.json.example'])assert.throws(()=>validateChanges([p],'',()=> 'anything'),/DEPLOYMENT_SOURCE_CHANGED/);
+ assert.throws(()=>validateChanges([],'?? unexpected'),/WORKTREE_DIRTY/);
 });
