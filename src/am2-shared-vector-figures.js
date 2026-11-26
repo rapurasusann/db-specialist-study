@@ -62,5 +62,35 @@ function placeAssociationLabels(labels,nodes){
  }
  return placed;
 }
-window.am2SharedVectorFigures=Object.freeze({associationLabels,placeAssociationLabels,supports:f=>f.type==='schema-group'||f.type==='disk-array',render});
+
+function associationEndpoints(a,b,offset){
+ const dx=b.x-a.x,dy=b.y-a.y,len=Math.hypot(dx,dy)||1;
+ const boundary=(n,x,y)=>{const scale=Math.max(Math.abs(x)/n.half,Math.abs(y)/n.height,0.00001);return [n.x+x/scale,n.y+y/scale]};
+ const p=boundary(a,dx,dy),q=boundary(b,-dx,-dy);
+ return [p[0]-dy/len*offset,p[1]+dx/len*offset,q[0]-dy/len*offset,q[1]+dx/len*offset];
+}
+function selfAssociationLabels(a,e){
+ const left=a.x-a.half,top=a.y-a.height,bend=Math.min(top-20,a.y-34);
+ return [[left-22,a.y+12,e.fromLabel,{tx:0,ty:1,nx:-1,ny:0}],[a.x+22,bend-5,e.toLabel,{tx:1,ty:0,nx:0,ny:-1}]];
+}
+// Expand the original coordinate grid, not class sizes or relationship semantics.
+function layoutAssociationNodes(nodes,links){
+ const originX=Math.min(...nodes.map(n=>n.x)),originY=Math.min(...nodes.map(n=>n.y));
+ let candidate=nodes;
+ for(const scale of [1,1.25,1.5,1.75,2,2.5,3]){
+  candidate=nodes.map(n=>({...n,x:originX+(n.x-originX)*scale,y:originY+(n.y-originY)*scale}));
+  const map=new Map(candidate.map(n=>[n.id,n])),labels=[];
+  for(const e of links){
+   const a=map.get(e.from),b=map.get(e.to);if(!a)continue;
+   if(e.kind==='self'){labels.push(...selfAssociationLabels(a,e));continue}
+   if(b)labels.push(...associationLabels(...associationEndpoints(a,b,Number(e.offset)||0),e));
+  }
+  const boxes=candidate.map(n=>({left:n.x-n.half,right:n.x+n.half,top:n.y-n.height,bottom:n.y+n.height}));
+  if(boxes.some((a,i)=>boxes.slice(i+1).some(b=>intersects(a,b))))continue;
+  if(placeAssociationLabels(labels,candidate).every(p=>p.resolved))return candidate;
+ }
+ return candidate;
+}
+
+window.am2SharedVectorFigures=Object.freeze({associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array',render});
 })();
