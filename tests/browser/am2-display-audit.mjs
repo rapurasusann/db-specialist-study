@@ -41,7 +41,14 @@ try{
       const a=labels[i],b=labels[j];if(Math.min(a.r,b.r)-Math.max(a.x,b.x)>2&&Math.min(a.b,b.b)-Math.max(a.y,b.y)>2)issues.push('SVG text overlap: '+a.text+' / '+b.text);
      }
     }
-    const keys=figures.map(f=>f.textContent.trim()+'|'+[...f.querySelectorAll('svg')].map(s=>s.getAttribute('aria-label')||s.textContent).join('|')).filter(s=>s!=='|');
+    // Distinct answer choices may intentionally have identical text and nodes.
+    // Compare structure within the same semantic region, not across choices.
+    const keys=figures.map(f=>{
+     const choice=f.closest('.optionText');
+     const slot=choice?'choice:'+Array.from(el.querySelectorAll('.optionText')).indexOf(choice):'stem';
+     const geometry=[...f.querySelectorAll('svg line,svg path,svg rect,svg circle,svg polygon,svg text')].filter(n=>!n.closest('defs')).map(n=>[n.tagName,[...n.attributes].filter(a=>!['marker-start','marker-end','id'].includes(a.name)).map(a=>[a.name,a.value]).sort(),n.textContent]);
+     return slot+'|'+f.textContent.trim()+'|'+JSON.stringify(geometry);
+    });
     for(const k of new Set(keys))if(keys.filter(x=>x===k).length>1)issues.push('possible duplicate figure: '+k.slice(0,100));
     return {figures:figures.length,svgs:svgs.length,issues};
    });
