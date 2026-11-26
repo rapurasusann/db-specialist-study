@@ -1,15 +1,12 @@
+import {loadArchives} from './helpers/load-am2-archives.mjs';
 /** Verify explanations against the data shown in three archive questions.
  * Run: node --test tests/am2-archive-table-calculation.test.mjs
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
 
-function question(year,number){
- const file=readFileSync(new URL('../src/am2-archive-'+year+'-data.js',import.meta.url),'utf8');
- const archive=JSON.parse(file.slice(file.indexOf('=')+1,file.lastIndexOf(';')));
- return {q:archive.questions['am2:'+number],answer:archive.courses[0].answers[number-1]};
-}
+const archives=loadArchives();
+function question(year,number){const archive=archives[year];return {q:archive.questions['am2:'+number],answer:archive.courses[0].answers[number-1]};}
 
 test('2017 Q10: filtered SUM is month-end stock, not shipped quantity or amount',()=>{
  const {q,answer}=question(2017,10);
