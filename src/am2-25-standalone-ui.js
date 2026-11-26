@@ -131,12 +131,12 @@ document.head.append(css);
 $('study').after(screen);
 window.DBStudyAttachChoiceElimination?.($('quiz25OptionText'));
 
-let active=false,complete=false,round=[],position=0,drafts={},answers={},stage=1,initialResult=null,retry=[],previous=[],used=new Set(),revealed=new Set(),orders=new Map();
+let active=false,complete=false,round=[],position=0,drafts={},answers={},stage=1,initialResult=null,retry=[],previous=[],used=new Set(),revealed=new Set(),answerSeen=new Set(),orders=new Map();
 const set=(id,value)=>{$(id).textContent=value};
 const show=(id,visible)=>{$(id).hidden=!visible};
 function recordAnswer(item,correct){
  const prev=progress[item.id]||{};
- const streak=correct?((prev.correct===true?Number(prev.streak)||0:0)+1):0;
+ const streak=correct?(answerSeen.has(item.id)?Number(prev.streak)||0:(Number(prev.streak)||0)+1):0;
  progress[item.id]={...prev,correct,level:correct?'learning':'review',attempts:(Number(prev.attempts)||0)+1,streak,updatedAt:new Date().toISOString()};
  save();
  renderMetrics();
@@ -155,7 +155,7 @@ $('quiz25Reveal').addEventListener('click',()=>{
  if(!active||complete)return;
  const item=round[position];
  if(revealed.has(item.id))revealed.delete(item.id);
- else{revealed.add(item.id);progress[item.id]={...progress[item.id],seenAnswer:true,updatedAt:new Date().toISOString()};save();}
+ else{revealed.add(item.id);answerSeen.add(item.id);progress[item.id]={...progress[item.id],seenAnswer:true,updatedAt:new Date().toISOString()};save();}
  renderQuestion();
 });
 $('quiz25Levels').addEventListener('click',e=>{
@@ -286,7 +286,7 @@ function drawBatch(){
  if(used.size+picked.length>=pool.length)used.clear();
  picked.forEach(q=>used.add(q.id));
  previous=picked.map(q=>q.id);
- round=picked;position=0;answers={};drafts={};revealed.clear();orders.clear();stage=1;initialResult=null;retry=[];complete=false;active=true;
+ round=picked;position=0;answers={};drafts={};revealed.clear();answerSeen.clear();orders.clear();stage=1;initialResult=null;retry=[];complete=false;active=true;
  renderQuestion();
 }
 function finish(){
@@ -317,7 +317,7 @@ $('quiz25Back').addEventListener('click',()=>{if(!active||complete||position===0
 $('quiz25Next').addEventListener('click',()=>{if(!active||complete)return;commitCurrent();if(position+1<round.length){position++;renderQuestion()}else finish()});
 $('quiz25Retry').addEventListener('click',()=>{
  if(!active||!complete||!retry.length)return;
- round=retry;position=0;answers={};drafts={};revealed.clear();orders.clear();retry=[];stage++;complete=false;renderQuestion();
+ round=retry;position=0;answers={};drafts={};revealed.clear();answerSeen.clear();orders.clear();retry=[];stage++;complete=false;renderQuestion();
 });
 $('quiz25New').addEventListener('click',()=>{if(active&&complete&&!retry.length)drawBatch()});
 $('quiz25Exit').addEventListener('click',()=>{hideScreen();nav.classList.remove('primary');$('viewDashboard').click();const metrics=document.querySelector('.metrics');if(metrics)metrics.hidden=false;});
