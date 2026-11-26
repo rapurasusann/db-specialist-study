@@ -23,7 +23,15 @@ function diskArray(f){
  label(14,25,f.title,'start');
  f.disks.forEach((d,i)=>{const x=12+i*stride,cx=x+boxWidth/2;label(cx,50,'〔'+d.name+'〕');vector(svg,'rect',{x,y:58,width:boxWidth,height:h-72,fill:'white',stroke:'#263747'});label(cx,80,'（データブロック）');d.blocks.forEach((b,j)=>{const y=94+j*cellHeight;vector(svg,'rect',{x:x+14,y,width:boxWidth-28,height:cellHeight,fill:'white',stroke:'#263747','stroke-dasharray':'5 4'});label(cx,y+22,b);});});return svg;
 }
-function render(f){const wrap=document.createElement('figure');wrap.style.cssText='margin:10px 0;max-width:100%;min-width:0;box-sizing:border-box;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';wrap.append(f.type==='schema-group'?schemaGroup(f):diskArray(f));return wrap;}
+function transactionSequence(f){
+ const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 650 540');svg.setAttribute('role','img');svg.setAttribute('aria-label',f.steps.map(s=>s.number+' '+s.lane+' '+s.lines.join('')).join('。'));svg.style.cssText='display:block;width:650px;min-width:520px;max-width:100%;height:auto';
+ const label=(x,y,t)=>vector(svg,'text',{x,y,'font-size':14,'text-anchor':'middle',fill:'#172437'},t);
+ const arrow=(x,y1,y2)=>{vector(svg,'line',{x1:x,y1,x2:x,y2,stroke:'#263747'});vector(svg,'path',{d:'M'+(x-5)+' '+(y2-7)+' L'+x+' '+y2+' L'+(x+5)+' '+(y2-7),fill:'none',stroke:'#263747'});};
+ label(190,22,'トランザクションT₁');label(490,22,'トランザクションT₂');arrow(32,35,510);label(22,530,'時刻');
+ const last={};for(const s of f.steps){const x=s.lane===1?190:490,y=45+(s.number-1)*79,h=52;if(last[s.lane]!==undefined)arrow(x,last[s.lane],y);vector(svg,'rect',{x:x-135,y,width:270,height:h,fill:'white',stroke:'#263747'});label(x-124,y-6,String(s.number));s.lines.forEach((t,i)=>label(x,y+(s.lines.length===1?30:20+i*17),t));last[s.lane]=y+h;}return svg;
+}
+function markTableHeader(th,f,index){if(f.primaryColumns?.includes(index)){th.style.textDecoration='underline';th.style.textUnderlineOffset='3px';th.setAttribute('aria-label',f.headers[index]+'（主キー）');}}
+function render(f){const wrap=document.createElement('figure');wrap.style.cssText='margin:10px 0;max-width:100%;min-width:0;box-sizing:border-box;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';wrap.append(f.type==='schema-group'?schemaGroup(f):f.type==='transaction-sequence'?transactionSequence(f):diskArray(f));return wrap;}
 // Estimate conservative SVG text bounds in user units (10px diagram font).
 function labelBox(x,y,t){
  const half=Array.from(String(t)).length*5+2;
@@ -139,5 +147,5 @@ function ownershipConstraint(svg,nodes,f){
  return [g.box];
 }
 
-window.am2SharedVectorFigures=Object.freeze({mergedInheritance,ownershipConstraint,diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array',render});
+window.am2SharedVectorFigures=Object.freeze({markTableHeader,mergedInheritance,ownershipConstraint,diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array'||f.type==='transaction-sequence',render});
 })();
