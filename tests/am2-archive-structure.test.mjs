@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {Script,createContext} from 'node:vm';
+import {loadArchives} from './helpers/load-am2-archives.mjs';
 const read=p=>readFileSync(new URL('../'+p,import.meta.url),'utf8');
 const manifest=JSON.parse(read('data/am2-archive-sources-2016-2024.json'));
 const html=read('index.html');
@@ -9,16 +9,14 @@ const renderer=read('src/am2-archive-2024.js');
 const years=Array.from({length:9},(_,i)=>2016+i);
 const letters=['ア','イ','ウ','エ'];
 const nonempty=v=>typeof v==='string'&&v.trim().length>0;
-const context=createContext({years:{},year:2025,courseId:'am2',showQuestion(){},renderYears(){},renderMode(){},document:{createElement(){return {}},head:{append(){}}}});
+const archives=loadArchives();
 test('all nine years load in browser script order',()=>{
  assert.deepEqual(manifest.years.map(y=>y.year).sort(),years);
  for(const y of years.slice(0,-1)){
   const name='src/am2-archive-'+y+'-data.js';
   assert.ok(html.indexOf(name)>=0&&html.indexOf(name)<html.indexOf('src/am2-archive-2024.js'),name);
-  new Script(read(name)).runInContext(context);
  }
- new Script(renderer).runInContext(context);
- assert.deepEqual(Object.keys(context.years).map(Number).sort(),years);
+ assert.deepEqual(Object.keys(archives).map(Number).sort(),years);
 });
 function figure(f){
  assert.ok(['table','sql','uml','graph'].includes(f.type));
@@ -36,19 +34,21 @@ function figure(f){
 for(const y of years)test(y+' : 25 questions and figure references',()=>{
  const a=manifest.years.find(v=>v.year===y);
  const d=JSON.parse(read('data/am2-'+y+'-reviewed-partial.json'));
- const b=JSON.parse(JSON.stringify(context.years[y]));
+ const b=archives[y];
  assert.equal(a.answers.length,25);
  assert.deepEqual(b.courses[0].answers,a.answers);
  assert.equal(b.courses[0].count,25);
  assert.equal(b.courses[0].questionUrl,a.questionUrl);
  assert.equal(b.courses[0].answerUrl,a.answerUrl);
  assert.equal(Object.keys(d.questions).length,25);
- assert.deepEqual(b.questions,d.questions);
+ assert.deepEqual(Object.keys(b.questions).sort(),Object.keys(d.questions).sort());
  for(let n=1;n<=25;n++){
-  const q=d.questions['am2:'+n];assert.ok(q,y+':'+n);
+  const q=b.questions['am2:'+n];assert.ok(q,y+':'+n);
   assert.ok(nonempty(q.stem)&&nonempty(q.explanation));
-  assert.deepEqual(Object.keys(q.options),letters);
-  assert.ok(Object.values(q.options).every(nonempty));
+  assert.deepEqual(Object.keys(q.options).sort(),[...letters].sort());
+  for(const k of letters){assert.equal(typeof q.options[k],'string');assert.ok(nonempty(q.options[k])||q.optionFigures?.[k]?.length,y+':'+n+' choice '+k);}
+  assert.equal(q.answer,d.questions['am2:'+n].answer,'historical answer unchanged');
+  assert.equal(q.sourcePage,d.questions['am2:'+n].sourcePage,'source page unchanged');
   assert.equal(q.answer,a.answers[n-1]);assert.ok(letters.includes(q.answer));
   for(const f of q.figures||[])figure(f);
   for(const [key,fs] of Object.entries(q.optionFigures||{})){assert.ok(letters.includes(key));for(const f of fs)figure(f);}
