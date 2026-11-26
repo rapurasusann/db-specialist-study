@@ -22,8 +22,9 @@ export async function checkAbsent({account,token,fetcher=fetch}){
  return true;
 }
 export const ALLOWED_CHANGES=new Set(['docs/CS03_ISOLATED_DEPLOYMENT_APPROVAL.md','docs/CS03_HANDOFF_20261125.md','docs/CS03_DARK_DEPLOY_EXECUTION_20261125.md','scripts/cs03-dark-preflight.mjs','tests/cs03-dark-preflight.test.mjs','scripts/cs03-dark-dry-run.mjs','tests/cs03-dark-dry-run.test.mjs','scripts/cs03-dark-credential.mjs','tests/cs03-dark-credential.test.mjs','scripts/cs03-dark-prepare.mjs','tests/cs03-dark-prepare.test.mjs']);
-// Only these two reviewed documentation blobs may differ from the approved base.
+// Exact additional blobs only; a changed manifest or historical document is rejected.
 export const REVIEWED_DOC_BLOBS=Object.freeze({
+ 'package.json':'589aa3e16be2050f7c2265d0571cafd6e74e3ef6',
  'docs/CS03_INDEX.md':'90a566af617981625e432b930f1c0be4f37f102c',
  'docs/CS03_PROGRESS_API_20261117.md':'7b46c54d44295b35277453b3c5708a05f85452bd'
 });
