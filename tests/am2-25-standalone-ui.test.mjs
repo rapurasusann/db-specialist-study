@@ -15,8 +15,8 @@ test('challenge has a separate responsive screen, not the old screen overlay',()
  assert.match(ui,/quiz25Figures/);
  assert.match(ui,/quiz25Result/);
  assert.doesNotMatch(ui,/renderStudy\(|renderAnswer\(|gradeCurrentAnswer\(|byId\('viewStudy'\)\.click\(\)/);
- assert.match(html,/src\/am2-25-standalone-ui\.js\?v=20261125stand1/);
- assert.doesNotMatch(html,/src\/am2-25-challenge-ui\.js\?v=20261125skip1/);
+ assert.match(html,/<script\b[^>]*type="module"[^>]*src="src\/am2-25-standalone-ui\.js\?v=[A-Za-z0-9._-]+"[^>]*>/);
+ assert.doesNotMatch(html,/<script\b[^>]*src="src\/am2-25-challenge-ui\.js(?:\?[^" ]*)?"/);
 });
 
 test('independent screen supports tables, SQL, diagrams, and option-specific diagrams',()=>{
@@ -40,10 +40,29 @@ test('unanswered question remains navigable and eligible for retry',()=>{
  assert.equal(result.wrong.length,7);
 });
 
-test('answer changes are stored in original progress and do not grade merely on navigation',()=>{
- assert.match(ui,/progress\[item\.id\]=\{/);
- assert.match(ui,/save\(\)/);
- assert.match(ui,/attempts:\(Number\(prev\.attempts\)\|\|0\)\+1/);
- assert.match(ui,/byId|\$\('quiz25Next'\)\.addEventListener/);
- assert.match(ui,/if\(!active\|\|complete\)return;if\(position\+1<round\.length\)/);
+test('navigation commits a selected answer once, skips unanswered and preserves progress',()=>{
+ const start=ui.indexOf('function recordAnswer(item,correct)');
+ const end=ui.indexOf('function renderHistory(item)',start);
+ const nav=ui.split(/\r?\n/).filter(line=>/^\$\('quiz25(?:Back|Next)'\)\.addEventListener/.test(line));
+ assert.ok(start>=0&&end>start);
+ assert.equal(nav.length,2);
+ const simulate=new Function('round',`
+ let active=true,complete=false,position=0,drafts={},answers={},progress={},answerSeen=new Set(),saves=0,renders=0,finished=false;
+ const handlers={};
+ const $=id=>({addEventListener:(event,fn)=>{handlers[id]=fn}});
+ const save=()=>saves++,renderMetrics=()=>{},renderQuestion=()=>renders++,finish=()=>{finished=true;complete=true};
+ `+ui.slice(start,end)+'\\n'+nav.join('\\n')+`
+ return {drafts,answers,progress,handlers,state:()=>({position,saves,renders,finished})};
+ `);
+ const h=simulate([{id:'a',answer:'ア'},{id:'b',answer:'イ'},{id:'c',answer:'ウ'}]);
+ h.drafts.a='ア';h.handlers.quiz25Next();
+ assert.equal(h.progress.a.correct,true);
+ assert.equal(h.progress.a.attempts,1);
+ h.handlers.quiz25Back();assert.equal(h.state().position,0);
+ h.handlers.quiz25Next();assert.equal(h.progress.a.attempts,1);
+ h.handlers.quiz25Next();assert.equal(h.progress.b,undefined);
+ h.drafts.c='エ';h.handlers.quiz25Next();
+ assert.equal(h.progress.c.correct,false);
+ assert.equal(h.state().finished,true);
+ assert.equal(h.state().saves,2);
 });
