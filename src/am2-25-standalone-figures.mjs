@@ -24,6 +24,10 @@ for(const e of uml?f.links:f.edges){
  if(!b)continue;const [x1,y1,x2,y2]=endpoints(a,b,Number(e.offset)||0);
  const attrs={x1,y1,x2,y2,stroke:'#263747','stroke-width':1.3};
  if(!uml||e.kind==='inherit')attrs['marker-end']='url(#'+id+(uml?'-triangle':'')+')';
+ if(!uml&&e.bidirectional&&f.parallelPointers){
+  for(const [x1,y1,x2,y2] of window.am2SharedVectorFigures.parallelPointerSegments(a,b,Number(e.offset)||0))vector(svg,'line',{x1,y1,x2,y2,stroke:'#263747','stroke-width':1.3,'marker-end':'url(#'+id+')'});
+  continue;
+ }
  if(e.bidirectional)attrs['marker-start']='url(#'+id+')';
  if(e.kind==='dependency')attrs['stroke-dasharray']='4 3';
  vector(svg,'line',attrs);
@@ -33,9 +37,10 @@ for(const target of f.incomingPointers||[]){const n=map.get(target);if(!n)throw 
 for(const e of f.associationClasses||[]){const a=map.get(e.from),b=map.get(e.to),c=map.get(e.classId);if(!a||!b||!c)continue;const [x1,y1,x2,y2]=endpoints(a,b,Number(e.offset)||0);const x=a.id===b.id?a.x-a.half/2-11:(x1+x2)/2,y=a.id===b.id?Math.min(a.y-a.height-20,a.y-34):(y1+y2)/2;const [cx,cy]=boundary(c,x-c.x,y-c.y);vector(svg,'line',{x1:x,y1:y,x2:cx,y2:cy,stroke:'#263747','stroke-width':1.3,'stroke-dasharray':'4 3'});}
 for(const n of nodes){
  if(n.diamond){vector(svg,'polygon',{points:[[n.x-n.half,n.y],[n.x,n.y-n.height],[n.x+n.half,n.y],[n.x,n.y+n.height]].map(p=>p.join(',')).join(' '),fill:'white',stroke:'#263747'});continue;}
- if(uml||f.shape==='rect'){vector(svg,'rect',{x:n.x-n.half,y:n.y-n.height,width:n.half*2,height:n.height*2,fill:'white',stroke:'#263747'});if(n.attrs.length){const y=n.y-n.height+22;vector(svg,'line',{x1:n.x-n.half,y1:y,x2:n.x+n.half,y2:y,stroke:'#263747'});label(n.x,y-8,n.id);n.attrs.forEach((v,i)=>label(n.x-n.half+4,y+11+i*14,v,'start'));}else label(n.x,n.y+3,n.id);}
+ if(uml||f.shape==='rect'){vector(svg,'rect',{x:n.x-n.half,y:n.y-n.height,width:n.half*2,height:n.height*2,fill:'white',stroke:'#263747'});if(n.attrs.length){const y=n.y-n.height+22;vector(svg,'line',{x1:n.x-n.half,y1:y,x2:n.x+n.half,y2:y,stroke:'#263747'});window.am2SharedVectorFigures.diagramNodeLabel(svg,f,n,y-8);n.attrs.forEach((v,i)=>label(n.x-n.half+4,y+11+i*14,v,'start'));}else window.am2SharedVectorFigures.diagramNodeLabel(svg,f,n,n.y+3);}
  else {vector(svg,'circle',{cx:n.x,cy:n.y,r:14,fill:'white',stroke:'#263747'});label(n.x,n.y+3,n.id);}
 }
+if(uml)labels.push(...window.am2SharedVectorFigures.diamondAssociationLabels(f,nodes));
 const positioned=uml?window.am2SharedVectorFigures.placeAssociationLabels(labels,nodes):[];
 for(const p of positioned){label(p.x,p.y,p.text);if(!p.resolved)svg.setAttribute('data-unresolved-association-label','true');}
 const left=Math.min(0,...nodes.map(n=>n.x-n.half-32),...positioned.map(p=>p.box.left-12)),top=Math.min(0,...nodes.map(n=>n.y-n.height-38),...positioned.map(p=>p.box.top-12)),right=Math.max(350,...nodes.map(n=>n.x+n.half+16),...positioned.map(p=>p.box.right+12)),bottom=Math.max(205,...nodes.map(n=>n.y+n.height+18),...positioned.map(p=>p.box.bottom+12));svg.setAttribute('viewBox',[left,top,right-left,bottom-top].join(' '));
