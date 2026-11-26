@@ -39,8 +39,8 @@ function associationLabels(x1,y1,x2,y2,e){
 }
 // Reserve class boxes and previously placed labels. Search near each semantic
 // anchor, preserving the side and limiting movement along the relationship.
-function placeAssociationLabels(labels,nodes){
- const occupied=nodes.map(n=>({left:n.x-n.half,right:n.x+n.half,top:n.y-n.height,bottom:n.y+n.height}));
+function placeAssociationLabels(labels,nodes,reserved=[]){
+ const occupied=[...reserved,...nodes.map(n=>({left:n.x-n.half,right:n.x+n.half,top:n.y-n.height,bottom:n.y+n.height}))];
  const placed=[];
  for(const [x,y,t,axis] of labels){
   if(t===undefined||t===null||t==='')continue;
@@ -74,7 +74,7 @@ function selfAssociationLabels(a,e){
  return [[left-22,a.y+12,e.fromLabel,{tx:0,ty:1,nx:-1,ny:0}],[a.x+22,bend-5,e.toLabel,{tx:1,ty:0,nx:0,ny:-1}]];
 }
 // Expand the original coordinate grid, not class sizes or relationship semantics.
-function layoutAssociationNodes(nodes,links){
+function layoutAssociationNodes(nodes,links,figure={}){
  const originX=Math.min(...nodes.map(n=>n.x)),originY=Math.min(...nodes.map(n=>n.y));
  let candidate=nodes;
  for(const scale of [1,1.25,1.5,1.75,2,2.5,3]){
@@ -87,7 +87,9 @@ function layoutAssociationNodes(nodes,links){
   }
   const boxes=candidate.map(n=>({left:n.x-n.half,right:n.x+n.half,top:n.y-n.height,bottom:n.y+n.height}));
   if(boxes.some((a,i)=>boxes.slice(i+1).some(b=>intersects(a,b))))continue;
-  if(placeAssociationLabels(labels,candidate).every(p=>p.resolved))return candidate;
+  labels.push(...diamondAssociationLabels(figure,candidate));
+  const constraint=ownershipConstraintGeometry(candidate,figure);
+  if(placeAssociationLabels(labels,candidate,constraint?[constraint.box]:[]).every(p=>p.resolved))return candidate;
  }
  return candidate;
 }
@@ -120,15 +122,21 @@ function mergedInheritance(svg,nodes,links,markerId){
  }
  return used;
 }
-function ownershipConstraint(svg,nodes,f){
+function ownershipConstraintGeometry(nodes,f){
  if(!f.ownershipConstraint)return;
  const map=new Map(nodes.map(n=>[n.id,n])),a=map.get(f.ownershipConstraint[0]),b=map.get(f.ownershipConstraint[1]),c=map.get(f.ownershipConstraint[2]);
  if(!a||!b||!c)return;
  const y=(Math.max(a.y+a.height,b.y+b.height)+c.y-c.height)/2;
- const x=(a.x+b.x)/2,w=142,h=24;
+ const x=(a.x+b.x)/2,w=162,h=24;
+ return {a,b,c,x,y,w,h,box:{left:x-w/2,right:x+w/2,top:y-h/2,bottom:y+h/2}};
+}
+function ownershipConstraint(svg,nodes,f){
+ const g=ownershipConstraintGeometry(nodes,f);if(!g)return [];
+ const {a,b,c,x,y,w,h}=g;
  vector(svg,'line',{x1:a.x+(c.x-a.x)*(y-a.y)/(c.y-a.y),y1:y,x2:b.x+(c.x-b.x)*(y-b.y)/(c.y-b.y),y2:y,stroke:'#263747','stroke-dasharray':'4 3'});
  vector(svg,'rect',{x:x-w/2,y:y-h/2,width:w,height:h,fill:'white',stroke:'#263747'});
  vector(svg,'text',{x,y:y+3,'font-size':10,'text-anchor':'middle',fill:'#172437'},'制約：同時には成立しない');
+ return [g.box];
 }
 
 window.am2SharedVectorFigures=Object.freeze({mergedInheritance,ownershipConstraint,diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array',render});
