@@ -41,8 +41,9 @@ for(const n of nodes){
  if(uml||f.shape==='rect'){vector(svg,'rect',{x:n.x-n.half,y:n.y-n.height,width:n.half*2,height:n.height*2,fill:'white',stroke:'#263747'});if(n.attrs.length){const y=n.y-n.height+22;vector(svg,'line',{x1:n.x-n.half,y1:y,x2:n.x+n.half,y2:y,stroke:'#263747'});label(n.x,y-8,n.id);n.attrs.forEach((v,i)=>label(n.x-n.half+4,y+11+i*14,v,'start'));}else label(n.x,n.y+3,n.id);}
  else {vector(svg,'circle',{cx:n.x,cy:n.y,r:14,fill:'white',stroke:'#263747'});label(n.x,n.y+3,n.id);}
 }
-for(const args of labels)label(...args);
-const left=Math.min(0,...nodes.map(n=>n.x-n.half-32)),top=Math.min(0,...nodes.map(n=>n.y-n.height-38)),right=Math.max(350,...nodes.map(n=>n.x+n.half+16)),bottom=Math.max(205,...nodes.map(n=>n.y+n.height+18));svg.setAttribute('viewBox',[left,top,right-left,bottom-top].join(' '));return svg;}
+const positioned=uml?window.am2SharedVectorFigures.placeAssociationLabels(labels,nodes):[];
+for(const p of positioned){label(p.x,p.y,p.text);if(!p.resolved)svg.setAttribute('data-unresolved-association-label','true');}
+const left=Math.min(0,...nodes.map(n=>n.x-n.half-32),...positioned.map(p=>p.box.left-12)),top=Math.min(0,...nodes.map(n=>n.y-n.height-38),...positioned.map(p=>p.box.top-12)),right=Math.max(350,...nodes.map(n=>n.x+n.half+16),...positioned.map(p=>p.box.right+12)),bottom=Math.max(205,...nodes.map(n=>n.y+n.height+18),...positioned.map(p=>p.box.bottom+12));svg.setAttribute('viewBox',[left,top,right-left,bottom-top].join(' '));return svg;}
 function timeline(f){
  const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');
  svg.setAttribute('viewBox','0 0 400 235');svg.setAttribute('role','img');
