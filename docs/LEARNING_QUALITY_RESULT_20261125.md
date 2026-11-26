@@ -1,4 +1,6 @@
 # 学習品質改善 最終照合記録（2026-11-25）
+
+> 当時の工程・結果の記録。最新判断・後続変更は [CURRENT_STATUS.md](CURRENT_STATUS.md) を参照。
 公式資料：https://www.ipa.go.jp/shiken/syllabus/nq6ept00000014bm-att/syllabus_db_ver4_1.pdf （本文8ページを確認）。各小項目の最低1教材の対応であり、細目全体の習得や合格を保証しない。
 
 |小項目|要旨|教材ID|

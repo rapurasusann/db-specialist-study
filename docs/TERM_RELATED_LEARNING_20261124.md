@@ -1,5 +1,7 @@
 # 単語学習の3点追加（2026-11-24）
 
+> 当時の工程・結果の記録。最新判断・後続変更は [CURRENT_STATUS.md](CURRENT_STATUS.md) を参照。
+
 ## 変更
 1. 単語理解：従来42問に、IMMEDIATE / DEFERRED / DEFERRABLE / SET CONSTRAINTS / INITIALLY IMMEDIATE / INITIALLY DEFERRED / UNIQUE制約 / トランザクション（COMMIT・ROLLBACK）を追加し**合計50問**。正答記録は既存の端末内記録 `db-study-terms-v1` を維持。
 2. 学習サイトの過去問画面：`#currentTitle` の年度・科目・問番号を読み取り、登録済み用語のうち意味上の関連付けを設定したもの（2025午前Ⅱの問6/8/9/10/12/15/16/20/21/25）と、問題文に正確な表記で含まれる用語の学習リンクを表示。クリック先は**元のサイトの `?term=ID`、新規タブ、noopener noreferrer**。元の問題画面は保持。

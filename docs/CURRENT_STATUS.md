@@ -7,6 +7,13 @@
 - 2026-11-25の原文工程の受入変更に従い通常教材のブラウザ目視は必須工程から除外。未実施の試験をPASSとしない。CS-03の実機・セキュリティ受入とは別。
 - 新機能追加、合格済み試験の反復、件数目的の追加は避け、具体的な欠陥・未達を優先する。
 
+## ドキュメント管理基準（ユーザー指定）
+- 整理：現行仕様・完了条件・結果・履歴を区別し、同じ現行判断を複数箇所で管理しない。
+- 整合：変更時は該当仕様・進捗・根拠を同時確認。古い判断は履歴と明記し、実装済みと検証済みを混同しない。
+- 肥大化：現行資料は原則200行または20 KiBを目安に見直す（強制削除基準ではない）。長い証拠は固定コミットへの参照または履歴に分離し、同じ内容の再掲を避ける。
+- アクセス：ルート README → 本書 → 分野別資料。新規資料追加・改名・廃止時は索引も更新し、リンク先を確認する。
+- 既存記録は根拠として保持。仕様変更・試験再実行・クラウド変更を整理の名目で行わない。
+
 ## 現行状態と残作業
 | 対象 | 記録上の状態 | 残作業・制約 |
 |---|---|---|
@@ -44,7 +51,7 @@
 | [午後試験転記](PM_2025_TRANSCRIPTION.md) | 過去の転記・図表・試験履歴 |
 | [SECURITY](../SECURITY.md) | セキュリティ方針 |
 
-CS-03は [隔離ブランチ引継ぎ](https://github.com/rapurasusann/db-specialist-study/blob/feat/cs03-cross-browser-sync-20261123/docs/CS03_HANDOFF_20261125.md) と [実行契約](https://github.com/rapurasusann/db-specialist-study/blob/feat/cs03-cross-browser-sync-20261123/docs/CS03_DARK_DEPLOY_EXECUTION_20261125.md) を入口とし、本番への混入を避ける。個別の承認・秘密情報・クラウド変更条件を上書きしない。
+CS-03は [全資料索引](https://github.com/rapurasusann/db-specialist-study/blob/feat/cs03-cross-browser-sync-20261123/docs/CS03_INDEX.md)、[隔離ブランチ引継ぎ](https://github.com/rapurasusann/db-specialist-study/blob/feat/cs03-cross-browser-sync-20261123/docs/CS03_HANDOFF_20261125.md) と [実行契約](https://github.com/rapurasusann/db-specialist-study/blob/feat/cs03-cross-browser-sync-20261123/docs/CS03_DARK_DEPLOY_EXECUTION_20261125.md) を入口とし、本番への混入を避ける。個別の承認・秘密情報・クラウド変更条件を上書きしない。
 
 ## 次の作業
 1. mainの学習機能と資料の実装差分を限定調査し、具体的な不足だけを列挙。
