@@ -54,6 +54,24 @@ const left=Math.min(0,...nodes.map(n=>n.x-n.half-32)),top=Math.min(0,...nodes.ma
  requestAnimationFrame(fit);
  if(document.fonts?.ready)document.fonts.ready.then(fit);
  return svg;}
+function timeline(f){
+ const ns='http://www.w3.org/2000/svg',svg=document.createElementNS(ns,'svg');
+ svg.setAttribute('viewBox','0 0 400 235');svg.setAttribute('role','img');
+ svg.setAttribute('aria-label','チェックポイントと障害発生時点に対する各トランザクションの開始・終了位置。黒丸はコミット済み。');
+ svg.style.cssText='display:block;width:400px;max-width:100%;height:auto';
+ const add=(tag,attrs,text)=>{const e=document.createElementNS(ns,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,String(v));if(text!==undefined)e.textContent=text;svg.append(e);return e;};
+ const x=t=>52+t*55;
+ const line=(a,b,c,d)=>add('line',{x1:a,y1:b,x2:c,y2:d,stroke:'currentColor','stroke-width':1.3});
+ const label=(a,b,t,anchor='start')=>add('text',{x:a,y:b,fill:'currentColor','font-size':12,'text-anchor':anchor},t);
+ line(40,25,345,25);add('path',{d:'M339 21 L345 25 L339 29',fill:'none',stroke:'currentColor'});label(345,16,'時間','end');
+ f.tracks.forEach((t,i)=>{const y=45+i*24;label(18,y+4,t.label);line(x(t.start),y,x(t.end),y);if(t.committed)add('circle',{cx:x(t.end),cy:y,r:3.5,fill:'currentColor'});});
+ add('rect',{x:x(f.checkpoint[0]),y:33,width:x(f.checkpoint[1])-x(f.checkpoint[0]),height:143,fill:'white',stroke:'#263747'});
+ [...'チェックポイント'].forEach((c,i)=>add('text',{x:(x(f.checkpoint[0])+x(f.checkpoint[1]))/2,y:48+i*15,'text-anchor':'middle','font-size':12,fill:'#263747'},c));
+ line(x(f.failure),25,x(f.failure),178);label(x(f.failure)+6,90,'障害');label(x(f.failure)+6,105,'発生');
+ line(35,201,74,201);label(84,205,'未コミットのトランザクション');
+ line(35,221,74,221);add('circle',{cx:74,cy:221,r:3.5,fill:'currentColor'});label(84,225,'コミット済みのトランザクション');
+ return svg;
+}
 export function renderChallengeFigure(f){const wrap=el('figure');wrap.style.cssText='margin:10px 0;max-width:100%;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';if(f.title){const caption=el('figcaption',f.title);caption.style.cssText='margin:0 0 4px;font-size:.9rem';wrap.append(caption);}if(f.type==='sql'){const pre=el('pre',f.text);pre.style.whiteSpace='pre-wrap';wrap.append(pre);}else if(f.type==='table'){const t=el('table');t.style.cssText='width:max-content;min-width:100%;white-space:nowrap;font-size:.85rem';const head=el('thead'),hr=el('tr');for(const h of f.headers){const th=el('th',h);th.scope='col';hr.append(th);}head.append(hr);t.append(head);const body=el('tbody');for(const row of f.rows){const tr=el('tr');for(const value of row)tr.append(el('td',value));body.append(tr);}t.append(body);wrap.append(t);}else if(f.type==='schema'){
  const t=el('table');t.style.cssText='width:max-content;min-width:100%;white-space:nowrap;font-size:.88rem';
  const tr=el('tr');
@@ -74,5 +92,5 @@ export function renderChallengeFigure(f){const wrap=el('figure');wrap.style.cssT
  t.append(tr);wrap.append(t);
  const legend=el('p','実線の下線：主キー／破線の下線：外部キー');
  legend.style.cssText='font-size:.75rem;margin:4px 0 0';wrap.append(legend);
- }else if(f.type==='graph'||f.type==='uml')wrap.append(diagram(f));return wrap;}
+ }else if(f.type==='timeline')wrap.append(timeline(f));else if(f.type==='graph'||f.type==='uml')wrap.append(diagram(f));return wrap;}
 
