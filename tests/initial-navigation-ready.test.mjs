@@ -65,7 +65,7 @@ test('module navigation reuses initial buttons and enables after setup',()=>{
 test('CSP inline script fingerprints match the current source',()=>{
  const csp=html.match(/<meta http-equiv="Content-Security-Policy" content="([^"]+)">/)?.[1];
  assert.ok(csp,'strict CSP present');
- const scripts=[...html.matchAll(/<script(?![^>]*\\bsrc=)[^>]*>([\\s\\S]*?)<\\/script>/g)].map(x=>x[1]);
+ const scripts=[...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)].map(x=>x[1]);
  assert.equal(scripts.length,2,'expected exactly two inline scripts');
  for(const source of scripts){
   const hash=createHash('sha256').update(source,'utf8').digest('base64');
