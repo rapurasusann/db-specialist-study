@@ -38,3 +38,12 @@ test('both screens use the shared layout and browser audit detects unresolved la
  }
  assert.match(readFileSync(new URL('tests/browser/am2-display-audit.mjs',root),'utf8'),/Unresolved association label placement/);
 });
+
+test('label renderer cache identifiers are updated together',()=>{
+ const html=readFileSync(new URL('index.html',root),'utf8');
+ const ui=readFileSync(new URL('src/am2-25-standalone-ui.js',root),'utf8');
+ for(const file of ['am2-shared-vector-figures.js','am2-archive-2024.js','am2-25-standalone-ui.js']){
+  assert.ok(html.includes(file+'?v=20261126labels2'),file);
+ }
+ assert.ok(ui.includes('am2-25-standalone-figures.mjs?v=20261126labels2'));
+});
