@@ -31,7 +31,15 @@ function transactionSequence(f){
  const last={};for(const s of f.steps){const x=s.lane===1?190:490,y=45+(s.number-1)*79,h=52;if(last[s.lane]!==undefined)arrow(x,last[s.lane],y);vector(svg,'rect',{x:x-135,y,width:270,height:h,fill:'white',stroke:'#263747'});label(x-124,y-6,String(s.number));s.lines.forEach((t,i)=>label(x,y+(s.lines.length===1?30:20+i*17),t));last[s.lane]=y+h;}return svg;
 }
 function markTableHeader(th,f,index){if(f.primaryColumns?.includes(index)){th.style.textDecoration='underline';th.style.textUnderlineOffset='3px';th.setAttribute('aria-label',f.headers[index]+'（主キー）');}}
-function render(f){const wrap=document.createElement('figure');wrap.style.cssText='margin:10px 0;max-width:100%;min-width:0;box-sizing:border-box;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';wrap.append(f.type==='schema-group'?schemaGroup(f):f.type==='transaction-sequence'?transactionSequence(f):diskArray(f));return wrap;}
+function boxedMultiplicity(f){
+ const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 360 100');svg.setAttribute('role','img');svg.setAttribute('aria-label',f.left+' と '+f.right+' の関連。左 '+f.a+'、右 '+f.b+'、'+f.role);svg.style.cssText='display:block;width:360px;max-width:100%;height:auto';
+ const rect=(x,y,w,h)=>vector(svg,'rect',{x,y,width:w,height:h,fill:'white',stroke:'#263747'});
+ const label=(x,y,t)=>vector(svg,'text',{x,y,'font-size':14,'text-anchor':'middle',fill:'#172437'},t);
+ rect(10,44,70,35);rect(280,44,70,35);label(45,66,f.left);label(315,66,f.right);
+ vector(svg,'line',{x1:80,y1:61,x2:280,y2:61,stroke:'#263747'});
+ rect(88,18,60,25);rect(212,18,60,25);label(118,35,f.a);label(242,35,f.b);label(246,78,f.role);return svg;
+}
+function render(f){const wrap=document.createElement('figure');wrap.style.cssText='margin:10px 0;max-width:100%;min-width:0;box-sizing:border-box;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';wrap.append(f.type==='schema-group'?schemaGroup(f):f.type==='transaction-sequence'?transactionSequence(f):f.type==='boxed-multiplicity'?boxedMultiplicity(f):diskArray(f));return wrap;}
 // Estimate conservative SVG text bounds in user units (10px diagram font).
 function labelBox(x,y,t){
  const half=Array.from(String(t)).length*5+2;
@@ -147,5 +155,5 @@ function ownershipConstraint(svg,nodes,f){
  return [g.box];
 }
 
-window.am2SharedVectorFigures=Object.freeze({markTableHeader,mergedInheritance,ownershipConstraint,diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array'||f.type==='transaction-sequence',render});
+window.am2SharedVectorFigures=Object.freeze({markTableHeader,mergedInheritance,ownershipConstraint,diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array'||f.type==='transaction-sequence'||f.type==='boxed-multiplicity',render});
 })();
