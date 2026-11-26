@@ -33,6 +33,7 @@ try{
     const figures=[...el.querySelectorAll('figure')];
     const issues=[];
     for(const svg of svgs){
+     if(svg.hasAttribute('data-unresolved-association-label'))issues.push('Unresolved association label placement');
      const box=svg.getBoundingClientRect();
      if(!box.width||!box.height){issues.push('zero-size SVG');continue}
      const labels=[...svg.querySelectorAll('text')].map(t=>{const b=t.getBoundingClientRect();return {text:t.textContent,x:b.x,y:b.y,r:b.right,b:b.bottom,w:b.width,h:b.height}});
