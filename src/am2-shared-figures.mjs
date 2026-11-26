@@ -78,12 +78,18 @@ function schemaGroup(f){
  s.columns.forEach((c,j)=>{const cw=widths[i][j],cx=x+cw/2;vector(svg,'rect',{x,y:y+20,width:cw,height:36,fill:'white',stroke:'#263747'});vector(svg,'text',{x:cx,y:y+41,'font-size':15,'text-anchor':'middle',fill:'#172437'},c.name);const half=Array.from(c.name).length*7.5+1;const under=(dy,dash)=>vector(svg,'line',{x1:cx-half,x2:cx+half,y1:y+dy,y2:y+dy,stroke:'#263747','stroke-width':1.3,...(dash?{'stroke-dasharray':'4 3'}:{})});if(c.primary)under(45,false);if(c.foreign)under(c.primary?50:45,true);x+=cw;});});return svg;
 }
 function diskArray(f){
- const w=f.disks.length*136+24,h=76+Math.max(...f.disks.map(d=>d.blocks.length))*27+26;
- const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 '+w+' '+h);svg.setAttribute('role','img');svg.setAttribute('aria-label',f.title+'。'+f.disks.map(d=>d.name+'：'+d.blocks.join('、')).join('。'));svg.style.cssText='display:block;width:'+w+'px;max-width:100%;height:auto';
+ const stride=160,boxWidth=150,cellHeight=34;
+ const rows=Math.max(...f.disks.map(d=>d.blocks.length));
+ const w=f.disks.length*stride+24,h=96+rows*cellHeight+24;
+ const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 '+w+' '+h);svg.setAttribute('role','img');svg.setAttribute('aria-label',f.title+'。'+f.disks.map(d=>d.name+'：'+d.blocks.join('、')).join('。'));
+ // Keep at least 13 CSS pixels per 16-unit glyph. Scroll only the figure
+ // on narrower viewports rather than shrinking the entire question.
+ const minWidth=Math.ceil(w*13/16);
+ svg.style.cssText='display:block;width:'+w+'px;min-width:'+minWidth+'px;max-width:100%;height:auto';
  vector(svg,'rect',{x:2,y:2,width:w-4,height:h-4,fill:'white',stroke:'#263747'});
- const label=(x,y,t,anchor='middle')=>vector(svg,'text',{x,y,'font-size':15,'text-anchor':anchor,fill:'#172437'},t);
- label(14,23,f.title,'start');
- f.disks.forEach((d,i)=>{const x=12+i*136,cx=x+64;label(cx,50,'〔'+d.name+'〕');vector(svg,'rect',{x,y:56,width:128,height:h-70,fill:'white',stroke:'#263747'});label(cx,76,'（データブロック）');d.blocks.forEach((b,j)=>{const y=84+j*27;vector(svg,'rect',{x:x+12,y,width:104,height:27,fill:'white',stroke:'#263747','stroke-dasharray':'5 4'});label(cx,y+18,b);});});return svg;
+ const label=(x,y,t,anchor='middle')=>vector(svg,'text',{x,y,'font-size':16,'text-anchor':anchor,fill:'#172437'},t);
+ label(14,25,f.title,'start');
+ f.disks.forEach((d,i)=>{const x=12+i*stride,cx=x+boxWidth/2;label(cx,50,'〔'+d.name+'〕');vector(svg,'rect',{x,y:58,width:boxWidth,height:h-72,fill:'white',stroke:'#263747'});label(cx,80,'（データブロック）');d.blocks.forEach((b,j)=>{const y=94+j*cellHeight;vector(svg,'rect',{x:x+14,y,width:boxWidth-28,height:cellHeight,fill:'white',stroke:'#263747','stroke-dasharray':'5 4'});label(cx,y+22,b);});});return svg;
 }
 export function renderAm2Figure(f){const wrap=el('figure');wrap.style.cssText='margin:10px 0;max-width:100%;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';if(f.title&&f.type!=='disk-array'){const caption=el('figcaption',f.title);caption.style.cssText='margin:0 0 4px;font-size:.9rem';wrap.append(caption);}if(f.type==='schema-group')wrap.append(schemaGroup(f));else if(f.type==='disk-array')wrap.append(diskArray(f));else if(f.type==='sql'){const pre=el('pre',f.text);pre.style.whiteSpace='pre-wrap';wrap.append(pre);}else if(f.type==='table'){const t=el('table');t.style.cssText='width:max-content;min-width:100%;white-space:nowrap;font-size:.85rem';const head=el('thead'),hr=el('tr');for(const h of f.headers){const th=el('th',h);th.scope='col';hr.append(th);}head.append(hr);t.append(head);const body=el('tbody');for(const row of f.rows){const tr=el('tr');for(const value of row)tr.append(el('td',value));body.append(tr);}t.append(body);wrap.append(t);}else if(f.type==='schema'){
  const t=el('table');t.style.cssText='width:max-content;min-width:100%;white-space:nowrap;font-size:.88rem';
