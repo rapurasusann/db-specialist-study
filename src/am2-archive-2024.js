@@ -68,7 +68,10 @@ showQuestion=function(){
  if(!isArchive()){
   originalQuestion();
   // 2025 official tables/SQL are represented as semantic figures, not embedded text or images.
-  if(Number(year)===2025 && courseId==='am2'){
+  // These questions already have dedicated normal-screen renderers.
+  // Keep semantic data for the independent 25-question screen, but do not
+  // render a second copy alongside the existing question-specific view.
+  if(Number(year)===2025 && courseId==='am2' && ![3,4,6,8,9,11,12,23].includes(Number(number))){
    const current=questionData(),panel=document.getElementById('questionText');
    const heading=panel.querySelector('h3');
    if(heading && current?.figures?.length){
