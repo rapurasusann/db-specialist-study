@@ -1,12 +1,9 @@
+import {loadArchives} from './helpers/load-am2-archives.mjs';
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync} from 'node:fs';
-function load(year){
- const source=readFileSync(new URL('../src/am2-archive-'+year+(year===2024?'': '-data')+'.js',import.meta.url),'utf8');
- const start=year===2024?source.indexOf('const entry=')+12:source.indexOf('=')+1;
- const end=year===2024?source.indexOf(';\nconst entries=',start):source.lastIndexOf(';');
- return JSON.parse(source.slice(start,end));
-}
+const archives=loadArchives();
+function load(year){return archives[year];}
+
 test('2022 Q7 AVG ignores NULL for rank-A products',()=>{
  const q=load(2022).questions['am2:7'],[products,sales]=q.figures;
  const amounts=new Map(sales.rows.map(([id,n])=>[id,n]));
