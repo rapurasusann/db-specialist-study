@@ -39,6 +39,17 @@ test('historical figure slots survive or have an explicitly checked text migrati
      }
     }
     removed++;
+   }else if(id==='2017:2'||id==='2019:5'){
+    const oldTable=expected.find(f=>f.type==='table'),group=actual.find(f=>f.type==='schema-group');
+    assert.ok(oldTable&&group,id);
+    assert.deepEqual(group.schemas.map(s=>s.name),oldTable.rows.map(r=>r[0]));
+    for(const [i,row] of oldTable.rows.entries()){
+     const schema=group.schemas[i],keys=row[1].split('・');
+     assert.deepEqual(schema.columns.filter(c=>c.primary).map(c=>c.name),keys,id+' primary keys');
+     for(const name of row[2].split('・').filter(v=>v!=='なし'))assert.ok(schema.columns.some(c=>c.name===name),id+' '+name);
+     if(row.length===4)assert.deepEqual(schema.columns.filter(c=>c.foreign).map(c=>c.name),row[3].split('・').filter(v=>v!=='なし'),id+' foreign keys');
+    }
+    assert.deepEqual(actual.filter(f=>f!==group),expected.filter(f=>f!==oldTable));
    }else{
     assert.deepEqual(actual.map(f=>f.type),expected.map(f=>f.type),id+' stem figures');
    }
