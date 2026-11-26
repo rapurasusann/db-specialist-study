@@ -22,14 +22,26 @@ export async function checkAbsent({account,token,fetcher=fetch}){
  return true;
 }
 export const ALLOWED_CHANGES=new Set(['docs/CS03_ISOLATED_DEPLOYMENT_APPROVAL.md','docs/CS03_HANDOFF_20261125.md','docs/CS03_DARK_DEPLOY_EXECUTION_20261125.md','scripts/cs03-dark-preflight.mjs','tests/cs03-dark-preflight.test.mjs','scripts/cs03-dark-dry-run.mjs','tests/cs03-dark-dry-run.test.mjs','scripts/cs03-dark-credential.mjs','tests/cs03-dark-credential.test.mjs','scripts/cs03-dark-prepare.mjs','tests/cs03-dark-prepare.test.mjs']);
-export function validateChanges(paths,status){if(paths.some(p=>!ALLOWED_CHANGES.has(p)))throw Error('DEPLOYMENT_SOURCE_CHANGED');if(status)throw Error('WORKTREE_DIRTY');}
+// Only these two reviewed documentation blobs may differ from the approved base.
+export const REVIEWED_DOC_BLOBS=Object.freeze({
+ 'docs/CS03_INDEX.md':'90a566af617981625e432b930f1c0be4f37f102c',
+ 'docs/CS03_PROGRESS_API_20261117.md':'7b46c54d44295b35277453b3c5708a05f85452bd'
+});
+export function validateChanges(paths,status,blobAt=()=>null){
+ if(status)throw Error('WORKTREE_DIRTY');
+ for(const p of paths){
+  if(ALLOWED_CHANGES.has(p))continue;
+  if(Object.hasOwn(REVIEWED_DOC_BLOBS,p)&&blobAt(p)===REVIEWED_DOC_BLOBS[p])continue;
+  throw Error('DEPLOYMENT_SOURCE_CHANGED');
+ }
+}
 export async function localPreflight(expectedHead){
  const root=fileURLToPath(new URL('../',import.meta.url));
  const git=(...args)=>execFileSync('git',args,{cwd:root,encoding:'utf8',stdio:['ignore','pipe','ignore']}).trim();
  const head=git('rev-parse','HEAD');
  if(!/^[a-f0-9]{40}$/.test(expectedHead??'')||head!==expectedHead)throw Error('HEAD_MISMATCH');
  git('merge-base','--is-ancestor',BASE,head);
- validateChanges(git('diff','--no-renames','--name-only',BASE,head).split('\n').filter(Boolean),git('status','--porcelain','--untracked-files=all'));
+ validateChanges(git('diff','--no-renames','--name-only',BASE,head).split('\n').filter(Boolean),git('status','--porcelain','--untracked-files=all'),p=>git('rev-parse',head+':'+p));
  const config=JSON.parse(await readFile(new URL('../'+CONFIG,import.meta.url),'utf8'));
  validateConfig(config);
  return {root,head,config};
