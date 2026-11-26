@@ -1,3 +1,4 @@
+import {loadArchives} from './helpers/load-am2-archives.mjs';
 /** AM2 source data regression checks without a browser.
  * Run: node --test tests/am2-all250-integrity.test.mjs
  * These checks do not establish character-perfect identity with IPA originals.
@@ -11,13 +12,8 @@ const read = path => readFileSync(new URL('../'+path, import.meta.url), 'utf8');
 const letters=['ア','イ','ウ','エ'];
 const html=read('index.html');
 
-function archive(year){
- const source=read(year===2024?'src/am2-archive-2024.js':`src/am2-archive-${year}-data.js`);
- const json=year===2024
-  ? source.slice(source.indexOf('const entry=')+12,source.indexOf(';\nconst entries='))
-  : source.slice(source.indexOf('=')+1,source.lastIndexOf(';'));
- return JSON.parse(json);
-}
+const archives=loadArchives();
+function archive(year){return archives[year];}
 
 function year2025(){
  const start=html.indexOf('const transcribed = {');
