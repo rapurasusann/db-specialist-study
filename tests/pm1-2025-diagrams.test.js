@@ -7,7 +7,9 @@ const root=path.join(__dirname,'..');
 const html=fs.readFileSync(path.join(root,'index.html'),'utf8');
 const source=fs.readFileSync(path.join(root,'src/pm-2025-diagrams.js'),'utf8');
 new vm.Script(source);
-assert.ok(html.includes('<script src="src/pm-2025-introductions.js"></script><script src="src/pm-2025-diagrams.js"></script>'));
+const scripts=[...html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"/g)].map(m=>m[1].split('?')[0]);
+assert.ok(scripts.includes('src/pm-2025-introductions.js'));
+assert.equal(scripts.indexOf('src/pm-2025-diagrams.js'),scripts.indexOf('src/pm-2025-introductions.js')+1);
 const matches=[...source.matchAll(/\{page:(\d+),\s*box:\[([0-9.,]+)\],\s*title:'([^']+)'\}/g)];
 assert.equal(matches.length,35,'all 35 diagrams and SQL tables');
 assert.deepEqual(matches.map(x=>Number(x[1])),[8,9,10,14,14,15,16,19,20,21,22,23,8,8,9,9,10,11,12,13,14,15,16,17,18,19,26,26,28,28,29,29,30,30,30]);
@@ -37,9 +39,9 @@ for(const [key,entry] of Object.entries(entries)){
  assert.equal(entry.partial,true,'summaries must not be presented as complete transcripts: '+key);
 }
 assert.equal((html.match(/src\/pm-2025-diagrams\.js/g)||[]).length,1,'one PM diagram renderer');
-assert.ok(!html.includes('<script src="src/pm-2025-figures.js"></script>'),'legacy renderer disabled');
+assert.ok(!scripts.includes('src/pm-2025-figures.js'),'legacy renderer disabled');
 for(const required of ['src/am2-2025-explanations.js','src/am2-q4-schema-view.js','src/am2-option-shuffle.js','src/choice-elimination.js']){
- assert.ok(html.includes('<script src="'+required+'"></script>'),'morning feature preserved: '+required);
+ assert.ok(scripts.includes(required),'morning feature preserved: '+required);
 }
 const pages={pm1:new Set(),pm2:new Set()};
 let current='';
@@ -55,7 +57,6 @@ for(const [course,set] of Object.entries(pages)){
   assert.ok(fs.existsSync(image),'missing original figure page: '+image);
  }
 }
-const scripts=[...html.matchAll(/<script src="([^"]+)"/g)].map(m=>m[1].split('?')[0]);
 const chain=['src/pm-2025-introductions.js','src/pm-2025-diagrams.js','src/am2-q4-schema-view.js','src/am2-figure-clips.js','src/am2-option-shuffle.js'];
 for(let i=1;i<chain.length;i++){
  assert.ok(scripts.indexOf(chain[i-1])>=0&&scripts.indexOf(chain[i-1])<scripts.indexOf(chain[i]),'question render chain order: '+chain[i]);
