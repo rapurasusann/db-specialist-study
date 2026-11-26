@@ -92,5 +92,18 @@ function layoutAssociationNodes(nodes,links){
  return candidate;
 }
 
-window.am2SharedVectorFigures=Object.freeze({associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array',render});
+
+function diagramNodeLabel(svg,f,n,y){
+ const attrs={x:n.x,y,'font-size':10,'text-anchor':'middle',fill:'#172437'};
+ if(f.objectDiagram)attrs['text-decoration']='underline';
+ return vector(svg,'text',attrs,n.id);
+}
+function diamondAssociationLabels(f,nodes){
+ return nodes.filter(n=>n.diamond&&f.diamondLabels?.[n.id]).map(n=>[n.x,n.y-n.height-9,f.diamondLabels[n.id],{tx:1,ty:0,nx:0,ny:-1}]);
+}
+function parallelPointerSegments(a,b,offset=0){
+ return [associationEndpoints(a,b,offset-3),associationEndpoints(b,a,-offset-3)];
+}
+
+window.am2SharedVectorFigures=Object.freeze({diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array',render});
 })();
