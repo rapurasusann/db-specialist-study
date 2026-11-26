@@ -36,8 +36,25 @@ for(const n of nodes){
  else {vector(svg,'circle',{cx:n.x,cy:n.y,r:14,fill:'white',stroke:'#263747'});label(n.x,n.y+3,n.id);}
 }
 for(const args of labels)label(...args);
-const left=Math.min(0,...nodes.map(n=>n.x-n.half-32)),top=Math.min(0,...nodes.map(n=>n.y-n.height-38)),right=Math.max(350,...nodes.map(n=>n.x+n.half+16)),bottom=Math.max(205,...nodes.map(n=>n.y+n.height+18));svg.setAttribute('viewBox',[left,top,right-left,bottom-top].join(' '));return svg;}
-export function renderChallengeFigure(f){const wrap=el('figure');wrap.style.cssText='margin:10px 0;max-width:100%;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';if(f.title)wrap.append(el('figcaption',f.title));if(f.type==='sql'){const pre=el('pre',f.text);pre.style.whiteSpace='pre-wrap';wrap.append(pre);}else if(f.type==='table'){const t=el('table');t.style.cssText='width:max-content;min-width:100%;white-space:nowrap;font-size:.85rem';const head=el('thead'),hr=el('tr');for(const h of f.headers){const th=el('th',h);th.scope='col';hr.append(th);}head.append(hr);t.append(head);const body=el('tbody');for(const row of f.rows){const tr=el('tr');for(const value of row)tr.append(el('td',value));body.append(tr);}t.append(body);wrap.append(t);}else if(f.type==='schema'){
+const left=Math.min(0,...nodes.map(n=>n.x-n.half-32)),top=Math.min(0,...nodes.map(n=>n.y-n.height-38)),right=Math.max(350,...nodes.map(n=>n.x+n.half+16)),bottom=Math.max(205,...nodes.map(n=>n.y+n.height+18));svg.setAttribute('viewBox',[left,top,right-left,bottom-top].join(' '));
+ // The initial canvas is deliberately conservative. Once attached, trim only
+ // unused canvas space, including text and self-loop labels in the measured bounds.
+ // Keep the original horizontal scale (never enlarge small diagrams to fill a card).
+ svg.style.width=Math.min(620,right-left)+'px';svg.style.maxWidth='100%';
+ function fit(){
+  if(!svg.isConnected)return;
+  let b;try{b=svg.getBBox();}catch{return;}
+  if(![b.x,b.y,b.width,b.height].every(Number.isFinite)||b.width<=0||b.height<=0)return;
+  const pad=12,x=Math.floor(b.x-pad),y=Math.floor(b.y-pad);
+  const w=Math.ceil(b.x+b.width+pad)-x,h=Math.ceil(b.y+b.height+pad)-y;
+  svg.setAttribute('viewBox',[x,y,w,h].join(' '));
+  svg.style.width=Math.min(620,w)+'px';
+ }
+ // SVG text metrics may change once fonts finish loading.
+ requestAnimationFrame(fit);
+ if(document.fonts?.ready)document.fonts.ready.then(fit);
+ return svg;}
+export function renderChallengeFigure(f){const wrap=el('figure');wrap.style.cssText='margin:10px 0;max-width:100%;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';if(f.title){const caption=el('figcaption',f.title);caption.style.cssText='margin:0 0 4px;font-size:.9rem';wrap.append(caption);}if(f.type==='sql'){const pre=el('pre',f.text);pre.style.whiteSpace='pre-wrap';wrap.append(pre);}else if(f.type==='table'){const t=el('table');t.style.cssText='width:max-content;min-width:100%;white-space:nowrap;font-size:.85rem';const head=el('thead'),hr=el('tr');for(const h of f.headers){const th=el('th',h);th.scope='col';hr.append(th);}head.append(hr);t.append(head);const body=el('tbody');for(const row of f.rows){const tr=el('tr');for(const value of row)tr.append(el('td',value));body.append(tr);}t.append(body);wrap.append(t);}else if(f.type==='schema'){
  const t=el('table');t.style.cssText='width:max-content;min-width:100%;white-space:nowrap;font-size:.88rem';
  const tr=el('tr');
  for(const column of f.columns){
