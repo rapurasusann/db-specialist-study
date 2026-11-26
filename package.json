@@ -11,14 +11,16 @@
     "test:pm:structure": "node --test tests/pm-structured-view.test.mjs tests/pm-subquestion-answer-store.test.mjs tests/pm-preview-dom.test.mjs",
     "test:pm:progress": "node --test tests/pm-subquestion-progress.test.mjs",
     "test:glossary": "node --test tests/glossary-first-occurrence.test.mjs",
-    "test:cs03-worker-security": "node --test tests/cs03-worker-review-config.test.mjs tests/cs03-worker-candidate.test.mjs tests/cs03-worker-entrypoint.test.mjs tests/cs03-worker-entrypoint-full-chain.test.mjs tests/cs03-cloudflare-do-handler.test.mjs tests/cs03-access-ingress-review.test.mjs tests/cs03-browser-jwt-entrypoint.test.mjs tests/cs03-browser-preflight-authorization.test.mjs"
+    "test:cs03-worker-security": "node --test tests/cs03-worker-review-config.test.mjs tests/cs03-worker-candidate.test.mjs tests/cs03-worker-entrypoint.test.mjs tests/cs03-worker-entrypoint-full-chain.test.mjs tests/cs03-cloudflare-do-handler.test.mjs tests/cs03-access-ingress-review.test.mjs tests/cs03-browser-jwt-entrypoint.test.mjs tests/cs03-browser-preflight-authorization.test.mjs",
+    "test:cs03-dark": "node --test tests/cs03-dark-preflight.test.mjs tests/cs03-dark-dry-run.test.mjs tests/cs03-dark-credential.test.mjs tests/cs03-dark-prepare.test.mjs"
   },
   "dependencies": {
-    "jose": "^6.0.0",
-    "pg": "^8.16.3",
-    "@neon/auth": "^0.8.2"
+    "jose": "6.0.0",
+    "pg": "8.16.3",
+    "@neon/auth": "0.8.2"
   },
   "devDependencies": {
-    "esbuild": "^0.28.2"
+    "esbuild": "0.28.2",
+    "wrangler": "4.168.0"
   }
 }
