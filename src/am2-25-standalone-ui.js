@@ -203,6 +203,15 @@ function renderJump(){
   list.append(btn);
  });
 }
+// Official text already contains these SQL statements. Keep unique SQL figures,
+ // including statements that are not present in the question or choice text.
+const inlineSqlStemIds=new Set(['2016:am2:9','2017:am2:8','2018:am2:6','2018:am2:8','2018:am2:10','2020:am2:10']);
+const inlineSqlChoiceIds=new Set(['2016:am2:9','2016:am2:10','2017:am2:2','2018:am2:10','2019:am2:11','2020:am2:10']);
+function shouldRenderSqlFigure(id,figure,letter,text){
+ if(figure.type!=='sql')return true;
+ if(typeof text!=='string'||!text.trim())return true;
+ return !(letter?inlineSqlChoiceIds:inlineSqlStemIds).has(id);
+}
 function renderQuestion(){
  if(!active||complete||!round[position])return;
  activate();
@@ -218,9 +227,10 @@ function renderQuestion(){
   if(typeof window.DBStudyRenderGlossaryText==='function')window.DBStudyRenderGlossaryText(target,value,glossaryOptions);
   else target.textContent=value;
  };
- renderText($('quiz25Stem'),q?.stem||'問題文を読み込めませんでした');
+ const stem=item.id==='2020:am2:10'?q?.stem?.replace('社員（社員番号，社員名，性別，生年月日）','社員（社員番号［主キー］，社員名，性別，生年月日）'):q?.stem;
+ renderText($('quiz25Stem'),stem||'問題文を読み込めませんでした');
  const figures=$('quiz25Figures');figures.replaceChildren();
- for(const figure of q?.figures||[])figures.append(renderChallengeFigure(figure));
+ for(const figure of q?.figures||[])if(shouldRenderSqlFigure(item.id,figure,null,stem))figures.append(renderChallengeFigure(figure));
  const url=years[item.year].courses.find(c=>c.id==='am2').questionUrl;
  $('quiz25Original').href=url+(Number.isInteger(q?.sourcePage)?'#page='+q.sourcePage:'');
  const optionText=$('quiz25OptionText');optionText.replaceChildren();
@@ -233,7 +243,7 @@ function renderQuestion(){
  for(const letter of order){
   const row=document.createElement('div');row.className='optionText';row.dataset.originalChoice=letter;
   renderText(row,letter+'　'+(q?.options?.[letter]||'（図を参照）'));
-  for(const f of q?.optionFigures?.[letter]||[])row.append(renderChallengeFigure(f));
+  for(const f of q?.optionFigures?.[letter]||[])if(shouldRenderSqlFigure(item.id,f,letter,q?.options?.[letter]))row.append(renderChallengeFigure(f));
   optionText.append(row);
  }
  renderRelatedTermLinks($('quiz25RelatedTerms'),item.id,$('quiz25Stem').textContent+'\n'+$('quiz25Figures').textContent+'\n'+optionText.textContent);
