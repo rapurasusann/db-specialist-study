@@ -18,7 +18,7 @@ let nodes=(uml?f.classes.map(([id,x,y])=>({id,x,y})):f.nodes).map(n=>{
  const diamond=uml&&(f.diamondNodes||[]).includes(n.id);
  return {...n,attrs,diamond,half:diamond?12:half,height:diamond?9:uml?15+attrs.length*7:14};
 });
-if(uml)nodes=window.am2SharedVectorFigures.layoutAssociationNodes(nodes,f.links);
+if(uml)nodes=window.am2SharedVectorFigures.layoutAssociationNodes(nodes,f.links,f);
 const map=new Map(nodes.map(n=>[n.id,n]));
 const labels=[];
 function label(x,y,t,anchor='middle'){if(t)vector(svg,'text',{x,y,'font-size':10,'text-anchor':anchor,fill:'#172437'},t);}
@@ -43,14 +43,14 @@ for(const e of uml?f.links:f.edges){
 }
 for(const target of f.incomingPointers||[]){const n=map.get(target);if(!n)throw Error('Unknown incoming pointer target');const top=n.y-n.height;vector(svg,'line',{x1:n.x,y1:top-24,x2:n.x,y2:top,stroke:'#263747','stroke-width':1.3,'marker-end':'url(#'+id+')'});}
 for(const e of f.associationClasses||[]){const a=map.get(e.from),b=map.get(e.to),c=map.get(e.classId);if(!a||!b||!c)continue;const [x1,y1,x2,y2]=endpoints(a,b,Number(e.offset)||0);const x=a.id===b.id?a.x-a.half/2-11:(x1+x2)/2,y=a.id===b.id?Math.min(a.y-a.height-20,a.y-34):(y1+y2)/2;const [cx,cy]=boundary(c,x-c.x,y-c.y);vector(svg,'line',{x1:x,y1:y,x2:cx,y2:cy,stroke:'#263747','stroke-width':1.3,'stroke-dasharray':'4 3'});}
-if(uml)window.am2SharedVectorFigures.ownershipConstraint(svg,nodes,f);
+const reserved=uml?window.am2SharedVectorFigures.ownershipConstraint(svg,nodes,f):[];
 for(const n of nodes){
  if(n.diamond){vector(svg,'polygon',{points:[[n.x-n.half,n.y],[n.x,n.y-n.height],[n.x+n.half,n.y],[n.x,n.y+n.height]].map(p=>p.join(',')).join(' '),fill:'white',stroke:'#263747'});continue;}
  if(uml||f.shape==='rect'){vector(svg,'rect',{x:n.x-n.half,y:n.y-n.height,width:n.half*2,height:n.height*2,fill:'white',stroke:'#263747'});if(n.attrs.length){const y=n.y-n.height+22;vector(svg,'line',{x1:n.x-n.half,y1:y,x2:n.x+n.half,y2:y,stroke:'#263747'});window.am2SharedVectorFigures.diagramNodeLabel(svg,f,n,y-8);n.attrs.forEach((v,i)=>label(n.x-n.half+4,y+11+i*14,v,'start'));}else window.am2SharedVectorFigures.diagramNodeLabel(svg,f,n,n.y+3);}
  else {vector(svg,'circle',{cx:n.x,cy:n.y,r:14,fill:'white',stroke:'#263747'});label(n.x,n.y+3,n.id);}
 }
 if(uml)labels.push(...window.am2SharedVectorFigures.diamondAssociationLabels(f,nodes));
-const positioned=uml?window.am2SharedVectorFigures.placeAssociationLabels(labels,nodes):[];
+const positioned=uml?window.am2SharedVectorFigures.placeAssociationLabels(labels,nodes,reserved):[];
 for(const p of positioned){label(p.x,p.y,p.text);if(!p.resolved)svg.setAttribute('data-unresolved-association-label','true');}
 const left=Math.min(0,...nodes.map(n=>n.x-n.half-32),...positioned.map(p=>p.box.left-12)),top=Math.min(0,...nodes.map(n=>n.y-n.height-38),...positioned.map(p=>p.box.top-12)),right=Math.max(350,...nodes.map(n=>n.x+n.half+16),...positioned.map(p=>p.box.right+12)),bottom=Math.max(205,...nodes.map(n=>n.y+n.height+18),...positioned.map(p=>p.box.bottom+12));svg.setAttribute('viewBox',[left,top,right-left,bottom-top].join(' '));return svg;}
 function timeline(f){
