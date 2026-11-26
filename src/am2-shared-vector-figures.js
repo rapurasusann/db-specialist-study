@@ -24,14 +24,43 @@ function diskArray(f){
  f.disks.forEach((d,i)=>{const x=12+i*stride,cx=x+boxWidth/2;label(cx,50,'〔'+d.name+'〕');vector(svg,'rect',{x,y:58,width:boxWidth,height:h-72,fill:'white',stroke:'#263747'});label(cx,80,'（データブロック）');d.blocks.forEach((b,j)=>{const y=94+j*cellHeight;vector(svg,'rect',{x:x+14,y,width:boxWidth-28,height:cellHeight,fill:'white',stroke:'#263747','stroke-dasharray':'5 4'});label(cx,y+22,b);});});return svg;
 }
 function render(f){const wrap=document.createElement('figure');wrap.style.cssText='margin:10px 0;max-width:100%;min-width:0;box-sizing:border-box;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';wrap.append(f.type==='schema-group'?schemaGroup(f):diskArray(f));return wrap;}
-// Keep relationship names on the opposite side of the edge from multiplicities.
-// Both renderers use the same deterministic coordinates; no question-specific offsets.
-function associationLabels(x1,y1,x2,y2,e){
- const sign=(Number(e.offset)||0)>0?1:-1;
- const yy=sign*5;
- return [[x1+(x2-x1)*.14,y1+(y2-y1)*.14+yy,e.fromLabel],
- [x2-(x2-x1)*.14,y2-(y2-y1)*.14+yy,e.toLabel],
- [(x1+x2)/2,(y1+y2)/2-sign*16,e.label]];
+// Estimate conservative SVG text bounds in user units (10px diagram font).
+function labelBox(x,y,t){
+ const half=Array.from(String(t)).length*5+2;
+ return {left:x-half,right:x+half,top:y-11,bottom:y+3};
 }
-window.am2SharedVectorFigures=Object.freeze({associationLabels,supports:f=>f.type==='schema-group'||f.type==='disk-array',render});
+function intersects(a,b){return a.left<b.right+2&&a.right>b.left-2&&a.top<b.bottom+2&&a.bottom>b.top-2;}
+function associationLabels(x1,y1,x2,y2,e){
+ const dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy)||1;
+ const tx=dx/len,ty=dy/len,nx=-ty,ny=tx;
+ const side=(Number(e.offset)||0)>0?1:-1;
+ const make=(p,t,s,d)=>[x1+dx*p+nx*s*d,y1+dy*p+ny*s*d+3,t,{tx,ty,nx:nx*s,ny:ny*s}];
+ return [make(.14,e.fromLabel,side,9),make(.86,e.toLabel,side,9),make(.5,e.label,-side,16)];
+}
+// Reserve class boxes and previously placed labels. Search near each semantic
+// anchor, preserving the side and limiting movement along the relationship.
+function placeAssociationLabels(labels,nodes){
+ const occupied=nodes.map(n=>({left:n.x-n.half,right:n.x+n.half,top:n.y-n.height,bottom:n.y+n.height}));
+ const placed=[];
+ for(const [x,y,t,axis] of labels){
+  if(t===undefined||t===null||t==='')continue;
+  const a=axis||{tx:1,ty:0,nx:0,ny:-1};
+  let best=null;
+  for(const normal of [0,6,12,18,24,30]){
+   for(const tangent of [0,-5,5,-10,10]){
+    const px=x+a.nx*normal+a.tx*tangent,py=y+a.ny*normal+a.ty*tangent;
+    const box=labelBox(px,py,t);
+    if(occupied.some(b=>intersects(b,box)))continue;
+    const score=normal*normal+tangent*tangent;
+    if(!best||score<best.score)best={x:px,y:py,box,score};
+   }
+  }
+  // Do not move a multiplicity to an unrelated edge just to conceal a collision.
+  // Unresolved cases remain visible and must fail the browser acceptance audit.
+  const chosen=best||{x,y,box:labelBox(x,y,t)};
+  occupied.push(chosen.box);placed.push({x:chosen.x,y:chosen.y,text:t,box:chosen.box,resolved:!!best});
+ }
+ return placed;
+}
+window.am2SharedVectorFigures=Object.freeze({associationLabels,placeAssociationLabels,supports:f=>f.type==='schema-group'||f.type==='disk-array',render});
 })();
