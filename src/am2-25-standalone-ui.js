@@ -242,7 +242,14 @@ function renderQuestion(){
  const order=orders.get(item.id);
  for(const letter of order){
   const row=document.createElement('div');row.className='optionText';row.dataset.originalChoice=letter;
-  renderText(row,letter+'　'+(q?.options?.[letter]||'（図を参照）'));
+  const choice=q?.options?.[letter];
+  if(item.id==='2025:am2:4'&&choice){
+   const match=choice.match(/^プログラム言語（(.+)）$/);
+   if(!match)throw Error('INVALID_Q4_SCHEMA');
+   row.append(document.createTextNode(letter+'　プログラム言語（'));
+   match[1].split('，').forEach((part,i)=>{if(i)row.append(document.createTextNode('，'));const span=document.createElement('span');span.textContent=part.replace(/［主キー(?:の一部)?］/g,'');if(part.includes('［主キー')){span.style.textDecoration='underline';span.style.textUnderlineOffset='3px';span.setAttribute('aria-label',span.textContent+'（主キー）');}row.append(span);});
+   row.append(document.createTextNode('）'));
+  }else renderText(row,letter+'　'+(choice||'（図を参照）'));
   for(const f of q?.optionFigures?.[letter]||[])if(shouldRenderSqlFigure(item.id,f,letter,q?.options?.[letter]))row.append(renderChallengeFigure(f));
   optionText.append(row);
  }
