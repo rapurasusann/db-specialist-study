@@ -105,5 +105,31 @@ function parallelPointerSegments(a,b,offset=0){
  return [associationEndpoints(a,b,offset-3),associationEndpoints(b,a,-offset-3)];
 }
 
-window.am2SharedVectorFigures=Object.freeze({diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array',render});
+
+function mergedInheritance(svg,nodes,links,markerId){
+ const groups=new Map(),used=new Set(),map=new Map(nodes.map(n=>[n.id,n]));
+ for(const e of links)if(e.kind==='inherit'){if(!groups.has(e.to))groups.set(e.to,[]);groups.get(e.to).push(e);}
+ for(const [target,edges] of groups){
+  const p=map.get(target),children=edges.map(e=>map.get(e.from));
+  if(edges.length<2||!p||children.some(c=>!c||c.y-c.height<=p.y+p.height+12))continue;
+  const bottom=p.y+p.height,join=(bottom+Math.min(...children.map(c=>c.y-c.height)))/2;
+  const line=(x1,y1,x2,y2,extra={})=>vector(svg,'line',{x1,y1,x2,y2,stroke:'#263747','stroke-width':1.3,...extra});
+  line(Math.min(p.x,...children.map(c=>c.x)),join,Math.max(p.x,...children.map(c=>c.x)),join);
+  line(p.x,join,p.x,bottom,{'marker-end':'url(#'+markerId+')'});
+  children.forEach(c=>line(c.x,c.y-c.height,c.x,join));edges.forEach(e=>used.add(e));
+ }
+ return used;
+}
+function ownershipConstraint(svg,nodes,f){
+ if(!f.ownershipConstraint)return;
+ const map=new Map(nodes.map(n=>[n.id,n])),a=map.get(f.ownershipConstraint[0]),b=map.get(f.ownershipConstraint[1]),c=map.get(f.ownershipConstraint[2]);
+ if(!a||!b||!c)return;
+ const y=(Math.max(a.y+a.height,b.y+b.height)+c.y-c.height)/2;
+ const x=(a.x+b.x)/2,w=142,h=24;
+ vector(svg,'line',{x1:a.x+(c.x-a.x)*(y-a.y)/(c.y-a.y),y1:y,x2:b.x+(c.x-b.x)*(y-b.y)/(c.y-b.y),y2:y,stroke:'#263747','stroke-dasharray':'4 3'});
+ vector(svg,'rect',{x:x-w/2,y:y-h/2,width:w,height:h,fill:'white',stroke:'#263747'});
+ vector(svg,'text',{x,y:y+3,'font-size':10,'text-anchor':'middle',fill:'#172437'},'制約：同時には成立しない');
+}
+
+window.am2SharedVectorFigures=Object.freeze({mergedInheritance,ownershipConstraint,diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array',render});
 })();
