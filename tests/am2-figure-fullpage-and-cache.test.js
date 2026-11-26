@@ -9,39 +9,19 @@ const clips = fs.readFileSync(path.join(root,'src/am2-figure-clips.js'),'utf8');
 const questions = fs.readFileSync(path.join(root,'src/am2-2025-questions.js'),'utf8');
 const html = fs.readFileSync(path.join(root,'index.html'),'utf8');
 
-test('AM2 Q12 retains original full-page image, Q8/9 switch to native tables', () => {
-  const source = new Map();
-  const selections = [];
-  const createNode = name => ({
-    name, style: {cssText:''}, children: [],
-    append(...nodes) {this.children.push(...nodes);},
-    setAttribute(){},
-    querySelector(selector) {
-      return selector==='h3' ? {insertAdjacentElement(where,node){selections.push(node);}} : null;
-    }
-  });
-  const document = {
-    createElement: createNode,
-    createElementNS: (_ns,name) => createNode(name),
-    getElementById: id => id==='questionText'?createNode('section'):{classList:{toggle(){}}}
-  };
-  const context = {document, showQuestion(){}, year:2025,courseId:'am2',number:6};
-  vm.createContext(context);
-  vm.runInContext(clips,context,{timeout:1000});
-  const expected = new Map([[12,10]]);
-  for(const number of [8,9]) { context.number=number; context.showQuestion(); assert.equal(selections.length,0,'Q'+number+' must not render top full-page image'); }
-  for(const [number,page] of expected) {
-    context.number=number;
-    context.showQuestion();
-    const fig=selections.pop();
-    assert.ok(fig,'figure missing for '+number);
-    const img=fig.children[0];
-    assert.equal(img.name,'img','not a native image for '+number);
-    assert.equal(img.src,'pages/am2_qs_'+String(page).padStart(2,'0')+'.webp');
-    assert.match(img.style.cssText,/height:auto/);
-    assert.match(img.style.cssText,/object-fit:contain/);
-    assert.equal(fig.children.length,2);
-  }
+test('Q8/9/11/12/23 do not insert obsolete full-page or cropped images',()=>{
+ const inserted=[];
+ const document={getElementById:()=>({querySelector:()=>({insertAdjacentElement:(_,node)=>inserted.push(node)})})};
+ const context={document,showQuestion(){},year:2025,courseId:'am2',number:8};
+ vm.createContext(context);
+ vm.runInContext(clips,context,{timeout:1000});
+ for(const number of [8,9,11,12,23]){
+  context.number=number;context.showQuestion();
+  assert.equal(inserted.length,0,'obsolete figure injection Q'+number);
+ }
+ assert.match(html,/id="pageImage"/);
+ assert.match(html,/id="localViewer"/);
+ assert.match(html,/id="openQuestion"/);
 });
 
 test('AM2 Q9/11/12/23: obsolete table and SQL transcriptions absent in source', () => {
@@ -55,9 +35,18 @@ test('AM2 Q9/11/12/23: obsolete table and SQL transcriptions absent in source', 
   }
 });
 
-test('updated content scripts use versioned URLs, preserving other scripts',()=>{
-  assert.match(html,/<script src="src\/am2-2025-questions\.js\?v=20261118q3"><\/script>/);
-  assert.match(html,/<script src="src\/am2-figure-clips\.js\?v=20261120q8q9"><\/script>/);
-  assert.match(html,/<script src="src\/am2-q8-q9-text-view\.js\?v=20261120q8q9"><\/script>/);
-  assert.match(html,/<script src="src\/am2-2025-explanations\.js"><\/script>/);
+test('content scripts are versioned and preserve registration order',()=>{
+ const tags=[...html.matchAll(/<script\b[^>]*\bsrc="([^"]+)"[^>]*>/g)].map(m=>m[1]);
+ const required=['am2-2025-questions','am2-2025-original-completion','am2-figure-clips','am2-q8-q9-text-view','am2-shared-vector-figures','am2-archive-2024','am2-25-standalone-ui'];
+ for(const name of required){
+  const urls=tags.filter(url=>url.split('?')[0]==='src/'+name+'.js');
+  assert.equal(urls.length,1,name);
+  assert.match(urls[0],/\?v=[A-Za-z0-9._-]+$/);
+ }
+ const index=name=>tags.findIndex(url=>url.split('?')[0]==='src/'+name+'.js');
+ assert.ok(index('am2-2025-questions')<index('am2-2025-original-completion'));
+ assert.ok(index('am2-2025-original-completion')<index('am2-archive-2024'));
+ assert.ok(index('am2-shared-vector-figures')<index('am2-archive-2024'));
+ assert.ok(index('am2-shared-vector-figures')<index('am2-25-standalone-ui'));
+ assert.ok(index('am2-2025-explanations')>=0);
 });
