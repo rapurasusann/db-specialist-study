@@ -32,7 +32,7 @@ for(const e of uml?f.links:f.edges){
  if(e.bidirectional)attrs['marker-start']='url(#'+id+')';
  if(e.kind==='dependency')attrs['stroke-dasharray']='4 3';
  vector(svg,'line',attrs);
- if(uml){const sign=(Number(e.offset)||0)>0?1:-1;const yy=sign*5;labels.push([x1+(x2-x1)*.14,y1+(y2-y1)*.14+yy,e.fromLabel],[x2-(x2-x1)*.14,y2-(y2-y1)*.14+yy,e.toLabel],[(x1+x2)/2,(y1+y2)/2+sign*12,e.label]);}
+ if(uml)labels.push(...window.am2SharedVectorFigures.associationLabels(x1,y1,x2,y2,e));
 }
 for(const target of f.incomingPointers||[]){const n=map.get(target);if(!n)throw Error('Unknown incoming pointer target');const top=n.y-n.height;vector(svg,'line',{x1:n.x,y1:top-24,x2:n.x,y2:top,stroke:'#263747','stroke-width':1.3,'marker-end':'url(#'+id+')'});}
 for(const e of f.associationClasses||[]){const a=map.get(e.from),b=map.get(e.to),c=map.get(e.classId);if(!a||!b||!c)continue;const [x1,y1,x2,y2]=endpoints(a,b,Number(e.offset)||0);const x=a.id===b.id?a.x-a.half/2-11:(x1+x2)/2,y=a.id===b.id?Math.min(a.y-a.height-20,a.y-34):(y1+y2)/2;const [cx,cy]=boundary(c,x-c.x,y-c.y);vector(svg,'line',{x1:x,y1:y,x2:cx,y2:cy,stroke:'#263747','stroke-width':1.3,'stroke-dasharray':'4 3'});}
