@@ -37,6 +37,7 @@ screen.innerHTML=`
     <div id="quiz25Figures"></div>
     <div id="quiz25OptionText"></div>
    </div>
+   <div id="quiz25OriginalViewer" hidden><div class="localNote">IPA公式問題冊子の原本画像です。</div><div class="pageNav"><button type="button" id="quiz25PagePrev">前ページ</button><span id="quiz25PageStatus"></span><button type="button" id="quiz25PageNext">次ページ</button><button type="button" id="quiz25PageMark">開始ページを補正して保存</button></div><img id="quiz25PageImage" alt="IPA公式過去問のページ画像" loading="lazy" style="width:100%;height:auto"></div>
   </div>
   <div class="answer quiz25AnswerCard">
    <h2>解答・理解度</h2>
@@ -45,6 +46,7 @@ screen.innerHTML=`
    <div id="quiz25GradeResult" class="muted separate" role="status"></div>
    <div class="toolbar separate"><button type="button" id="quiz25Reveal" class="primary">答えを見る</button><a id="quiz25OfficialAnswer" target="_blank" rel="noopener noreferrer">公式解答PDF</a></div>
    <div id="quiz25Feedback" role="status" aria-live="polite" hidden></div>
+   <div id="quiz25AnswerViewer" hidden><img id="quiz25AnswerImage" alt="IPA公式解答例" loading="lazy" style="width:100%;height:auto"></div>
    <h2 style="margin-top:18px">この問題の理解度</h2>
    <div class="levels" id="quiz25Levels"><button type="button" data-quiz25-level="review">要復習</button><button type="button" data-quiz25-level="learning">学習中</button><button type="button" data-quiz25-level="mastered">習得済み</button></div>
    <p class="muted" id="quiz25History"></p>
@@ -134,7 +136,7 @@ $('study').after(screen);
 window.DBStudyAttachChoiceElimination?.($('quiz25OptionText'));
 prepareRelatedTermRegion($('quiz25RelatedTerms'));
 
-let active=false,complete=false,round=[],position=0,drafts={},answers={},stage=1,initialResult=null,retry=[],previous=[],used=new Set(),revealed=new Set(),answerSeen=new Set(),orders=new Map();
+let active=false,complete=false,round=[],position=0,drafts={},answers={},stage=1,initialResult=null,retry=[],previous=[],used=new Set(),revealed=new Set(),answerSeen=new Set(),orders=new Map(),originalPage=1;
 const set=(id,value)=>{$(id).textContent=value};
 const show=(id,visible)=>{$(id).hidden=!visible};
 function recordAnswer(item,correct){
@@ -151,7 +153,7 @@ function commitCurrent(){
 }
 function renderHistory(item){
  const r=progress[item.id]||{};
- set('quiz25History','現在：'+({review:'要復習',learning:'学習中',mastered:'習得済み'}[r.level]||'未学習')+(r.seenAnswer?' ／ 解答参照済み':''));
+ set('quiz25History','現在：'+({review:'要復習',learning:'学習中',mastered:'習得済み'}[r.level]||'未学習')+(r.seenAnswer?' ／ 解答参照済み':'')+(r.updatedAt?' ／ 最終記録：'+new Date(r.updatedAt).toLocaleString('ja-JP'):''));
  for(const b of $('quiz25Levels').querySelectorAll('button'))b.classList.toggle('sel',b.dataset.quiz25Level===r.level);
 }
 $('quiz25Reveal').addEventListener('click',()=>{
@@ -159,7 +161,8 @@ $('quiz25Reveal').addEventListener('click',()=>{
  const item=round[position];
  if(revealed.has(item.id))revealed.delete(item.id);
  else{revealed.add(item.id);answerSeen.add(item.id);progress[item.id]={...progress[item.id],seenAnswer:true,updatedAt:new Date().toISOString()};save();}
- renderQuestion();
+ renderAnswerPanel(item);
+ renderMobile();
 });
 $('quiz25Levels').addEventListener('click',e=>{
  const level=e.target.closest('button')?.dataset.quiz25Level;
@@ -205,6 +208,8 @@ function renderQuestion(){
  activate();
  show('quiz25Work',true);show('quiz25Result',false);
  const item=round[position],q=getQuestion(item);
+ originalPage=Number.isInteger(progress[item.id]?.startPage)&&progress[item.id].startPage>=1&&progress[item.id].startPage<=PAGE_COUNTS.am2_qs?progress[item.id].startPage:QUESTION_START_PAGES.am2[item.n-1]||1;
+ renderOriginalPage(item);
  set('quiz25Source',item.year+'年度 午前Ⅱ ／ '+(position+1)+'問目（元の問'+item.n+'）');
  set('quiz25Title','問'+item.n);
  const glossaryUsed=new Set();
@@ -232,6 +237,25 @@ function renderQuestion(){
   optionText.append(row);
  }
  renderRelatedTermLinks($('quiz25RelatedTerms'),item.id,$('quiz25Stem').textContent+'\n'+$('quiz25Figures').textContent+'\n'+optionText.textContent);
+ renderAnswerPanel(item);
+ $('quiz25Back').disabled=position===0;
+ $('quiz25Next').textContent=position===round.length-1?'結果を見る（未回答も含む）':'次の問題へ（未回答でも可）';
+ statusText();renderJump();renderMobile();
+}
+function renderOriginalPage(item){
+ const available=Number(item.year)===2025;
+ show('quiz25OriginalViewer',available);
+ if(!available){$('quiz25PageImage').removeAttribute('src');return;}
+ originalPage=Math.max(1,Math.min(PAGE_COUNTS.am2_qs,originalPage));
+ $('quiz25PageImage').src=imagePath('am2_qs',originalPage);
+ set('quiz25PageStatus','原本 '+originalPage+' / '+PAGE_COUNTS.am2_qs+' ページ');
+ $('quiz25PagePrev').disabled=originalPage===1;
+ $('quiz25PageNext').disabled=originalPage===PAGE_COUNTS.am2_qs;
+}
+for(const [id,delta] of [['quiz25PagePrev',-1],['quiz25PageNext',1]])$(id).onclick=()=>{const item=round[position];if(!active||complete||Number(item?.year)!==2025)return;originalPage+=delta;renderOriginalPage(item);};
+$('quiz25PageMark').onclick=()=>{const item=round[position];if(!active||complete||Number(item?.year)!==2025)return;progress[item.id]={...progress[item.id],startPage:originalPage,updatedAt:new Date().toISOString()};save();renderHistory(item);};
+function renderAnswerPanel(item){
+ const q=getQuestion(item),order=orders.get(item.id)||['ア','イ','ウ','エ'];
  const options=$('quiz25Choices');options.replaceChildren();
  const locked=Object.hasOwn(answers,item.id);
  for(const letter of order){
@@ -247,14 +271,15 @@ function renderQuestion(){
  const feedback=$('quiz25Feedback');
  const visible=revealed.has(item.id);
  feedback.hidden=!visible;
+ const showImage=visible&&Number(item.year)===2025;
+ show('quiz25AnswerViewer',showImage);
+ if(showImage)$('quiz25AnswerImage').src=imagePath('am2_ans',1);
+ else $('quiz25AnswerImage').removeAttribute('src');
  feedback.textContent='正解：'+item.answer+'\n\n'+(q?.explanation||'公式解答と照合してください。');
  set('quiz25GradeResult',locked?(answers[item.id]===item.answer?'正解':'不正解')+'。正解は '+item.answer+' です。':'');
  set('quiz25Reveal',visible?'解答を閉じる':'答えを見る');
  $('quiz25OfficialAnswer').href=years[item.year].courses.find(c=>c.id==='am2').answerUrl;
  renderHistory(item);
- $('quiz25Back').disabled=position===0;
- $('quiz25Next').textContent=position===round.length-1?'結果を見る（未回答も含む）':'次の問題へ（未回答でも可）';
- statusText();renderJump();renderMobile();
 }
 function scrollQuestion(){
  if(window.matchMedia('(max-width:650px)').matches)$('quiz25Source').scrollIntoView({behavior:'instant',block:'start'});
@@ -314,8 +339,8 @@ $('quiz25Submit').addEventListener('click',()=>{
  const selected=drafts[item.id];
  if(!['ア','イ','ウ','エ'].includes(selected)){set('quiz25Status','選択肢を選んでから解答を確定してください。未回答で次へ進むこともできます。');return}
  commitCurrent();
- revealed.add(item.id);
- renderQuestion();
+ renderAnswerPanel(item);
+ statusText();renderJump();renderMobile();
 });
 $('quiz25Back').addEventListener('click',()=>{if(!active||complete||position===0)return;commitCurrent();position--;renderQuestion()});
 $('quiz25Next').addEventListener('click',()=>{if(!active||complete)return;commitCurrent();if(position+1<round.length){position++;renderQuestion()}else finish()});
