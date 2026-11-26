@@ -68,7 +68,7 @@ test('CSP inline script fingerprints match the current source',()=>{
  const scripts=[...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/g)].map(x=>x[1]);
  assert.equal(scripts.length,2,'expected exactly two inline scripts');
  for(const source of scripts){
-  const hash=createHash('sha256').update(source,'utf8').digest('base64');
+  const hash=createHash('sha256').update(source.replace(/\r\n?/g,'\n'),'utf8').digest('base64');
   assert.ok(csp.includes("'sha256-"+hash+"'"),'CSP hash for inline script is current');
  }
 });
