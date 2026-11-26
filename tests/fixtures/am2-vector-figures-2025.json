@@ -1,0 +1,86 @@
+{
+  "schema": {
+    "type": "schema-group",
+    "schemas": [
+      {
+        "name": "注文",
+        "columns": [
+          {
+            "name": "注文番号",
+            "primary": true
+          },
+          {
+            "name": "注文日"
+          },
+          {
+            "name": "顧客番号",
+            "foreign": true
+          }
+        ]
+      },
+      {
+        "name": "注文明細",
+        "columns": [
+          {
+            "name": "注文番号",
+            "primary": true,
+            "foreign": true
+          },
+          {
+            "name": "明細番号",
+            "primary": true
+          },
+          {
+            "name": "商品番号",
+            "foreign": true
+          },
+          {
+            "name": "数量"
+          }
+        ]
+      }
+    ]
+  },
+  "disk": {
+    "type": "disk-array",
+    "title": "ディスクアレイシステム",
+    "disks": [
+      {
+        "name": "磁気ディスク1",
+        "blocks": [
+          "Aₚ",
+          "B₁",
+          "Cₚ",
+          "D₁"
+        ]
+      },
+      {
+        "name": "磁気ディスク2",
+        "blocks": [
+          "A₁",
+          "Bₚ",
+          "C₁",
+          "Dₚ"
+        ]
+      },
+      {
+        "name": "磁気ディスク3",
+        "blocks": [
+          "A₂",
+          "B₂",
+          "C₂",
+          "D₂"
+        ]
+      },
+      {
+        "name": "磁気ディスク4",
+        "blocks": [
+          "Aᵥ",
+          "Bᵥ",
+          "Cᵥ",
+          "Dᵥ"
+        ]
+      }
+    ]
+  }
+}
