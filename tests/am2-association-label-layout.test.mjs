@@ -33,7 +33,7 @@ test('unresolved placement remains explicit and text is retained',()=>{
 test('both screens use the shared layout and browser audit detects unresolved labels',()=>{
  for(const file of ['src/am2-archive-2024.js','src/am2-25-standalone-figures.mjs']){
   const source=readFileSync(new URL(file,root),'utf8');
-  assert.match(source,/am2SharedVectorFigures\.placeAssociationLabels\(labels,nodes\)/);
+  assert.match(source,/am2SharedVectorFigures\.placeAssociationLabels\(labels,nodes,reserved\)/);
   assert.match(source,/data-unresolved-association-label/);
  }
  assert.match(readFileSync(new URL('tests/browser/am2-display-audit.mjs',root),'utf8'),/Unresolved association label placement/);
@@ -43,9 +43,9 @@ test('label renderer cache identifiers are updated together',()=>{
  const html=readFileSync(new URL('index.html',root),'utf8');
  const ui=readFileSync(new URL('src/am2-25-standalone-ui.js',root),'utf8');
  for(const file of ['am2-shared-vector-figures.js','am2-archive-2024.js','am2-25-standalone-ui.js']){
-  assert.ok(html.includes(file+'?v=20261126labels3'),file);
+  assert.ok(html.includes(file+'?v=20261126notation2'),file);
  }
- assert.ok(ui.includes('am2-25-standalone-figures.mjs?v=20261126labels3'));
+ assert.ok(ui.includes('am2-25-standalone-figures.mjs?v=20261126notation2'));
 });
 
 test('adaptive layout expands crowded classes without changing identities or dimensions',()=>{
@@ -68,8 +68,14 @@ test('adaptive layout expands crowded classes without changing identities or dim
 test('both rendering paths use the same adaptive node layout and endpoint geometry',()=>{
  for(const file of ['src/am2-archive-2024.js','src/am2-25-standalone-figures.mjs']){
   const source=readFileSync(new URL(file,root),'utf8');
-  assert.match(source,/layoutAssociationNodes\(nodes,f\.links\)/);
+  assert.match(source,/layoutAssociationNodes\(nodes,f\.links,f\)/);
   assert.match(source,/associationEndpoints\(a,b,offset\)/);
   assert.match(source,/selfAssociationLabels\(a,e\)/);
  }
+});
+
+test('constraint rectangle is reserved against association label overlap',()=>{
+ const reserved={left:40,right:100,top:40,bottom:64};
+ const p=api.placeAssociationLabels([[70,52,'所属する',{tx:1,ty:0,nx:0,ny:-1}]],[],[reserved]);
+ assert.ok(p[0].resolved);assert.ok(!overlap(p[0].box,reserved));
 });
