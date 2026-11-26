@@ -26,10 +26,25 @@
     const back=el('button','','前の本文区分'), next=el('button','','次の本文区分');
     back.type=next.type='button';
     const status=el('span','afg-status');status.setAttribute('aria-live','polite');
-    nav.append(back,status,next);main.append(copy,nav);
+    const sourceButton=el('button','','原本ページを表示');sourceButton.type='button';
+    const sourcePicker=el('select','');sourcePicker.setAttribute('aria-label','本文の原本ページ');
+    function sourcePages(section){
+      const m=section.title.match(/(\d+)(?:[〜～–-](\d+))?ページ/);
+      if(!m)return [];
+      const first=Number(m[1]),last=Number(m[2]||m[1]);
+      if(first<data.sourcePage||last>data.sourceEndPage||last<first)return [];
+      return Array.from({length:last-first+1},(_,i)=>first+i);
+    }
+    function setSourcePages(select,section){
+      select.replaceChildren();
+      for(const pg of sourcePages(section)){const option=el('option','',pg+'ページ');option.value=String(pg);select.append(option);}
+    }
+    function openSource(select){const pg=Number(select.value);if(!Number.isInteger(pg)||pg<data.sourcePage||pg>data.sourceEndPage)return;activePage=pg;loadPage();document.getElementById('localViewer')?.scrollIntoView({block:'start'});}
+    sourceButton.onclick=()=>openSource(sourcePicker);
+    nav.append(back,status,next,sourcePicker,sourceButton);main.append(copy,nav);
     const chapters=data.sections.slice(0,-expected);
     let chapter=0;
-    function renderChapter(){const s=chapters[chapter];copy.textContent=s.title+'\n'+s.body;status.textContent=`${chapter+1} / ${chapters.length}（原本のページ区切りではなく内容区分）`;back.disabled=chapter===0;next.disabled=chapter===chapters.length-1;}
+    function renderChapter(){const s=chapters[chapter];copy.textContent=s.title+'\n'+s.body;setSourcePages(sourcePicker,s);sourceButton.disabled=!sourcePicker.options.length;status.textContent=`${chapter+1} / ${chapters.length}（原本のページ区切りではなく内容区分）`;back.disabled=chapter===0;next.disabled=chapter===chapters.length-1;}
     back.onclick=()=>{if(chapter){chapter--;renderChapter();}};
     next.onclick=()=>{if(chapter<chapters.length-1){chapter++;renderChapter();}};
     renderChapter();
@@ -44,14 +59,17 @@
     const chooseBlock=el('section','afg-block');chooseBlock.append(el('h3','','設問選択部'));
     const choices=el('div','afg-choices');chooseBlock.append(choices);
     const qBlock=el('section','afg-block');qBlock.append(el('h3','','選択された設問の問題文（要点・原文校正待ち）'));
-    const qcopy=el('div','afg-copy');qBlock.append(qcopy);
+    const qcopy=el('div','afg-copy');
+    const qsource=el('select','');qsource.setAttribute('aria-label','設問の原本ページ');
+    const qopen=el('button','','設問の原本ページを表示');qopen.type='button';qopen.onclick=()=>openSource(qsource);
+    const qnav=el('div','afg-nav');qnav.append(qsource,qopen);qBlock.append(qcopy,qnav);
     const aBlock=el('section','afg-block');aBlock.append(el('h3','','選択された設問の回答欄'));
     const answerLabel=el('label');const answer=el('textarea','afg-answer');
     answer.id='afg-subanswer';answerLabel.htmlFor=answer.id;aBlock.append(answerLabel,answer,el('p','muted','設問ごとに端末内へ自動保存します。従来の大問共通回答欄も残します。'));
     const questionSections=data.sections.slice(-expected);
     let selected=1;
     function renderQuestion(){
-      const section=questionSections[selected-1];qcopy.textContent=section.title+'\n'+section.body;
+      const section=questionSections[selected-1];qcopy.textContent=section.title+'\n'+section.body;setSourcePages(qsource,section);qopen.disabled=!qsource.options.length;
       const saved=rec().subAnswers;
       answer.value=saved&&typeof saved==='object'&&typeof saved[String(selected)]==='string'?saved[String(selected)]:'';
       answerLabel.textContent=`設問${selected}の回答`;answer.setAttribute('aria-label',`設問${selected}の回答`);
