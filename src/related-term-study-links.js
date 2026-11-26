@@ -14,31 +14,18 @@ const questionTerms=Object.freeze({
  '2025:am2:25':['xp-ci','xp-pair','xp-collective']
 });
 const byId=new Map(termQuestions.map(q=>[q.id,q]));
-const title=document.getElementById('currentTitle');
-const question=document.getElementById('questionText');
-if(title&&question){
- const region=document.createElement('div');
- region.id='relatedTermStudyLinks';
+export function prepareRelatedTermRegion(region){
  region.setAttribute('aria-label','この問題に関連する単語学習');
  region.style.cssText='display:none;gap:7px;flex-wrap:wrap;align-items:center;padding:10px 12px;margin:8px 0 12px;border:1px solid #d8e4ee;border-radius:10px;background:#f4f9fd';
- // Keep the newly linked terms outside questionText so glossary annotations are untouched.
- const exam=document.querySelector('#study .exam');
- exam?.insertAdjacentElement('beforebegin',region);
- let lastTitle='',lastText='';
- const render=()=>{
-  const label=title.textContent.trim();
-  // Match only study labels of the form "2025年度 午前Ⅱ・問8".
-  const m=label.match(/^(\d{4})年度\s+(午前Ⅰ|午前Ⅱ|午後Ⅰ|午後Ⅱ)・問(\d+)$/);
-  if(!m){region.style.display='none';return;}
-  const course={'午前Ⅰ':'am1','午前Ⅱ':'am2','午後Ⅰ':'pm1','午後Ⅱ':'pm2'}[m[2]];
-  const id=m[1]+':'+course+':'+m[3];
-  const text=question.textContent;
-  if(id===lastTitle&&text===lastText)return;
-  lastTitle=id;lastText=text;
-  const explicit=questionTerms[id]||[];
-  // Exact mentions only; never suggest loosely related terms based on generic words.
-  const found=termQuestions.filter(q=>q.term.length>=4&&text.includes(q.term)).map(q=>q.id);
-  const ids=[...new Set([...explicit,...found])].filter(x=>byId.has(x));
+ return region;
+}
+export function relatedTermIds(id,text){
+ const explicit=questionTerms[id]||[];
+ const found=termQuestions.filter(q=>q.term.length>=4&&text.includes(q.term)).map(q=>q.id);
+ return [...new Set([...explicit,...found])].filter(x=>byId.has(x));
+}
+export function renderRelatedTermLinks(region,id,text){
+ const ids=relatedTermIds(id,text);
   region.replaceChildren();
   if(!ids.length){region.style.display='none';return;}
   const heading=document.createElement('strong');heading.textContent='関連する単語を学ぶ：';
@@ -57,6 +44,28 @@ if(title&&question){
    region.append(link);
   }
   region.style.display='flex';
+}
+const title=document.getElementById('currentTitle');
+const question=document.getElementById('questionText');
+if(title&&question){
+ const region=document.createElement('div');
+ region.id='relatedTermStudyLinks';
+ prepareRelatedTermRegion(region);
+ // Keep the newly linked terms outside questionText so glossary annotations are untouched.
+ const exam=document.querySelector('#study .exam');
+ exam?.insertAdjacentElement('beforebegin',region);
+ let lastTitle='',lastText='';
+ const render=()=>{
+  const label=title.textContent.trim();
+  // Match only study labels of the form "2025年度 午前Ⅱ・問8".
+  const m=label.match(/^(\d{4})年度\s+(午前Ⅰ|午前Ⅱ|午後Ⅰ|午後Ⅱ)・問(\d+)$/);
+  if(!m){region.style.display='none';lastTitle='';lastText='';return;}
+  const course={'午前Ⅰ':'am1','午前Ⅱ':'am2','午後Ⅰ':'pm1','午後Ⅱ':'pm2'}[m[2]];
+  const id=m[1]+':'+course+':'+m[3];
+  const text=question.textContent;
+  if(id===lastTitle&&text===lastText)return;
+  lastTitle=id;lastText=text;
+  renderRelatedTermLinks(region,id,text);
  };
  new MutationObserver(render).observe(title,{subtree:true,childList:true,characterData:true});
  // Question content is populated by other scripts after the title changes.

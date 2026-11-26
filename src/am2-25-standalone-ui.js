@@ -1,3 +1,4 @@
+import {prepareRelatedTermRegion,renderRelatedTermLinks} from './related-term-study-links.js?v=20261126shared1';
 import {BATCH_SIZE,eligibleQuestions,weightedSample,roundSummary} from './am2-25-challenge-engine.mjs?v=20261125q1';
 import {renderChallengeFigure} from './am2-25-standalone-figures.mjs?v=20261125stand1';
 
@@ -25,6 +26,7 @@ screen.innerHTML=`
    <p class="muted">灰色：未回答 ／ 青：選択中 ／ 緑：正解 ／ 赤：不正解</p>
   </aside>
   <div class="quiz25Main">
+  <div id="quiz25RelatedTerms"></div>
   <div class="quiz25Columns exam">
   <div class="pdfpane questionpane">
    <div class="pdfbar"><strong>問題文・選択肢</strong><a id="quiz25Original" target="_blank" rel="noopener noreferrer">公式原本PDF</a></div>
@@ -130,6 +132,7 @@ css.textContent=`
 document.head.append(css);
 $('study').after(screen);
 window.DBStudyAttachChoiceElimination?.($('quiz25OptionText'));
+prepareRelatedTermRegion($('quiz25RelatedTerms'));
 
 let active=false,complete=false,round=[],position=0,drafts={},answers={},stage=1,initialResult=null,retry=[],previous=[],used=new Set(),revealed=new Set(),answerSeen=new Set(),orders=new Map();
 const set=(id,value)=>{$(id).textContent=value};
@@ -228,6 +231,7 @@ function renderQuestion(){
   for(const f of q?.optionFigures?.[letter]||[])row.append(renderChallengeFigure(f));
   optionText.append(row);
  }
+ renderRelatedTermLinks($('quiz25RelatedTerms'),item.id,$('quiz25Stem').textContent+'\n'+$('quiz25Figures').textContent+'\n'+optionText.textContent);
  const options=$('quiz25Choices');options.replaceChildren();
  const locked=Object.hasOwn(answers,item.id);
  for(const letter of order){
