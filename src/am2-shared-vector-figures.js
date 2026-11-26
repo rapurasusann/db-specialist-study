@@ -24,5 +24,14 @@ function diskArray(f){
  f.disks.forEach((d,i)=>{const x=12+i*stride,cx=x+boxWidth/2;label(cx,50,'〔'+d.name+'〕');vector(svg,'rect',{x,y:58,width:boxWidth,height:h-72,fill:'white',stroke:'#263747'});label(cx,80,'（データブロック）');d.blocks.forEach((b,j)=>{const y=94+j*cellHeight;vector(svg,'rect',{x:x+14,y,width:boxWidth-28,height:cellHeight,fill:'white',stroke:'#263747','stroke-dasharray':'5 4'});label(cx,y+22,b);});});return svg;
 }
 function render(f){const wrap=document.createElement('figure');wrap.style.cssText='margin:10px 0;max-width:100%;min-width:0;box-sizing:border-box;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';wrap.append(f.type==='schema-group'?schemaGroup(f):diskArray(f));return wrap;}
-window.am2SharedVectorFigures=Object.freeze({supports:f=>f.type==='schema-group'||f.type==='disk-array',render});
+// Keep relationship names on the opposite side of the edge from multiplicities.
+// Both renderers use the same deterministic coordinates; no question-specific offsets.
+function associationLabels(x1,y1,x2,y2,e){
+ const sign=(Number(e.offset)||0)>0?1:-1;
+ const yy=sign*5;
+ return [[x1+(x2-x1)*.14,y1+(y2-y1)*.14+yy,e.fromLabel],
+ [x2-(x2-x1)*.14,y2-(y2-y1)*.14+yy,e.toLabel],
+ [(x1+x2)/2,(y1+y2)/2-sign*16,e.label]];
+}
+window.am2SharedVectorFigures=Object.freeze({associationLabels,supports:f=>f.type==='schema-group'||f.type==='disk-array',render});
 })();
