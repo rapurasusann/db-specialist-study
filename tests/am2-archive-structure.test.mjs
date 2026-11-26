@@ -19,8 +19,11 @@ test('all nine years load in browser script order',()=>{
  assert.deepEqual(Object.keys(archives).map(Number).sort(),years);
 });
 function figure(f){
- assert.ok(['table','sql','uml','graph'].includes(f.type));
+ assert.ok(['table','sql','uml','graph','schema-group'].includes(f.type));
  if(f.type==='table'){assert.ok(f.headers.length);for(const row of f.rows)assert.equal(row.length,f.headers.length);}
+ if(f.type==='schema-group'){
+  assert.ok(f.schemas.length);for(const schema of f.schemas){assert.ok(nonempty(schema.name)&&schema.columns.length);assert.equal(new Set(schema.columns.map(c=>c.name)).size,schema.columns.length);for(const c of schema.columns){assert.ok(nonempty(c.name));for(const flag of ['primary','foreign'])if(c[flag]!==undefined)assert.equal(typeof c[flag],'boolean');}}
+ }
  if(f.type==='sql')assert.ok(nonempty(f.text));
  if(f.type==='uml'||f.type==='graph'){
   const nodes=f.type==='uml'?f.classes.map(([id,x,y])=>({id,x,y})):f.nodes;
