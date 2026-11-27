@@ -86,6 +86,16 @@ test('historical figure slots survive or have an explicitly checked text migrati
      assert.deepEqual(figure.attributes[cls],attrs.split('、'));
     }
     assert.deepEqual(actual[2].links.map(e=>[e.fromLabel,e.toLabel]),[['1 親','*'],['1 子','*']]);
+   }else if(id==='2017:17'){
+    assert.equal(actual.length,1);
+    assert.equal(actual[0].type,'transaction-sequence');
+    assert.deepEqual(actual[0].steps.map(s=>[s.number,s.lane]),[[1,1],[2,2],[3,2],[4,1],[5,1],[6,1]]);
+    assert.deepEqual(actual[0].steps.map(s=>s.lines.join('')),[
+     '“数学模試成績”表の登録済データから，合計点Xを算出',
+     'A君の結果を“数学模試成績”表に登録','COMMIT',
+     '“数学模試成績”表の登録済データから，受験者数Yを算出',
+     'XをYで除算し，数学模試の平均点を算出','COMMIT'
+    ]);
    }else if(id==='2022:2'){
     const e=expected[0].links[0];assert.deepEqual(actual,[{type:'boxed-multiplicity',left:e.from,right:e.to,a:e.fromLabel,b:e.toLabel,role:e.label}]);
    }else if(id==='2022:4'){
