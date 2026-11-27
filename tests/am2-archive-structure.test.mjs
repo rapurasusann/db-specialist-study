@@ -19,11 +19,12 @@ test('all nine years load in browser script order',()=>{
  assert.deepEqual(Object.keys(archives).map(Number).sort(),years);
 });
 function figure(f){
- assert.ok(['table','sql','uml','graph','schema-group','property-graph','server-topology','boxed-multiplicity'].includes(f.type));
+ assert.ok(['table','sql','uml','graph','schema-group','property-graph','server-topology','boxed-multiplicity','transaction-sequence'].includes(f.type));
  if(f.type==='table'){assert.ok(f.headers.length);for(const row of f.rows)assert.equal(row.length,f.headers.length);}
  if(f.type==='schema-group'){
   assert.ok(f.schemas.length);for(const schema of f.schemas){assert.ok(nonempty(schema.name)&&schema.columns.length);assert.equal(new Set(schema.columns.map(c=>c.name)).size,schema.columns.length);for(const c of schema.columns){assert.ok(nonempty(c.name));for(const flag of ['primary','foreign'])if(c[flag]!==undefined)assert.equal(typeof c[flag],'boolean');}}
  }
+ if(f.type==='transaction-sequence'){assert.ok(Array.isArray(f.steps)&&f.steps.length>0);for(const [i,s] of f.steps.entries()){assert.equal(s.number,i+1);assert.ok([1,2].includes(s.lane));assert.ok(Array.isArray(s.lines)&&s.lines.length>0&&s.lines.every(nonempty));}}
  if(f.type==='sql')assert.ok(nonempty(f.text));
  if(f.type==='boxed-multiplicity'){for(const k of ['left','right','a','b','role'])assert.ok(nonempty(f[k]),k);assert.notEqual(f.left,f.right);}
  if(['uml','graph','property-graph','server-topology'].includes(f.type)){
