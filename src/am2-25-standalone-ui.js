@@ -1,6 +1,6 @@
 import {prepareRelatedTermRegion,renderRelatedTermLinks} from './related-term-study-links.js?v=20261126shared1';
 import {BATCH_SIZE,eligibleQuestions,weightedSample,roundSummary} from './am2-25-challenge-engine.mjs?v=20261125q1';
-import {renderChallengeFigure} from './am2-25-standalone-figures.mjs?v=20261126notation2';
+import {renderChallengeFigure} from './am2-25-standalone-figures.mjs?v=20261127source1';
 
 /* Independent practice screen. This module never calls renderStudy,
  * switches the global year/course/question, or accesses the old answer pane.
@@ -243,9 +243,8 @@ function renderQuestion(){
  for(const letter of order){
   const row=document.createElement('div');row.className='optionText';row.dataset.originalChoice=letter;
   const choice=q?.options?.[letter];
-  if(item.id==='2025:am2:4'&&choice){
+  if(item.id==='2025:am2:4'&&/^プログラム言語（(.+)）$/.test(choice||'')){
    const match=choice.match(/^プログラム言語（(.+)）$/);
-   if(!match)throw Error('INVALID_Q4_SCHEMA');
    row.append(document.createTextNode(letter+'　プログラム言語（'));
    match[1].split('，').forEach((part,i)=>{if(i)row.append(document.createTextNode('，'));const span=document.createElement('span');span.textContent=part.replace(/［主キー(?:の一部)?］/g,'');if(part.includes('［主キー')){span.style.textDecoration='underline';span.style.textUnderlineOffset='3px';span.setAttribute('aria-label',span.textContent+'（主キー）');}row.append(span);});
    row.append(document.createTextNode('）'));
