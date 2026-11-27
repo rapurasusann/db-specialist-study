@@ -185,5 +185,13 @@ function ownershipConstraint(svg,nodes,f){
  return [g.box];
 }
 
-window.am2SharedVectorFigures=Object.freeze({accountingConstraint,markTableHeader,mergedInheritance,ownershipConstraint,diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array'||f.type==='transaction-sequence'||f.type==='boxed-multiplicity'||f.type==='server-topology'||f.type==='property-graph',render});
+// Suppress only SQL already present in the corresponding visible text.
+// Preserve literal contents, including whitespace inside quoted SQL strings.
+function shouldRenderSqlFigure(figure,text){
+ if(figure.type!=='sql'||typeof text!=='string'||typeof figure.text!=='string')return true;
+ const normalize=value=>value.replace(/'(?:''|[^'])*'|"(?:""|[^"])*"|\s+/g,part=>/^\s+$/.test(part)?' ':part).trim();
+ const sql=normalize(figure.text);
+ return !sql||!normalize(text).includes(sql);
+}
+window.am2SharedVectorFigures=Object.freeze({shouldRenderSqlFigure,accountingConstraint,markTableHeader,mergedInheritance,ownershipConstraint,diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array'||f.type==='transaction-sequence'||f.type==='boxed-multiplicity'||f.type==='server-topology'||f.type==='property-graph',render});
 })();
