@@ -90,11 +90,22 @@ test('historical figure slots survive or have an explicitly checked text migrati
     const e=expected[0].links[0];assert.deepEqual(actual,[{type:'boxed-multiplicity',left:e.from,right:e.to,a:e.fromLabel,b:e.toLabel,role:e.label}]);
    }else if(id==='2022:4'){
     assert.equal(actual.length,0);assert.equal(expected.length,1);
-    const normalize=s=>compact(s).replace(/[{}]/g,'').replace(/,(?=[A-Z](?:[,→]))/g,'');
+    const normalize=s=>{
+     const source=compact(s).replace(/^\{(.*)\}$/,'$1');
+     const tokens=[];let depth=0,start=0;
+     for(let i=0;i<source.length;i++){
+      if(source[i]==='{')depth++;
+      if(source[i]==='}')depth--;
+      if(source[i]===','&&depth===0){tokens.push(source.slice(start,i));start=i+1;}
+      assert.ok(depth>=0);
+     }
+     assert.equal(depth,0);tokens.push(source.slice(start));
+     return tokens.map(t=>t.replace(/\{([A-Z](?:,[A-Z])*)\}/g,(_,attrs)=>attrs.replace(/,/g,''))).sort();
+    };
     for(const [name,dependencies] of expected[0].rows){
      const line=now.stem.split('\n').find(l=>l.startsWith(name+'＝'));
      assert.ok(line);const lhs=normalize(line.split('＝')[1]),rhs=normalize(dependencies);
-     assert.equal(lhs,rhs);
+     assert.deepEqual(lhs,rhs);
     }
     removed++;
    }else{
