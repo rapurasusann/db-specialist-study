@@ -39,7 +39,24 @@ function boxedMultiplicity(f){
  vector(svg,'line',{x1:80,y1:61,x2:280,y2:61,stroke:'#263747'});
  rect(88,18,60,25);rect(212,18,60,25);label(118,35,f.a);label(242,35,f.b);label(246,78,f.role);return svg;
 }
-function render(f){const wrap=document.createElement('figure');wrap.style.cssText='margin:10px 0;max-width:100%;min-width:0;box-sizing:border-box;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';wrap.append(f.type==='schema-group'?schemaGroup(f):f.type==='transaction-sequence'?transactionSequence(f):f.type==='boxed-multiplicity'?boxedMultiplicity(f):diskArray(f));return wrap;}
+function serverTopology(f){
+ const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 520 285');svg.setAttribute('role','img');svg.setAttribute('aria-label','クライアントとサーバ、データベースの冗長構成。各クライアントから対応サーバへ更新・参照要求、各サーバから対応データベースへ更新・参照、サーバ間は双方向に更新を通知。');svg.style.cssText='display:block;width:520px;max-width:100%;height:auto';
+ const rect=(x,y,w,h)=>vector(svg,'rect',{x,y,width:w,height:h,fill:'white',stroke:'#263747'});
+ const label=(x,y,t,anchor='middle')=>vector(svg,'text',{x,y,'font-size':13,'text-anchor':anchor,fill:'#172437'},t);
+ const arrow=(x1,y1,x2,y2,both=false)=>{vector(svg,'line',{x1,y1,x2,y2,stroke:'#263747'});const head=(a,b,c,d)=>{const len=Math.hypot(c-a,d-b),ux=(c-a)/len,uy=(d-b)/len;vector(svg,'path',{d:'M '+(c-8*ux+4*uy)+' '+(d-8*uy-4*ux)+' L '+c+' '+d+' L '+(c-8*ux-4*uy)+' '+(d-8*uy+4*ux),fill:'none',stroke:'#263747'});};head(x1,y1,x2,y2);if(both)head(x2,y2,x1,y1);};
+ for(const [i,x] of [[1,100],[2,360]]){rect(x-64,12,128,30);label(x,32,'クライアント'+i);rect(x-64,100,128,30);label(x,120,'サーバ'+i);arrow(x,42,x,100);label(x+9,73,'更新・参照要求','start');arrow(x,130,x,194);label(x+9,169,'更新・参照','start');vector(svg,'path',{d:'M '+(x-43)+' 204 V 257 A 43 10 0 0 0 '+(x+43)+' 257 V 204',fill:'white',stroke:'#263747'});vector(svg,'ellipse',{cx:x,cy:204,rx:43,ry:10,fill:'white',stroke:'#263747'});label(x,231,'データ');label(x,248,'ベース'+i);}
+ arrow(164,115,296,115,true);label(230,136,'更新を通知');return svg;
+}
+function accountingConstraint(svg,nodes,f){
+ if(!f.accountingConstraint)return [];
+ const n=nodes.find(n=>n.id===f.accountingConstraint.target);if(!n)return [];
+ const x=n.x+18,y=n.y+n.height+28,w=158,h=68;
+ vector(svg,'line',{x1:n.x+12,y1:n.y+n.height,x2:x+20,y2:y,stroke:'#263747','stroke-dasharray':'4 3'});
+ vector(svg,'path',{d:'M '+x+' '+y+' H '+(x+w-12)+' L '+(x+w)+' '+(y+12)+' V '+(y+h)+' H '+x+' Z M '+(x+w-12)+' '+y+' V '+(y+12)+' H '+(x+w),fill:'white',stroke:'#263747'});
+ f.accountingConstraint.lines.forEach((t,i)=>vector(svg,'text',{x:x+6,y:y+15+i*14,'font-size':10,fill:'#172437'},t));
+ return [{left:x,right:x+w,top:y,bottom:y+h}];
+}
+function render(f){const wrap=document.createElement('figure');wrap.style.cssText='margin:10px 0;max-width:100%;min-width:0;box-sizing:border-box;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';wrap.append(f.type==='schema-group'?schemaGroup(f):f.type==='transaction-sequence'?transactionSequence(f):f.type==='boxed-multiplicity'?boxedMultiplicity(f):f.type==='server-topology'?serverTopology(f):diskArray(f));return wrap;}
 // Estimate conservative SVG text bounds in user units (10px diagram font).
 function labelBox(x,y,t){
  const half=Array.from(String(t)).length*5+2;
@@ -155,5 +172,5 @@ function ownershipConstraint(svg,nodes,f){
  return [g.box];
 }
 
-window.am2SharedVectorFigures=Object.freeze({markTableHeader,mergedInheritance,ownershipConstraint,diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array'||f.type==='transaction-sequence'||f.type==='boxed-multiplicity',render});
+window.am2SharedVectorFigures=Object.freeze({accountingConstraint,markTableHeader,mergedInheritance,ownershipConstraint,diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array'||f.type==='transaction-sequence'||f.type==='boxed-multiplicity'||f.type==='server-topology',render});
 })();
