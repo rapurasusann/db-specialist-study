@@ -210,7 +210,10 @@ const inlineSqlChoiceIds=new Set(['2016:am2:9','2016:am2:10','2017:am2:2','2018:
 function shouldRenderSqlFigure(id,figure,letter,text){
  if(figure.type!=='sql')return true;
  if(typeof text!=='string'||!text.trim())return true;
- return !(letter?inlineSqlChoiceIds:inlineSqlStemIds).has(id);
+ if(!(letter?inlineSqlChoiceIds:inlineSqlStemIds).has(id))return true;
+ const normalize=value=>value.replace(/\r\n/g,'\n').replace(/[ \t\n]+/g,' ').trim();
+ const sql=normalize(figure.text||'');
+ return !sql||!normalize(text).includes(sql);
 }
 function renderQuestion(){
  if(!active||complete||!round[position])return;
