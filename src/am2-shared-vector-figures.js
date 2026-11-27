@@ -193,5 +193,11 @@ function shouldRenderSqlFigure(figure,text){
  const sql=normalize(figure.text);
  return !sql||!normalize(text).includes(sql);
 }
-window.am2SharedVectorFigures=Object.freeze({shouldRenderSqlFigure,accountingConstraint,markTableHeader,mergedInheritance,ownershipConstraint,diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array'||f.type==='transaction-sequence'||f.type==='boxed-multiplicity'||f.type==='server-topology'||f.type==='property-graph',render});
+function orthogonalAssociationPath(a,b){
+ const side=a.x<b.x?-1:1;
+ const x=a.x+side*a.half*0.55;
+ const y=a.y+a.height;
+ return 'M '+x+' '+y+' V '+b.y+' H '+(b.x+side*b.half);
+}
+window.am2SharedVectorFigures=Object.freeze({orthogonalAssociationPath,shouldRenderSqlFigure,accountingConstraint,markTableHeader,mergedInheritance,ownershipConstraint,diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array'||f.type==='transaction-sequence'||f.type==='boxed-multiplicity'||f.type==='server-topology'||f.type==='property-graph',render});
 })();
