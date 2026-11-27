@@ -18,7 +18,10 @@ test('term and afternoon assets are preloaded and initialized ahead of the defer
   'src/term-understanding-ui.js?v=20261125stable2',
   'src/afternoon-step-up-ui.js?v=20261125stable2'
  ])assert.ok(html.includes('<link rel="modulepreload" href="'+file+'">'),file);
- assert.equal((html.match(/<script defer src="/g)||[]).length,34);
+ const deferred=[...html.matchAll(/<script defer src="([^"]+)"/g)].map(m=>m[1].split('?')[0]);
+ assert.equal(new Set(deferred).size,deferred.length,'no duplicate deferred script');
+ for(const name of ['src/am2-2025-questions.js','src/am2-shared-vector-figures.js','src/am2-archive-2024.js'])assert.ok(deferred.includes(name),name);
+ assert.ok(deferred.indexOf('src/am2-shared-vector-figures.js')<deferred.indexOf('src/am2-archive-2024.js'));
  assert.equal((html.match(/src="src\/term-understanding-ui.js\?v=20261125stable2"/g)||[]).length,1);
  assert.equal((html.match(/src="src\/afternoon-step-up-ui.js\?v=20261125stable2"/g)||[]).length,1);
 });

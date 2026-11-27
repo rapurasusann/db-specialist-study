@@ -2,14 +2,33 @@
 const { chromium } = require('playwright');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
+const {readFile}=require('node:fs/promises');
+const {createServer}=require('node:http');
+const {resolve,extname,sep}=require('node:path');
+const root=resolve(__dirname,'..');
+const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.mjs':'text/javascript; charset=utf-8','.css':'text/css','.webp':'image/webp','.png':'image/png','.svg':'image/svg+xml','.json':'application/json'};
+const server=createServer(async(req,res)=>{try{
+ const relative=decodeURIComponent(new URL(req.url,'http://localhost').pathname).replace(/^\/+/, '')||'index.html';
+ const p=resolve(root,relative);
+ if(!p.startsWith(root+sep))throw Error('outside root');
+ const bytes=await readFile(p);
+ res.writeHead(200,{'Content-Type':mime[extname(p)]||'application/octet-stream'});res.end(bytes);
+ }catch{res.writeHead(404);res.end();}
+});
 (async () => {
- const browser=await chromium.launch({headless:true,channel:'chrome',args:['--no-sandbox']});
+ await new Promise((resolve,reject)=>{server.once('error',reject);server.listen(0,'127.0.0.1',resolve)});
+ const origin='http://127.0.0.1:'+server.address().port;
+ let browser;
+ try{
+ browser=await chromium.launch({headless:true,channel:'msedge'});
+
  const errors=[];const results=[];
  fs.mkdirSync('artifacts/pm-browser',{recursive:true});
  for(const [device,viewport] of [['desktop',{width:1440,height:900}],['mobile',{width:390,height:844}]]){
-  const page=await browser.newPage({viewport,deviceScaleFactor:1});
+  const page=await browser.newPage({viewport,deviceScaleFactor:1,serviceWorkers:'block'});
+  await page.route('**/*',route=>route.request().url().startsWith(origin+'/')?route.continue():route.abort());
   page.on('pageerror',e=>errors.push(device+': '+e.message));
-  await page.goto('http://127.0.0.1:8767/',{waitUntil:'domcontentloaded'});
+  await page.goto(origin+'/',{waitUntil:'domcontentloaded'});
   await page.locator('#viewStudy').click();
   // Regression: leaving a non-glossary region must never call contains() on null.
   await page.locator('#questionText').dispatchEvent('pointerout',{pointerType:'mouse',relatedTarget:null,bubbles:true});
@@ -48,8 +67,10 @@ const fs = require('node:fs');
   }
   await page.close();
  }
- await browser.close();
  assert.deepEqual(errors,[],'browser JavaScript errors');
  fs.writeFileSync('artifacts/pm-browser/results.json',JSON.stringify(results,null,2));
  console.log(JSON.stringify({passed:results.length,errors,results},null,2));
-})().catch(e=>{console.error(e);process.exit(1)});
+ }finally{
+  try{if(browser)await browser.close()}finally{await new Promise((resolve,reject)=>server.close(e=>e?reject(e):resolve()))}
+ }
+})().catch(e=>{console.error(e);process.exitCode=1});

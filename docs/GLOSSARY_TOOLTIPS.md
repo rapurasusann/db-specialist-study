@@ -1,5 +1,8 @@
 # 過去問共通用語ツールチップ
 
+> 初期の辞書・操作設計と履歴。現行収録数・設問内初回表示の仕様は [現行機能仕様](LEARNING_FEATURE_SPEC.md) を参照。
+
+
 ## 用語を追加する方法
 
 `src/glossary-terms.js` の `window.DBStudyGlossaryTerms` 配列に以下の項目を追加します。

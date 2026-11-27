@@ -1,3 +1,4 @@
+import {loadArchives} from './helpers/load-am2-archives.mjs';
 /** Verify the archive's actual figure()/diagram() renderer without browser dependencies.
  * Run: node --test tests/am2-archive-render.test.mjs
  * This is a DOM-stub smoke test, NOT a visual/browser acceptance test.
@@ -22,14 +23,13 @@ const document={
  createElement: name=>new FakeElement(name),
  createElementNS: (_ns,name)=>new FakeElement(name)
 };
-const {figure} = runInNewContext(rendererSource.slice(start,end)+'\n({figure})', {document});
+const sharedWindow={};
+runInNewContext(read('src/am2-shared-vector-figures.js'),{document,window:sharedWindow});
+const {figure} = runInNewContext(rendererSource.slice(start,end)+'\n({figure})', {document,window:sharedWindow});
 const walk = (node,tag) => [ ...(node.tagName===tag?[node]:[]),...node.children.flatMap(child=>typeof child==='object' ? walk(child,tag):[]) ];
 
-function archive(year){
- const text=read(year===2024?'src/am2-archive-2024.js':`src/am2-archive-${year}-data.js`);
- const json=year===2024?text.slice(text.indexOf('const entry=')+12,text.indexOf(';\nconst entries=')):text.slice(text.indexOf('=')+1,text.lastIndexOf(';'));
- return JSON.parse(json);
-}
+const archives=loadArchives();
+function archive(year){return archives[year];}
 
 test('all 2016–2024 archive figure data renders without exceptions',()=>{
  let count=0;

@@ -10,7 +10,7 @@ vm.runInNewContext(dictionary,ctx,{timeout:1500});
 const entries=ctx.window.DBStudyGlossaryTerms;
 assert.ok(Array.isArray(entries));
 const all=[...entries];
-assert.equal(all.length,31,'29 new entries plus 2 existing entries');
+assert.ok(all.length>=197,'preserve the current glossary coverage');
 assert.equal(new Set(all.map(x=>x.id)).size,all.length,'duplicate term ids');
 assert.equal(new Set(all.map(x=>x.term)).size,all.length,'duplicate terms');
 for(const t of all){assert.ok(t.term&&t.definition.length>=15,t.id);assert.ok(!/<[^>]*>/.test(t.definition),t.id)}
@@ -50,4 +50,4 @@ assert.deepEqual(Array.from(all.find(x=>x.term==='データ構造').questionIds)
 const renderer=fs.readFileSync(path.join(dir,'src/glossary.js'),'utf8');
 assert.match(renderer,/const applicable = entries\.filter/);
 assert.match(renderer,/if \(ix >= 0 &&/,'no regression to infinite loop');
-console.log('glossary 31 terms, requested 29/29, scopes and freeze regression checks PASS');
+console.log('glossary coverage, requested 29/29, scopes and freeze regression checks PASS');

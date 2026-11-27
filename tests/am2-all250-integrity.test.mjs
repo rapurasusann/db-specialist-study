@@ -1,3 +1,4 @@
+import {loadArchives} from './helpers/load-am2-archives.mjs';
 /** AM2 source data regression checks without a browser.
  * Run: node --test tests/am2-all250-integrity.test.mjs
  * These checks do not establish character-perfect identity with IPA originals.
@@ -11,13 +12,8 @@ const read = path => readFileSync(new URL('../'+path, import.meta.url), 'utf8');
 const letters=['ア','イ','ウ','エ'];
 const html=read('index.html');
 
-function archive(year){
- const source=read(year===2024?'src/am2-archive-2024.js':`src/am2-archive-${year}-data.js`);
- const json=year===2024
-  ? source.slice(source.indexOf('const entry=')+12,source.indexOf(';\nconst entries='))
-  : source.slice(source.indexOf('=')+1,source.lastIndexOf(';'));
- return JSON.parse(json);
-}
+const archives=loadArchives();
+function archive(year){return archives[year];}
 
 function year2025(){
  const start=html.indexOf('const transcribed = {');
@@ -74,22 +70,27 @@ test('2025 supplemental script loads after base data and before archive override
 test('2025 official Q12 checkpoint chronology and Q23 parity premises are retained',()=>{
  const data=year2025();
  const q12=data.questions['am2:12'];
- assert.deepEqual(Array.from(q12.figures,f=>f.type),['table','table']);
+ assert.deepEqual(Array.from(q12.figures,f=>f.type),['table','timeline']);
  const [counts,timeline]=q12.figures;
  assert.deepEqual(Array.from(counts.rows,row=>Array.from(row)),[
   ['T1，T2','10','20'],['T3，T4','100','0'],['T5，T6','20','10']]);
- assert.deepEqual(Array.from(timeline.rows,row=>Array.from(row)),[
-  ['T1','チェックポイント前','チェックポイント前にコミット','コミット済み'],
-  ['T2','チェックポイント前','チェックポイント後にコミット','コミット済み'],
-  ['T3','チェックポイント後','コミット前に障害発生','未コミット'],
-  ['T4','チェックポイント前','コミット前に障害発生','未コミット'],
-  ['T5','チェックポイント後','障害発生前にコミット','コミット済み'],
-  ['T6','チェックポイント後','コミット前に障害発生','未コミット']]);
+ assert.equal(timeline.tracks.length,6);
+ const [begin,end]=timeline.checkpoint;
+ assert.ok(begin<end&&end<timeline.failure);
+ const expected=[
+  ['T1',true,true,true],['T2',true,false,true],
+  ['T3',false,false,false],['T4',true,false,false],
+  ['T5',false,false,true],['T6',false,false,false]];
+ assert.deepEqual(Array.from(timeline.tracks,t=>[t.label,t.start<begin,t.end<begin,t.committed]),expected);
+ for(const t of timeline.tracks){
+  assert.ok(t.start<t.end&&t.end<=timeline.failure);
+  assert.ok(t.committed?t.end<timeline.failure:t.end===timeline.failure);
+ }
  const raid=data.questions['am2:23'];
- assert.deepEqual(Array.from(raid.figures,f=>f.type),['table','sql']);
- assert.deepEqual(Array.from(raid.figures[0].headers),['磁気ディスク1','磁気ディスク2','磁気ディスク3','磁気ディスク4']);
- assert.deepEqual(Array.from(raid.figures[0].rows,row=>Array.from(row)),[
-  ['Aₚ','A₁','A₂','Aᵥ'],['B₁','Bₚ','B₂','Bᵥ'],['Cₚ','C₁','C₂','Cᵥ'],['D₁','Dₚ','D₂','Dᵥ']]);
+ assert.deepEqual(Array.from(raid.figures,f=>f.type),['disk-array','sql']);
+ assert.deepEqual(Array.from(raid.figures[0].disks,d=>d.name),['磁気ディスク1','磁気ディスク2','磁気ディスク3','磁気ディスク4']);
+ assert.deepEqual(Array.from(raid.figures[0].disks,d=>Array.from(d.blocks)),[
+  ['Aₚ','B₁','Cₚ','D₁'],['A₁','Bₚ','C₁','Dₚ'],['A₂','B₂','C₂','D₂'],['Aᵥ','Bᵥ','Cᵥ','Dᵥ']]);
  for(const premise of ['Aₚ＝A₁⊕A₂','Aᵥ＝D₁⊕A₂','Bᵥ＝A₁⊕B₂','Dₚ＝D₁⊕D₂']){
   assert.ok(raid.figures[1].text.includes(premise),'2025 Q23 parity premise: '+premise);
  }
@@ -163,13 +164,16 @@ test('2025 Q4 and Q11 key underlines match the official schema diagrams',()=>{
   for(const key of keys)assert.ok(q4.options[option].includes(key),'Q4 '+option+' '+key);
  }
  const q11=data.questions['am2:11'];
- assert.deepEqual(Array.from(q11.figures,f=>f.name),['注文','注文明細']);
- assert.deepEqual(Array.from(q11.figures[0].columns,c=>[c.name,!!c.primary,!!c.foreign]),[
+ assert.equal(q11.figures.length,1);
+ assert.equal(q11.figures[0].type,'schema-group');
+ const schemas=q11.figures[0].schemas;
+ assert.deepEqual(Array.from(schemas,f=>f.name),['注文','注文明細']);
+ assert.deepEqual(Array.from(schemas[0].columns,c=>[c.name,!!c.primary,!!c.foreign]),[
   ['注文番号',true,false],['注文日',false,false],['顧客番号',false,true]]);
- assert.deepEqual(Array.from(q11.figures[1].columns,c=>[c.name,!!c.primary,!!c.foreign]),[
+ assert.deepEqual(Array.from(schemas[1].columns,c=>[c.name,!!c.primary,!!c.foreign]),[
   ['注文番号',true,true],['明細番号',true,false],['商品番号',false,true],['数量',false,false]]);
- const renderer=read('src/am2-archive-2024.js');
- assert.ok(renderer.includes("f.type==='schema'"),'schema figure rendering branch present');
- assert.ok(renderer.includes('underline dashed'),'foreign key dashed underline');
- assert.ok(renderer.includes('underline solid'),'primary key solid underline');
+ const renderer=read('src/am2-shared-vector-figures.js');
+ assert.ok(renderer.includes("f.type==='schema-group'"));
+ assert.ok(renderer.includes('if(c.primary)under(45,false)'));
+ assert.ok(renderer.includes('if(c.foreign)under(c.primary?50:45,true)'));
 });

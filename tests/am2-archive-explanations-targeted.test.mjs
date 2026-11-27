@@ -1,3 +1,4 @@
+import {loadArchives} from './helpers/load-am2-archives.mjs';
 /** Guard edited archive explanations against losing answer alignment and rationale.
  * Run: node --test tests/am2-archive-explanations-targeted.test.mjs
  * This checks local consistency, not word-for-word identity with the IPA PDF.
@@ -6,13 +7,8 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 
-function source(year){
- const p=year===2024?'src/am2-archive-2024.js':`src/am2-archive-${year}-data.js`;
- const js=readFileSync(new URL('../'+p,import.meta.url),'utf8');
- const first=year===2024?js.indexOf('const entry=')+12:js.indexOf('=')+1;
- const last=year===2024?js.indexOf(';\nconst entries=',first):js.lastIndexOf(';');
- return JSON.parse(js.slice(first,last));
-}
+const archives=loadArchives();
+function source(year){return archives[year];}
 
 const target={
  2023:{6:['第3正規形','情報無損失','従属性保存','BCNF'],19:['DRDoS','送信元IPアドレス','反射','DNS']},

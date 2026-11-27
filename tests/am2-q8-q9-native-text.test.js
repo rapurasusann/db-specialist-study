@@ -79,9 +79,9 @@ test('existing lower original viewer, learning storage and navigation remain unc
  assert.match(html,/db-study-progress-v1/);
  assert.match(html,/function gradeCurrentAnswer\(/);
  assert.match(html,/function navigate\(delta\)/);
- assert.match(html,/src="src\/am2-figure-clips\.js\?v=20261120q8q9"/);
- assert.match(html,/src="src\/am2-q8-q9-text-view\.js\?v=20261120q8q9"/);
+ assert.match(html,/src="src\/am2-figure-clips\.js\?v=[A-Za-z0-9._-]+"/);
+ assert.match(html,/src="src\/am2-q8-q9-text-view\.js\?v=[A-Za-z0-9._-]+"/);
  assert.ok(html.indexOf('src/am2-figure-clips.js')<html.indexOf('src/am2-q8-q9-text-view.js'));
  assert.doesNotMatch(clipSource,/'2025:am2:(8|9)'/);
- assert.match(clipSource,/'2025:am2:12'/);
+ assert.doesNotMatch(clipSource,/'2025:am2:12'/);
 });

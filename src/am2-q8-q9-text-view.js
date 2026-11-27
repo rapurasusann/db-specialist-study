@@ -105,7 +105,7 @@
       const caption=document.createElement('div');
       caption.className='am2-code-heading';
       caption.textContent=name;
-      container.append(caption,table('問9 '+name,['名前','住所','性別','年齢'],rows,[3],0));
+      container.append(caption,table('問9 '+name,['名前','住所','性別','年齢'],rows,[3],-1));
       pair.append(container);
     }
     f.append(pair);
