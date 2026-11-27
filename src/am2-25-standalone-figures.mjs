@@ -23,7 +23,9 @@ for(const e of uml?f.links:f.edges){
  if(merged.has(e))continue;
  const a=map.get(e.from),b=map.get(e.to);if(!a)continue;
  if(e.kind==='self'){const left=a.x-a.half,top=a.y-a.height;const bend=Math.min(top-20,a.y-34);vector(svg,'path',{d:'M '+left+' '+a.y+' H '+(left-22)+' V '+bend+' H '+a.x+' V '+top,fill:'none',stroke:'#263747'});labels.push(...window.am2SharedVectorFigures.selfAssociationLabels(a,e));continue;}
- if(!b)continue;const [x1,y1,x2,y2]=endpoints(a,b,Number(e.offset)||0);
+ if(!b)continue;
+ if(uml&&e.route==='bottom-to-side'){vector(svg,'path',{d:window.am2SharedVectorFigures.orthogonalAssociationPath(a,b),fill:'none',stroke:'#263747','stroke-width':1.3});continue;}
+ const [x1,y1,x2,y2]=endpoints(a,b,Number(e.offset)||0);
  const attrs={x1,y1,x2,y2,stroke:'#263747','stroke-width':1.3};
  if(!uml||e.kind==='inherit')attrs['marker-end']='url(#'+id+(uml?'-triangle':'')+')';
  if(!uml&&e.bidirectional&&f.parallelPointers){
