@@ -44,9 +44,9 @@ test('accounting note retains full condition and a dashed connector',()=>{
 });
 test('restored data does not silently drop choices, conditions, or column labels',()=>{
  for(const l of ['ア','イ','ウ','エ'])assert.ok(q(2017,7).options[l].trim());
- const seq=q(2017,17).figures[0];assert.ok(seq.rows.flat().some(t=>String(t).includes('条件に合う')));
+ const seq=q(2017,17).figures[0];assert.equal(seq.type,'transaction-sequence');assert.deepEqual(seq.steps.map(s=>s.lane),[1,2,2,1,1,1]);assert.equal(seq.steps[0].lines.join(''),'“数学模試成績”表の登録済データから，合計点Xを算出');assert.equal(inspect(seq).filter(n=>n.tag==='rect').length,6);
  for(const s of q(2018,2).figures[0].schemas)assert.ok(s.columns.every(c=>c.name.trim()));
- for(const f of q(2020,6).figures)assert.ok(f.headers.every(h=>h.trim()));
+ for(const f of q(2020,6).figures)assert.deepEqual(f.headers,[f.title.toLowerCase(),'']);
  assert.equal(q(2021,6).figures.find(f=>f.type==='sql').text,'SELECT 仕入先コード FROM 商品\nEXCEPT\nSELECT 仕入先コード FROM 当月商品仕入合計');
 });
 test('boxed multiplicity retains both placeholders and role',()=>{
@@ -81,3 +81,5 @@ test('both study views use the shared SQL guard rather than question-specific li
  assert.match(challenge,/shouldRenderSqlFigure\(f,q\?\.options/);
  assert.doesNotMatch(challenge,/inlineSqlStemIds|inlineSqlChoiceIds/);
 });
+
+test('diagram-only choice explanations are hidden and explicit orthogonal links retained',()=>{const item=q(2019,4);assert.equal(item.answer,'イ');assert.ok(Object.values(item.options).every(t=>t==='（図を参照）'));assert.equal(item.optionFigures['ウ'][0].links.filter(e=>e.route==='bottom-to-side').length,2);assert.equal(shared.orthogonalAssociationPath({x:85,y:45,half:60,height:25},{x:192,y:250,half:60,height:25}),'M 52 70 V 250 H 132');});
