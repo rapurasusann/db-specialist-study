@@ -19,17 +19,18 @@ test('all nine years load in browser script order',()=>{
  assert.deepEqual(Object.keys(archives).map(Number).sort(),years);
 });
 function figure(f){
- assert.ok(['table','sql','uml','graph','schema-group'].includes(f.type));
+ assert.ok(['table','sql','uml','graph','schema-group','property-graph','server-topology','boxed-multiplicity'].includes(f.type));
  if(f.type==='table'){assert.ok(f.headers.length);for(const row of f.rows)assert.equal(row.length,f.headers.length);}
  if(f.type==='schema-group'){
   assert.ok(f.schemas.length);for(const schema of f.schemas){assert.ok(nonempty(schema.name)&&schema.columns.length);assert.equal(new Set(schema.columns.map(c=>c.name)).size,schema.columns.length);for(const c of schema.columns){assert.ok(nonempty(c.name));for(const flag of ['primary','foreign'])if(c[flag]!==undefined)assert.equal(typeof c[flag],'boolean');}}
  }
  if(f.type==='sql')assert.ok(nonempty(f.text));
- if(f.type==='uml'||f.type==='graph'){
-  const nodes=f.type==='uml'?f.classes.map(([id,x,y])=>({id,x,y})):f.nodes;
+ if(f.type==='boxed-multiplicity'){for(const k of ['left','right','a','b','role'])assert.ok(nonempty(f[k]),k);assert.notEqual(f.left,f.right);}
+ if(['uml','graph','property-graph','server-topology'].includes(f.type)){
+  const nodes=f.type!=='graph'?f.classes.map(([id,x,y])=>({id,x,y})):f.nodes;
   const ids=new Set(nodes.map(n=>n.id));assert.equal(ids.size,nodes.length);
   for(const n of nodes){assert.ok(nonempty(n.id));assert.ok(Number.isFinite(n.x)&&Number.isFinite(n.y));}
-  for(const e of f.type==='uml'?f.links:f.edges){assert.ok(ids.has(e.from));if(e.kind!=='self')assert.ok(ids.has(e.to));}
+  for(const e of f.type!=='graph'?f.links:f.edges){assert.ok(ids.has(e.from));if(e.kind!=='self')assert.ok(ids.has(e.to));}
   for(const e of f.associationClasses||[])for(const k of ['from','to','classId'])assert.ok(ids.has(e[k]));
   for(const id of f.diamondNodes||[])assert.ok(ids.has(id));
  }
@@ -58,7 +59,9 @@ for(const y of years)test(y+' : 25 questions and figure references',()=>{
  }
 });
 test('release readiness is not implied by structural tests',()=>{
- assert.ok(manifest.years.some(y=>!y.answerVerification||/pending|hold|recheck|required|open/i.test(y.answerVerification)));
+ assert.ok(manifest.years.every(y=>nonempty(y.answerVerification)));
+ assert.match(read('docs/AM2_FIGURE_RENDERING_CONTRACT_20261126.md'),/全250問の原本一致も未確認/);
+ assert.match(read('docs/CURRENT_STATUS.md'),/NO-GO/);
  assert.match(renderer,/originalTextVerified\s*===\s*true/);
  assert.ok(renderer.includes('原文テキストは未照合です'));
  assert.ok(renderer.includes('要約版は表示しません'));
