@@ -135,9 +135,9 @@ showQuestion=function(){
  }
  originalQuestion();
  const title=panel.querySelector('h3');
- if(title){let anchor=title;for(const f of q.figures||[]){const item=figure(f);anchor.insertAdjacentElement('afterend',item);anchor=item;}}
+ if(title){let anchor=title;for(const f of q.figures||[]){if(window.am2SharedVectorFigures?.shouldRenderSqlFigure(f,q.stem)===false)continue;const item=figure(f);anchor.insertAdjacentElement('afterend',item);anchor=item;}}
  const choices=Array.from(panel.querySelectorAll('.optionText'));
- for(let i=0;i<choices.length;i++){for(const f of q.optionFigures?.['アイウエ'[i]]||[])choices[i].append(figure(f));}
+ for(let i=0;i<choices.length;i++){for(const f of q.optionFigures?.['アイウエ'[i]]||[])if(window.am2SharedVectorFigures?.shouldRenderSqlFigure(f,q.options?.['アイウエ'[i]])!==false)choices[i].append(figure(f));}
  const source=panel.querySelector('.source');if(source){source.textContent='出典：IPA '+year+'年度 午前Ⅱ・問'+number+(q.originalTextVerified===true?'。':'（学習用要約・原文未照合）。');const link=el('a','公式原本PDF');link.href=entries[year].courses[0].questionUrl;link.target='_blank';link.rel='noopener noreferrer';source.append(' ',link);}
  document.getElementById('localViewer').classList.add('archive-hide-original');
 };
