@@ -1,6 +1,6 @@
 import {prepareRelatedTermRegion,renderRelatedTermLinks} from './related-term-study-links.js?v=20261126shared1';
 import {BATCH_SIZE,eligibleQuestions,weightedSample,roundSummary} from './am2-25-challenge-engine.mjs?v=20261125q1';
-import {renderChallengeFigure} from './am2-25-standalone-figures.mjs?v=20261127source1';
+import {renderChallengeFigure} from './am2-25-standalone-figures.mjs?v=20261127sql2';
 
 /* Independent practice screen. This module never calls renderStudy,
  * switches the global year/course/question, or accesses the old answer pane.
