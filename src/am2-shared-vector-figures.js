@@ -44,7 +44,7 @@ function serverTopology(f){
  const rect=(x,y,w,h)=>vector(svg,'rect',{x,y,width:w,height:h,fill:'white',stroke:'#263747'});
  const label=(x,y,t,anchor='middle')=>vector(svg,'text',{x,y,'font-size':13,'text-anchor':anchor,fill:'#172437'},t);
  const arrow=(x1,y1,x2,y2,both=false)=>{vector(svg,'line',{x1,y1,x2,y2,stroke:'#263747'});const head=(a,b,c,d)=>{const len=Math.hypot(c-a,d-b),ux=(c-a)/len,uy=(d-b)/len;vector(svg,'path',{d:'M '+(c-8*ux+4*uy)+' '+(d-8*uy-4*ux)+' L '+c+' '+d+' L '+(c-8*ux-4*uy)+' '+(d-8*uy+4*ux),fill:'none',stroke:'#263747'});};head(x1,y1,x2,y2);if(both)head(x2,y2,x1,y1);};
- for(const [i,x] of [[1,100],[2,360]]){rect(x-64,12,128,30);label(x,32,'クライアント'+i);rect(x-64,100,128,30);label(x,120,'サーバ'+i);arrow(x,42,x,100);label(x+9,73,'更新・参照要求','start');arrow(x,130,x,194);label(x+9,169,'更新・参照','start');vector(svg,'path',{d:'M '+(x-43)+' 204 V 257 A 43 10 0 0 0 '+(x+43)+' 257 V 204',fill:'white',stroke:'#263747'});vector(svg,'ellipse',{cx:x,cy:204,rx:43,ry:10,fill:'white',stroke:'#263747'});label(x,231,'データ');label(x,248,'ベース'+i);}
+ for(const [i,x] of [[1,100],[2,360]]){rect(x-64,12,128,30);label(x,32,'クライアント'+i);rect(x-64,100,128,30);label(x,120,'サーバ'+i);arrow(x,42,x,100);label(x+9,73,'更新・参照要求','start');arrow(x,130,x,204);label(x+9,169,'更新・参照','start');vector(svg,'path',{d:'M '+(x-43)+' 204 V 257 A 43 10 0 0 0 '+(x+43)+' 257 V 204',fill:'white',stroke:'#263747'});vector(svg,'ellipse',{cx:x,cy:204,rx:43,ry:10,fill:'white',stroke:'#263747'});label(x,231,'データ');label(x,248,'ベース'+i);}
  arrow(164,115,296,115,true);label(230,136,'更新を通知');return svg;
 }
 function accountingConstraint(svg,nodes,f){
@@ -56,7 +56,20 @@ function accountingConstraint(svg,nodes,f){
  f.accountingConstraint.lines.forEach((t,i)=>vector(svg,'text',{x:x+6,y:y+15+i*14,'font-size':10,fill:'#172437'},t));
  return [{left:x,right:x+w,top:y,bottom:y+h}];
 }
-function render(f){const wrap=document.createElement('figure');wrap.style.cssText='margin:10px 0;max-width:100%;min-width:0;box-sizing:border-box;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';wrap.append(f.type==='schema-group'?schemaGroup(f):f.type==='transaction-sequence'?transactionSequence(f):f.type==='boxed-multiplicity'?boxedMultiplicity(f):f.type==='server-topology'?serverTopology(f):diskArray(f));return wrap;}
+function propertyGraph(f){
+ const svg=document.createElementNS(ns,'svg');svg.setAttribute('viewBox','0 0 460 240');svg.setAttribute('role','img');svg.setAttribute('aria-label','プロパティグラフのデータモデル。ノードの自己関連とエッジの関連クラス、プロパティの排他的な所属。');svg.style.cssText='display:block;width:460px;max-width:100%;height:auto';
+ const line=(x1,y1,x2,y2,dash=false)=>vector(svg,'line',{x1,y1,x2,y2,stroke:'#263747',...(dash?{'stroke-dasharray':'4 3'}:{})});
+ const label=(x,y,t,anchor='middle')=>vector(svg,'text',{x,y,'font-size':13,'text-anchor':anchor,fill:'#172437'},t);
+ const box=(x,y,w,name,attrs)=>{vector(svg,'rect',{x,y,width:w,height:24+attrs.length*18,fill:'white',stroke:'#263747'});label(x+w/2,y+16,name);line(x,y+24,x+w,y+24);attrs.forEach((t,i)=>label(x+5,y+38+i*18,t,'start'));};
+ box(75,12,100,'ノード',['ノード名']);box(320,12,100,'エッジ',['エッジ名']);box(170,165,140,'プロパティ',['プロパティ名','プロパティ値']);
+ line(175,25,220,25);line(220,25,220,42);line(220,42,175,42);line(220,33,320,33,true);label(194,20,'0..*');label(194,55,'0..*');
+ line(125,54,125,195);line(125,195,170,195);line(370,54,370,195);line(370,195,310,195);
+ label(103,68,'0..1');label(348,68,'0..1');label(150,211,'0..*');label(330,211,'0..*');
+ for(const x of [91,404]){vector(svg,'polygon',{points:(x-5)+',93 '+x+',84 '+(x+5)+',93',fill:'#263747'});label(x,109,'所属する');}
+ line(125,105,155,105,true);line(340,105,370,105,true);vector(svg,'rect',{x:155,y:92,width:185,height:26,fill:'white',stroke:'#263747'});label(247.5,109,'制約：同時には成立しない');
+ return svg;
+}
+function render(f){const wrap=document.createElement('figure');wrap.style.cssText='margin:10px 0;max-width:100%;min-width:0;box-sizing:border-box;overflow-x:auto;padding:8px;border:1px solid #d5e2ed;border-radius:8px';wrap.append(f.type==='schema-group'?schemaGroup(f):f.type==='transaction-sequence'?transactionSequence(f):f.type==='boxed-multiplicity'?boxedMultiplicity(f):f.type==='server-topology'?serverTopology(f):f.type==='property-graph'?propertyGraph(f):diskArray(f));return wrap;}
 // Estimate conservative SVG text bounds in user units (10px diagram font).
 function labelBox(x,y,t){
  const half=Array.from(String(t)).length*5+2;
@@ -172,5 +185,5 @@ function ownershipConstraint(svg,nodes,f){
  return [g.box];
 }
 
-window.am2SharedVectorFigures=Object.freeze({accountingConstraint,markTableHeader,mergedInheritance,ownershipConstraint,diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array'||f.type==='transaction-sequence'||f.type==='boxed-multiplicity'||f.type==='server-topology',render});
+window.am2SharedVectorFigures=Object.freeze({accountingConstraint,markTableHeader,mergedInheritance,ownershipConstraint,diagramNodeLabel,diamondAssociationLabels,parallelPointerSegments,associationLabels,placeAssociationLabels,associationEndpoints,selfAssociationLabels,layoutAssociationNodes,supports:f=>f.type==='schema-group'||f.type==='disk-array'||f.type==='transaction-sequence'||f.type==='boxed-multiplicity'||f.type==='server-topology'||f.type==='property-graph',render});
 })();
