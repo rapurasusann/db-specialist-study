@@ -53,3 +53,31 @@ test('boxed multiplicity retains both placeholders and role',()=>{
  const f=q(2022,2).figures[0],nodes=inspect(f);
  for(const t of ['社員','年','a','b','入社年'])assert.ok(nodes.some(n=>n.textContent===t),t);
 });
+
+test('SQL duplicate suppression preserves all five required missing statements',()=>{
+ for(const [y,n] of [[2017,8],[2018,6],[2018,8],[2018,10],[2020,10]]){
+  const item=q(y,n),sql=item.figures.find(f=>f.type==='sql');
+  assert.ok(sql,y+':'+n);assert.equal(shared.shouldRenderSqlFigure(sql,item.stem),true,y+':'+n);
+ }
+ for(const [y,n] of [[2016,9],[2016,10],[2017,2],[2018,10],[2019,11],[2020,10]]){
+  const item=q(y,n);
+  for(const [letter,figures] of Object.entries(item.optionFigures||{}))
+   for(const sql of figures.filter(f=>f.type==='sql'))assert.equal(shared.shouldRenderSqlFigure(sql,item.options[letter]),false,y+':'+n+' '+letter);
+ }
+ const item=q(2016,9);assert.equal(shared.shouldRenderSqlFigure(item.figures.find(f=>f.type==='sql'),item.stem),false);
+});
+test('SQL duplicate detection is conservative about literal content and absent text',()=>{
+ const sql={type:'sql',text:"SELECT 'a  b' FROM T"};
+ assert.equal(shared.shouldRenderSqlFigure(sql,"SELECT 'a b' FROM T"),true);
+ assert.equal(shared.shouldRenderSqlFigure(sql,"SELECT 'a  b'\nFROM T"),false);
+ assert.equal(shared.shouldRenderSqlFigure(sql,undefined),true);
+ assert.equal(shared.shouldRenderSqlFigure({type:'table'},'anything'),true);
+});
+test('both study views use the shared SQL guard rather than question-specific lists',()=>{
+ const normal=read('src/am2-archive-2024.js'),challenge=read('src/am2-25-standalone-ui.js');
+ assert.match(normal,/shouldRenderSqlFigure\(f,q\.stem\)/);
+ assert.match(normal,/shouldRenderSqlFigure\(f,q\.options/);
+ assert.match(challenge,/shouldRenderSqlFigure\(figure,stem\)/);
+ assert.match(challenge,/shouldRenderSqlFigure\(f,q\?\.options/);
+ assert.doesNotMatch(challenge,/inlineSqlStemIds|inlineSqlChoiceIds/);
+});
