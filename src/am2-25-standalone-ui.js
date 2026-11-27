@@ -205,16 +205,6 @@ function renderJump(){
 }
 // Official text already contains these SQL statements. Keep unique SQL figures,
  // including statements that are not present in the question or choice text.
-const inlineSqlStemIds=new Set(['2016:am2:9','2017:am2:8','2018:am2:6','2018:am2:8','2018:am2:10','2020:am2:10']);
-const inlineSqlChoiceIds=new Set(['2016:am2:9','2016:am2:10','2017:am2:2','2018:am2:10','2019:am2:11','2020:am2:10']);
-function shouldRenderSqlFigure(id,figure,letter,text){
- if(figure.type!=='sql')return true;
- if(typeof text!=='string'||!text.trim())return true;
- if(!(letter?inlineSqlChoiceIds:inlineSqlStemIds).has(id))return true;
- const normalize=value=>value.replace(/\r\n/g,'\n').replace(/[ \t\n]+/g,' ').trim();
- const sql=normalize(figure.text||'');
- return !sql||!normalize(text).includes(sql);
-}
 function renderQuestion(){
  if(!active||complete||!round[position])return;
  activate();
@@ -233,7 +223,7 @@ function renderQuestion(){
  const stem=item.id==='2020:am2:10'?q?.stem?.replace('社員（社員番号，社員名，性別，生年月日）','社員（社員番号［主キー］，社員名，性別，生年月日）'):q?.stem;
  renderText($('quiz25Stem'),stem||'問題文を読み込めませんでした');
  const figures=$('quiz25Figures');figures.replaceChildren();
- for(const figure of q?.figures||[])if(shouldRenderSqlFigure(item.id,figure,null,stem))figures.append(renderChallengeFigure(figure));
+ for(const figure of q?.figures||[])if(window.am2SharedVectorFigures?.shouldRenderSqlFigure(figure,stem)!==false)figures.append(renderChallengeFigure(figure));
  const url=years[item.year].courses.find(c=>c.id==='am2').questionUrl;
  $('quiz25Original').href=url+(Number.isInteger(q?.sourcePage)?'#page='+q.sourcePage:'');
  const optionText=$('quiz25OptionText');optionText.replaceChildren();
@@ -252,7 +242,7 @@ function renderQuestion(){
    match[1].split('，').forEach((part,i)=>{if(i)row.append(document.createTextNode('，'));const span=document.createElement('span');span.textContent=part.replace(/［主キー(?:の一部)?］/g,'');if(part.includes('［主キー')){span.style.textDecoration='underline';span.style.textUnderlineOffset='3px';span.setAttribute('aria-label',span.textContent+'（主キー）');}row.append(span);});
    row.append(document.createTextNode('）'));
   }else renderText(row,letter+'　'+(choice||'（図を参照）'));
-  for(const f of q?.optionFigures?.[letter]||[])if(shouldRenderSqlFigure(item.id,f,letter,q?.options?.[letter]))row.append(renderChallengeFigure(f));
+  for(const f of q?.optionFigures?.[letter]||[])if(window.am2SharedVectorFigures?.shouldRenderSqlFigure(f,q?.options?.[letter])!==false)row.append(renderChallengeFigure(f));
   optionText.append(row);
  }
  renderRelatedTermLinks($('quiz25RelatedTerms'),item.id,$('quiz25Stem').textContent+'\n'+$('quiz25Figures').textContent+'\n'+optionText.textContent);
