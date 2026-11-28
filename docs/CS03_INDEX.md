@@ -56,3 +56,7 @@
 
 ## 長文の扱い
 APIの詳細履歴は固定コミット [946c2eb の原記録](https://github.com/rapurasusann/db-specialist-study/blob/946c2ebcbb2b73c8ab857e53acda5cd5b08dc6b6/docs/CS03_PROGRESS_API_20261117.md) に保存。各証拠資料は削除せず、後続更新は現行引継ぎに集約する。
+
+
+## 2026-11-28 現行状況の優先順位
+現行のWorker作成・監査・Adminトークン失効報告および未完了ゲートは [CS03_HANDOFF_20261125.md](CS03_HANDOFF_20261125.md) の末尾の最新Statusを優先する。実行条件と履歴の整理は [CS03_DARK_DEPLOY_EXECUTION_20261125.md](CS03_DARK_DEPLOY_EXECUTION_20261125.md)。秘密管理に関する過去の「未配置」記述は履歴であり、最新訂正は [CS03_SECRET_LIFECYCLE_PLAN_20261123.md](CS03_SECRET_LIFECYCLE_PLAN_20261123.md) 末尾を参照。
