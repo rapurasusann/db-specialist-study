@@ -103,3 +103,7 @@ Current Neon docs (updated 2026-10-23) explicitly state that user-defined env va
 The current Functions list screen shared by operator only shows Function name/status/deploy time/invocation URL/triggers/custom domains/logs/delete. It contains no visible env inventory. Next safe UI probe is clicking only the `cs03progress` function name/card to inspect a possible read-only details/deployment page. Do not click Delete, View logs, add trigger/domain, or any edit/deploy control. If details page has no env key list, conclude Neon exposes no safe read-only key-list path through the current available UI/API; keep env names unverified. A disposable probe variable and cleanup deployment is a possible later write-based audit only after explicit approval, because it creates deployment snapshots.
 
 Official source: https://neon.com/docs/compute/functions/environment-variables (user-defined variables merged, unchanged keys carry over; empty assignment deletes). Do not use `neon env pull` because it writes Neon-managed values to `.env`/`.env.local`.
+
+
+## 9. 初回配置記録による環境変数の照合（2026-11-28）
+`CS03_NEON_FIRST_DEPLOY_HANDOFF_20261123.md` の第9・10節を確認。初回CLI配置は --env なし、Deployment ID 1、completed、nodejs24。未認証HTTP拒否3/3 PASS。操作者の現行Console画面も最終配置11月23日を表示し、Function名クリック不可、Monitoring画面には過去1時間のログ0件のみ。環境変数一覧の直接取得は未達だが、初回配置時の専用変数未登録を裏付ける記録が存在する。自動注入変数の有無や現在の全キー一覧を断定しない。追加画面操作や調査目的の再配置は不要。次は現行deployment IDの照合と、既存設定保持・秘密非露出・失敗時停止を満たす登録処理の設計。クラウド変更なし、公開NO-GO。
