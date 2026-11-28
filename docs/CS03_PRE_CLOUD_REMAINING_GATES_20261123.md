@@ -52,3 +52,11 @@
 ## E. A1 共有秘密の手順書確定（2026-11-23）
 
 `docs/CS03_SECRET_LIFECYCLE_PLAN_20261123.md` に、Worker側 `CS03_GATEWAY_SECRET`／Neon側 `CS03_ORIGIN_SECRET` と `x-secret` の対応、32 UTF-8 bytes以上の同一秘密の安全な生成・保管・登録、実値を出さない照合、緊急停止、更新時の切替手順を記載した。**現行Neon Functionは単一秘密のみ照合するため、切替時は同期処理を停止して新旧が混在する時間の失敗を安全に扱う**。クラウド側のsecret管理の実在、登録、旧秘密失効、サービス間の値一致は引き続き未検証。**A1は文書作成のみ完了、実受入OPEN**。秘密値生成・クラウド書込み・公開変更・課金変更は未実施。**NO-GO継続**。
+
+
+## Current evidence correction (2026-11-28 JST)
+Historical sections above that say Worker/DO not deployed and Neon Function count 0 are superseded by the later initial dark Worker and `cs03progress` deployment records in `CS03_HANDOFF_20261125.md`. Current Cloudflare provider audit passed for one dark Worker/SQLite DO with workers.dev/preview disabled and no custom domains. The one-day Admin token is operator-reported revoked.
+
+Neon read-only review: auth branch `br-snowy-truth-a162pmdt` is a non-default child of default `main`, with `cs03_auth_sandbox` and `certification_study` databases. Use only `cs03_auth_sandbox` for CS-03; `cs03_progress_api` cannot SELECT `certification_study.public.study_progress`. On sandbox, the role is non-superuser/no BYPASSRLS, has no `neon_auth` schema USAGE, study_progress RLS is enabled+forced with owner policy bound to transaction-local `app.verified_user_id`, and it has SELECT/INSERT/UPDATE but no DELETE; catalog access is SELECT only. Metadata-only `EXISTS` check returned no rows in sandbox at review time.
+
+Neon Auth settings returned `trusted_origins=[]` and `allow_localhost=true`; GitHub Pages origin is not present. Email/password sign-up is enabled without required email verification. Do not test browser sign-in yet. Actual JWT `iss`/`aud` are not exposed by config API; code hardcodes endpoint host for both and this remains unverified against a real test token. Need origin configuration review, local token claim verification without disclosing JWT, secret-store metadata verification, deployed Function artifact/source match, then explicitly approved authenticated GET/PUT. No external config or DB writes performed in this review. General release NO-GO remains.
