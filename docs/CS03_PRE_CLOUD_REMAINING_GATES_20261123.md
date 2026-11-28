@@ -64,3 +64,7 @@ Neon Auth settings returned `trusted_origins=[]` and `allow_localhost=true`; Git
 
 ## Trusted origin status update (2026-11-28 JST)
 On isolated Neon Auth branch `br-snowy-truth-a162pmdt`, approved origin `https://rapurasusann.github.io` has been added and verified via read-only config: exact origin present; `allow_localhost=true` retained for development as explicitly requested. This closes only the origin allowlist item for that origin; it does not prove browser sign-in, email verification, JWT claims, or production readiness. Next: locally inspect metadata from a real test JWT without displaying/storing/sharing token; confirm `iss`, `aud`, `sub`, `iat`, `exp` against runtime configuration and JWKS. No user data, DB, secret, Worker or production config changed.
+
+
+## Real JWT verification gate update (2026-11-28 JST)
+A real isolated Neon Auth test session was successfully signed in and verified locally: EdDSA signature valid; issuer and audience each match the runtime's configured endpoint origin; required claims verified; subject is UUID format; no verification error; test session signed out; JWT/password not printed. Token observed lifetime was 15 minutes. This closes the actual JWT claim/signature agreement gate for that test session only. Deployed Worker/Neon Function runtime settings, secret registration, DB connection string availability, authenticated GET/PUT through Worker, quota/DO behavior and cross-browser sync remain open. Do not treat it as permission to enable routes or sync. No learning records were accessed or changed.
