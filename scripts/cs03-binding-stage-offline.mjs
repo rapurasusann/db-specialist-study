@@ -1,6 +1,6 @@
 // Offline orchestration only. No HTTP adapters or live entrypoint.
 import { randomBytes } from 'node:crypto';
-export async function stageBindings(api, databaseUrl) {
+export async function stageBindings(api, databaseUrl, protectedStore) {
   let phase = 'preflight';
   try {
     const state = await api.inspect();
@@ -16,6 +16,8 @@ export async function stageBindings(api, databaseUrl) {
         u.searchParams.get('sslmode') !== 'verify-full' ||
         !/^ep-dawn-dew-a11prveg(?:-pooler)?\.ap-southeast-1\.aws\.neon\.tech$/.test(u.hostname)) throw Error();
     const secret = randomBytes(32).toString('hex');
+    if (typeof protectedStore?.save !== 'function') throw Error();
+    if (await protectedStore.save({secret,databaseUrl}) !== true) throw Error();
     phase = 'neon';
     if (await api.stageNeon({CS03_ORIGIN_SECRET:secret,CS03_TEST_DATABASE_URL:databaseUrl,CS03_ISOLATED_BRANCH_ID:state.branch}) !== true) throw Error();
     phase = 'cloudflare';
