@@ -38,7 +38,7 @@ Invocation URL：`https://br-snowy-truth-a162pmdt-cs03progress.compute.c-1.ap-so
 | Neon-injected | `DATABASE_URL` | Postgres有効branchではNeonが自動注入するが、CS-03 runtimeでは使用禁止。専用`CS03_TEST_DATABASE_URL`を要求 | 自動注入仕様のみ確認 |
 | Neon-injected | `NEON_AUTH_JWKS_URL` | Neon Auth有効時に注入される。現行runtimeは検証済み固定JWKS URLを直接使用 | 自動注入仕様のみ確認 |
 
-Neon Functionsの現在の管理API応答で確認できるのはdeployment ID/status/runtime/memory/created_atまで。環境変数の一覧・値は応答に含まれない。したがって上の3 user-defined variablesは「存在しない」と断定せず「未確認」とする。
+Neon Functionsの現在の管理API応答で確認できるのはdeployment ID/status/runtime/memory/created_atまで。既存cs03progressの応答には環境変数の一覧・値が含まれない。検証専用関数ではキー一覧が返ることを第10節で確認した。したがって上の3 user-defined variablesは「存在しない」と断定せず「未確認」とする。
 
 ## 3. 実環境で確認できたこと
 
@@ -107,3 +107,17 @@ Official source: https://neon.com/docs/compute/functions/environment-variables (
 
 ## 9. 初回配置記録による環境変数の照合（2026-11-28）
 `CS03_NEON_FIRST_DEPLOY_HANDOFF_20261123.md` の第9・10節を確認。初回CLI配置は --env なし、Deployment ID 1、completed、nodejs24。未認証HTTP拒否3/3 PASS。操作者の現行Console画面も最終配置11月23日を表示し、Function名クリック不可、Monitoring画面には過去1時間のログ0件のみ。環境変数一覧の直接取得は未達だが、初回配置時の専用変数未登録を裏付ける記録が存在する。自動注入変数の有無や現在の全キー一覧を断定しない。追加画面操作や調査目的の再配置は不要。次は現行deployment IDの照合と、既存設定保持・秘密非露出・失敗時停止を満たす登録処理の設計。クラウド変更なし、公開NO-GO。
+
+## 10. 隔離関数によるDeploy API実測（2026-11-28）
+第6〜9節のAPI挙動に関する未確認事項を更新する。承認済みの一時関数 cs03envprobe のみを使用。実秘密・DB接続なし。
+
+| Deployment | 操作 | 応答キー | 状態 |
+|---|---|---|---|
+| 1 | A=alpha, B=beta (PROBE_接頭辞) | A,B | completed |
+| 2 | A=alpha2 | A,B | completed |
+| 3 | C=gamma | A,B,C | completed |
+| 4 | A=alpha, B=beta, C=空文字 | A,B | completed |
+
+GETでも検証関数のdeployment 1のキー一覧を取得できた。部分更新・追加・空文字による削除のキー構成を確認。値の保持・復元および実行時挙動は未検証であり、完全なrollbackの証拠ではない。検証関数削除後の一覧はcs03progressのみ、current/activeともID 1 completedで変更なし。既存関数・DB・Workerへの書き込みなし。
+
+登録処理 scripts/cs03-binding-stage-offline.mjs の preservation gate は維持する。次はダミー値の一致を実行時booleanのみで確認する検証。実秘密登録、mode有効化、公開はNO-GO。自動試験コードは追加済みだが実行証跡の再取得が必要。
