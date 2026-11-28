@@ -131,3 +131,11 @@ Node.js v22実行環境で、GitHub branchの現行ファイルを再現し、�
 - `tests/cs03-binding-stage-offline.test.mjs`: 18件。事前条件、秘密保管必須、保存失敗時の書込み防止、Neon/Worker/verify各段階停止、DB role拒否、例外時の値非表示。
 - `tests/cs03-deployment-recovery.test.mjs`: 12件。active/current deployment一致、runtime反映再試行、上限、想定外/failed deployment停止、read error、復旧判定、成功時もactivation不可。
 `package.json` に `test:cs03-binding-safety` を追加し、上記2ファイルを実行可能にした。実行は作業用Node.js v22環境で行い、開発PC Node.js 24での実行証跡ではない。テストは模擬APIのみで、実API接続、DPAPI/PowerShell連携、Cloudflare/Neonへの登録、実秘密の取扱い、実通信の検証ではない。したがって実環境設定・通信有効化・公開は引き続きNO-GO。
+
+
+## 12. 実APIアダプター実装（2026-11-28）
+- `scripts/cs03-neon-api-adapter.mjs`: Neon Functions REST API用アダプターを追加。対象project/branch/slugを固定し、環境変数名を3キーにallowlist。既存関数へのconfig-only deploymentはmultipart/form-dataのenvironment JSONで実行する設計。APIトークンは引数注入、応答本文・秘密値は返却しない。
+- `scripts/cs03-cloudflare-api-adapter.mjs`: Workers Scripts Secrets API用アダプターを追加。account/scriptを固定し、`CS03_GATEWAY_SECRET` のみ許可。PUT secret endpointを使用し、エラー本文を表面化しない。
+- `tests/cs03-provider-adapters.test.mjs`: モック8件を追加。`test:cs03-binding-safety` に3テストファイルを統合。
+- Neon公式資料はFunction環境変数がデプロイ間でmergeされ、未指定キーは保持、空値は削除されると明記。APIは `POST /api/v2/projects/{project_id}/branches/{branch_id}/functions/{slug}/deployments`、multipart `environment` JSON。Cloudflare公式資料はWorkers Scripts Secretsの `PUT /accounts/{account_id}/workers/scripts/{script_name}/secrets` と `secret_text` を明記。
+- ただし、アダプターは実API未接続。モック試験8件も未実行。Node 22環境からGitHub rawを取得しようとしたがネットワーク名前解決不可で実行素材を取得できなかった。実APIの認証・権限・HTTP応答・秘密保管との接続は未検証。クラウド変更なし。実登録・通信有効化・公開NO-GO。
