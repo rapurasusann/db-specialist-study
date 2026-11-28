@@ -89,3 +89,9 @@ Worker Script Settings GETはplain vars/ordinary bindingsの名前と種類を�
 - Admin権限を長期間保持しない。Cloudflareのsecret writeとbinding variable更新に必要な最小権限をAPI仕様で再確認し、短期tokenを作成し作業直後に失効する。
 
 **現状：** Neon env key inventory未確認、Cloudflare secret 0件、共有secret未生成・未登録。環境設定変更・Function redeploy・Worker updateはいずれも未承認かつ未実施。NO-GO維持。
+
+
+## 7. Neon Console Functions画面の確認（2026-11-28 JST）
+操作者提供の画面では、Functions一覧に `cs03progress` のCompleted状態、Last deployed、Invocation URL、Triggers、Custom domains、View logs、Deleteが表示されている。環境変数名の表示・参照パネルは画面上に見当たらない。したがって、この画面からは既存Deploymentのuser-defined env key inventoryを確認できなかった。View logsはログ画面であり環境変数一覧ではないため、調査目的にクリックしない。DeleteやTriggers/Custom domainsのAddにも触れない。
+
+Neon公式Functions環境変数ドキュメントでは、user-defined variablesはdeployment snapshotとして保存され、値を変更するには再デプロイが必要。`neon functions deploy --env KEY=VALUE` またはDeploy APIで設定する。Deploy APIのconfig-only updateは環境を変更する書き込み操作であり、一覧取得のために実行しない。`neon env pull`は値を`.env`に書くため使用しない。現状の安全な判断は既存の環境変数名一覧を未確認のまま保持し、設定変更なしで停止すること。
