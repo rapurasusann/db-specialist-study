@@ -121,3 +121,6 @@ Official source: https://neon.com/docs/compute/functions/environment-variables (
 GETでも検証関数のdeployment 1のキー一覧を取得できた。部分更新・追加・空文字による削除のキー構成を確認。値の保持・復元および実行時挙動は未検証であり、完全なrollbackの証拠ではない。検証関数削除後の一覧はcs03progressのみ、current/activeともID 1 completedで変更なし。既存関数・DB・Workerへの書き込みなし。
 
 登録処理 scripts/cs03-binding-stage-offline.mjs の preservation gate は維持する。次はダミー値の一致を実行時booleanのみで確認する検証。実秘密登録、mode有効化、公開はNO-GO。自動試験コードは追加済みだが実行証跡の再取得が必要。
+
+### 実行時の値検証（同日、第10節の追加証跡）
+一時関数を再作成し、ダミー値比較のbooleanのみをHTTPで取得。初回、A部分更新、C追加、A/B復元とC削除の各5項目、最終20/20 PASS。部分更新直後の通常HTTPは旧値を返し2項目FAIL、unique queryとno-cacheヘッダー付き再試験で5/5 PASS。キャッシュと反映遅延の原因区別は未確定。以後は反映確認を必須とする。既知ダミー値の復元を確認したが未知の既存秘密の復元や実秘密登録は未検証。一時関数削除後、一覧はcs03progressのみ、current/active ID 1 completed。登録処理の実API接続、実秘密投入、公開は未完了・NO-GO。
