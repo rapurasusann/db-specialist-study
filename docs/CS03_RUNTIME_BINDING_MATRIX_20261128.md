@@ -139,3 +139,7 @@ Node.js v22実行環境で、GitHub branchの現行ファイルを再現し、�
 - `tests/cs03-provider-adapters.test.mjs`: モック8件を追加。`test:cs03-binding-safety` に3テストファイルを統合。
 - Neon公式資料はFunction環境変数がデプロイ間でmergeされ、未指定キーは保持、空値は削除されると明記。APIは `POST /api/v2/projects/{project_id}/branches/{branch_id}/functions/{slug}/deployments`、multipart `environment` JSON。Cloudflare公式資料はWorkers Scripts Secretsの `PUT /accounts/{account_id}/workers/scripts/{script_name}/secrets` と `secret_text` を明記。
 - ただし、アダプターは実API未接続。モック試験8件も未実行。Node 22環境からGitHub rawを取得しようとしたがネットワーク名前解決不可で実行素材を取得できなかった。実APIの認証・権限・HTTP応答・秘密保管との接続は未検証。クラウド変更なし。実登録・通信有効化・公開NO-GO。
+
+
+## 13. Cloudflare Secret APIのバージョン影響ゲート（2026-11-28）
+Cloudflare公式API資料の説明では、Workers Scripts Secrets PUTはSecretを追加するとともにWorkerの新しいversionを作成する。したがって単純な秘密値書き込みとして扱わない。`createCloudflareAdapter` は `allowVersionCreation:true` の明示指定がない限り `putSecret` を拒否するゲートを追加。モック試験も明示許可と拒否を検証する構成へ更新した。API実行・version deployment・traffic移動は未実施。Cloudflare側のversion作成と本番trafficへの影響は、別途公式version/deploy仕様を確認し、隔離Workerで検証するまでNO-GO。
