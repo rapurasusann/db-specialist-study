@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {stageBindings} from '../scripts/cs03-binding-stage-offline.mjs';
 const url='postgresql://cs03_progress_api:fake@ep-dawn-dew-a11prveg.ap-southeast-1.aws.neon.tech/cs03_auth_sandbox?sslmode=verify-full';
+const store={save:async()=>true};
 function fixture(overrides={},fail=''){
  const calls=[]; let secret;
  const api={
@@ -11,12 +12,17 @@ function fixture(overrides={},fail=''){
  verifyDark:async()=>{calls.push('verify');return fail!=='verify';}
  };return {api,calls};
 }
-test('stages matching secret without activation',async()=>{const {api,calls}=fixture();assert.deepEqual(await stageBindings(api,url),{ok:true,phase:'staged',activation:false});assert.deepEqual(calls,['neon','worker','verify']);});
+test('stages matching secret without activation',async()=>{const {api,calls}=fixture();assert.deepEqual(await stageBindings(api,url,store),{ok:true,phase:'staged',activation:false});assert.deepEqual(calls,['neon','worker','verify']);});
 for(const [key,value] of Object.entries({project:'wrong',branch:'wrong',deployment:2,dark:false,secretAbsent:false,environmentPreservationVerified:false,worker:'wrong',function:'wrong'})){
- test('rejects '+key,async()=>{const {api,calls}=fixture({[key]:value});assert.equal((await stageBindings(api,url)).ok,false);assert.deepEqual(calls,[]);});
+ test('rejects '+key,async()=>{const {api,calls}=fixture({[key]:value});assert.equal((await stageBindings(api,url,store)).ok,false);assert.deepEqual(calls,[]);});
 }
 for(const [phase,expected] of [['neon',['neon']],['worker',['neon','worker']],['verify',['neon','worker','verify']]]){
- test('stops at '+phase,async()=>{const {api,calls}=fixture({},phase);const result=await stageBindings(api,url);assert.equal(result.ok,false);assert.equal(result.activation,false);assert.deepEqual(calls,expected);});
+ test('stops at '+phase,async()=>{const {api,calls}=fixture({},phase);const result=await stageBindings(api,url,store);assert.equal(result.ok,false);assert.equal(result.activation,false);assert.deepEqual(calls,expected);});
 }
-test('rejects wrong database role',async()=>{const {api,calls}=fixture();assert.equal((await stageBindings(api,url.replace('cs03_progress_api','owner'))).ok,false);assert.deepEqual(calls,[]);});
-test('redacts thrown errors',async()=>{const {api}=fixture();api.stageNeon=async()=>{throw Error(url)};assert.deepEqual(await stageBindings(api,url),{ok:false,phase:'neon',activation:false});});
+test('rejects wrong database role',async()=>{const {api,calls}=fixture();assert.equal((await stageBindings(api,url.replace('cs03_progress_api','owner'),store)).ok,false);assert.deepEqual(calls,[]);});
+test('redacts thrown errors',async()=>{const {api}=fixture();api.stageNeon=async()=>{throw Error(url)};assert.deepEqual(await stageBindings(api,url,store),{ok:false,phase:'neon',activation:false});});
+
+test('missing store prevents writes',async()=>{const {api,calls}=fixture();assert.equal((await stageBindings(api,url)).ok,false);assert.deepEqual(calls,[]);});
+test('failed store prevents writes',async()=>{const {api,calls}=fixture();assert.equal((await stageBindings(api,url,{save:async()=>false})).ok,false);assert.deepEqual(calls,[]);});
+test('throwing store prevents writes and redacts errors',async()=>{const {api,calls}=fixture();assert.deepEqual(await stageBindings(api,url,{save:async()=>{throw Error(url)}}),{ok:false,phase:'preflight',activation:false});assert.deepEqual(calls,[]);});
+test('persists matching credentials before first write',async()=>{const {api,calls}=fixture();let saved;const original=api.stageNeon;api.stageNeon=async env=>{assert.equal(saved.secret,env.CS03_ORIGIN_SECRET);assert.equal(saved.databaseUrl,env.CS03_TEST_DATABASE_URL);return original(env);};assert.equal((await stageBindings(api,url,{save:async value=>{saved=value;calls.push('save');return true;}})).ok,true);assert.deepEqual(calls,['save','neon','worker','verify']);});
