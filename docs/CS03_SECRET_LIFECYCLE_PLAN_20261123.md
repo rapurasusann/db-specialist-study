@@ -59,3 +59,9 @@
 - [ ] **ユーザーの個別配置承認**（この文書の作成を承認扱いしない）
 
 現状：Cloudflare Worker/DOは未配備、隔離Neon Functionsは0件、秘密値も未登録。**配置NO-GO／本番公開NO-GO**。
+
+
+## 状態更新（2026-11-28 JST・過去の未配置記述を上書き）
+Cloudflare上に初回のdark Worker `cs03-browser-isolated-candidate-not-approved` が作成され、read-only監査でworkers.dev=false、preview_urls=false、custom domains=0、SQLite DO class/bindingを確認済み。Neonの隔離Function `cs03progress` も過去の実配備記録（Deployment 1 completed）が存在する。したがって本書冒頭・過去節の「Worker/DO未配備」「Neon Functions 0件」は当時の履歴であり、現在状態ではない。
+
+ただし、両サービス間の共有秘密は未登録・未照合として扱う。現在のWorkerはレビュー用entrypointで、modeや必要secret/DB設定がない場合fail-closedする。Functionは共有秘密欠落時401となる過去の実HTTP試験あり。Adminトークン `CS03-Initial-Dark-Deploy` は操作者がCloudflare UIから削除したと報告。別のread-only tokenは残存。実JWTメタデータ、実secret store設定、CloudflareからNeonへの認証済みGET/PUT、実DBデータパス、料金・上限の受入れは未完了。公開/同期の有効化は未承認・NO-GO。
