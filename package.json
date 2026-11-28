@@ -12,7 +12,8 @@
     "test:pm:progress": "node --test tests/pm-subquestion-progress.test.mjs",
     "test:glossary": "node --test tests/glossary-first-occurrence.test.mjs",
     "test:cs03-worker-security": "node --test tests/cs03-worker-review-config.test.mjs tests/cs03-worker-candidate.test.mjs tests/cs03-worker-entrypoint.test.mjs tests/cs03-worker-entrypoint-full-chain.test.mjs tests/cs03-cloudflare-do-handler.test.mjs tests/cs03-access-ingress-review.test.mjs tests/cs03-browser-jwt-entrypoint.test.mjs tests/cs03-browser-preflight-authorization.test.mjs",
-    "test:cs03-dark": "node --test tests/cs03-dark-preflight.test.mjs tests/cs03-dark-dry-run.test.mjs tests/cs03-dark-credential.test.mjs tests/cs03-dark-prepare.test.mjs"
+    "test:cs03-dark": "node --test tests/cs03-dark-preflight.test.mjs tests/cs03-dark-dry-run.test.mjs tests/cs03-dark-credential.test.mjs tests/cs03-dark-prepare.test.mjs",
+    "test:cs03-binding-safety": "node --test tests/cs03-binding-stage-offline.test.mjs tests/cs03-deployment-recovery.test.mjs"
   },
   "dependencies": {
     "@neon/auth": "0.8.2",
