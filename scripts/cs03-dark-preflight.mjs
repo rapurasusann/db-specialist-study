@@ -24,7 +24,11 @@ export async function checkAbsent({account,token,fetcher=fetch}){
 export const ALLOWED_CHANGES=new Set(['docs/CS03_ISOLATED_DEPLOYMENT_APPROVAL.md','docs/CS03_HANDOFF_20261125.md','docs/CS03_DARK_DEPLOY_EXECUTION_20261125.md','scripts/cs03-dark-preflight.mjs','tests/cs03-dark-preflight.test.mjs','scripts/cs03-dark-dry-run.mjs','tests/cs03-dark-dry-run.test.mjs','scripts/cs03-dark-credential.mjs','tests/cs03-dark-credential.test.mjs','scripts/cs03-dark-prepare.mjs','tests/cs03-dark-prepare.test.mjs']);
 // Exact additional blobs only; a changed manifest or historical document is rejected.
 export const REVIEWED_DOC_BLOBS=Object.freeze({
- 'package.json':'589aa3e16be2050f7c2265d0571cafd6e74e3ef6',
+ 'tests/cs03-predeploy-guard.test.mjs':'035b22e115e89df62b9937439b3b72b4e2094b6f',
+ 'tests/cs03-worker-entrypoint.test.mjs':'dc83965a5842f9a50dcef20e1acc70ebdded82b2',
+ 'package.json':'c78167d61c04fa91725cf57036e490affc3177ec',
+ 'package-lock.json':'1d40564278cd36aee58e036edc1ce46bf504c851',
+ '.gitignore':'2ccbe4656c6078ded72491cf2ee9c5ec20219624',
  'docs/CS03_INDEX.md':'90a566af617981625e432b930f1c0be4f37f102c',
  'docs/CS03_PROGRESS_API_20261117.md':'7b46c54d44295b35277453b3c5708a05f85452bd'
 });
@@ -42,6 +46,7 @@ export async function localPreflight(expectedHead){
  const head=git('rev-parse','HEAD');
  if(!/^[a-f0-9]{40}$/.test(expectedHead??'')||head!==expectedHead)throw Error('HEAD_MISMATCH');
  git('merge-base','--is-ancestor',BASE,head);
+ for(const p of ['package.json','package-lock.json','.gitignore']){if(git('rev-parse',head+':'+p)!==REVIEWED_DOC_BLOBS[p])throw Error('DEPLOYMENT_SOURCE_CHANGED');}
  validateChanges(git('diff','--no-renames','--name-only',BASE,head).split('\n').filter(Boolean),git('status','--porcelain','--untracked-files=all'),p=>git('rev-parse',head+':'+p));
  const config=JSON.parse(await readFile(new URL('../'+CONFIG,import.meta.url),'utf8'));
  validateConfig(config);

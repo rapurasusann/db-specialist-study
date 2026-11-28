@@ -26,9 +26,12 @@ test('review entrypoint exports SQLite DO binding but still leaves independent d
  assert.equal(typeof Cs03QuotaNotDeployed,'function');
  const audit=inspectCs03Deployment();
  assert.equal(audit.ready,false);
- assert.ok(audit.blockers.includes('TRUSTED_GATEWAY_NOT_IMPLEMENTED'));
- assert.ok(audit.blockers.includes('GATEWAY_RATE_LIMIT_ACCEPTANCE_MISSING'));
- assert.ok(audit.blockers.includes('ISOLATED_DEPLOYMENT_APPROVAL_MISSING'));
+ assert.equal(audit.scope,'development-only');
+ assert.ok(audit.blockers.includes('LIVE_ISOLATION_AND_COST_NOT_VERIFIED'));
+ assert.ok(!audit.blockers.includes('SHARED_GATEWAY_WIRING_UNVERIFIED'));
+ assert.ok(!audit.blockers.includes('TRUSTED_GATEWAY_NOT_IMPLEMENTED'));
+ assert.ok(!audit.blockers.includes('GATEWAY_RATE_LIMIT_ACCEPTANCE_MISSING'));
+ assert.ok(!audit.blockers.includes('ISOLATED_DEPLOYMENT_APPROVAL_MISSING'));
 });
 
 test('Worker requires matching Access authentication audience before creating gateway',async()=>{

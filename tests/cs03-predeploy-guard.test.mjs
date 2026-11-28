@@ -27,8 +27,11 @@ test('report mode is explicitly read-only and lists blockers',()=>{
  assert.match(result.stdout,/LIVE_ISOLATION_AND_COST_NOT_VERIFIED/);
  assert.doesNotMatch(result.stdout,/GATEWAY_RATE_LIMIT_ACCEPTANCE_MISSING/);
 });
-test('preview remains off and isolated deployment lacks approval',()=>{
+test('preview remains off and limited initial approval does not authorize live operation',()=>{
  const result=inspectCs03Deployment();
  assert.ok(!result.blockers.includes('PREVIEW_MUST_REMAIN_DISABLED'));
- assert.ok(result.blockers.includes('ISOLATED_DEPLOYMENT_APPROVAL_MISSING'));
+ assert.ok(!result.blockers.includes('ISOLATED_DEPLOYMENT_APPROVAL_MISSING'));
+ assert.ok(result.blockers.includes('LIVE_ISOLATION_AND_COST_NOT_VERIFIED'));
+ assert.equal(result.ready,false);
+ assert.equal(result.scope,'development-only');
 });
