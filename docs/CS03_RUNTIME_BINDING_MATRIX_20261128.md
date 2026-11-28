@@ -124,3 +124,10 @@ GETでも検証関数のdeployment 1のキー一覧を取得できた。部分�
 
 ### 実行時の値検証（同日、第10節の追加証跡）
 一時関数を再作成し、ダミー値比較のbooleanのみをHTTPで取得。初回、A部分更新、C追加、A/B復元とC削除の各5項目、最終20/20 PASS。部分更新直後の通常HTTPは旧値を返し2項目FAIL、unique queryとno-cacheヘッダー付き再試験で5/5 PASS。キャッシュと反映遅延の原因区別は未確定。以後は反映確認を必須とする。既知ダミー値の復元を確認したが未知の既存秘密の復元や実秘密登録は未検証。一時関数削除後、一覧はcs03progressのみ、current/active ID 1 completed。登録処理の実API接続、実秘密投入、公開は未完了・NO-GO。
+
+
+## 11. 登録・反映確認・復旧判定の自動試験（2026-11-28）
+Node.js v22実行環境で、GitHub branchの現行ファイルを再現し、次の2テストファイルを実行。30 tests / 30 pass / 0 fail。
+- `tests/cs03-binding-stage-offline.test.mjs`: 18件。事前条件、秘密保管必須、保存失敗時の書込み防止、Neon/Worker/verify各段階停止、DB role拒否、例外時の値非表示。
+- `tests/cs03-deployment-recovery.test.mjs`: 12件。active/current deployment一致、runtime反映再試行、上限、想定外/failed deployment停止、read error、復旧判定、成功時もactivation不可。
+`package.json` に `test:cs03-binding-safety` を追加し、上記2ファイルを実行可能にした。実行は作業用Node.js v22環境で行い、開発PC Node.js 24での実行証跡ではない。テストは模擬APIのみで、実API接続、DPAPI/PowerShell連携、Cloudflare/Neonへの登録、実秘密の取扱い、実通信の検証ではない。したがって実環境設定・通信有効化・公開は引き続きNO-GO。
