@@ -32,3 +32,10 @@ Source: [reviewed HEAD](https://github.com/rapurasusann/db-specialist-study/tree
 
 ## Current status (2026-11-27 JST)
 The lock generation and dependency conflict blockers are resolved locally; strict lock generation, npm audit (zero reported), locked installation, account build and 55/55 preparation tests passed on source HEAD 5b2ec27 with local manifest/lock changes. See [current handoff](CS03_HANDOFF_20261125.md) for the evidence and exact pins. Do not mistake the mock preparation tests for actual provider preflight or live safety. Registration of the reviewed files and exact blob allowlist updates, clean installed-dependency handling, targeted authentication regression, real preflight/dry-run and provider post-deploy inspection remain open. Execution sequence and limited approval are unchanged. No cloud writes today.
+
+
+## Evidence update (2026-11-28 JST)
+- On branch HEAD 580b9590e305dc14bbb101b2349f3b789f9c47c5, operator ran `scripts/cs03-dark-preflight.mjs` with the newly created `CS03-Preflight-ReadOnly` account-scoped token: PASS, exact candidate Worker absent, no deployment.
+- Operator then ran `scripts/cs03-dark-dry-run.mjs` with the same read-only token for absence check: Wrangler 4.168.0 dry-run PASS, DEPLOYED=NO. The dry-run child environment excludes all token/secret variables.
+- No cloud writes occurred. This is local package/config compilation evidence only. Limited approval does not authorize public/preview exposure, routes, secrets, Neon changes or production. The read-only token cannot deploy.
+- Next gate is review/create a separate short-lived account-scoped token with only Workers Scripts Read and Edit (or the exact minimal permissions Cloudflare presents), verify its scope, then follow the previously approved one-time dark-create procedure and inspect provider state. Do not begin until all credentials and account identity are matched and the explicit exclusive creation window is confirmed. No retry on ambiguous result.
