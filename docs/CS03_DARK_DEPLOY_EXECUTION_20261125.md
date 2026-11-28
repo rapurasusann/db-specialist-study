@@ -43,3 +43,7 @@ The lock generation and dependency conflict blockers are resolved locally; stric
 
 ## Initial dark Worker provider audit — 2026-11-28 JST
 Initial deployment command returned success on source HEAD `580b9590e305dc14bbb101b2349f3b789f9c47c5`. The subsequent first PowerShell-based audit failed on API response parsing; no redeploy was made. The consolidated Node.js fetch read-only audit then passed with `CS03_POST_DEPLOY_READONLY_AUDIT_PASS` and confirmed the exact Worker exists, Wrangler deployment active with 100% traffic, workers.dev disabled, preview URLs disabled, zero custom domains, SQLite DO namespace/class present and binding enabled. Secret values were not displayed. This proves provider-side dark-resource configuration only, not live authentication/data-path/cost acceptance. Revoke the one-day `CS03-Initial-Dark-Deploy` Admin token immediately. No routes, public URLs, secrets, Neon changes or production traffic.
+
+
+## Credential revocation report (2026-11-28 JST)
+After the read-only provider audit passed, operator reported deleting the temporary `CS03-Initial-Dark-Deploy` Workers Admin token in the Cloudflare UI. Record as operator-reported; no separate API confirmation. The `CS03-Preflight-ReadOnly` token is separate and remains only for remaining read-only work; revoke it when no longer needed. Never request token values in chat.
