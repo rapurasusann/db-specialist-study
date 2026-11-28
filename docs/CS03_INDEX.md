@@ -55,6 +55,9 @@
 - [cs03-worker-config-review-only.json.example](cs03-worker-config-review-only.json.example)
 - [cs03-worker-entrypoint-contract-review-only.json](cs03-worker-entrypoint-contract-review-only.json)
 
+## 作業履歴
+- [2026-11-28 日次作業記録](CS03_WORK_LOG_20261128.md) — 54件のコミット・検証結果・残課題の当日記録
+
 ## 長文の扱い
 APIの詳細履歴は固定コミット [946c2eb の原記録](https://github.com/rapurasusann/db-specialist-study/blob/946c2ebcbb2b73c8ab857e53acda5cd5b08dc6b6/docs/CS03_PROGRESS_API_20261117.md) に保存。各証拠資料は削除せず、後続更新は現行引継ぎに集約する。
 
