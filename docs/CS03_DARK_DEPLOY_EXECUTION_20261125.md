@@ -47,3 +47,11 @@ Initial deployment command returned success on source HEAD `580b9590e305dc14bbb1
 
 ## Credential revocation report (2026-11-28 JST)
 After the read-only provider audit passed, operator reported deleting the temporary `CS03-Initial-Dark-Deploy` Workers Admin token in the Cloudflare UI. Record as operator-reported; no separate API confirmation. The `CS03-Preflight-ReadOnly` token is separate and remains only for remaining read-only work; revoke it when no longer needed. Never request token values in chat.
+
+
+## Runtime configuration audit follow-up (2026-11-28 JST)
+The initial Worker creation script deploys the exact config from `docs/cs03-browser-worker-config-review-only.json.example`: `main=./server/cs03-browser-jwt-entrypoint.mjs`, no vars/secrets/routes, workers.dev=false, preview_urls=false, and a single SQLite DO binding/migration. The entrypoint is intentionally fail-closed with HTTP 503 unless `CS03_BROWSER_JWT_MODE=isolated-review-only`; no variable was part of the deployed config. Provider metadata audit previously confirmed active Worker and SQLite namespace/class binding, but not full binding names/types.
+
+A one-shot read-only `CS03-Worker-Binding-Audit-20261128.zip` has been prepared. It calls only Cloudflare GET script-version settings, emits binding names/types, and does not call or retrieve secret values. The API endpoint and permission are documented by Cloudflare: https://developers.cloudflare.com/api/go/resources/workers/subresources/scripts/subresources/script_and_version_settings/methods/get/ . Operator output is still required to establish the live binding inventory.
+
+Neon `get_function` returns only deployment ID/status/runtime/memory/timestamps and no env inventory. Historical first deploy command contained no `--env` and no user secrets; there is no later env-only deployment evidence in current review. Therefore user-defined runtime vars `CS03_ORIGIN_SECRET`, `CS03_ISOLATED_BRANCH_ID`, `CS03_TEST_DATABASE_URL` remain unverified (assume unavailable / fail-closed). Do not run `neon env pull` or reveal env values. Neon docs confirm custom env vars are stored with each deployment snapshot: https://neon.com/docs/compute/functions/environment-variables . No cloud config was changed in this review.
