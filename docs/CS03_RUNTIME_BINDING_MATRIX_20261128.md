@@ -67,3 +67,25 @@ Neon Functionsの現在の管理API応答で確認できるのはdeployment ID/s
 - Neon Functions environment variables：https://neon.com/docs/compute/functions/environment-variables
 - Neon Functions deploy/manage：https://neon.com/docs/compute/functions/deploy
 - Neon Functions get started（invocation URL形式）：https://neon.com/docs/compute/functions/get-started
+
+
+## 6. 読み取り・秘密登録の安全手順（2026-11-28追記）
+### Neon Function envインベントリ
+Neon公式の現行API/CLI資料を照合した。`GET /projects/{project_id}/branches/{branch_id}/functions/{slug}`（MCP `get_function` 相当）が返すFunction情報はURLとdeployment status/runtime/memory/created_at等で、環境変数一覧を含まない。MCP `get_function`でも同じ。公式CLI `neon functions deploy`の応答はenvironment key一覧を返す場合があるが、これはデプロイ操作後の応答であり、既存deploymentを調べる読み取り専用手段ではない。`neon env pull`はNeon-managed env valuesをローカルファイルへ出力するため今回禁止。`neon.ts` config planも、現状のFunction deploymentのenv inventoryを返す根拠はない。
+
+**現時点で安全な確認方法：** Neon Consoleで該当BranchのFunctions > `cs03progress` > 現行DeploymentのEnvironment/Variables表示を開き、値を開示せず、キー名だけを確認する。画面に値が表示される場合、共有前に必ずマスクする。UIに既存キー一覧がなければ、ここは未確認のまま止める（API deployによる「調査目的だけの更新」は行わない）。対象Console URL：
+`https://console.neon.tech/app/projects/quiet-mouse-39990305/branches/br-snowy-truth-a162pmdt`
+
+### Cloudflare secret metadata
+Worker Script Settings GETはplain vars/ordinary bindingsの名前と種類を確認できる。Cloudflare公式Secret APIには指定済みsecret bindingを1件取得するGETがあり、応答例はname/typeのみでsecret valueを省略する。Read権限で確認できる。secret-list endpointは値フィールドを含むmodelを返し得るため、使う場合は値を必ず破棄して名前・typeだけを表示するクライアント処理が必要。現状のScript Settings auditでSecret binding count=0だったので追加API照会は不要。
+
+### 共有秘密の登録方針（今後の別承認後）
+- `CS03_GATEWAY_SECRET`と`CS03_ORIGIN_SECRET`は同一の暗号学的乱数（少なくとも32 UTF-8 bytes）を使用する。JWTとは別物。人間が考えた文字列やNeon DB passwordを流用しない。
+- 値は開発PCで一度だけ生成し、チャット・Git・ログ・コマンドライン引数に出さない。ローカル端末で保護された一時保管を使い、Cloudflare Worker SecretとNeon Function deployment environmentへ直接登録し、投入後に一時保管を消去する。値そのものをスクリーンショット・PowerShell履歴に出さない。
+- CloudflareはSecret bindingとして登録し、plain variableにしない。同名のplain variableが存在したら先に止まり、上書きしない。Cloudflare公式仕様ではSecretとVariableに同じbinding名は共存できず、変数更新が既存Secretを置換する場合もある。
+- NeonはFunctionデプロイ単位のenvironment snapshotとして保存される。現行APIでは既存FunctionにZIPを省略したenvironment/runtime-only deploymentが可能だが、実行はFunction deploymentを更新する書き込み操作。既存envを保全する必要があるため、既存キーを一覧できない間は部分JSONを推測して送らない。全キー保持を確認できるまで更新禁止。
+- 両側の登録後、secret値を読み戻さず、presence/type/required length booleanを実行環境内で確認する検査コードを作る。秘密値一致確認は各サービス内で比較用のHMAC指紋を計算し、片側の指紋を安全な一時経路で比較する方式を別途設計する。plain hashのログ出力は禁止。
+- 一方だけ更新された、Function deployが失敗または結果不明、反映に時間差がある場合はWorker mode未設定のまま止める。両方の存在・一致・rollback手順が確定するまで`CS03_BROWSER_JWT_MODE`を登録しない。
+- Admin権限を長期間保持しない。Cloudflareのsecret writeとbinding variable更新に必要な最小権限をAPI仕様で再確認し、短期tokenを作成し作業直後に失効する。
+
+**現状：** Neon env key inventory未確認、Cloudflare secret 0件、共有secret未生成・未登録。環境設定変更・Function redeploy・Worker updateはいずれも未承認かつ未実施。NO-GO維持。
