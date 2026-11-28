@@ -63,4 +63,4 @@ APIの詳細履歴は固定コミット [946c2eb の原記録](https://github.co
 
 
 ## 2026-11-28 現行状況の優先順位
-現行のWorker作成・監査・Adminトークン失効報告および未完了ゲートは [CS03_HANDOFF_20261125.md](CS03_HANDOFF_20261125.md) の末尾の最新Statusを優先する。実行条件と履歴の整理は [CS03_DARK_DEPLOY_EXECUTION_20261125.md](CS03_DARK_DEPLOY_EXECUTION_20261125.md)。秘密管理に関する過去の「未配置」記述は履歴であり、最新訂正は [CS03_SECRET_LIFECYCLE_PLAN_20261123.md](CS03_SECRET_LIFECYCLE_PLAN_20261123.md) 末尾を参照。
+現行のWorker作成・監査・Adminトークン失効報告および未完了ゲートは [CS03_HANDOFF_20261125.md](CS03_HANDOFF_20261125.md) の現行状態を優先する。実行条件と履歴の整理は [CS03_DARK_DEPLOY_EXECUTION_20261125.md](CS03_DARK_DEPLOY_EXECUTION_20261125.md)。秘密管理に関する過去の「未配置」記述は履歴であり、最新訂正は [CS03_SECRET_LIFECYCLE_PLAN_20261123.md](CS03_SECRET_LIFECYCLE_PLAN_20261123.md) 末尾を参照。
